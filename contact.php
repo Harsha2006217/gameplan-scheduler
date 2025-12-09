@@ -6,13 +6,6 @@
 require_once 'functions.php';
 checkSessionTimeout();
 $error = '';
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $message = $_POST['message'] ?? '';
-    // Simulate send, in real use mail()
-    setMessage('success', 'Message sent!');
-    header("Location: contact.php");
-    exit;
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">

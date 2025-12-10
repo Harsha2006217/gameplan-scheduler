@@ -1,36 +1,49 @@
 <?php
-// edit_schedule.php - Edit Schedule Page
-// Author: Harsha Kanaparthi
-// Date: 30-09-2025
-// Description: Form to edit existing schedules.
+// This file is edit_schedule.php - Edit a schedule.
+// Author: Harsha Kanaparthi.
+// Date: Improved on 10-12-2025.
+// Description: Similar to edit_event.
+
 require_once 'functions.php';
+
 checkSessionTimeout();
+
 if (!isLoggedIn()) {
     header("Location: login.php");
     exit;
 }
+
 $userId = getUserId();
+
 $id = $_GET['id'] ?? 0;
+
 if (!is_numeric($id)) {
     header("Location: index.php");
     exit;
 }
+
 $schedules = getSchedules($userId);
+
 $schedule = array_filter($schedules, function($s) use ($id) { return $s['schedule_id'] == $id; });
 $schedule = reset($schedule);
+
 if (!$schedule) {
     setMessage('danger', 'Schedule not found or no permission.');
     header("Location: index.php");
     exit;
 }
+
 $error = '';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $gameTitle = $_POST['game_title'] ?? '';
     $date = $_POST['date'] ?? '';
     $time = $_POST['time'] ?? '';
     $friendsStr = $_POST['friends_str'] ?? '';
     $sharedWithStr = $_POST['shared_with_str'] ?? '';
+
     $error = editSchedule($userId, $id, $gameTitle, $date, $time, $friendsStr, $sharedWithStr);
+
     if (!$error) {
         setMessage('success', 'Schedule updated successfully!');
         header("Location: index.php");
@@ -51,7 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php include 'header.php'; ?>
     <main class="container mt-5 pt-5">
         <?php echo getMessage(); ?>
-        <?php if ($error): ?><div class="alert alert-danger"><?php echo safeEcho($error); ?></div><?php endif; ?>
+        <?php if ($error): ?>
+            <div class="alert alert-danger"><?php echo safeEcho($error); ?></div>
+        <?php endif; ?>
         <h2>Edit Schedule</h2>
         <form method="POST" onsubmit="return validateScheduleForm();">
             <div class="mb-3">

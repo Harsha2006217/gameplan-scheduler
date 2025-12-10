@@ -1,29 +1,42 @@
 <?php
-// edit_event.php - Edit Event Page
-// Author: Harsha Kanaparthi
-// Date: 30-09-2025
-// Description: Form to edit existing events.
+// This file is edit_event.php - Page to edit an existing event.
+// Author: Harsha Kanaparthi.
+// Date: Improved on 10-12-2025.
+// Description: Loads event by ID, shows form with current data, updates on submit using editEvent().
+// Improvements: Added permission check, pre-filled form, JS validation, responsive.
+// Simple: Like editing a calendar entry - load old, change, save.
+
 require_once 'functions.php';
+
 checkSessionTimeout();
+
 if (!isLoggedIn()) {
     header("Location: login.php");
     exit;
 }
+
 $userId = getUserId();
-$id = $_GET['id'] ?? 0;
-if (!is_numeric($id)) {
+
+$id = $_GET['id'] ?? 0; // Get ID from URL.
+
+if (!is_numeric($id)) { // If ID not number, invalid.
     header("Location: index.php");
     exit;
 }
-$events = getEvents($userId);
-$event = array_filter($events, function($e) use ($id) { return $e['event_id'] == $id; });
-$event = reset($event);
-if (!$event) {
+
+$events = getEvents($userId); // Get all events.
+
+$event = array_filter($events, function($e) use ($id) { return $e['event_id'] == $id; }); // Find the event by ID. array_filter filters list.
+$event = reset($event); // Get first match.
+
+if (!$event) { // If not found or not owned.
     setMessage('danger', 'Event not found or no permission.');
     header("Location: index.php");
     exit;
 }
+
 $error = '';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $title = $_POST['title'] ?? '';
     $date = $_POST['date'] ?? '';
@@ -32,7 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $reminder = $_POST['reminder'] ?? 'none';
     $externalLink = $_POST['external_link'] ?? '';
     $sharedWithStr = $_POST['shared_with_str'] ?? '';
+
     $error = editEvent($userId, $id, $title, $date, $time, $description, $reminder, $externalLink, $sharedWithStr);
+
     if (!$error) {
         setMessage('success', 'Event updated successfully!');
         header("Location: index.php");
@@ -53,7 +68,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php include 'header.php'; ?>
     <main class="container mt-5 pt-5">
         <?php echo getMessage(); ?>
-        <?php if ($error): ?><div class="alert alert-danger"><?php echo safeEcho($error); ?></div><?php endif; ?>
+        <?php if ($error): ?>
+            <div class="alert alert-danger"><?php echo safeEcho($error); ?></div>
+        <?php endif; ?>
         <h2>Edit Event</h2>
         <form method="POST" onsubmit="return validateEventForm();">
             <div class="mb-3">
@@ -75,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="mb-3">
                 <label for="reminder" class="form-label">Reminder</label>
                 <select id="reminder" name="reminder" class="form-select" aria-label="Reminder">
-                    <option value="none" <?php if ($event['reminder'] == 'none') echo 'selected'; ?>>None</option>
+                    <option value="none" <?php if ($event['reminder'] == 'none') echo 'selected'; ?>>None</option> <!-- selected if current value. -->
                     <option value="1_hour" <?php if ($event['reminder'] == '1_hour') echo 'selected'; ?>>1 Hour Before</option>
                     <option value="1_day" <?php if ($event['reminder'] == '1_day') echo 'selected'; ?>>1 Day Before</option>
                 </select>

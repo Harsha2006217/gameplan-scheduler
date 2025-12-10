@@ -1,34 +1,47 @@
 <?php
-// edit_friend.php - Edit Friend Details Page
-// Author: Harsha Kanaparthi
-// Date: 30-09-2025
-// Description: Form to edit friend username, note, and status.
+// This file is edit_friend.php - Edit friend details.
+ // Author: Harsha Kanaparthi.
+// Date: Improved on 10-12-2025.
+// Description: Load friend by ID, form to edit.
+
 require_once 'functions.php';
+
 checkSessionTimeout();
+
 if (!isLoggedIn()) {
     header("Location: login.php");
     exit;
 }
+
 $userId = getUserId();
+
 $id = $_GET['id'] ?? 0;
+
 if (!is_numeric($id)) {
     header("Location: add_friend.php");
     exit;
 }
+
 $friends = getFriends($userId);
+
 $friend = array_filter($friends, function($f) use ($id) { return $f['friend_id'] == $id; });
 $friend = reset($friend);
+
 if (!$friend) {
     setMessage('danger', 'Friend not found.');
     header("Location: add_friend.php");
     exit;
 }
+
 $error = '';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $friendUsername = $_POST['friend_username'] ?? '';
     $note = $_POST['note'] ?? '';
     $status = $_POST['status'] ?? 'Offline';
+
     $error = updateFriend($userId, $id, $friendUsername, $note, $status);
+
     if (!$error) {
         setMessage('success', 'Friend details updated!');
         header("Location: add_friend.php");
@@ -49,7 +62,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php include 'header.php'; ?>
     <main class="container mt-5 pt-5">
         <?php echo getMessage(); ?>
-        <?php if ($error): ?><div class="alert alert-danger"><?php echo safeEcho($error); ?></div><?php endif; ?>
+        <?php if ($error): ?>
+            <div class="alert alert-danger"><?php echo safeEcho($error); ?></div>
+        <?php endif; ?>
         <h2>Edit Friend</h2>
         <form method="POST">
             <div class="mb-3">

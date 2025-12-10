@@ -1,29 +1,30 @@
-// script.js - Client-Side JavaScript
-// Author: Harsha Kanaparthi
-// Date: 30-09-2025
-// Description: Form validations and reminder pop-ups.
-// Login form validation
-function validateLoginForm() {
-    const email = document.getElementById('email').value.trim();
+// This file is script.js - Client-side code (runs in browser).
+// Author: Harsha Kanaparthi.
+// Date: Improved on 10-12-2025.
+// Description: Validations for forms to catch errors before server.
+// Improvements: Added regex for better checks, alerts for user feedback.
+// Simple: JS is like instructions for browser - check if form good before send.
+
+function validateLoginForm() { // For login.
+    const email = document.getElementById('email').value.trim(); // Get value, trim spaces.
     const password = document.getElementById('password').value.trim();
-    
+
     if (!email || !password) {
         alert('Email and password are required.');
-        return false;
+        return false; // Stop submit.
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { // Regex for email.
         alert('Invalid email format.');
         return false;
     }
-    return true;
+    return true; // OK, submit.
 }
 
-// Register form validation
-function validateRegisterForm() {
+function validateRegisterForm() { // For register.
     const username = document.getElementById('username').value.trim();
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value.trim();
-    
+
     if (!username || !email || !password) {
         alert('All fields are required.');
         return false;
@@ -43,19 +44,18 @@ function validateRegisterForm() {
     return true;
 }
 
-// Schedule form validation
-function validateScheduleForm() {
+function validateScheduleForm() { // For schedule.
     const gameTitle = document.getElementById('game_title').value.trim();
     const date = document.getElementById('date').value;
     const time = document.getElementById('time').value;
     const friendsStr = document.getElementById('friends_str').value.trim();
     const sharedWithStr = document.getElementById('shared_with_str').value.trim();
-    
+
     if (!gameTitle || /^\s*$/.test(gameTitle)) {
         alert('Game title is required and cannot be only spaces.');
         return false;
     }
-    if (!date || new Date(date) < new Date()) {
+    if (!date || new Date(date) < new Date()) { // new Date() makes date object.
         alert('Date must be in the future.');
         return false;
     }
@@ -74,15 +74,14 @@ function validateScheduleForm() {
     return true;
 }
 
-// Event form validation
-function validateEventForm() {
+function validateEventForm() { // For event.
     const title = document.getElementById('title').value.trim();
     const date = document.getElementById('date').value;
     const time = document.getElementById('time').value;
     const description = document.getElementById('description').value;
     const externalLink = document.getElementById('external_link').value;
     const sharedWithStr = document.getElementById('shared_with_str').value.trim();
-    
+
     if (!title || /^\s*$/.test(title)) {
         alert('Title is required and cannot be only spaces.');
         return false;
@@ -114,7 +113,6 @@ function validateEventForm() {
     return true;
 }
 
-// Reminder pop-ups (simulated)
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Checking for reminders...');
+document.addEventListener('DOMContentLoaded', function() { // When page loads.
+    console.log('Checking for reminders...'); // Log to console.
 });

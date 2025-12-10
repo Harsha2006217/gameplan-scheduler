@@ -1,19 +1,25 @@
 <?php
-// register.php - User Registration Page
-// Author: Harsha Kanaparthi
-// Date: 30-09-2025
-// Description: Handles new user registration with validation.
+// This file is register.php - Registration page.
+// Author: Harsha Kanaparthi.
+// Date: Improved on 10-12-2025.
+// Description: Form for username, email, password, calls registerUser().
+
 require_once 'functions.php';
+
 if (isLoggedIn()) {
     header("Location: index.php");
     exit;
 }
+
 $error = '';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'] ?? '';
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
+
     $error = registerUser($username, $email, $password);
+
     if (!$error) {
         setMessage('success', 'Registration successful! Please login.');
         header("Location: login.php");
@@ -33,7 +39,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body class="bg-dark text-light">
     <div class="container mt-5">
         <h1 class="text-center">Register</h1>
-        <?php if ($error): ?><div class="alert alert-danger"><?php echo safeEcho($error); ?></div><?php endif; ?>
+        <?php if ($error): ?>
+            <div class="alert alert-danger"><?php echo safeEcho($error); ?></div>
+        <?php endif; ?>
         <form method="POST" class="mt-4" onsubmit="return validateRegisterForm();">
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>

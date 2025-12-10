@@ -1,34 +1,48 @@
 <?php
-// edit_favorite.php - Edit Favorite Game Page
-// Author: Harsha Kanaparthi
-// Date: 30-09-2025
-// Description: Form to edit game title, description, and note.
+// This file is edit_favorite.php - Edit a favorite game.
+// Author: Harsha Kanaparthi.
+// Date: Improved on 10-12-2025.
+// Description: Loads favorite by ID, form to edit title, description, note.
+// Improvements: Permission check, pre-fill, validation.
+
 require_once 'functions.php';
+
 checkSessionTimeout();
+
 if (!isLoggedIn()) {
     header("Location: login.php");
     exit;
 }
+
 $userId = getUserId();
+
 $id = $_GET['id'] ?? 0;
+
 if (!is_numeric($id)) {
     header("Location: profile.php");
     exit;
 }
+
 $favorites = getFavoriteGames($userId);
+
 $game = array_filter($favorites, function($g) use ($id) { return $g['game_id'] == $id; });
 $game = reset($game);
+
 if (!$game) {
     setMessage('danger', 'Game not found or no permission.');
     header("Location: profile.php");
     exit;
 }
+
 $error = '';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $title = $_POST['title'] ?? '';
     $description = $_POST['description'] ?? '';
     $note = $_POST['note'] ?? '';
+
     $error = updateFavoriteGame($userId, $id, $title, $description, $note);
+
     if (!$error) {
         setMessage('success', 'Favorite game updated!');
         header("Location: profile.php");
@@ -49,7 +63,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php include 'header.php'; ?>
     <main class="container mt-5 pt-5">
         <?php echo getMessage(); ?>
-        <?php if ($error): ?><div class="alert alert-danger"><?php echo safeEcho($error); ?></div><?php endif; ?>
+        <?php if ($error): ?>
+            <div class="alert alert-danger"><?php echo safeEcho($error); ?></div>
+        <?php endif; ?>
         <h2>Edit Favorite Game</h2>
         <form method="POST">
             <div class="mb-3">

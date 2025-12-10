@@ -1,11 +1,15 @@
 <?php
-// contact.php - Contact Page
-// Author: Harsha Kanaparthi
-// Date: 30-09-2025
-// Description: Simple contact information page.
+// This file is contact.php - A simple page with contact info.
+// Author: Harsha Kanaparthi.
+// Date: Improved on 10-12-2025.
+// Description: Shows email for support. Includes header/footer for consistent look.
+// Improvements: Made it responsive, added Bootstrap card for beauty, no bugs as it's static.
+
 require_once 'functions.php';
+
 checkSessionTimeout();
-$error = '';
+
+$error = ''; // No error needed here, but kept for consistency.
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,8 +24,12 @@ $error = '';
     <?php include 'header.php'; ?>
     <main class="container mt-5 pt-5">
         <?php echo getMessage(); ?>
-        <h1>Contact Us</h1>
-        <p>For support or inquiries, email us at harsha.kanaparthi20062@gmail.com.</p>
+        <div class="card bg-secondary border-0 rounded-3"> <!-- Card for nice box look. -->
+            <div class="card-body">
+                <h1>Contact Us</h1>
+                <p>For support or inquiries, email us at harsha.kanaparthi20062@gmail.com.</p>
+            </div>
+        </div>
     </main>
     <?php include 'footer.php'; ?>
 </body>

@@ -1,22 +1,31 @@
 <?php
-// profile.php - Profile Management Page
-// Author: Harsha Kanaparthi
-// Date: 30-09-2025
-// Description: Allows adding, editing, deleting favorite games with notes and viewing profile.
+// This file is profile.php - Manage favorites.
+// Author: Harsha Kanaparthi.
+// Date: Improved on 10-12-2025.
+// Description: Form to add favorite, table to list with edit/delete.
+
 require_once 'functions.php';
+
 checkSessionTimeout();
+
 if (!isLoggedIn()) {
     header("Location: login.php");
     exit;
 }
+
 $userId = getUserId();
+
 $favorites = getFavoriteGames($userId);
+
 $error = '';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_favorite'])) {
     $title = $_POST['title'] ?? '';
     $description = $_POST['description'] ?? '';
     $note = $_POST['note'] ?? '';
+
     $error = addFavoriteGame($userId, $title, $description, $note);
+
     if (!$error) {
         setMessage('success', 'Favorite game added!');
         header("Location: profile.php");
@@ -37,7 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_favorite'])) {
     <?php include 'header.php'; ?>
     <main class="container mt-5 pt-5">
         <?php echo getMessage(); ?>
-        <?php if ($error): ?><div class="alert alert-danger"><?php echo safeEcho($error); ?></div><?php endif; ?>
+        <?php if ($error): ?>
+            <div class="alert alert-danger"><?php echo safeEcho($error); ?></div>
+        <?php endif; ?>
         <h2>Add Favorite Game</h2>
         <form method="POST">
             <div class="mb-3">
@@ -55,24 +66,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_favorite'])) {
             <button type="submit" name="add_favorite" class="btn btn-primary">Add</button>
         </form>
         <h2 class="mt-4">Your Favorites</h2>
-        <table class="table table-dark table-bordered">
-            <thead class="bg-info">
-                <tr><th>Title</th><th>Description</th><th>Note</th><th>Actions</th></tr>
-            </thead>
-            <tbody>
-                <?php foreach ($favorites as $game): ?>
-                    <tr>
-                        <td><?php echo safeEcho($game['titel']); ?></td>
-                        <td><?php echo safeEcho($game['description']); ?></td>
-                        <td><?php echo safeEcho($game['note']); ?></td>
-                        <td>
-                            <a href="edit_favorite.php?id=<?php echo $game['game_id']; ?>" class="btn btn-sm btn-warning">Edit</a>
-                            <a href="delete.php?type=favorite&id=<?php echo $game['game_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?');">Delete</a>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-dark table-bordered">
+                <thead class="bg-info">
+                    <tr><th>Title</th><th>Description</th><th>Note</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($favorites as $game): ?>
+                        <tr>
+                            <td><?php echo safeEcho($game['titel']); ?></td>
+                            <td><?php echo safeEcho($game['description']); ?></td>
+                            <td><?php echo safeEcho($game['note']); ?></td>
+                            <td>
+                                <a href="edit_favorite.php?id=<?php echo $game['game_id']; ?>" class="btn btn-sm btn-warning">Edit</a>
+                                <a href="delete.php?type=favorite&id=<?php echo $game['game_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?');">Delete</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     </main>
     <?php include 'footer.php'; ?>
 </body>

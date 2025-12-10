@@ -1,23 +1,34 @@
 <?php
-// add_schedule.php - Add Schedule Page
-// Author: Harsha Kanaparthi
-// Date: 30-09-2025
-// Description: Form to add new schedules with game title input, date, time, friends str, shared with str.
+// This file is add_schedule.php - Page to add a new gaming schedule.
+// A schedule is when you plan to play a game, with date, time, which game, friends involved (usernames), and who it's shared with.
+// Author: Harsha Kanaparthi.
+// Date: Improved on 10-12-2025.
+// Description: Similar to add_event, but for schedules. Uses addSchedule() function.
+// Improvements: Added JS validation, responsive form, min date to today, fixed comma-separated validation.
+// Simple explanation: Like booking a time to play, this page lets you do that and saves it.
+
 require_once 'functions.php';
+
 checkSessionTimeout();
+
 if (!isLoggedIn()) {
     header("Location: login.php");
     exit;
 }
+
 $userId = getUserId();
+
 $error = '';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $gameTitle = $_POST['game_title'] ?? '';
     $date = $_POST['date'] ?? '';
     $time = $_POST['time'] ?? '';
     $friendsStr = $_POST['friends_str'] ?? '';
     $sharedWithStr = $_POST['shared_with_str'] ?? '';
+
     $error = addSchedule($userId, $gameTitle, $date, $time, $friendsStr, $sharedWithStr);
+
     if (!$error) {
         setMessage('success', 'Schedule added successfully!');
         header("Location: index.php");
@@ -38,7 +49,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php include 'header.php'; ?>
     <main class="container mt-5 pt-5">
         <?php echo getMessage(); ?>
-        <?php if ($error): ?><div class="alert alert-danger"><?php echo safeEcho($error); ?></div><?php endif; ?>
+        <?php if ($error): ?>
+            <div class="alert alert-danger"><?php echo safeEcho($error); ?></div>
+        <?php endif; ?>
         <h2>Add Schedule</h2>
         <form method="POST" onsubmit="return validateScheduleForm();">
             <div class="mb-3">

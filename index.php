@@ -1,621 +1,606 @@
 <?php
-/**
- * ============================================================================
- * index.php - Dashboard en Kalender Overzicht (Main Dashboard)
- * ============================================================================
- * 
- * @author      Harsha Kanaparthi
- * @student     2195344
- * @date        30-09-2025
- * @version     1.0
- * @project     GamePlan Scheduler
- * 
- * ============================================================================
- * BESCHRIJVING / DESCRIPTION:
- * ============================================================================
- * Dit is de HOOFDPAGINA van de applicatie - het dashboard dat gebruikers
- * zien na het inloggen. Het toont een overzicht van:
- * 
- * 1. VRIENDEN LIJST - Alle toegevoegde vrienden met status
- * 2. FAVORIETE GAMES - Games toegevoegd aan profiel
- * 3. SPEELSCHEMA'S - Geplande gaming sessies
- * 4. EVENEMENTEN - Toernooien en speciale events
- * 5. KALENDER OVERZICHT - Gecombineerde chronologische weergave
- * 
- * This is the MAIN PAGE of the application - the dashboard users see
- * after logging in. It displays an overview of all user data.
- * 
- * ============================================================================
- * FEATURES:
- * ============================================================================
- * - Sorteer opties voor schedules en events
- * - Kalender view met gecombineerde items
- * - Reminder pop-ups via JavaScript
- * - Responsive tabellen voor alle data
- * - Edit/Delete acties voor elk item
- * ============================================================================
- */
+// ============================================================================
+// INDEX.PHP - Dashboard and Calendar View (Main Page)
+// ============================================================================
+// Author       : Harsha Kanaparthi (Student Number: 2195344)
+// Date         : 30-09-2025
+// Version      : 1.0
+// Project      : GamePlan Scheduler - MBO-4 Software Development Examination
+// ============================================================================
+// DESCRIPTION:
+// This is the MAIN DASHBOARD page - the home page after login.
+// It displays all user data: friends, favorite games, schedules, events,
+// and a merged calendar view.
+//
+// FEATURES ON THIS PAGE:
+// 1. Friends List - Shows all friends with status and actions
+// 2. Favorite Games - Shows user's favorite games
+// 3. Schedules Table - Gaming sessions with sorting
+// 4. Events Table - Tournaments/events with sorting
+// 5. Calendar Overview - Merged view of schedules + events
+// 6. Reminder Pop-ups - JavaScript alerts for upcoming events
+//
+// DATA FLOW:
+// 1. Check if user is logged in (redirect if not)
+// 2. Get user ID from session
+// 3. Fetch all data from database (friends, games, schedules, events)
+// 4. Display everything in organized tables and cards
+// 5. Handle logout link
+//
+// FILE DEPENDENCIES:
+// - functions.php: All database functions
+// - header.php: Navigation header
+// - footer.php: Page footer
+// - style.css: Custom styling
+// - script.js: Client-side functionality
+// ============================================================================
 
-// ============================================================================
-// FUNCTIONS.PHP LADEN
-// ============================================================================
+
+// Include core functions
 require_once 'functions.php';
 
-// ============================================================================
-// SESSIE TIMEOUT CONTROLEREN
-// ============================================================================
-// Als de gebruiker langer dan 30 minuten inactief is geweest,
-// wordt hij automatisch uitgelogd (security feature)
-// ============================================================================
+
+// Check session timeout (logs out inactive users after 30 minutes)
 checkSessionTimeout();
 
-// ============================================================================
-// CONTROLEER OF GEBRUIKER IS INGELOGD
-// ============================================================================
-// Niet-ingelogde gebruikers worden doorverwezen naar login pagina
-// ============================================================================
+
+// If not logged in, redirect to login page
 if (!isLoggedIn()) {
     header("Location: login.php");
     exit;
 }
 
-// ============================================================================
-// GEBRUIKER DATA OPHALEN
-// ============================================================================
+
+// Get current user's ID from session
 $userId = getUserId();
 
-// Update de "laatst actief" timestamp
+
+// Update last activity timestamp (for session tracking)
 updateLastActivity(getDBConnection(), $userId);
 
+
 // ============================================================================
-// SORTEER PARAMETERS OPHALEN
+// GET SORTING OPTIONS FROM URL
 // ============================================================================
-// $_GET bevat URL parameters, bijv: index.php?sort_schedules=date+DESC
-// ?? geeft standaardwaarde als parameter niet bestaat
-// ============================================================================
+// Users can click links to change how data is sorted
+// $_GET contains URL parameters (e.g., ?sort_schedules=date%20DESC)
+
+// Schedule sorting (default: date ascending)
 $sortSchedules = $_GET['sort_schedules'] ?? 'date ASC';
+
+// Event sorting (default: date ascending)
 $sortEvents = $_GET['sort_events'] ?? 'date ASC';
 
-// ============================================================================
-// ALLE DATA OPHALEN UIT DATABASE
-// ============================================================================
-// Elke functie voert een SQL query uit en geeft een array terug
-// ============================================================================
-$friends = getFriends($userId);           // Alle vrienden van gebruiker
-$favorites = getFavoriteGames($userId);    // Alle favoriete games
-$schedules = getSchedules($userId, $sortSchedules); // Speelschema's (gesorteerd)
-$events = getEvents($userId, $sortEvents); // Evenementen (gesorteerd)
-$calendarItems = getCalendarItems($userId); // Gecombineerd voor kalender
-$reminders = getReminders($userId);        // Actieve reminders voor JS
 
 // ============================================================================
-// LOGOUT AFHANDELEN
+// FETCH ALL USER DATA FROM DATABASE
 // ============================================================================
-// Als ?logout=1 in de URL staat, log de gebruiker uit
-// Dit staat onderaan zodat we eerst de pagina kunnen tonen
-// ============================================================================
-if (isset($_GET['logout'])) {
-    logout(); // redirect naar login.php
-}
+// These functions are defined in functions.php
+// They return arrays of data from the database
+
+// Get friends list
+$friends = getFriends($userId);
+
+// Get favorite games
+$favorites = getFavoriteGames($userId);
+
+// Get schedules with sorting
+$schedules = getSchedules($userId, $sortSchedules);
+
+// Get events with sorting
+$events = getEvents($userId, $sortEvents);
+
+// Get merged calendar items (schedules + events sorted by date/time)
+$calendarItems = getCalendarItems($userId);
+
+// Get reminders that should pop up now
+$reminders = getReminders($userId);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <!-- ==================================================================
-         META TAGS
-         ================================================================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- ==================================================================
-         SEO
-         ================================================================== -->
+    
+    <!-- Page title -->
     <title>Dashboard - GamePlan Scheduler</title>
-    <meta name="description"
-        content="Your GamePlan Scheduler dashboard - manage gaming schedules, friends, and events all in one place.">
-
-    <!-- ==================================================================
-         STYLESHEETS
-         ================================================================== -->
+    
+    <!-- Meta description for SEO -->
+    <meta name="description" content="Your GamePlan Scheduler dashboard - view friends, schedules, events, and calendar.">
+    
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Custom styles -->
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="bg-dark text-light">
-
-    <!-- ==================================================================
-         HEADER INVOEGEN
-         ==================================================================
-         include voegt de inhoud van header.php hier in
-         ================================================================== -->
+    
+    <!-- Include navigation header -->
     <?php include 'header.php'; ?>
-
-    <!-- ==================================================================
-         MAIN CONTENT
-         ==================================================================
-         mt-5 pt-5: margin-top en padding-top voor ruimte onder fixed header
-         pb-5: padding-bottom voor ruimte boven fixed footer
-         ================================================================== -->
+    
+    
+    <!-- ====================================================================
+         MAIN CONTENT AREA
+         ==================================================================== -->
+    <!-- mt-5 pt-5: Margin and padding top to account for fixed header -->
+    <!-- pb-5: Padding bottom for fixed footer -->
     <main class="container mt-5 pt-5 pb-5">
-
-        <!-- ==============================================================
-             SESSIE BERICHTEN TONEN
-             ==============================================================
-             getMessage() toont en verwijdert berichten uit de sessie
-             Bijv: "Event added successfully!" na het toevoegen
-             ============================================================== -->
+        
+        <!-- Display any flash messages (success/error) -->
         <?php echo getMessage(); ?>
-
-        <!-- ==============================================================
-             WELKOM BERICHT
-             ============================================================== -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h2">
-                <i class="bi bi-speedometer2 me-2"></i>Dashboard
+        
+        
+        <!-- ================================================================
+             WELCOME SECTION
+             ================================================================ -->
+        <div class="mb-4">
+            <h1 class="h3 fw-bold">
+                Welcome back, <?php echo safeEcho($_SESSION['username']); ?>! 👋
             </h1>
-            <span class="text-muted">
-                Welcome, <strong><?php echo safeEcho($_SESSION['username'] ?? 'Gamer'); ?></strong>
-            </span>
+            <p class="text-muted">Here's your gaming overview</p>
         </div>
-
-        <!-- ##############################################################
-             SECTIE 1: VRIENDEN LIJST
-             ##############################################################
-             Toont alle vrienden van de gebruiker in een tabel
-             ############################################################## -->
+        
+        
+        <!-- ================================================================
+             SECTION: FRIENDS LIST
+             ================================================================ -->
+        <!-- Each section is in a card for visual separation -->
         <section class="mb-5">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="h4 mb-0">
-                    <i class="bi bi-people text-info me-2"></i>Friends List
-                </h2>
-                <a href="add_friend.php" class="btn btn-outline-info btn-sm">
-                    <i class="bi bi-plus-lg me-1"></i>Add Friend
-                </a>
-            </div>
-
-            <!-- ======================================================
-                 RESPONSIVE TABEL WRAPPER
-                 ======================================================
-                 table-responsive: horizontaal scrollen op kleine schermen
-                 ====================================================== -->
-            <div class="table-responsive">
-                <table class="table table-dark table-hover table-bordered align-middle">
-                    <!-- ================================================
-                         TABEL HEADER
-                         ================================================ -->
-                    <thead class="table-primary">
-                        <tr>
-                            <th><i class="bi bi-person me-1"></i>Username</th>
-                            <th><i class="bi bi-circle me-1"></i>Status</th>
-                            <th><i class="bi bi-sticky me-1"></i>Note</th>
-                            <th class="text-center" style="width: 150px;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- ============================================
-                             PHP LOOP DOOR VRIENDEN
-                             ============================================
-                             foreach loopt door elke vriend in de array
-                             $friend bevat bij elke iteratie één vriend
-                             ============================================ -->
-                        <?php if (empty($friends)): ?>
-                            <tr>
-                                <td colspan="4" class="text-center text-muted py-4">
-                                    <i class="bi bi-people display-6 d-block mb-2"></i>
-                                    No friends added yet. <a href="add_friend.php">Add your first friend!</a>
-                                </td>
-                            </tr>
-                        <?php else: ?>
-                            <?php foreach ($friends as $friend): ?>
-                                <tr>
-                                    <!-- Username -->
-                                    <td>
-                                        <i class="bi bi-person-circle text-info me-1"></i>
-                                        <?php echo safeEcho($friend['username']); ?>
-                                    </td>
-                                    <!-- Status met kleur indicator -->
-                                    <td>
-                                        <?php
-                                        $statusClass = 'secondary';
-                                        if (strtolower($friend['status']) === 'online')
-                                            $statusClass = 'success';
-                                        if (strtolower($friend['status']) === 'gaming')
-                                            $statusClass = 'warning';
-                                        ?>
-                                        <span class="badge bg-<?php echo $statusClass; ?>">
-                                            <?php echo safeEcho($friend['status']); ?>
-                                        </span>
-                                    </td>
-                                    <!-- Note -->
-                                    <td><?php echo safeEcho($friend['note']); ?></td>
-                                    <!-- Actie knoppen -->
-                                    <td class="text-center">
-                                        <a href="edit_friend.php?id=<?php echo $friend['friend_id']; ?>"
-                                            class="btn btn-warning btn-sm me-1" title="Edit">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <a href="delete.php?type=friend&id=<?php echo $friend['friend_id']; ?>"
-                                            class="btn btn-danger btn-sm"
-                                            onclick="return confirm('Are you sure you want to remove this friend?');"
-                                            title="Delete">
-                                            <i class="bi bi-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- ##############################################################
-             SECTIE 2: FAVORIETE GAMES
-             ############################################################## -->
-        <section class="mb-5">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="h4 mb-0">
-                    <i class="bi bi-controller text-success me-2"></i>Favorite Games
-                </h2>
-                <a href="profile.php" class="btn btn-outline-success btn-sm">
-                    <i class="bi bi-plus-lg me-1"></i>Add Game
-                </a>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table table-dark table-hover table-bordered align-middle">
-                    <thead class="table-success">
-                        <tr>
-                            <th><i class="bi bi-joystick me-1"></i>Title</th>
-                            <th><i class="bi bi-info-circle me-1"></i>Description</th>
-                            <th><i class="bi bi-sticky me-1"></i>Note</th>
-                            <th class="text-center" style="width: 150px;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($favorites)): ?>
-                            <tr>
-                                <td colspan="4" class="text-center text-muted py-4">
-                                    <i class="bi bi-controller display-6 d-block mb-2"></i>
-                                    No favorite games yet. <a href="profile.php">Add your favorites!</a>
-                                </td>
-                            </tr>
-                        <?php else: ?>
-                            <?php foreach ($favorites as $game): ?>
-                                <tr>
-                                    <td>
-                                        <i class="bi bi-joystick text-success me-1"></i>
-                                        <strong><?php echo safeEcho($game['titel']); ?></strong>
-                                    </td>
-                                    <td><?php echo safeEcho($game['description']); ?></td>
-                                    <td><?php echo safeEcho($game['note']); ?></td>
-                                    <td class="text-center">
-                                        <a href="edit_favorite.php?id=<?php echo $game['game_id']; ?>"
-                                            class="btn btn-warning btn-sm me-1" title="Edit">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <a href="delete.php?type=favorite&id=<?php echo $game['game_id']; ?>"
-                                            class="btn btn-danger btn-sm"
-                                            onclick="return confirm('Remove this game from favorites?');" title="Delete">
-                                            <i class="bi bi-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- ##############################################################
-             SECTIE 3: SPEELSCHEMA'S
-             ##############################################################
-             Met sorteer knoppen voor datum
-             ############################################################## -->
-        <section class="mb-5">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="h4 mb-0">
-                    <i class="bi bi-calendar-week text-warning me-2"></i>Schedules
-                </h2>
-                <div class="d-flex gap-2 align-items-center">
-                    <!-- Sorteer knoppen -->
-                    <span class="text-muted small me-2">Sort:</span>
-                    <a href="?sort_schedules=date%20ASC"
-                        class="btn btn-outline-light btn-sm <?php echo $sortSchedules === 'date ASC' ? 'active' : ''; ?>">
-                        <i class="bi bi-sort-up"></i> Date ↑
-                    </a>
-                    <a href="?sort_schedules=date%20DESC"
-                        class="btn btn-outline-light btn-sm <?php echo $sortSchedules === 'date DESC' ? 'active' : ''; ?>">
-                        <i class="bi bi-sort-down"></i> Date ↓
-                    </a>
-                    <a href="add_schedule.php" class="btn btn-outline-warning btn-sm ms-2">
-                        <i class="bi bi-plus-lg me-1"></i>Add
+            <div class="card bg-secondary border-0 rounded-4 shadow">
+                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center pt-4 px-4">
+                    <h2 class="h5 mb-0 fw-bold">👥 Friends List</h2>
+                    <!-- Quick link to add friend -->
+                    <a href="add_friend.php" class="btn btn-sm btn-outline-light">
+                        + Add Friend
                     </a>
                 </div>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table table-dark table-hover table-bordered align-middle">
-                    <thead class="table-warning text-dark">
-                        <tr>
-                            <th><i class="bi bi-joystick me-1"></i>Game</th>
-                            <th><i class="bi bi-calendar me-1"></i>Date</th>
-                            <th><i class="bi bi-clock me-1"></i>Time</th>
-                            <th><i class="bi bi-people me-1"></i>Friends</th>
-                            <th><i class="bi bi-share me-1"></i>Shared With</th>
-                            <th class="text-center" style="width: 150px;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($schedules)): ?>
-                            <tr>
-                                <td colspan="6" class="text-center text-muted py-4">
-                                    <i class="bi bi-calendar-week display-6 d-block mb-2"></i>
-                                    No schedules planned. <a href="add_schedule.php">Create one!</a>
-                                </td>
-                            </tr>
-                        <?php else: ?>
-                            <?php foreach ($schedules as $schedule): ?>
-                                <tr>
-                                    <td><strong><?php echo safeEcho($schedule['game_titel']); ?></strong></td>
-                                    <td>
-                                        <i class="bi bi-calendar3 text-warning me-1"></i>
-                                        <?php echo safeEcho($schedule['date']); ?>
-                                    </td>
-                                    <td>
-                                        <i class="bi bi-clock text-warning me-1"></i>
-                                        <?php echo safeEcho($schedule['time']); ?>
-                                    </td>
-                                    <td><?php echo safeEcho($schedule['friends']); ?></td>
-                                    <td><?php echo safeEcho($schedule['shared_with']); ?></td>
-                                    <td class="text-center">
-                                        <a href="edit_schedule.php?id=<?php echo $schedule['schedule_id']; ?>"
-                                            class="btn btn-warning btn-sm me-1" title="Edit">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <a href="delete.php?type=schedule&id=<?php echo $schedule['schedule_id']; ?>"
-                                            class="btn btn-danger btn-sm" onclick="return confirm('Delete this schedule?');"
-                                            title="Delete">
-                                            <i class="bi bi-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- ##############################################################
-             SECTIE 4: EVENEMENTEN
-             ############################################################## -->
-        <section class="mb-5">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="h4 mb-0">
-                    <i class="bi bi-calendar-event text-danger me-2"></i>Events
-                </h2>
-                <div class="d-flex gap-2 align-items-center">
-                    <span class="text-muted small me-2">Sort:</span>
-                    <a href="?sort_events=date%20ASC"
-                        class="btn btn-outline-light btn-sm <?php echo $sortEvents === 'date ASC' ? 'active' : ''; ?>">
-                        <i class="bi bi-sort-up"></i> Date ↑
-                    </a>
-                    <a href="?sort_events=date%20DESC"
-                        class="btn btn-outline-light btn-sm <?php echo $sortEvents === 'date DESC' ? 'active' : ''; ?>">
-                        <i class="bi bi-sort-down"></i> Date ↓
-                    </a>
-                    <a href="add_event.php" class="btn btn-success btn-sm ms-2">
-                        <i class="bi bi-plus-lg me-1"></i>Add Event
-                    </a>
+                <div class="card-body px-4 pb-4">
+                    
+                    <!-- Check if user has friends -->
+                    <?php if (empty($friends)): ?>
+                        <!-- Empty state message -->
+                        <p class="text-muted text-center py-4">
+                            No friends yet. <a href="add_friend.php" class="text-info">Add your first friend!</a>
+                        </p>
+                    <?php else: ?>
+                        <!-- Friends table -->
+                        <!-- table-responsive: Horizontal scroll on small screens -->
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover mb-0">
+                                <!-- Table header -->
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Status</th>
+                                        <th>Note</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Loop through each friend -->
+                                    <?php foreach ($friends as $friend): ?>
+                                        <tr>
+                                            <!-- Friend username -->
+                                            <td class="fw-semibold">
+                                                <?php echo safeEcho($friend['username']); ?>
+                                            </td>
+                                            
+                                            <!-- Status with color coding -->
+                                            <td>
+                                                <!-- Status badge with dynamic color -->
+                                                <span class="badge <?php 
+                                                    // Choose badge color based on status
+                                                    $status = strtolower($friend['status']);
+                                                    if ($status === 'online') echo 'bg-success';
+                                                    elseif ($status === 'playing') echo 'bg-warning text-dark';
+                                                    else echo 'bg-secondary';
+                                                ?>">
+                                                    <?php echo safeEcho($friend['status']); ?>
+                                                </span>
+                                            </td>
+                                            
+                                            <!-- Note -->
+                                            <td class="text-muted">
+                                                <?php echo safeEcho($friend['note']); ?>
+                                            </td>
+                                            
+                                            <!-- Action buttons -->
+                                            <td class="text-end">
+                                                <!-- Edit button -->
+                                                <a href="edit_friend.php?id=<?php echo $friend['friend_id']; ?>" 
+                                                   class="btn btn-sm btn-outline-warning me-1">
+                                                    ✏️ Edit
+                                                </a>
+                                                
+                                                <!-- Delete button with confirmation -->
+                                                <!-- onclick: JavaScript confirm dialog -->
+                                                <a href="delete.php?type=friend&id=<?php echo $friend['friend_id']; ?>" 
+                                                   class="btn btn-sm btn-outline-danger"
+                                                   onclick="return confirm('Are you sure you want to remove this friend?');">
+                                                    🗑️ Remove
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php endif; ?>
+                    
                 </div>
             </div>
-
-            <div class="table-responsive">
-                <table class="table table-dark table-hover table-bordered align-middle">
-                    <thead class="table-danger">
-                        <tr>
-                            <th><i class="bi bi-trophy me-1"></i>Title</th>
-                            <th><i class="bi bi-calendar me-1"></i>Date</th>
-                            <th><i class="bi bi-clock me-1"></i>Time</th>
-                            <th><i class="bi bi-card-text me-1"></i>Description</th>
-                            <th><i class="bi bi-bell me-1"></i>Reminder</th>
-                            <th><i class="bi bi-link-45deg me-1"></i>Link</th>
-                            <th class="text-center" style="width: 150px;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($events)): ?>
-                            <tr>
-                                <td colspan="7" class="text-center text-muted py-4">
-                                    <i class="bi bi-calendar-event display-6 d-block mb-2"></i>
-                                    No events yet. <a href="add_event.php">Create your first event!</a>
-                                </td>
-                            </tr>
-                        <?php else: ?>
-                            <?php foreach ($events as $event): ?>
-                                <tr>
-                                    <td><strong><?php echo safeEcho($event['title']); ?></strong></td>
-                                    <td>
-                                        <i class="bi bi-calendar3 text-danger me-1"></i>
-                                        <?php echo safeEcho($event['date']); ?>
-                                    </td>
-                                    <td>
-                                        <i class="bi bi-clock text-danger me-1"></i>
-                                        <?php echo safeEcho($event['time']); ?>
-                                    </td>
-                                    <td>
-                                        <?php
-                                        $desc = $event['description'];
-                                        echo safeEcho(strlen($desc) > 50 ? substr($desc, 0, 50) . '...' : $desc);
-                                        ?>
-                                    </td>
-                                    <td>
-                                        <?php if ($event['reminder'] !== 'none'): ?>
-                                            <span class="badge bg-info">
-                                                <i class="bi bi-bell me-1"></i>
-                                                <?php echo safeEcho(str_replace('_', ' ', $event['reminder'])); ?>
-                                            </span>
-                                        <?php else: ?>
-                                            <span class="text-muted">None</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <?php if (!empty($event['external_link'])): ?>
-                                            <a href="<?php echo safeEcho($event['external_link']); ?>" target="_blank"
-                                                class="btn btn-outline-info btn-sm">
-                                                <i class="bi bi-box-arrow-up-right"></i>
-                                            </a>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td class="text-center">
-                                        <a href="edit_event.php?id=<?php echo $event['event_id']; ?>"
-                                            class="btn btn-warning btn-sm me-1" title="Edit">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <a href="delete.php?type=event&id=<?php echo $event['event_id']; ?>"
-                                            class="btn btn-danger btn-sm" onclick="return confirm('Delete this event?');"
-                                            title="Delete">
-                                            <i class="bi bi-trash"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
+        </section>
+        
+        
+        <!-- ================================================================
+             SECTION: FAVORITE GAMES
+             ================================================================ -->
+        <section class="mb-5">
+            <div class="card bg-secondary border-0 rounded-4 shadow">
+                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center pt-4 px-4">
+                    <h2 class="h5 mb-0 fw-bold">🎮 Favorite Games</h2>
+                    <a href="profile.php" class="btn btn-sm btn-outline-light">
+                        + Add Game
+                    </a>
+                </div>
+                <div class="card-body px-4 pb-4">
+                    
+                    <?php if (empty($favorites)): ?>
+                        <p class="text-muted text-center py-4">
+                            No favorite games yet. <a href="profile.php" class="text-info">Add your favorites!</a>
+                        </p>
+                    <?php else: ?>
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover mb-0">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th>Game Title</th>
+                                        <th>Description</th>
+                                        <th>My Note</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($favorites as $game): ?>
+                                        <tr>
+                                            <td class="fw-semibold">
+                                                <?php echo safeEcho($game['titel']); ?>
+                                            </td>
+                                            <td class="text-muted">
+                                                <?php echo safeEcho($game['description']); ?>
+                                            </td>
+                                            <td class="text-muted">
+                                                <?php echo safeEcho($game['note']); ?>
+                                            </td>
+                                            <td class="text-end">
+                                                <a href="edit_favorite.php?id=<?php echo $game['game_id']; ?>" 
+                                                   class="btn btn-sm btn-outline-warning me-1">
+                                                    ✏️ Edit
+                                                </a>
+                                                <a href="delete.php?type=favorite&id=<?php echo $game['game_id']; ?>" 
+                                                   class="btn btn-sm btn-outline-danger"
+                                                   onclick="return confirm('Remove this game from favorites?');">
+                                                    🗑️ Delete
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php endif; ?>
+                    
+                </div>
             </div>
         </section>
-
-        <!-- ##############################################################
-             SECTIE 5: KALENDER OVERZICHT
-             ##############################################################
-             Gecombineerde weergave van schedules + events als kaarten
-             ############################################################## -->
+        
+        
+        <!-- ================================================================
+             SECTION: SCHEDULES
+             ================================================================ -->
         <section class="mb-5">
-            <h2 class="h4 mb-4">
-                <i class="bi bi-calendar3 text-primary me-2"></i>Calendar Overview
-            </h2>
-
+            <div class="card bg-secondary border-0 rounded-4 shadow">
+                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center flex-wrap gap-2 pt-4 px-4">
+                    <h2 class="h5 mb-0 fw-bold">📅 Gaming Schedules</h2>
+                    
+                    <!-- Sorting buttons and add link -->
+                    <div class="d-flex gap-2 flex-wrap">
+                        <!-- Sort buttons -->
+                        <div class="btn-group btn-group-sm">
+                            <a href="?sort_schedules=date ASC" 
+                               class="btn <?php echo $sortSchedules == 'date ASC' ? 'btn-info' : 'btn-outline-info'; ?>">
+                                Date ↑
+                            </a>
+                            <a href="?sort_schedules=date DESC" 
+                               class="btn <?php echo $sortSchedules == 'date DESC' ? 'btn-info' : 'btn-outline-info'; ?>">
+                                Date ↓
+                            </a>
+                        </div>
+                        <a href="add_schedule.php" class="btn btn-sm btn-outline-light">
+                            + Add Schedule
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body px-4 pb-4">
+                    
+                    <?php if (empty($schedules)): ?>
+                        <p class="text-muted text-center py-4">
+                            No schedules yet. <a href="add_schedule.php" class="text-info">Create your first schedule!</a>
+                        </p>
+                    <?php else: ?>
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover mb-0">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th>Game</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Friends</th>
+                                        <th>Shared With</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($schedules as $schedule): ?>
+                                        <tr>
+                                            <td class="fw-semibold">
+                                                <?php echo safeEcho($schedule['game_titel']); ?>
+                                            </td>
+                                            <td>
+                                                <!-- Format date nicely -->
+                                                <?php echo date('D, M j', strtotime($schedule['date'])); ?>
+                                            </td>
+                                            <td>
+                                                <?php echo date('H:i', strtotime($schedule['time'])); ?>
+                                            </td>
+                                            <td class="text-muted">
+                                                <?php echo safeEcho($schedule['friends']); ?>
+                                            </td>
+                                            <td class="text-muted">
+                                                <?php echo safeEcho($schedule['shared_with']); ?>
+                                            </td>
+                                            <td class="text-end">
+                                                <a href="edit_schedule.php?id=<?php echo $schedule['schedule_id']; ?>" 
+                                                   class="btn btn-sm btn-outline-warning me-1">
+                                                    ✏️ Edit
+                                                </a>
+                                                <a href="delete.php?type=schedule&id=<?php echo $schedule['schedule_id']; ?>" 
+                                                   class="btn btn-sm btn-outline-danger"
+                                                   onclick="return confirm('Delete this schedule?');">
+                                                    🗑️ Delete
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php endif; ?>
+                    
+                </div>
+            </div>
+        </section>
+        
+        
+        <!-- ================================================================
+             SECTION: EVENTS
+             ================================================================ -->
+        <section class="mb-5">
+            <div class="card bg-secondary border-0 rounded-4 shadow">
+                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center flex-wrap gap-2 pt-4 px-4">
+                    <h2 class="h5 mb-0 fw-bold">🏆 Events & Tournaments</h2>
+                    
+                    <div class="d-flex gap-2 flex-wrap">
+                        <div class="btn-group btn-group-sm">
+                            <a href="?sort_events=date ASC" 
+                               class="btn <?php echo $sortEvents == 'date ASC' ? 'btn-info' : 'btn-outline-info'; ?>">
+                                Date ↑
+                            </a>
+                            <a href="?sort_events=date DESC" 
+                               class="btn <?php echo $sortEvents == 'date DESC' ? 'btn-info' : 'btn-outline-info'; ?>">
+                                Date ↓
+                            </a>
+                        </div>
+                        <a href="add_event.php" class="btn btn-sm btn-success">
+                            + Add Event
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body px-4 pb-4">
+                    
+                    <?php if (empty($events)): ?>
+                        <p class="text-muted text-center py-4">
+                            No events yet. <a href="add_event.php" class="text-info">Create your first event!</a>
+                        </p>
+                    <?php else: ?>
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover mb-0">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th>Event Title</th>
+                                        <th>Date & Time</th>
+                                        <th>Description</th>
+                                        <th>Reminder</th>
+                                        <th>Link</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($events as $event): ?>
+                                        <tr>
+                                            <td class="fw-semibold">
+                                                <?php echo safeEcho($event['title']); ?>
+                                            </td>
+                                            <td>
+                                                <?php echo date('D, M j', strtotime($event['date'])); ?>
+                                                at <?php echo date('H:i', strtotime($event['time'])); ?>
+                                            </td>
+                                            <td class="text-muted" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                <?php echo safeEcho($event['description']); ?>
+                                            </td>
+                                            <td>
+                                                <!-- Reminder badge -->
+                                                <span class="badge <?php echo $event['reminder'] == 'none' ? 'bg-secondary' : 'bg-info'; ?>">
+                                                    <?php 
+                                                    // Display friendly reminder text
+                                                    switch($event['reminder']) {
+                                                        case '1_hour': echo '1 Hour Before'; break;
+                                                        case '1_day': echo '1 Day Before'; break;
+                                                        default: echo 'None';
+                                                    }
+                                                    ?>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <?php if (!empty($event['external_link'])): ?>
+                                                    <a href="<?php echo safeEcho($event['external_link']); ?>" 
+                                                       target="_blank" 
+                                                       class="btn btn-sm btn-outline-info">
+                                                        🔗 View
+                                                    </a>
+                                                <?php else: ?>
+                                                    <span class="text-muted">-</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td class="text-end">
+                                                <a href="edit_event.php?id=<?php echo $event['event_id']; ?>" 
+                                                   class="btn btn-sm btn-outline-warning me-1">
+                                                    ✏️ Edit
+                                                </a>
+                                                <a href="delete.php?type=event&id=<?php echo $event['event_id']; ?>" 
+                                                   class="btn btn-sm btn-outline-danger"
+                                                   onclick="return confirm('Delete this event?');">
+                                                    🗑️ Delete
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php endif; ?>
+                    
+                </div>
+            </div>
+        </section>
+        
+        
+        <!-- ================================================================
+             SECTION: CALENDAR OVERVIEW (Cards View)
+             ================================================================ -->
+        <section class="mb-5">
+            <h2 class="h5 fw-bold mb-4">📆 Calendar Overview</h2>
+            
             <?php if (empty($calendarItems)): ?>
-                <div class="text-center text-muted py-5">
-                    <i class="bi bi-calendar3 display-3 d-block mb-3"></i>
-                    <p>Your calendar is empty. Add schedules or events to see them here!</p>
+                <div class="card bg-secondary border-0 rounded-4 shadow">
+                    <div class="card-body text-center py-5">
+                        <p class="text-muted mb-0">
+                            Your calendar is empty. Add schedules or events to see them here!
+                        </p>
+                    </div>
                 </div>
             <?php else: ?>
-                <!-- Grid van kaarten -->
-                <div class="row">
+                <!-- Grid of calendar cards -->
+                <div class="row g-4">
                     <?php foreach ($calendarItems as $item): ?>
-                        <!-- ================================================
-                             CALENDAR ITEM CARD
-                             ================================================
-                             col-md-6 col-lg-4: 3 kolommen op large, 2 op medium
-                             mb-4: margin bottom
-                             ================================================ -->
-                        <div class="col-md-6 col-lg-4 mb-4">
-                            <div class="card bg-secondary border-0 h-100 shadow">
-                                <div class="card-body">
-                                    <!-- Titel -->
-                                    <h5 class="card-title">
-                                        <?php if (isset($item['game_titel'])): ?>
-                                            <i class="bi bi-joystick text-warning me-2"></i>
-                                        <?php else: ?>
-                                            <i class="bi bi-trophy text-danger me-2"></i>
-                                        <?php endif; ?>
+                        <!-- Each card is 4 columns wide on medium screens (3 per row) -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card bg-dark border border-secondary rounded-4 h-100 hover-shadow">
+                                <div class="card-body p-4">
+                                    
+                                    <!-- Title (event title or game title) -->
+                                    <h5 class="card-title fw-bold text-white mb-2">
                                         <?php echo safeEcho($item['title'] ?? $item['game_titel']); ?>
                                     </h5>
-
-                                    <!-- Datum en tijd -->
-                                    <p class="card-text">
-                                        <i class="bi bi-calendar3 me-1"></i>
-                                        <?php echo safeEcho($item['date']); ?>
-                                        <i class="bi bi-clock ms-2 me-1"></i>
-                                        <?php echo safeEcho($item['time']); ?>
+                                    
+                                    <!-- Date and time -->
+                                    <p class="text-info mb-3">
+                                        📅 <?php echo date('l, F j, Y', strtotime($item['date'])); ?>
+                                        <br>
+                                        ⏰ <?php echo date('H:i', strtotime($item['time'])); ?>
                                     </p>
-
-                                    <!-- Beschrijving (alleen voor events) -->
-                                    <?php if (isset($item['description']) && !empty($item['description'])): ?>
-                                        <p class="card-text small text-muted">
+                                    
+                                    <!-- Description (if exists) -->
+                                    <?php if (!empty($item['description'])): ?>
+                                        <p class="text-muted small mb-2">
                                             <?php echo safeEcho(substr($item['description'], 0, 100)); ?>
+                                            <?php if (strlen($item['description']) > 100) echo '...'; ?>
                                         </p>
                                     <?php endif; ?>
-
-                                    <!-- Reminder badge -->
-                                    <?php if (isset($item['reminder']) && $item['reminder'] !== 'none'): ?>
-                                        <span class="badge bg-info">
-                                            <i class="bi bi-bell me-1"></i>Reminder set
-                                        </span>
-                                    <?php endif; ?>
-
-                                    <!-- Shared with -->
-                                    <?php if (isset($item['shared_with']) && !empty($item['shared_with'])): ?>
-                                        <p class="card-text small mt-2">
-                                            <i class="bi bi-share me-1"></i>
-                                            Shared: <?php echo safeEcho($item['shared_with']); ?>
+                                    
+                                    <!-- Reminder (if exists) -->
+                                    <?php if (!empty($item['reminder']) && $item['reminder'] != 'none'): ?>
+                                        <p class="mb-2">
+                                            <span class="badge bg-warning text-dark">
+                                                ⏰ Reminder: <?php echo $item['reminder'] == '1_hour' ? '1 Hour' : '1 Day'; ?> before
+                                            </span>
                                         </p>
                                     <?php endif; ?>
-                                </div>
-
-                                <!-- External link footer -->
-                                <?php if (isset($item['external_link']) && !empty($item['external_link'])): ?>
-                                    <div class="card-footer bg-transparent border-secondary">
-                                        <a href="<?php echo safeEcho($item['external_link']); ?>" target="_blank"
-                                            class="btn btn-outline-info btn-sm w-100">
-                                            <i class="bi bi-box-arrow-up-right me-1"></i>Open Link
+                                    
+                                    <!-- External link (if exists) -->
+                                    <?php if (!empty($item['external_link'])): ?>
+                                        <a href="<?php echo safeEcho($item['external_link']); ?>" 
+                                           target="_blank" 
+                                           class="btn btn-sm btn-outline-info mt-2">
+                                            🔗 Open Link
                                         </a>
-                                    </div>
-                                <?php endif; ?>
+                                    <?php endif; ?>
+                                    
+                                    <!-- Shared with (if exists) -->
+                                    <?php if (!empty($item['shared_with'])): ?>
+                                        <p class="text-muted small mt-2 mb-0">
+                                            👥 Shared: <?php echo safeEcho($item['shared_with']); ?>
+                                        </p>
+                                    <?php endif; ?>
+                                    
+                                </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
             <?php endif; ?>
         </section>
-
+        
     </main>
-
-    <!-- ==================================================================
-         FOOTER INVOEGEN
-         ================================================================== -->
+    
+    
+    <!-- Include footer -->
     <?php include 'footer.php'; ?>
-
-    <!-- ==================================================================
-         JAVASCRIPT BESTANDEN
-         ================================================================== -->
+    
+    
+    <!-- JavaScript files -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="script.js"></script>
-
-    <!-- ==================================================================
+    
+    <!-- ====================================================================
          REMINDER POP-UPS
-         ==================================================================
-         We geven de reminders array door aan JavaScript om pop-ups te tonen
-         json_encode() zet PHP array om naar JavaScript formaat
-         ================================================================== -->
+         ==================================================================== -->
+    <!-- This script shows alerts for events that need reminders -->
     <script>
-        // Reminder pop-ups vanuit PHP data
+        // Get reminders from PHP (converted to JavaScript array)
         const reminders = <?php echo json_encode($reminders); ?>;
-
-        // Toon pop-up voor elke reminder
+        
+        // Show alert for each reminder
         reminders.forEach(reminder => {
-            // Gebruik een mooiere notificatie in plaats van alert
-            if (Notification.permission === 'granted') {
-                new Notification('GamePlan Reminder', {
-                    body: `${reminder['title']} at ${reminder['time']}`,
-                    icon: '/favicon.ico'
-                });
-            } else {
-                alert(`🎮 Reminder: ${reminder['title']} at ${reminder['time']}`);
-            }
+            // Alert shows event title and time
+            alert(`🔔 Reminder: "${reminder.title}" starts at ${reminder.time}!`);
         });
-
-        // Vraag toestemming voor notificaties
-        if ('Notification' in window && Notification.permission === 'default') {
-            Notification.requestPermission();
-        }
     </script>
+    
 </body>
-
 </html>
+
+<?php
+// ============================================================================
+// HANDLE LOGOUT
+// ============================================================================
+// If ?logout=1 is in URL, log the user out
+// This is triggered by clicking the Logout link in the header
+
+if (isset($_GET['logout'])) {
+    logout(); // Destroys session and redirects to login
+}
+?>

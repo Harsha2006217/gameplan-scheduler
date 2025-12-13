@@ -1,544 +1,399 @@
 -- ============================================================================
--- database.sql - Database Schema Script
+-- DATABASE.SQL - Complete Database Schema for GamePlan Scheduler
 -- ============================================================================
--- 
--- @author      Harsha Kanaparthi
--- @student     2195344
--- @date        30-09-2025
--- @version     1.0
--- @project     GamePlan Scheduler
--- 
+-- Author       : Harsha Kanaparthi (Student Number: 2195344)
+-- Date         : 30-09-2025
+-- Version      : 1.0
+-- Project      : GamePlan Scheduler - MBO-4 Software Development Examination
 -- ============================================================================
--- BESCHRIJVING / DESCRIPTION:
--- ============================================================================
--- Dit SQL script maakt de volledige database structuur aan voor GamePlan
--- Scheduler. Het bevat:
--- 
--- 1. DATABASE AANMAKEN - gameplan_db met UTF-8 ondersteuning
--- 2. TABELLEN - Users, Games, UserGames, Friends, Schedules, Events
--- 3. RELATIES - Foreign keys tussen tabellen
--- 4. INDEXEN - Voor snelle queries
--- 5. VOORBEELD DATA - Enkele games om mee te beginnen
--- 
--- This SQL script creates the complete database structure for GamePlan
--- Scheduler including all tables, relationships, and indexes.
--- 
--- ============================================================================
--- INSTRUCTIES VOOR INSTALLATIE / INSTALLATION INSTRUCTIONS:
--- ============================================================================
--- 1. Start XAMPP (Apache + MySQL)
--- 2. Open phpMyAdmin: http://localhost/phpmyadmin
--- 3. Klik op "Import" tabblad
--- 4. Selecteer dit bestand (database.sql)
--- 5. Klik "Go" om uit te voeren
--- 
--- Of gebruik MySQL command line:
--- mysql -u root -p < database.sql
+-- DESCRIPTION:
+-- This file creates the complete database structure for the GamePlan Scheduler
+-- application. It contains 6 interconnected tables that store all user data,
+-- games, friends, schedules, and events.
+--
+-- TABLES OVERVIEW:
+-- 1. Users       - Stores user accounts (username, email, password)
+-- 2. Games       - Stores game titles and descriptions
+-- 3. UserGames   - Links users to their favorite games (many-to-many)
+-- 4. Friends     - Stores friend relationships between users
+-- 5. Schedules   - Stores gaming schedules with dates and times
+-- 6. Events      - Stores gaming events like tournaments
+--
+-- SECURITY FEATURES:
+-- - Passwords are NOT stored here (hashed in PHP with bcrypt)
+-- - Soft delete via deleted_at column (data recovery possible)
+-- - Foreign keys ensure data integrity
+-- - Indexes for faster queries
+--
+-- HOW TO USE:
+-- 1. Open phpMyAdmin in your browser (http://localhost/phpmyadmin)
+-- 2. Click "Import" tab
+-- 3. Select this file (database.sql)
+-- 4. Click "Go" to execute
 -- ============================================================================
 
+
 -- ============================================================================
--- DATABASE AANMAKEN / CREATE DATABASE
+-- STEP 1: CREATE THE DATABASE
 -- ============================================================================
--- CREATE DATABASE IF NOT EXISTS - Maakt alleen aan als deze nog niet bestaat
--- CHARACTER SET utf8mb4 - Ondersteunt alle Unicode karakters (incl. emoji's)
--- COLLATE utf8mb4_unicode_ci - Case-insensitive vergelijking (A = a)
--- ============================================================================
+-- This command creates a new database called "gameplan_db"
+-- IF NOT EXISTS = Only create if it doesn't already exist (prevents errors)
+-- CHARACTER SET utf8mb4 = Supports all characters including emojis
+-- COLLATE utf8mb4_unicode_ci = Case-insensitive sorting and comparison
+
 CREATE DATABASE IF NOT EXISTS gameplan_db 
     CHARACTER SET utf8mb4 
     COLLATE utf8mb4_unicode_ci;
 
--- ============================================================================
--- SELECTEER DATABASE / USE DATABASE
--- ============================================================================
--- Vanaf nu werken alle commando's op gameplan_db
--- ============================================================================
+-- Switch to use the gameplan_db database for all following commands
 USE gameplan_db;
 
--- ############################################################################
--- ##                                                                        ##
--- ##                         TABEL 1: USERS                                 ##
--- ##                         (Gebruikers Tabel)                             ##
--- ##                                                                        ##
--- ############################################################################
--- 
--- Deze tabel slaat alle geregistreerde gebruikers op.
--- Elke gebruiker heeft een uniek ID, gebruikersnaam, email, en wachtwoord hash.
--- 
--- KOLOMMEN UITLEG:
--- - user_id: Unieke identificatie (automatisch opgehoogd)
--- - username: Weergavenaam van de gebruiker
--- - email: E-mail adres (moet uniek zijn voor login)
--- - password_hash: Bcrypt gehashte wachtwoord (NOOIT plain text!)
--- - last_activity: Wanneer gebruiker laatst actief was
--- - deleted_at: Voor "soft delete" - gebruiker niet echt verwijderen
--- 
--- ############################################################################
+
+-- ============================================================================
+-- STEP 2: CREATE USERS TABLE
+-- ============================================================================
+-- This table stores all registered user accounts.
+-- Each user has a unique ID, username, email, and hashed password.
+--
+-- COLUMNS EXPLAINED:
+-- user_id       = Unique number for each user (auto-increments: 1, 2, 3...)
+-- username      = The user's display name (max 50 characters)
+-- email         = User's email address (must be unique, max 100 characters)
+-- password_hash = Bcrypt hashed password (never store plain text passwords!)
+-- last_activity = Timestamp of last user activity (for session management)
+-- deleted_at    = NULL if active, timestamp if soft-deleted
 
 CREATE TABLE IF NOT EXISTS Users (
-    -- ========================================================================
-    -- PRIMARY KEY: user_id
-    -- ========================================================================
-    -- INT = geheel getal (max 2.147.483.647 gebruikers mogelijk)
-    -- AUTO_INCREMENT = database verhoogt automatisch bij elke nieuwe gebruiker
-    -- PRIMARY KEY = unieke identifier, elke rij heeft een andere waarde
-    -- ========================================================================
+    -- PRIMARY KEY: Unique identifier for each user
+    -- AUTO_INCREMENT: Automatically assigns next number (1, 2, 3, etc.)
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     
-    -- ========================================================================
-    -- username - De weergavenaam
-    -- ========================================================================
-    -- VARCHAR(50) = variabele tekst, maximaal 50 karakters
-    -- NOT NULL = verplicht veld, mag niet leeg zijn
-    -- ========================================================================
+    -- Username: The name displayed in the app
+    -- NOT NULL: This field is required, cannot be empty
+    -- VARCHAR(50): Variable length text, maximum 50 characters
     username VARCHAR(50) NOT NULL,
     
-    -- ========================================================================
-    -- email - Het e-mail adres
-    -- ========================================================================
-    -- VARCHAR(100) = maximaal 100 karakters voor e-mail
-    -- UNIQUE = geen twee gebruikers kunnen hetzelfde email hebben
-    -- NOT NULL = verplicht veld
-    -- ========================================================================
+    -- Email: Used for login, must be unique per user
+    -- UNIQUE: No two users can have the same email
+    -- This prevents duplicate accounts
     email VARCHAR(100) UNIQUE NOT NULL,
     
-    -- ========================================================================
-    -- password_hash - Het gehashte wachtwoord
-    -- ========================================================================
-    -- VARCHAR(255) = ruimte voor bcrypt hash (60 karakters) + marge
-    -- NOT NULL = verplicht (iedereen moet een wachtwoord hebben)
-    -- 
-    -- BELANGRIJK: Dit is NIET het echte wachtwoord!
-    -- Het is een cryptografische hash die niet omgekeerd kan worden.
-    -- password_hash('geheim123', PASSWORD_BCRYPT) geeft bijv:
-    -- $2y$10$xyz...abc... (60 karakters)
-    -- ========================================================================
+    -- Password Hash: Secure hashed password using bcrypt
+    -- VARCHAR(255): Bcrypt hashes are about 60 characters, we use 255 for safety
+    -- NEVER store plain text passwords - always hash them!
     password_hash VARCHAR(255) NOT NULL,
     
-    -- ========================================================================
-    -- last_activity - Laatste activiteit tijdstip
-    -- ========================================================================
-    -- TIMESTAMP = datum en tijd
-    -- DEFAULT CURRENT_TIMESTAMP = standaard is nu
-    -- ON UPDATE CURRENT_TIMESTAMP = update automatisch bij wijziging
-    -- ========================================================================
+    -- Last Activity: Tracks when user was last active
+    -- Used for session timeout (30 minutes of inactivity = logout)
+    -- DEFAULT CURRENT_TIMESTAMP: Sets to current time when row is created
+    -- ON UPDATE CURRENT_TIMESTAMP: Updates automatically when row changes
     last_activity TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
-    -- ========================================================================
-    -- deleted_at - Soft delete tijdstip
-    -- ========================================================================
-    -- TIMESTAMP NULL = kan leeg zijn (NULL = niet verwijderd)
-    -- Als dit een datum heeft, is de gebruiker "verwijderd"
-    -- We verwijderen nooit echt, we markeren alleen als verwijderd
-    -- ========================================================================
+    -- Deleted At: Soft delete marker
+    -- NULL = user is active
+    -- Timestamp = user was deleted at that time
+    -- Soft delete means data is kept but marked as deleted (can be recovered)
     deleted_at TIMESTAMP NULL
     
--- ============================================================================
--- ENGINE=InnoDB - Database engine met transactie ondersteuning
--- DEFAULT CHARSET=utf8mb4 - Unicode ondersteuning
--- ============================================================================
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- ENGINE=InnoDB: Supports foreign keys and transactions (safer than MyISAM)
+-- DEFAULT CHARSET=utf8mb4: Full Unicode support including emojis
 
 
--- ############################################################################
--- ##                                                                        ##
--- ##                         TABEL 2: GAMES                                 ##
--- ##                         (Spellen Tabel)                                ##
--- ##                                                                        ##
--- ############################################################################
--- 
--- Deze tabel slaat alle beschikbare games op.
--- Gebruikers kunnen games toevoegen aan hun favorieten.
--- Nieuwe games worden automatisch aangemaakt als een gebruiker een
--- game opgeeft die nog niet bestaat.
--- 
--- ############################################################################
+-- ============================================================================
+-- STEP 3: CREATE GAMES TABLE
+-- ============================================================================
+-- This table stores all games that users can add as favorites.
+-- Games can be shared between multiple users.
+--
+-- COLUMNS EXPLAINED:
+-- game_id     = Unique identifier for each game
+-- titel       = The game's name (e.g., "Fortnite", "Minecraft")
+-- description = Optional description of the game
+-- deleted_at  = Soft delete marker
 
 CREATE TABLE IF NOT EXISTS Games (
-    -- ========================================================================
-    -- PRIMARY KEY: game_id
-    -- ========================================================================
+    -- Primary Key: Unique ID for each game
     game_id INT AUTO_INCREMENT PRIMARY KEY,
     
-    -- ========================================================================
-    -- titel - De naam van de game
-    -- ========================================================================
-    -- "titel" is Nederlands voor "title"
-    -- VARCHAR(100) = maximaal 100 karakters
-    -- ========================================================================
+    -- Title: The name of the game
+    -- VARCHAR(100): Maximum 100 characters for game title
+    -- NOT NULL: Game must have a title
     titel VARCHAR(100) NOT NULL,
     
-    -- ========================================================================
-    -- description - Beschrijving van de game
-    -- ========================================================================
-    -- TEXT = langere tekst (tot 65.535 karakters)
-    -- Geen NOT NULL = beschrijving is optioneel
-    -- ========================================================================
+    -- Description: Optional text about the game
+    -- TEXT: Can hold much longer text than VARCHAR
+    -- Can be NULL (not required)
     description TEXT,
     
-    -- ========================================================================
-    -- deleted_at - Soft delete
-    -- ========================================================================
+    -- Soft delete marker (same as Users table)
     deleted_at TIMESTAMP NULL
     
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
--- ############################################################################
--- ##                                                                        ##
--- ##                       TABEL 3: USERGAMES                               ##
--- ##                    (Koppeltabel Gebruikers-Games)                      ##
--- ##                                                                        ##
--- ############################################################################
+-- ============================================================================
+-- STEP 4: CREATE USERGAMES TABLE (Favorites)
+-- ============================================================================
+-- This is a JUNCTION TABLE (also called bridge table or link table).
+-- It connects Users to Games in a many-to-many relationship.
 -- 
--- Dit is een KOPPELTABEL (ook wel "junction table" of "many-to-many table").
--- 
--- PROBLEEM: Een gebruiker kan MEERDERE favoriete games hebben, en een game
---           kan favoriet zijn van MEERDERE gebruikers.
---           Dit is een "many-to-many" (veel-op-veel) relatie.
--- 
--- OPLOSSING: We maken een koppeltabel met:
---            - user_id (verwijst naar Users)
---            - game_id (verwijst naar Games)
---            - note (persoonlijke notitie)
--- 
--- Elke rij in deze tabel betekent: "Gebruiker X heeft Game Y als favoriet"
--- 
--- ############################################################################
+-- MANY-TO-MANY means:
+-- - One user can have MANY favorite games
+-- - One game can be favorited by MANY users
+--
+-- COLUMNS EXPLAINED:
+-- user_id = References which user owns this favorite
+-- game_id = References which game is favorited
+-- note    = Optional personal note about the game
 
 CREATE TABLE IF NOT EXISTS UserGames (
-    -- ========================================================================
-    -- user_id - Verwijzing naar de gebruiker
-    -- ========================================================================
-    -- Dit is een FOREIGN KEY (zie onder)
-    -- ========================================================================
+    -- Foreign Key to Users table
+    -- Links this record to a specific user
     user_id INT NOT NULL,
     
-    -- ========================================================================
-    -- game_id - Verwijzing naar de game
-    -- ========================================================================
+    -- Foreign Key to Games table
+    -- Links this record to a specific game
     game_id INT NOT NULL,
     
-    -- ========================================================================
-    -- note - Persoonlijke notitie over de game
-    -- ========================================================================
-    -- TEXT voor langere notities
-    -- Kan leeg zijn (geen NOT NULL)
-    -- ========================================================================
+    -- Personal note about the game (optional)
+    -- User can write why they like this game
     note TEXT,
     
-    -- ========================================================================
-    -- SAMENGESTELDE PRIMARY KEY
-    -- ========================================================================
-    -- De combinatie (user_id, game_id) is de primary key
-    -- Dit betekent:
-    -- - Gebruiker 1 kan Game 5 maar ÉÉN keer als favoriet hebben
-    -- - Gebruiker 1 kan WEL Game 5 én Game 6 hebben
-    -- - Gebruiker 2 kan OOK Game 5 hebben
-    -- ========================================================================
+    -- COMPOSITE PRIMARY KEY: Combination of user_id AND game_id must be unique
+    -- This prevents the same user from adding the same game twice
     PRIMARY KEY (user_id, game_id),
     
-    -- ========================================================================
-    -- FOREIGN KEY naar Users
-    -- ========================================================================
-    -- FOREIGN KEY = deze kolom moet verwijzen naar een bestaande rij
-    -- REFERENCES Users(user_id) = moet bestaan in Users tabel
-    -- ON DELETE CASCADE = als gebruiker verwijderd wordt, verwijder ook
-    --                     al hun favorieten (automatisch opschonen)
-    -- ========================================================================
+    -- FOREIGN KEY to Users: Ensures user_id exists in Users table
+    -- ON DELETE CASCADE: If user is deleted, their favorites are also deleted
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
     
-    -- ========================================================================
-    -- FOREIGN KEY naar Games
-    -- ========================================================================
+    -- FOREIGN KEY to Games: Ensures game_id exists in Games table
+    -- ON DELETE CASCADE: If game is deleted, all favorites for that game are deleted
     FOREIGN KEY (game_id) REFERENCES Games(game_id) ON DELETE CASCADE
     
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
--- ############################################################################
--- ##                                                                        ##
--- ##                        TABEL 4: FRIENDS                                ##
--- ##                        (Vrienden Tabel)                                ##
--- ##                                                                        ##
--- ############################################################################
--- 
--- Deze tabel slaat de vrienden van elke gebruiker op.
--- We slaan de vriend op als USERNAME (tekst), niet als user_id.
--- 
--- WAAROM USERNAME IN PLAATS VAN USER_ID?
--- - Vrienden hoeven geen account te hebben in onze app
--- - Je kunt gaming vrienden toevoegen die de app niet gebruiken
--- - Dit maakt de app flexibeler
--- 
--- ############################################################################
+-- ============================================================================
+-- STEP 5: CREATE FRIENDS TABLE
+-- ============================================================================
+-- This table stores friend relationships between users.
+-- Users can add friends by username, with optional notes and status.
+--
+-- NOTE: friend_username is stored as text, not a foreign key.
+-- This allows adding friends even if they haven't registered yet.
+--
+-- COLUMNS EXPLAINED:
+-- friend_id        = Unique ID for this friend relationship
+-- user_id          = The user who added the friend
+-- friend_username  = Username of the friend
+-- note             = Optional note about the friend
+-- status           = Friend's current status (Online, Offline, Playing, etc.)
+-- deleted_at       = Soft delete marker
 
 CREATE TABLE IF NOT EXISTS Friends (
-    -- ========================================================================
-    -- PRIMARY KEY: friend_id
-    -- ========================================================================
+    -- Primary Key: Unique ID for each friend relationship
     friend_id INT AUTO_INCREMENT PRIMARY KEY,
     
-    -- ========================================================================
-    -- user_id - De eigenaar van deze vriendenlijst
-    -- ========================================================================
+    -- Foreign Key to Users: Who owns this friend entry
     user_id INT NOT NULL,
     
-    -- ========================================================================
-    -- friend_username - De naam van de vriend
-    -- ========================================================================
-    -- VARCHAR(50) = maximaal 50 karakters
-    -- Dit is de gamer tag / gebruikersnaam van de vriend
-    -- ========================================================================
+    -- Friend's Username: Stored as text (not a foreign key)
+    -- VARCHAR(50): Maximum 50 characters, same as username field
+    -- NOT NULL: Must provide a username
     friend_username VARCHAR(50) NOT NULL,
     
-    -- ========================================================================
-    -- note - Notitie over de vriend
-    -- ========================================================================
-    -- Bijv: "Kent via Fortnite toernooi" of "Speelt meestal 's avonds"
-    -- ========================================================================
+    -- Note: Optional personal note about this friend
+    -- Example: "Met in Fortnite tournament", "School friend"
     note TEXT,
     
-    -- ========================================================================
-    -- status - De status van de vriend
-    -- ========================================================================
-    -- Bijv: "Online", "Offline", "Gaming", "AFK"
-    -- DEFAULT 'Offline' = standaard waarde
-    -- ========================================================================
+    -- Status: Current status of the friend
+    -- DEFAULT 'Offline': If not specified, friend is shown as offline
     status VARCHAR(50) DEFAULT 'Offline',
     
-    -- ========================================================================
-    -- deleted_at - Soft delete
-    -- ========================================================================
+    -- Soft delete marker
     deleted_at TIMESTAMP NULL,
     
-    -- ========================================================================
-    -- FOREIGN KEY naar Users
-    -- ========================================================================
+    -- FOREIGN KEY: Links to Users table
+    -- ON DELETE CASCADE: If user deletes account, their friends list is also deleted
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
     
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
--- ############################################################################
--- ##                                                                        ##
--- ##                       TABEL 5: SCHEDULES                               ##
--- ##                       (Speelschema's Tabel)                            ##
--- ##                                                                        ##
--- ############################################################################
--- 
--- Deze tabel slaat speelschema's op - wanneer je van plan bent om te spelen.
--- 
--- RELATIES:
--- - Elke schedule hoort bij één gebruiker (user_id)
--- - Elke schedule is voor één game (game_id)
--- - Friends en shared_with zijn TEXT velden met komma-gescheiden namen
--- 
--- ############################################################################
+-- ============================================================================
+-- STEP 6: CREATE SCHEDULES TABLE
+-- ============================================================================
+-- This table stores gaming schedules - when users plan to play games.
+-- Users can share schedules with friends.
+--
+-- COLUMNS EXPLAINED:
+-- schedule_id = Unique ID for each schedule
+-- user_id     = Who created this schedule
+-- game_id     = Which game will be played
+-- date        = The date of the gaming session
+-- time        = The time of the gaming session
+-- friends     = Comma-separated list of friends joining
+-- shared_with = Comma-separated list of users who can see this schedule
+-- deleted_at  = Soft delete marker
 
 CREATE TABLE IF NOT EXISTS Schedules (
-    -- ========================================================================
-    -- PRIMARY KEY: schedule_id
-    -- ========================================================================
+    -- Primary Key: Unique ID for each schedule
     schedule_id INT AUTO_INCREMENT PRIMARY KEY,
     
-    -- ========================================================================
-    -- user_id - Wie heeft dit schema gemaakt
-    -- ========================================================================
+    -- Foreign Key to Users: Who created this schedule
     user_id INT NOT NULL,
     
-    -- ========================================================================
-    -- game_id - Welke game
-    -- ========================================================================
+    -- Foreign Key to Games: Which game will be played
     game_id INT NOT NULL,
     
-    -- ========================================================================
-    -- date - De datum van de gaming sessie
-    -- ========================================================================
-    -- DATE format: YYYY-MM-DD (bijv: 2025-10-15)
-    -- ========================================================================
+    -- Date: When the gaming session is planned
+    -- DATE format: YYYY-MM-DD (e.g., 2025-09-30)
+    -- NOT NULL: Date is required
     date DATE NOT NULL,
     
-    -- ========================================================================
-    -- time - De starttijd
-    -- ========================================================================
-    -- TIME format: HH:MM:SS (bijv: 20:00:00)
-    -- ========================================================================
+    -- Time: At what time the session starts
+    -- TIME format: HH:MM:SS (e.g., 20:00:00)
+    -- NOT NULL: Time is required
     time TIME NOT NULL,
     
-    -- ========================================================================
-    -- friends - Met wie je gaat spelen
-    -- ========================================================================
-    -- TEXT met komma-gescheiden namen, bijv: "Jan, Piet, Klaas"
-    -- Kan leeg zijn als je solo speelt
-    -- ========================================================================
+    -- Friends: Comma-separated usernames of friends joining
+    -- TEXT: Can hold long list of usernames
+    -- Example: "Player1, Player2, Player3"
     friends TEXT,
     
-    -- ========================================================================
-    -- shared_with - Met wie je dit schema deelt
-    -- ========================================================================
-    -- TEXT met komma-gescheiden namen
-    -- Dit zijn mensen die dit schema kunnen zien
-    -- ========================================================================
+    -- Shared With: Comma-separated usernames who can see this schedule
+    -- Used for privacy - only shared users can view
     shared_with TEXT,
     
-    -- ========================================================================
-    -- deleted_at - Soft delete
-    -- ========================================================================
+    -- Soft delete marker
     deleted_at TIMESTAMP NULL,
     
-    -- ========================================================================
-    -- FOREIGN KEYS
-    -- ========================================================================
+    -- FOREIGN KEYS with CASCADE delete
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (game_id) REFERENCES Games(game_id) ON DELETE CASCADE
     
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
--- ############################################################################
--- ##                                                                        ##
--- ##                        TABEL 6: EVENTS                                 ##
--- ##                       (Evenementen Tabel)                              ##
--- ##                                                                        ##
--- ############################################################################
--- 
--- Deze tabel slaat evenementen op zoals toernooien, game releases, etc.
--- 
--- VERSCHIL MET SCHEDULES:
--- - Schedule = dagelijkse/regelmatige gaming sessies
--- - Event = speciale eenmalige gebeurtenissen (toernooi, release, etc.)
--- 
--- EXTRA FEATURES:
--- - reminder: kan 1 uur of 1 dag van tevoren herinneren
--- - external_link: link naar bijv. toernooi registratie pagina
--- 
--- ############################################################################
+-- ============================================================================
+-- STEP 7: CREATE EVENTS TABLE
+-- ============================================================================
+-- This table stores gaming events like tournaments, streams, or special occasions.
+-- Events can have reminders and external links.
+--
+-- COLUMNS EXPLAINED:
+-- event_id      = Unique ID for each event
+-- user_id       = Who created this event
+-- title         = Name of the event (e.g., "Fortnite Tournament")
+-- date          = Date of the event
+-- time          = Time of the event
+-- description   = Details about the event
+-- reminder      = When to remind user (none, 1_hour, 1_day)
+-- external_link = URL to event page, stream, etc.
+-- shared_with   = Users who can see this event
+-- deleted_at    = Soft delete marker
 
 CREATE TABLE IF NOT EXISTS Events (
-    -- ========================================================================
-    -- PRIMARY KEY: event_id
-    -- ========================================================================
+    -- Primary Key: Unique ID for each event
     event_id INT AUTO_INCREMENT PRIMARY KEY,
     
-    -- ========================================================================
-    -- user_id - Wie heeft dit event gemaakt
-    -- ========================================================================
+    -- Foreign Key to Users: Who created this event
     user_id INT NOT NULL,
     
-    -- ========================================================================
-    -- title - Titel van het evenement
-    -- ========================================================================
-    -- Bijv: "Fortnite Toernooi", "Minecraft Server Launch", etc.
-    -- ========================================================================
+    -- Title: Name of the event
+    -- VARCHAR(100): Maximum 100 characters
+    -- NOT NULL: Every event needs a title
     title VARCHAR(100) NOT NULL,
     
-    -- ========================================================================
-    -- date & time - Wanneer is het evenement
-    -- ========================================================================
+    -- Date: When the event takes place
+    -- DATE format: YYYY-MM-DD
     date DATE NOT NULL,
+    
+    -- Time: What time the event starts
+    -- TIME format: HH:MM:SS
     time TIME NOT NULL,
     
-    -- ========================================================================
-    -- description - Uitgebreide beschrijving
-    -- ========================================================================
-    -- TEXT voor langere beschrijvingen
-    -- ========================================================================
+    -- Description: Details about the event
+    -- TEXT: Can hold long descriptions
+    -- Optional field (can be NULL)
     description TEXT,
     
-    -- ========================================================================
-    -- reminder - Herinneringsinstelling
-    -- ========================================================================
-    -- VARCHAR(50) met waardes: 'none', '1_hour', '1_day'
-    -- JavaScript gebruikt dit om pop-ups te tonen
-    -- ========================================================================
+    -- Reminder: When to show reminder notification
+    -- Options: 'none', '1_hour', '1_day'
+    -- VARCHAR(50): Stores the reminder type as text
     reminder VARCHAR(50),
     
-    -- ========================================================================
-    -- external_link - Link naar externe pagina
-    -- ========================================================================
-    -- VARCHAR(255) voor URL
-    -- Bijv: link naar toernooi aanmelding, Discord server, etc.
-    -- ========================================================================
+    -- External Link: URL to more information
+    -- VARCHAR(255): URLs can be long, 255 chars should be enough
+    -- Example: "https://twitch.tv/tournament"
     external_link VARCHAR(255),
     
-    -- ========================================================================
-    -- shared_with - Met wie dit event gedeeld is
-    -- ========================================================================
+    -- Shared With: Comma-separated usernames
+    -- Who can see this event
     shared_with TEXT,
     
-    -- ========================================================================
-    -- deleted_at - Soft delete
-    -- ========================================================================
+    -- Soft delete marker
     deleted_at TIMESTAMP NULL,
     
-    -- ========================================================================
-    -- FOREIGN KEY naar Users
-    -- ========================================================================
+    -- FOREIGN KEY with CASCADE delete
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
     
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
--- ############################################################################
--- ##                                                                        ##
--- ##                           INDEXEN                                      ##
--- ##                    (Performance Optimalisatie)                         ##
--- ##                                                                        ##
--- ############################################################################
--- 
--- INDEXEN maken zoekopdrachten sneller.
--- 
--- ANALOGIE: Denk aan een index achter in een boek.
--- Zonder index: je moet het hele boek doorlezen om iets te vinden
--- Met index: je kijkt achter in het boek en gaat direct naar de juiste pagina
--- 
--- We maken indexen op kolommen waar we vaak op zoeken/filteren.
--- 
--- ############################################################################
+-- ============================================================================
+-- STEP 8: CREATE INDEXES FOR PERFORMANCE
+-- ============================================================================
+-- INDEXES make database queries faster by creating a lookup table.
+-- Think of it like an index in a book - you can find pages faster.
+--
+-- We create indexes on columns that are frequently searched:
+-- - email (used for login)
+-- - user_id + date (used for calendar views)
 
--- ============================================================================
--- Index op Users.email - We zoeken vaak op email (bij login)
--- ============================================================================
-CREATE INDEX idx_users_email ON Users(email);
+-- Index on Users.email for faster login queries
+-- When user logs in, we search by email - this makes it fast
+CREATE INDEX IF NOT EXISTS idx_users_email 
+    ON Users(email);
 
--- ============================================================================
--- Index op Schedules (user_id, date) - We halen vaak schedules op per gebruiker en datum
--- ============================================================================
-CREATE INDEX idx_schedules_user_date ON Schedules(user_id, date);
+-- Index on Schedules for calendar queries
+-- We often query schedules by user_id and date together
+CREATE INDEX IF NOT EXISTS idx_schedules_user_date 
+    ON Schedules(user_id, date);
 
--- ============================================================================
--- Index op Events (user_id, date) - Zelfde reden als boven
--- ============================================================================
-CREATE INDEX idx_events_user_date ON Events(user_id, date);
+-- Index on Events for calendar queries
+-- Same reason as schedules - faster calendar loading
+CREATE INDEX IF NOT EXISTS idx_events_user_date 
+    ON Events(user_id, date);
 
 
--- ############################################################################
--- ##                                                                        ##
--- ##                        VOORBEELD DATA                                  ##
--- ##                      (Sample/Test Data)                                ##
--- ##                                                                        ##
--- ############################################################################
--- 
--- We voegen een paar populaire games toe zodat nieuwe gebruikers
--- meteen uit een lijst kunnen kiezen.
--- 
--- ############################################################################
+-- ============================================================================
+-- STEP 9: INSERT SAMPLE DATA
+-- ============================================================================
+-- These are example games so the application starts with some content.
+-- Users can add their own games later.
 
 INSERT INTO Games (titel, description) VALUES
-    ('Fortnite', 'Battle Royale game where 100 players compete to be the last one standing'),
-    ('Minecraft', 'Sandbox building and survival game with endless possibilities'),
-    ('League of Legends', 'MOBA strategy game with team-based competitive gameplay'),
-    ('Call of Duty', 'First-person shooter game with multiplayer modes'),
-    ('FIFA 25', 'Football/soccer simulation game'),
-    ('Rocket League', 'Vehicular soccer game with rocket-powered cars');
+    ('Fortnite', 'Popular Battle Royale game with building mechanics'),
+    ('Minecraft', 'Creative sandbox game with blocks and building'),
+    ('League of Legends', 'Competitive MOBA team strategy game');
+
 
 -- ============================================================================
--- EINDE VAN HET SCRIPT / END OF SCRIPT
+-- DATABASE SCHEMA COMPLETE!
 -- ============================================================================
--- De database is nu klaar voor gebruik!
--- 
--- VOLGENDE STAPPEN:
--- 1. Ga naar http://localhost/gameplan-scheduler/
--- 2. Registreer een account
--- 3. Begin met het toevoegen van favoriete games, vrienden, en schema's!
+-- Summary of what was created:
+-- ✓ 1 Database: gameplan_db
+-- ✓ 6 Tables: Users, Games, UserGames, Friends, Schedules, Events
+-- ✓ 3 Indexes: For faster queries on email and calendar views
+-- ✓ 3 Sample Games: Fortnite, Minecraft, League of Legends
+--
+-- NEXT STEPS:
+-- 1. Import this file in phpMyAdmin
+-- 2. Configure db.php with correct credentials
+-- 3. Start using the application!
+--
+-- © 2025 GamePlan Scheduler by Harsha Kanaparthi
 -- ============================================================================

@@ -1,245 +1,216 @@
 <?php
-/**
- * ============================================================================
- * db.php - Database Verbinding Script (Database Connection Script)
- * ============================================================================
- * 
- * @author      Harsha Kanaparthi
- * @student     2195344
- * @date        30-09-2025
- * @version     1.0
- * @project     GamePlan Scheduler
- * 
- * ============================================================================
- * BESCHRIJVING / DESCRIPTION:
- * ============================================================================
- * Dit bestand is verantwoordelijk voor het maken van een veilige verbinding
- * met de MySQL database. Het gebruikt PDO (PHP Data Objects) voor database
- * communicatie, wat veiliger is dan de oudere mysql_* functies.
- * 
- * This file is responsible for creating a secure connection to the MySQL 
- * database. It uses PDO (PHP Data Objects) for database communication,
- * which is safer than the older mysql_* functions.
- * 
- * ============================================================================
- * WAAROM PDO? / WHY PDO?
- * ============================================================================
- * PDO biedt:
- * - Prepared statements (bescherming tegen SQL-injectie)
- * - Object-georiënteerde interface
- * - Ondersteuning voor meerdere database types
- * - Betere foutafhandeling met exceptions
- * 
- * PDO provides:
- * - Prepared statements (protection against SQL injection)
- * - Object-oriented interface
- * - Support for multiple database types
- * - Better error handling with exceptions
- * 
- * ============================================================================
- * SINGLETON PATTERN UITLEG / SINGLETON PATTERN EXPLANATION:
- * ============================================================================
- * We gebruiken het Singleton pattern: er wordt slechts één database 
- * verbinding gemaakt en hergebruikt. Dit bespaart resources en voorkomt
- * problemen met te veel open verbindingen.
- * 
- * We use the Singleton pattern: only one database connection is created
- * and reused. This saves resources and prevents issues with too many
- * open connections.
- * 
- * ============================================================================
- */
+// ============================================================================
+// DB.PHP - Database Connection Script for GamePlan Scheduler
+// ============================================================================
+// Author       : Harsha Kanaparthi (Student Number: 2195344)
+// Date         : 30-09-2025
+// Version      : 1.0
+// Project      : GamePlan Scheduler - MBO-4 Software Development Examination
+// ============================================================================
+// DESCRIPTION:
+// This file handles the connection between PHP and the MySQL database.
+// It uses PDO (PHP Data Objects) which is the modern, secure way to 
+// connect to databases in PHP.
+//
+// WHY PDO?
+// - Supports prepared statements (prevents SQL injection attacks)
+// - Works with many database types (MySQL, PostgreSQL, SQLite)
+// - Throws exceptions for better error handling
+// - More secure than older mysql_* functions
+//
+// HOW IT WORKS:
+// 1. Define database connection settings (host, user, password, database)
+// 2. Create a PDO connection object
+// 3. Return this connection for other files to use
+//
+// SECURITY FEATURES:
+// - Uses constants to store database credentials
+// - Singleton pattern (reuses one connection instead of creating many)
+// - Error logging without exposing details to users
+// - Prepared statements enabled by default
+// ============================================================================
+
 
 // ============================================================================
-// DATABASE CONFIGURATIE CONSTANTEN / DATABASE CONFIGURATION CONSTANTS
+// STEP 1: DEFINE DATABASE CONFIGURATION CONSTANTS
 // ============================================================================
-// We gebruiken define() om constanten te maken. Constanten kunnen niet 
-// worden gewijzigd nadat ze zijn ingesteld, wat de veiligheid verhoogt.
+// Constants are like variables but cannot be changed after being set.
+// We use define() to create constants with the database connection info.
 // 
-// We use define() to create constants. Constants cannot be changed after
-// they are set, which increases security.
-// ============================================================================
+// In a production environment, these values should be stored securely
+// (e.g., in environment variables or a separate config file outside web root).
 
-/**
- * DB_HOST - De hostnaam van de database server
- * 'localhost' betekent dat de database op dezelfde computer draait als de webserver
- * In productie zou dit een apart IP-adres of hostnaam kunnen zijn
- */
+// DB_HOST: The server where the database is running
+// 'localhost' means the database is on the same computer as the web server
+// In production, this might be a different server address
 define('DB_HOST', 'localhost');
 
-/**
- * DB_USER - De gebruikersnaam voor database toegang
- * 'root' is de standaard XAMPP gebruiker
- * WAARSCHUWING: Gebruik een andere gebruiker met beperkte rechten in productie!
- */
+// DB_USER: Username to connect to the database
+// 'root' is the default XAMPP/MySQL admin user
+// WARNING: In production, create a specific user with limited permissions!
 define('DB_USER', 'root');
 
-/**
- * DB_PASS - Het wachtwoord voor database toegang
- * Leeg voor standaard XAMPP installatie
- * WAARSCHUWING: Gebruik een sterk wachtwoord in productie!
- */
+// DB_PASS: Password for the database user
+// Empty for default XAMPP installation
+// WARNING: In production, always use a strong password!
 define('DB_PASS', '');
 
-/**
- * DB_NAME - De naam van onze database
- * Dit is de database die we hebben aangemaakt met database.sql
- */
+// DB_NAME: The name of the database to connect to
+// This should match the database created in database.sql
 define('DB_NAME', 'gameplan_db');
 
-/**
- * DB_CHARSET - De karakterset voor de database verbinding
- * 'utf8mb4' ondersteunt alle Unicode karakters inclusief emoji's
- * Dit is belangrijk voor internationale tekst en moderne communicatie
- */
+// DB_CHARSET: Character encoding for the connection
+// 'utf8mb4' supports all Unicode characters including emojis 🎮
+// This ensures special characters display correctly
 define('DB_CHARSET', 'utf8mb4');
 
+
 // ============================================================================
-// FUNCTIE: getDBConnection() - Haalt de database verbinding op
+// STEP 2: CREATE THE DATABASE CONNECTION FUNCTION
 // ============================================================================
+// This function creates and returns a PDO database connection.
+// It uses the SINGLETON PATTERN - only one connection is created and reused.
+
 /**
- * getDBConnection - Maakt of hergebruikt de database verbinding
+ * Get Database Connection
  * 
- * Deze functie implementeert het Singleton pattern:
- * - Bij eerste aanroep: maakt nieuwe verbinding
- * - Bij volgende aanroepen: hergebruikt bestaande verbinding
+ * This function creates a secure PDO connection to the MySQL database.
+ * Uses singleton pattern: creates connection once, then reuses it.
  * 
- * @return PDO De PDO database verbinding object
+ * SINGLETON PATTERN EXPLAINED:
+ * - First call: Creates new PDO connection and stores it in $pdo
+ * - Second call: Returns the existing $pdo (doesn't create new connection)
+ * - This is more efficient than creating a new connection for every query
  * 
- * VOORBEELD GEBRUIK / EXAMPLE USAGE:
+ * @return PDO The database connection object for executing queries
+ * 
+ * USAGE EXAMPLE:
  * $pdo = getDBConnection();
- * $stmt = $pdo->prepare("SELECT * FROM Users WHERE user_id = :id");
- * $stmt->execute(['id' => 1]);
+ * $stmt = $pdo->prepare("SELECT * FROM Users WHERE email = :email");
+ * $stmt->execute(['email' => $email]);
  * $user = $stmt->fetch();
  */
 function getDBConnection()
 {
-    // ========================================================================
-    // STATIC VARIABELE - Houdt de verbinding vast tussen functie aanroepen
-    // ========================================================================
-    // 'static' betekent dat $pdo behouden blijft na de eerste keer
-    // dat de functie wordt aangeroepen. Dit is het Singleton pattern.
-    // ========================================================================
+    // STATIC VARIABLE: Keeps its value between function calls
+    // First call: $pdo = null
+    // After connection: $pdo = PDO object
+    // Next call: $pdo still has the PDO object (not null)
     static $pdo = null;
 
-    // ========================================================================
-    // CONTROLEER OF ER AL EEN VERBINDING IS
-    // ========================================================================
-    // Als $pdo nog null is, dan moeten we een nieuwe verbinding maken
-    // Als $pdo al een waarde heeft, slaan we het maken over en geven
-    // we de bestaande verbinding terug
-    // ========================================================================
+    // Check if connection already exists
+    // If $pdo is null, we need to create a new connection
+    // If $pdo has a value, we skip this and return the existing connection
     if ($pdo === null) {
 
         // ====================================================================
-        // DATA SOURCE NAME (DSN) - De verbindingsstring
+        // STEP 2A: BUILD THE DSN (DATA SOURCE NAME)
         // ====================================================================
-        // DSN bevat alle informatie die PDO nodig heeft om te verbinden:
-        // - mysql: het type database
-        // - host: waar de database is
-        // - dbname: welke database we willen
-        // - charset: welke karakterset we gebruiken
-        // ====================================================================
+        // DSN is a string that tells PDO how to connect to the database
+        // Format: "mysql:host=SERVER;dbname=DATABASE;charset=ENCODING"
+
         $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;
+        // Result example: "mysql:host=localhost;dbname=gameplan_db;charset=utf8mb4"
+
 
         // ====================================================================
-        // PDO OPTIES - Configuratie voor veilige en efficiënte werking
+        // STEP 2B: SET PDO OPTIONS FOR SECURITY AND CONVENIENCE
         // ====================================================================
+        // These options configure how PDO behaves
+
         $options = [
-            // ----------------------------------------------------------------
-            // ERRMODE_EXCEPTION: Gooit exceptions bij fouten
-            // ----------------------------------------------------------------
-            // Dit zorgt ervoor dat database fouten als PHP exceptions
-            // worden gegooid, zodat we ze kunnen opvangen met try-catch
-            // ----------------------------------------------------------------
+            // ERRMODE_EXCEPTION: Throw exceptions when database errors occur
+            // This allows us to catch errors with try-catch blocks
+            // Without this, errors might be silently ignored
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 
-            // ----------------------------------------------------------------
-            // FETCH_ASSOC: Geeft resultaten als associatieve arrays
-            // ----------------------------------------------------------------
-            // Resultaten komen terug als ['kolom_naam' => 'waarde']
-            // in plaats van genummerde arrays [0 => 'waarde']
-            // Dit maakt code leesbaarder: $row['username'] vs $row[0]
-            // ----------------------------------------------------------------
+            // FETCH_ASSOC: Return query results as associative arrays
+            // Example: $row['username'] instead of $row[0]
+            // Much easier to work with and understand
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 
-            // ----------------------------------------------------------------
-            // EMULATE_PREPARES = false: Echte prepared statements
-            // ----------------------------------------------------------------
-            // Dit zorgt ervoor dat MySQL zelf de prepared statements
-            // uitvoert, niet PHP. Dit is veiliger tegen SQL-injectie.
-            // ----------------------------------------------------------------
+            // EMULATE_PREPARES = FALSE: Use real prepared statements
+            // TRUE = PHP simulates prepared statements (less secure)
+            // FALSE = Database handles prepared statements (more secure)
+            // Real prepared statements prevent SQL injection attacks
             PDO::ATTR_EMULATE_PREPARES => false,
 
-            // ----------------------------------------------------------------
-            // PERSISTENT = true: Hergebruik verbindingen
-            // ----------------------------------------------------------------
-            // Houdt de verbinding open tussen requests voor betere
-            // performance. Dit is vooral nuttig bij veel bezoekers.
-            // ----------------------------------------------------------------
+            // PERSISTENT = TRUE: Keep connection open between requests
+            // More efficient for busy websites (less connection overhead)
+            // Connection is reused instead of opened/closed for each page
             PDO::ATTR_PERSISTENT => true,
         ];
 
+
         // ====================================================================
-        // PROBEER DE VERBINDING TE MAKEN MET TRY-CATCH
+        // STEP 2C: TRY TO CREATE THE CONNECTION
         // ====================================================================
-        // try-catch vangt fouten op zodat we ze netjes kunnen afhandelen
-        // zonder dat de gebruiker technische foutmeldingen ziet
-        // ====================================================================
+        // We use try-catch to handle connection errors gracefully
+        // If something goes wrong, we log the error and show a user-friendly message
+
         try {
-            // ================================================================
-            // MAAK NIEUWE PDO VERBINDING
-            // ================================================================
-            // PDO constructor krijgt:
-            // 1. $dsn - waar en welke database
-            // 2. DB_USER - gebruikersnaam
-            // 3. DB_PASS - wachtwoord
-            // 4. $options - configuratie opties
-            // ================================================================
+            // Create new PDO connection with our settings
+            // Parameters: DSN, username, password, options
             $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+
+            // If we reach here, connection was successful!
+            // The $pdo variable now holds our database connection
 
         } catch (PDOException $e) {
             // ================================================================
-            // FOUTAFHANDELING BIJ MISLUKTE VERBINDING
+            // ERROR HANDLING: Connection Failed
             // ================================================================
-            // Als de verbinding mislukt (verkeerde wachtwoord, database
-            // niet beschikbaar, etc.), loggen we de fout en tonen een
-            // vriendelijke melding aan de gebruiker
-            // ================================================================
+            // PDOException is thrown when PDO cannot connect to the database
+            // Common causes:
+            // - MySQL server not running (start XAMPP)
+            // - Wrong credentials (check DB_USER and DB_PASS)
+            // - Database doesn't exist (run database.sql first)
+            // - Wrong host (check DB_HOST)
 
-            // ----------------------------------------------------------------
-            // LOG DE FOUT NAAR DE SERVER LOG
-            // ----------------------------------------------------------------
-            // error_log() schrijft naar PHP's error log bestand
-            // Dit is belangrijk voor debugging, maar tonen we niet
-            // aan gebruikers om veiligheidsredenen
-            // ----------------------------------------------------------------
+            // LOG THE ERROR: Write to server error log for developers
+            // error_log() writes to PHP error log file (php_error.log)
+            // 0 = Use default PHP error logging
+            // This helps developers debug the problem later
             error_log("Database Connection Failed: " . $e->getMessage(), 0);
 
-            // ----------------------------------------------------------------
-            // STOP HET SCRIPT MET VRIENDELIJKE MELDING
-            // ----------------------------------------------------------------
-            // die() stopt alle verdere uitvoering van het script
-            // De gebruiker ziet alleen een vriendelijke foutmelding,
-            // geen technische details die hackers kunnen helpen
-            // ----------------------------------------------------------------
+            // SHOW USER-FRIENDLY MESSAGE: Don't expose technical details!
+            // Never show the actual error message to users (security risk)
+            // It could reveal database structure or server configuration
+            // die() stops the script and shows the message
             die("Sorry, there was an issue connecting to the database. Please try again later.");
         }
     }
 
     // ========================================================================
-    // GEEF DE PDO VERBINDING TERUG
+    // STEP 3: RETURN THE CONNECTION
     // ========================================================================
-    // Nu kunnen andere delen van de applicatie deze verbinding gebruiken
-    // om queries uit te voeren op de database
-    // ========================================================================
+    // Return the PDO object so other code can use it to query the database
+    // Example: $pdo = getDBConnection();
+
     return $pdo;
 }
 
+
 // ============================================================================
-// OPMERKING: GEEN SLUITENDE PHP TAG
+// IMPORTANT NOTES FOR PRODUCTION USE
 // ============================================================================
-// We laten de sluitende  tag weg. Dit is een PHP best practice omdat
-// het voorkomt dat er per ongeluk witruimte wordt toegevoegd na de tag,
-// wat problemen kan veroorzaken met headers (sessies, redirects, etc.)
+// 
+// 1. NEVER use 'root' with empty password in production!
+//    Create a specific database user with limited permissions:
+//    - Only SELECT, INSERT, UPDATE, DELETE on gameplan_db
+//    - No DROP, CREATE, or admin privileges
+//
+// 2. Store credentials securely:
+//    - Use environment variables ($_ENV or getenv())
+//    - Or use a config file outside the web root
+//    - Never commit passwords to version control (Git)
+//
+// 3. Consider connection pooling for high-traffic sites
+//
+// 4. SSL connection recommended for remote databases:
+//    Add to DSN: ";ssl-mode=REQUIRED"
+//
 // ============================================================================
+// © 2025 GamePlan Scheduler by Harsha Kanaparthi
+// ============================================================================
+?>

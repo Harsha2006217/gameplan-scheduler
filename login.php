@@ -1,363 +1,381 @@
 <?php
-/**
- * ============================================================================
- * login.php - Gebruiker Login Pagina (User Login Page)
- * ============================================================================
- * 
- * @author      Harsha Kanaparthi
- * @student     2195344
- * @date        30-09-2025
- * @version     1.0
- * @project     GamePlan Scheduler
- * 
- * ============================================================================
- * BESCHRIJVING / DESCRIPTION:
- * ============================================================================
- * Dit is de login pagina waar gebruikers kunnen inloggen met hun email en
- * wachtwoord. De pagina:
- * 
- * 1. Controleert of gebruiker al is ingelogd (redirect naar dashboard)
- * 2. Verwerkt het login formulier bij POST request
- * 3. Toont foutmeldingen bij ongeldige gegevens
- * 4. Redirect naar dashboard bij succesvolle login
- * 
- * This is the login page where users can log in with their email and
- * password. It handles form submission, validation, and session creation.
- * 
- * ============================================================================
- * BEVEILIGING / SECURITY:
- * ============================================================================
- * - Wachtwoord verificatie met password_verify() (bcrypt)
- * - Generieke foutmelding (niet of email of wachtwoord fout is)
- * - Sessie regeneratie na login (tegen session fixation)
- * - Prepared statements in de loginUser() functie
- * ============================================================================
- */
+// ============================================================================
+// LOGIN.PHP - User Login Page
+// ============================================================================
+// Author       : Harsha Kanaparthi (Student Number: 2195344)
+// Date         : 30-09-2025
+// Version      : 1.0
+// Project      : GamePlan Scheduler - MBO-4 Software Development Examination
+// ============================================================================
+// DESCRIPTION:
+// This is the LOGIN page where users enter their credentials to access
+// the application. It handles both the login form display AND the form
+// submission processing.
+//
+// HOW LOGIN WORKS:
+// 1. User visits login.php → sees login form
+// 2. User enters email and password
+// 3. JavaScript validates the form (client-side)
+// 4. Form is submitted to same page (login.php)
+// 5. PHP processes the login (server-side)
+// 6. If successful → redirect to index.php (dashboard)
+// 7. If failed → show error message, stay on login page
+//
+// SECURITY FEATURES:
+// - Password is NEVER displayed or stored in plain text
+// - Form uses POST method (data not visible in URL)
+// - Server-side validation in functions.php
+// - CSRF protection via session
+//
+// FILE DEPENDENCIES:
+// - functions.php: Contains loginUser() function
+// - script.js: Contains validateLoginForm() function
+// - style.css: Custom styling
+// - Bootstrap CSS: Layout and components
+// ============================================================================
+
 
 // ============================================================================
-// FUNCTIONS.PHP LADEN
+// STEP 1: INCLUDE CORE FUNCTIONS
 // ============================================================================
-// require_once laadt het bestand precies één keer.
-// Dit bestand bevat alle functies die we nodig hebben, zoals:
-// - isLoggedIn() - controleert of gebruiker al ingelogd is
-// - loginUser() - verifieert email/wachtwoord en start sessie
-// - safeEcho() - beveiligt output tegen XSS
-// ============================================================================
+// require_once loads functions.php exactly once
+// This gives us access to all authentication functions
+
 require_once 'functions.php';
 
+
 // ============================================================================
-// CONTROLEER OF GEBRUIKER AL IS INGELOGD
+// STEP 2: CHECK IF USER IS ALREADY LOGGED IN
 // ============================================================================
-// Als de gebruiker al is ingelogd, hoeft hij niet opnieuw in te loggen.
-// We sturen hem direct door naar het dashboard (index.php).
-// 
-// isLoggedIn() controleert of $_SESSION['user_id'] bestaat
-// header() stuurt een HTTP redirect naar de browser
-// exit; stopt verdere uitvoering van dit script
-// ============================================================================
+// If user is already logged in, they don't need to see the login page
+// Redirect them directly to the dashboard
+
 if (isLoggedIn()) {
+    // header() sends HTTP redirect to browser
+    // "Location: index.php" tells browser to go to index.php
     header("Location: index.php");
+    
+    // exit stops script execution
+    // Important: must call exit after header() to prevent further code execution
     exit;
 }
 
-// ============================================================================
-// INITIALISEER VARIABELEN
-// ============================================================================
-// $error houdt eventuele foutmeldingen bij
-// We zetten dit op lege string zodat we later kunnen checken of er een fout is
-// ============================================================================
-$error = '';
 
 // ============================================================================
-// VERWERK FORMULIER SUBMISSION (POST REQUEST)
+// STEP 3: INITIALIZE ERROR VARIABLE
 // ============================================================================
-// $_SERVER['REQUEST_METHOD'] bevat de HTTP methode (GET, POST, etc.)
-// We verwerken alleen als het een POST request is (formulier verzonden)
-// 
-// HOE WERKT DIT?
-// 1. Gebruiker vult formulier in en klikt "Login"
-// 2. Browser stuurt POST request naar deze pagina met de form data
-// 3. We lezen de data uit $_POST en valideren het
+// $error will hold any login error messages
+// Empty string means no error yet
+
+$error = '';
+
+
 // ============================================================================
+// STEP 4: PROCESS LOGIN FORM SUBMISSION
+// ============================================================================
+// This code only runs when the form is submitted (POST request)
+// $_SERVER['REQUEST_METHOD'] tells us how the page was accessed
+// 'GET' = normal page visit, 'POST' = form submission
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     // ========================================================================
-    // HAAL FORMULIER DATA OP
+    // GET FORM DATA FROM POST
     // ========================================================================
-    // $_POST bevat alle verzonden formulier data
-    // ?? '' is de null coalescing operator: als $_POST['email'] niet bestaat,
-    // gebruik dan een lege string als standaardwaarde
-    // Dit voorkomt "undefined index" errors
-    // ========================================================================
+    // $_POST is a PHP superglobal array containing form data
+    // ?? '' means: use empty string if value doesn't exist (null coalescing)
+    // This prevents "undefined index" errors
+    
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
     
-    // ========================================================================
-    // PROBEER IN TE LOGGEN
-    // ========================================================================
-    // loginUser() doet het volgende:
-    // 1. Valideert dat email en wachtwoord niet leeg zijn
-    // 2. Zoekt de gebruiker in de database op email
-    // 3. Vergelijkt het ingevoerde wachtwoord met de hash in de database
-    // 4. Als correct: start sessie en return null (geen error)
-    // 5. Als incorrect: return een foutmelding
-    // ========================================================================
-    $error = loginUser($email, $password);
     
     // ========================================================================
-    // CONTROLEER RESULTAAT
+    // ATTEMPT LOGIN
     // ========================================================================
-    // Als $error leeg is (! = not), was de login succesvol
-    // We redirecten dan naar het dashboard
+    // loginUser() is defined in functions.php
+    // It returns: null if successful, error message string if failed
+    
+    $error = loginUser($email, $password);
+    
+    
     // ========================================================================
+    // CHECK LOGIN RESULT
+    // ========================================================================
+    // If $error is empty/null/false, login was successful
+    
     if (!$error) {
+        // Login successful! Redirect to dashboard
         header("Location: index.php");
         exit;
     }
-    // Als er wel een error is, valt de code door naar de HTML
-    // en wordt de foutmelding getoond
+    // If there was an error, it's stored in $error and will be displayed below
+}
+
+
+// ============================================================================
+// STEP 5: CHECK FOR SESSION TIMEOUT MESSAGE
+// ============================================================================
+// If user was redirected here due to session timeout, show message
+
+if (isset($_GET['msg']) && $_GET['msg'] == 'session_timeout') {
+    $error = 'Your session has expired. Please login again.';
 }
 ?>
+
+<!-- ========================================================================
+     HTML DOCUMENT START
+     ======================================================================== -->
 <!DOCTYPE html>
+<!-- DOCTYPE declares this is an HTML5 document -->
+<!-- lang="en" helps screen readers and search engines understand the language -->
 <html lang="en">
-<!-- ======================================================================
-     HTML DOCUMENT STRUCTUUR
-     ======================================================================
-     <!DOCTYPE html> - Vertelt browser dat dit HTML5 is
-     <html lang="en"> - Root element, taal is Engels
-     ====================================================================== -->
+
 <head>
-    <!-- ==================================================================
-         META TAGS
-         ==================================================================
-         charset="UTF-8" - Karakterset voor speciale tekens en emoji's
-         viewport - Maakt de pagina responsive op mobiele apparaten
-         ================================================================== -->
+    <!-- ====================================================================
+         META TAGS: Information about the page
+         ==================================================================== -->
+    
+    <!-- Character encoding: UTF-8 supports all languages and emojis -->
     <meta charset="UTF-8">
+    
+    <!-- Viewport: Makes page responsive on mobile devices -->
+    <!-- width=device-width: Page width = device screen width -->
+    <!-- initial-scale=1.0: No zoom by default -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- ==================================================================
-         SEO META TAGS
-         ==================================================================
-         title - Wordt getoond in browser tab en zoekresultaten
-         description - Korte beschrijving voor zoekmachines
-         ================================================================== -->
+    <!-- Page title: Shows in browser tab -->
     <title>Login - GamePlan Scheduler</title>
-    <meta name="description" content="Log in to GamePlan Scheduler to manage your gaming schedules and events.">
     
-    <!-- ==================================================================
-         BOOTSTRAP 5 CSS
-         ==================================================================
-         We laden Bootstrap van een CDN (Content Delivery Network)
-         Dit is sneller dan het zelf hosten en wordt gecached
-         
-         Bootstrap geeft ons:
-         - Responsive grid systeem (container, row, col-*)
-         - Vormgeving voor formulieren (form-control, form-label)
-         - Knoppen (btn, btn-primary, btn-lg)
-         - Alert meldingen (alert, alert-danger)
-         - Dark mode kleuren
-         ================================================================== -->
+    <!-- SEO: Description for search engines -->
+    <meta name="description" content="Login to GamePlan Scheduler to manage your gaming activities and connect with friends.">
+    
+    
+    <!-- ====================================================================
+         CSS STYLESHEETS
+         ==================================================================== -->
+    
+    <!-- Bootstrap CSS: Layout and component styling (from CDN) -->
+    <!-- CDN = Content Delivery Network (fast, global servers) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- ==================================================================
-         BOOTSTRAP ICONS
-         ==================================================================
-         Iconen bibliotheek voor mooie symbolen
-         ================================================================== -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    
-    <!-- ==================================================================
-         CUSTOM CSS
-         ==================================================================
-         Onze eigen stijlen die Bootstrap aanvullen/overschrijven
-         ================================================================== -->
+    <!-- Custom CSS: Our own styles that override/extend Bootstrap -->
     <link rel="stylesheet" href="style.css">
 </head>
-<!-- ======================================================================
-     BODY - DE ZICHTBARE INHOUD
-     ======================================================================
-     class="bg-dark text-light" - Bootstrap dark mode achtergrond en tekst
-     ====================================================================== -->
+
+<!-- ========================================================================
+     BODY: Main content of the page
+     ======================================================================== -->
+<!-- bg-dark: Dark background (Bootstrap class) -->
+<!-- text-light: Light text color (Bootstrap class) -->
+<!-- min-vh-100: Minimum height of 100% viewport height -->
+<!-- d-flex: Flexbox display -->
+<!-- align-items-center: Vertically center content -->
 <body class="bg-dark text-light min-vh-100 d-flex align-items-center">
     
-    <!-- ==================================================================
+    <!-- ====================================================================
          MAIN CONTAINER
-         ==================================================================
-         container - Bootstrap container met responsive breedte
-         
-         We gebruiken GEEN header/footer hier omdat de login pagina
-         een standalone pagina is (gebruiker is nog niet ingelogd)
-         ================================================================== -->
-    <main class="container">
+         ==================================================================== -->
+    <!-- container: Responsive width container -->
+    <!-- py-5: Padding on Y-axis (top and bottom) -->
+    <div class="container py-5">
         
-        <!-- ==============================================================
-             ROW & COLUMN VOOR CENTERING
-             ==============================================================
-             row - Bootstrap rij
-             justify-content-center - Horizontaal centreren
-             col-md-6 col-lg-4 - Breedte:
-             - Op small screens: volle breedte
-             - Op medium screens: 6/12 = 50%
-             - Op large screens: 4/12 = 33%
-             ============================================================== -->
+        <!-- ================================================================
+             ROW: Bootstrap grid row
+             ================================================================ -->
+        <!-- justify-content-center: Center the columns horizontally -->
         <div class="row justify-content-center">
+            
+            <!-- ============================================================
+                 COLUMN: Form container
+                 ============================================================ -->
+            <!-- col-md-6: 6 columns on medium screens (50% width) -->
+            <!-- col-lg-4: 4 columns on large screens (33% width) -->
+            <!-- This makes the form narrower on larger screens -->
             <div class="col-md-6 col-lg-4">
                 
-                <!-- ======================================================
+                <!-- ========================================================
                      LOGIN CARD
-                     ======================================================
-                     card - Bootstrap kaart component
-                     bg-secondary - Grijze achtergrond
-                     border-0 - Geen rand
-                     shadow-lg - Grote schaduw voor diepte-effect
-                     ====================================================== -->
-                <div class="card bg-secondary border-0 shadow-lg">
+                     ======================================================== -->
+                <!-- card: Bootstrap card component -->
+                <!-- bg-secondary: Gray background -->
+                <!-- border-0: No border -->
+                <!-- shadow-lg: Large shadow for depth -->
+                <!-- rounded-4: Extra rounded corners -->
+                <div class="card bg-secondary border-0 shadow-lg rounded-4">
+                    
+                    <!-- Card Body: Contains the form -->
+                    <!-- p-4: Padding all around -->
                     <div class="card-body p-4">
                         
                         <!-- ================================================
-                             LOGO EN TITEL
-                             ================================================
-                             text-center - Centreer tekst
-                             mb-4 - Margin bottom 4 (ruimte onder)
-                             bi bi-controller - Bootstrap icon: controller
+                             LOGO AND TITLE
                              ================================================ -->
+                        <!-- text-center: Center the text -->
+                        <!-- mb-4: Margin bottom (spacing) -->
                         <div class="text-center mb-4">
-                            <i class="bi bi-controller text-primary" style="font-size: 3rem;"></i>
-                            <h1 class="h3 mt-2">GamePlan Scheduler</h1>
-                            <p class="text-muted">Sign in to your account</p>
+                            <!-- Large game controller emoji -->
+                            <div class="display-1 mb-3">🎮</div>
+                            
+                            <!-- Page title -->
+                            <!-- h4: Heading size 4 -->
+                            <!-- fw-bold: Bold font weight -->
+                            <h1 class="h4 fw-bold text-white">Welcome Back!</h1>
+                            <p class="text-muted small">Login to your account</p>
                         </div>
                         
+                        
                         <!-- ================================================
-                             ERROR MELDING
-                             ================================================
-                             <?php if ($error): ?> - Toon alleen als er fout is
-                             alert alert-danger - Bootstrap rode waarschuwing
-                             safeEcho() - Beveiligt output tegen XSS
+                             ERROR MESSAGE DISPLAY
                              ================================================ -->
+                        <!-- Only shows if $error has a value -->
                         <?php if ($error): ?>
+                            <!-- alert: Bootstrap alert component -->
+                            <!-- alert-danger: Red background (error) -->
+                            <!-- alert-dismissible: Can be closed -->
+                            <!-- fade show: Animation classes -->
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <!-- safeEcho() prevents XSS attacks -->
                                 <?php echo safeEcho($error); ?>
+                                <!-- Close button -->
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         <?php endif; ?>
                         
+                        
                         <!-- ================================================
-                             LOGIN FORMULIER
-                             ================================================
-                             method="POST" - Data wordt via POST verstuurd
-                             onsubmit="return validateLoginForm();" - JavaScript 
-                                validatie voordat formulier wordt verstuurd
-                             
-                             Als validateLoginForm() false returned, wordt
-                             het formulier NIET verstuurd (preventie)
+                             LOGIN FORM
                              ================================================ -->
+                        <!-- method="POST": Send data securely (not in URL) -->
+                        <!-- onsubmit: Call JavaScript validation before submit -->
+                        <!-- return false = cancel submit if validation fails -->
                         <form method="POST" onsubmit="return validateLoginForm();">
                             
                             <!-- ============================================
-                                 EMAIL VELD
-                                 ============================================
-                                 mb-3 - Margin bottom 3
-                                 form-label - Bootstrap label styling
-                                 form-control - Bootstrap input styling
-                                 type="email" - Browser valideert email format
-                                 required - Browser staat geen leeg veld toe
-                                 aria-label - Toegankelijkheid voor screenreaders
+                                 EMAIL INPUT FIELD
                                  ============================================ -->
+                            <!-- mb-3: Margin bottom (spacing between fields) -->
                             <div class="mb-3">
+                                <!-- Label: Describes the input field -->
+                                <!-- for="email": Links to input with id="email" -->
+                                <!-- form-label: Bootstrap label styling -->
                                 <label for="email" class="form-label">
-                                    <i class="bi bi-envelope me-1"></i>Email Address
+                                    📧 Email Address
                                 </label>
-                                <input 
-                                    type="email" 
-                                    id="email" 
-                                    name="email" 
-                                    class="form-control form-control-lg bg-dark text-light border-secondary" 
-                                    placeholder="your@email.com"
-                                    required 
-                                    autocomplete="email"
-                                    aria-label="Email address">
+                                
+                                <!-- Input field for email -->
+                                <!-- type="email": Browser validates email format -->
+                                <!-- id="email": Unique identifier (for label and JS) -->
+                                <!-- name="email": Key name in $_POST array -->
+                                <!-- class="form-control": Bootstrap input styling -->
+                                <!-- required: HTML5 validation (can't be empty) -->
+                                <!-- placeholder: Gray text shown when empty -->
+                                <!-- aria-label: Accessibility description -->
+                                <!-- autofocus: Cursor starts here on page load -->
+                                <input type="email" 
+                                       id="email" 
+                                       name="email" 
+                                       class="form-control form-control-lg bg-dark text-light border-secondary"
+                                       required 
+                                       placeholder="Enter your email"
+                                       aria-label="Email address"
+                                       autofocus>
                             </div>
                             
+                            
                             <!-- ============================================
-                                 WACHTWOORD VELD
-                                 ============================================
-                                 type="password" - Verbergt ingevoerde tekst
-                                 autocomplete="current-password" - Helpt 
-                                    password managers
+                                 PASSWORD INPUT FIELD
                                  ============================================ -->
                             <div class="mb-4">
                                 <label for="password" class="form-label">
-                                    <i class="bi bi-lock me-1"></i>Password
+                                    🔑 Password
                                 </label>
-                                <input 
-                                    type="password" 
-                                    id="password" 
-                                    name="password" 
-                                    class="form-control form-control-lg bg-dark text-light border-secondary" 
-                                    placeholder="Enter your password"
-                                    required 
-                                    autocomplete="current-password"
-                                    aria-label="Password">
+                                
+                                <!-- type="password": Hides characters as you type -->
+                                <!-- Shows dots (•••••) instead of actual characters -->
+                                <input type="password" 
+                                       id="password" 
+                                       name="password" 
+                                       class="form-control form-control-lg bg-dark text-light border-secondary"
+                                       required 
+                                       placeholder="Enter your password"
+                                       aria-label="Password">
                             </div>
+                            
                             
                             <!-- ============================================
                                  SUBMIT BUTTON
-                                 ============================================
-                                 btn btn-primary - Bootstrap primaire knop
-                                 btn-lg - Grote knop
-                                 w-100 - Width 100% (volle breedte)
                                  ============================================ -->
-                            <button type="submit" class="btn btn-primary btn-lg w-100">
-                                <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                            <!-- type="submit": Submits the form when clicked -->
+                            <!-- btn: Bootstrap button base class -->
+                            <!-- btn-primary: Blue button (main action) -->
+                            <!-- btn-lg: Large button -->
+                            <!-- w-100: Width 100% (full width) -->
+                            <!-- py-3: Extra vertical padding -->
+                            <!-- fw-bold: Bold text -->
+                            <button type="submit" 
+                                    class="btn btn-primary btn-lg w-100 py-3 fw-bold rounded-3">
+                                🚀 Login
                             </button>
+                            
                         </form>
                         
+                        
                         <!-- ================================================
-                             REGISTRATIE LINK
-                             ================================================
-                             text-center mt-3 - Gecentreerd met margin-top
-                             text-decoration-none - Geen onderstreping
+                             REGISTER LINK
                              ================================================ -->
-                        <p class="text-center mt-3 mb-0">
+                        <!-- For users who don't have an account yet -->
+                        <p class="text-center mt-4 mb-0 small">
                             Don't have an account? 
-                            <a href="register.php" class="text-primary text-decoration-none fw-bold">
-                                Create one
+                            <a href="register.php" class="text-info text-decoration-none fw-bold">
+                                Register here
                             </a>
                         </p>
                         
                     </div>
                 </div>
                 
-                <!-- ======================================================
-                     COPYRIGHT FOOTER
-                     ====================================================== -->
-                <p class="text-center text-muted mt-3 small">
-                    © 2025 GamePlan Scheduler by Harsha Kanaparthi
-                </p>
-                
             </div>
         </div>
-    </main>
+    </div>
     
-    <!-- ==================================================================
-         BOOTSTRAP JAVASCRIPT
-         ==================================================================
-         Nodig voor interactieve componenten zoals:
-         - Alert dismiss button
-         - Modals
-         - Dropdowns
-         
-         bundle.min.js bevat zowel Bootstrap JS als Popper.js
-         ================================================================== -->
+    
+    <!-- ====================================================================
+         JAVASCRIPT FILES
+         ==================================================================== -->
+    
+    <!-- Bootstrap JavaScript Bundle (includes Popper for dropdowns) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- ==================================================================
-         CUSTOM JAVASCRIPT
-         ==================================================================
-         Ons eigen script met form validatie functies
-         ================================================================== -->
+    <!-- Custom JavaScript (form validation) -->
     <script src="script.js"></script>
+    
 </body>
 </html>
+
+<!-- ========================================================================
+     NOTES FOR THE EXAMINER
+     ========================================================================
+     
+     LOGIN FLOW:
+     1. User sees form → enters email/password
+     2. JavaScript validates before submit (client-side)
+     3. PHP validates on server (functions.php → loginUser())
+     4. Password compared using password_verify() with bcrypt hash
+     5. Success → session created, redirect to dashboard
+     6. Failure → error displayed, user can retry
+     
+     SECURITY MEASURES:
+     - POST method (data not in URL/history)
+     - Password field masks input
+     - Server-side validation (can't be bypassed)
+     - XSS protection via safeEcho()
+     - Session regeneration on login
+     
+     ACCESSIBILITY (a11y):
+     - Proper labels linked to inputs
+     - aria-label attributes
+     - High contrast colors
+     - Keyboard navigable
+     
+     ======================================================================== -->

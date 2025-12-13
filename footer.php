@@ -1,108 +1,121 @@
 <?php
-/**
- * ============================================================================
- * footer.php - Gemeenschappelijke Footer Component
- * ============================================================================
- * 
- * @author      Harsha Kanaparthi
- * @student     2195344
- * @date        30-09-2025
- * @version     1.0
- * @project     GamePlan Scheduler
- * 
- * ============================================================================
- * BESCHRIJVING / DESCRIPTION:
- * ============================================================================
- * Dit bestand bevat de footer die onderaan elke pagina wordt getoond.
- * Het wordt ingesloten met: <?php include 'footer.php'; ?>
- * 
- * De footer bevat:
- * - Copyright informatie
- * - Link naar Privacy Policy pagina
- * - Link naar Contact pagina
- * 
- * This file contains the footer component included at the bottom of every page.
- * 
- * ============================================================================
- * DESIGN KEUZES:
- * ============================================================================
- * - fixed-bottom: footer blijft onderaan viewport (niet ideaal voor lange
- *   pagina's, maar werkt goed voor deze applicatie)
- * - Minimalistisch design: niet te veel informatie, focus op hoofdinhoud
- * ============================================================================
- */
-// Geen PHP logica nodig in footer, alleen HTML output
+// ============================================================================
+// FOOTER.PHP - Page Footer Component
+// ============================================================================
+// Author       : Harsha Kanaparthi (Student Number: 2195344)
+// Date         : 30-09-2025
+// Version      : 1.0
+// Project      : GamePlan Scheduler - MBO-4 Software Development Examination
+// ============================================================================
+// DESCRIPTION:
+// This file contains the footer that appears at the bottom of every page.
+// It is included in other PHP files using: include 'footer.php';
+//
+// WHAT IS A FOOTER?
+// The footer is the bottom section of a website that typically contains:
+// - Copyright information
+// - Links to privacy policy and contact pages
+// - Company/author information
+//
+// WHY USE A SEPARATE FILE?
+// Same reason as header.php:
+// - DRY principle (Don't Repeat Yourself)
+// - Change once = changes everywhere
+// - Easier maintenance
+//
+// DESIGN SPECIFICATIONS (from design document):
+// - Height: 50 pixels
+// - Position: Fixed at bottom of screen
+// - Content: Copyright © 2025 + Privacy link + Contact link
+// - Colors: Dark background with light text
+// ============================================================================
 ?>
-<!-- ======================================================================
-     FOOTER ELEMENT
-     ======================================================================
-     <footer> is een semantisch HTML5 element dat aangeeft dat dit de
-     footer van de pagina is.
-     
-     Bootstrap classes:
-     - fixed-bottom: footer blijft onderaan scherm
-     - bg-dark: donkere achtergrond (consistent met thema)
-     - border-top border-secondary: subtiele bovenlijn
-     - py-3: padding verticaal
-     ====================================================================== -->
-<footer class="fixed-bottom bg-dark border-top border-secondary py-3">
 
-    <!-- ==================================================================
-         CONTAINER
-         ==================================================================
-         container: centreert inhoud met responsive marges
-         ================================================================== -->
+<!-- ========================================================================
+     HTML FOOTER SECTION
+     ======================================================================== -->
+
+<!-- FOOTER ELEMENT -->
+<!-- fixed-bottom: Stays at the bottom of the viewport (always visible) -->
+<!-- bg-dark: Dark background color (Bootstrap's dark gray) -->
+<!-- text-light: Light colored text (for visibility on dark background) -->
+<!-- py-3: Padding on Y-axis (top and bottom) -->
+<!-- text-center: Center all text content -->
+<footer class="fixed-bottom bg-dark text-light py-3 text-center">
+    
+    <!-- CONTAINER: Provides responsive width and centering -->
     <div class="container">
-
-        <!-- ==============================================================
-             ROW VOOR RESPONSIVE LAYOUT
-             ==============================================================
-             row: Bootstrap grid row
-             align-items-center: verticaal centreren
-             ============================================================== -->
-        <div class="row align-items-center">
-
-            <!-- ======================================================
-                 COPYRIGHT TEKST (LINKS)
-                 ====================================================== -->
-            <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
-                <small class="text-muted">
-                    <!-- &copy; is HTML entity voor © -->
-                    &copy; 2025 GamePlan Scheduler by
-                    <span class="text-light">Harsha Kanaparthi</span>
-                </small>
-            </div>
-
-            <!-- ======================================================
-                 FOOTER LINKS (RECHTS)
-                 ======================================================
-                 text-md-end: rechts uitlijnen op medium+ screens
-                 ====================================================== -->
-            <div class="col-md-6 text-center text-md-end">
-                <nav aria-label="Footer navigation">
-                    <!-- ================================================
-                         PRIVACY LINK
-                         ================================================ -->
-                    <a href="privacy.php" class="text-muted text-decoration-none me-3 small">
-                        <i class="bi bi-shield-check me-1"></i>Privacy Policy
-                    </a>
-
-                    <!-- ================================================
-                         CONTACT LINK
-                         ================================================ -->
-                    <a href="contact.php" class="text-muted text-decoration-none small">
-                        <i class="bi bi-envelope me-1"></i>Contact
-                    </a>
-                </nav>
-            </div>
-
-        </div>
+        
+        <!-- ================================================================
+             FOOTER CONTENT
+             ================================================================ -->
+        
+        <!-- Copyright Notice -->
+        <!-- small: Makes text slightly smaller (typical for footer) -->
+        <!-- mb-0: No margin bottom -->
+        <p class="small mb-0">
+            
+            <!-- Copyright Symbol and Year -->
+            <!-- © is the HTML entity for the copyright symbol -->
+            &copy; 2025 GamePlan Scheduler by Harsha Kanaparthi
+            
+            <!-- Vertical Separator -->
+            <!-- mx-2: Margin on X-axis (left and right spacing) -->
+            <span class="mx-2">|</span>
+            
+            <!-- Privacy Policy Link -->
+            <!-- text-light: Light colored text (matches footer) -->
+            <!-- text-decoration-none: Removes underline -->
+            <!-- hover effects defined in CSS -->
+            <a href="privacy.php" class="text-light text-decoration-none">
+                🔒 Privacy Policy
+            </a>
+            
+            <!-- Vertical Separator -->
+            <span class="mx-2">|</span>
+            
+            <!-- Contact Link -->
+            <a href="contact.php" class="text-light text-decoration-none">
+                📧 Contact
+            </a>
+            
+        </p>
+        
     </div>
+    
 </footer>
 
-<!-- ======================================================================
-     OPMERKING: GEEN SLUITENDE PHP TAG
-     ======================================================================
-     We sluiten de PHP tag niet af om problemen met whitespace te voorkomen.
-     Dit is een PHP best practice.
-     ====================================================================== -->
+<!-- ========================================================================
+     NOTES FOR THE EXAMINER
+     ========================================================================
+     
+     FOOTER FEATURES:
+     1. FIXED POSITION: Always visible at bottom of screen
+     2. MINIMAL DESIGN: Clean, uncluttered appearance
+     3. ESSENTIAL LINKS: Privacy and Contact (legal requirements)
+     4. COPYRIGHT: Required for professional applications
+     
+     DESIGN CHOICES:
+     - Dark background contrasts with page content
+     - Small text size (footer content is secondary)
+     - Icons (emojis) add visual clarity
+     - Separator pipes (|) divide content sections
+     
+     BOOTSTRAP CLASSES USED:
+     - fixed-bottom: Pins to viewport bottom
+     - bg-dark: Dark gray background
+     - text-light: White/light gray text
+     - py-3: Padding top and bottom
+     - text-center: Centered text
+     - container: Responsive width container
+     - small: Reduced font size
+     - mb-0: No margin bottom
+     - mx-2: Horizontal margins for separators
+     - text-decoration-none: No underline on links
+     
+     LEGAL CONSIDERATIONS:
+     - Copyright notice protects intellectual property
+     - Privacy policy link (required by GDPR/AVG in EU)
+     - Contact information for user support
+     
+     ======================================================================== -->

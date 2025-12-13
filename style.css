@@ -1,499 +1,743 @@
 /**
  * ============================================================================
- * style.css - CUSTOM CSS STYLING
+ * style.css - Custom Stylesheet voor GamePlan Scheduler
  * ============================================================================
  * 
- * AUTEUR: Harsha Kanaparthi | STUDENTNUMMER: 2195344 | DATUM: 30-09-2025
- * 
- * WAT DOET DIT BESTAND?
- * Alle custom styling voor de GamePlan Scheduler applicatie.
- * Dit bestand werkt SAMEN met Bootstrap 5 - wij overschrijven alleen
- * wat nodig is voor ons gaming thema.
- * 
- * DESIGN PRINCIPES:
- * - Dark theme: Donkere achtergronden (zwart/grijs) voor gaming look
- * - Blue accents: Blauwe accenten voor interactieve elementen
- * - Responsive: Werkt op desktop, tablet en mobiel
- * - Modern: Gradiënten, schaduwen, afgeronde hoeken
+ * @author      Harsha Kanaparthi
+ * @student     2195344
+ * @date        30-09-2025
+ * @version     1.0
+ * @project     GamePlan Scheduler
  * 
  * ============================================================================
- * KLEUREN PALET:
+ * BESCHRIJVING / DESCRIPTION:
  * ============================================================================
- * Primary:    #0d6efd (Bootstrap blue)
- * Secondary:  #2c2c2c (Dark gray)
- * Background: #121212 (Near black)
- * Text:       #ffffff (White)
- * Success:    #198754 (Green)
- * Danger:     #dc3545 (Red)
- * Info:       #0dcaf0 (Cyan)
+ * Dit stylesheet bevat alle aangepaste CSS voor GamePlan Scheduler.
+ * Het bouwt voort op Bootstrap 5 en voegt custom styling toe voor:
+ * 
+ * 1. DARK GAMING THEMA - Donkere kleuren met blauwe accenten
+ * 2. RESPONSIVE DESIGN - Werkt op alle schermgroottes
+ * 3. CUSTOM COMPONENTS - Knoppen, kaarten, tabellen, formulieren
+ * 4. ANIMATIES - Hover effecten en overgangen
+ * 5. TOEGANKELIJKHEID - Focus states, contrast
+ * 
+ * This stylesheet contains all custom CSS for GamePlan Scheduler.
+ * It builds on Bootstrap 5 and adds custom gaming-themed styling.
+ * 
+ * ============================================================================
+ * CSS STRUCTUUR:
+ * ============================================================================
+ * 1. CSS Variables (Custom Properties)
+ * 2. Base Styles (html, body)
+ * 3. Layout Components (header, footer, main)
+ * 4. Form Styling
+ * 5. Table Styling
+ * 6. Card Styling
+ * 7. Button Styling
+ * 8. Animations & Transitions
+ * 9. Responsive Media Queries
  * ============================================================================
  */
 
-
-/* ============================================================================
-   ROOT VARIABLES - CSS variabelen voor hergebruik
-   ============================================================================ */
-
+/* ############################################################################
+   ##                                                                        ##
+   ##              1. CSS VARIABELEN / CSS CUSTOM PROPERTIES                ##
+   ##                                                                        ##
+   ############################################################################
+   
+   CSS variabelen maken het makkelijk om kleuren en waardes op één plek
+   te definiëren en overal te hergebruiken. Als je een kleur wilt veranderen,
+   hoef je het maar op één plek te doen!
+   
+   Syntax: --naam: waarde;
+   Gebruik: var(--naam)
+   
+   :root betekent dat deze variabelen overal beschikbaar zijn
+*/
 :root {
-    /* Achtergrond kleuren */
-    --bg-dark: #121212;            /* Hoofdachtergrond */
-    --bg-card: #1e1e1e;            /* Card achtergronden */
-    --bg-secondary: #2c2c2c;       /* Secundaire achtergrond */
-    
-    /* Tekst kleuren */
-    --text-primary: #ffffff;       /* Primaire tekst */
-    --text-muted: #adb5bd;         /* Gedempte tekst */
-    
-    /* Accent kleuren */
-    --accent-primary: #0d6efd;     /* Hoofd accent (blauw) */
-    --accent-success: #198754;     /* Succes kleur (groen) */
-    --accent-danger: #dc3545;      /* Fout kleur (rood) */
-    
-    /* Spacing */
-    --header-height: 70px;         /* Hoogte van de header */
-    --footer-height: 50px;         /* Hoogte van de footer */
-    
-    /* Randen */
-    --border-radius: 12px;         /* Standaard afgeronde hoeken */
+    /* ========================================================================
+       PRIMAIRE KLEUREN / PRIMARY COLORS
+       ======================================================================== */
+    --color-primary: #0d6efd;
+    /* Bootstrap blauw - hoofdkleur */
+    --color-primary-dark: #0a58ca;
+    /* Donkerder blauw voor hover */
+    --color-primary-light: #3d8bfd;
+    /* Lichter blauw voor accenten */
+
+    /* ========================================================================
+       ACHTERGROND KLEUREN / BACKGROUND COLORS
+       ======================================================================== */
+    --color-bg-dark: #121212;
+    /* Bijna zwart - hoofdachtergrond */
+    --color-bg-secondary: #1e1e1e;
+    /* Donkergrijs - kaarten, tabellen */
+    --color-bg-tertiary: #2c2c2c;
+    /* Lichter grijs - accenten */
+
+    /* ========================================================================
+       TEKST KLEUREN / TEXT COLORS
+       ======================================================================== */
+    --color-text-primary: #ffffff;
+    /* Wit - hoofdtekst */
+    --color-text-secondary: #adb5bd;
+    /* Grijs - secundaire tekst */
+    --color-text-muted: #6c757d;
+    /* Donkergrijs - muted tekst */
+
+    /* ========================================================================
+       STATUS KLEUREN / STATUS COLORS
+       ======================================================================== */
+    --color-success: #198754;
+    /* Groen - succes meldingen */
+    --color-warning: #ffc107;
+    /* Geel - waarschuwingen */
+    --color-danger: #dc3545;
+    /* Rood - errors, verwijderen */
+    --color-info: #0dcaf0;
+    /* Lichtblauw - informatie */
+
+    /* ========================================================================
+       SPACING / AFSTANDEN
+       ======================================================================== */
+    --spacing-xs: 0.25rem;
+    /* 4px */
+    --spacing-sm: 0.5rem;
+    /* 8px */
+    --spacing-md: 1rem;
+    /* 16px */
+    --spacing-lg: 1.5rem;
+    /* 24px */
+    --spacing-xl: 2rem;
+    /* 32px */
+
+    /* ========================================================================
+       BORDER RADIUS / HOEK AFRONDING
+       ======================================================================== */
+    --radius-sm: 0.375rem;
+    /* 6px - kleine elementen */
+    --radius-md: 0.5rem;
+    /* 8px - standaard */
+    --radius-lg: 1rem;
+    /* 16px - kaarten */
+    --radius-xl: 1.5rem;
+    /* 24px - grote knoppen */
+
+    /* ========================================================================
+       HEADER EN FOOTER HOOGTES
+       ======================================================================== */
+    --header-height: 70px;
+    /* Hoogte van de header */
+    --footer-height: 60px;
+    /* Hoogte van de footer */
+
+    /* ========================================================================
+       SCHADUWEN / SHADOWS
+       ======================================================================== */
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 0.5rem 1rem rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.5);
+
+    /* ========================================================================
+       TRANSITIES / TRANSITIONS
+       ======================================================================== */
+    --transition-fast: 0.15s ease-in-out;
+    --transition-normal: 0.3s ease-in-out;
+    --transition-slow: 0.5s ease-in-out;
 }
 
 
+/* ############################################################################
+   ##                                                                        ##
+   ##                    2. BASE STYLES / BASIS STIJLEN                      ##
+   ##                                                                        ##
+   ############################################################################
+*/
+
 /* ============================================================================
-   BODY - Basis pagina styling
+   HTML EN BODY - Basis voor de hele pagina
    ============================================================================ */
+html {
+    /* Smooth scrolling voor anchor links */
+    scroll-behavior: smooth;
+}
 
 body {
-    /* Donkere achtergrond voor gaming feel */
-    background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 100%);
-    
-    /* Witte tekst voor contrast */
-    color: var(--text-primary);
-    
-    /* Moderne sans-serif font stack */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    
-    /* Reset margin */
-    margin: 0;
-    
-    /* Ruimte voor fixed header en footer */
-    padding-top: calc(var(--header-height) + 20px);
-    padding-bottom: calc(var(--footer-height) + 20px);
-    
-    /* Minimale hoogte van viewport */
+    /* Gebruik onze CSS variabelen */
+    background-color: var(--color-bg-dark);
+    color: var(--color-text-primary);
+
+    /* Moderne, leesbare font */
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+
+    /* Padding voor fixed header en footer */
+    padding-top: var(--header-height);
+    padding-bottom: var(--footer-height);
+
+    /* Minimum hoogte voor korte pagina's */
     min-height: 100vh;
+
+    /* Margin reset */
+    margin: 0;
 }
 
+/* ============================================================================
+   SELECTIE - Wanneer gebruiker tekst selecteert
+   ============================================================================ */
+::selection {
+    background-color: var(--color-primary);
+    color: var(--color-text-primary);
+}
+
+/* ============================================================================
+   FOCUS STATES - Toegankelijkheid voor keyboard navigatie
+   ============================================================================ */
+*:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+/* ============================================================================
+   LINKS - Standaard link stijlen
+   ============================================================================ */
+a {
+    color: var(--color-primary-light);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+a:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+
+/* ############################################################################
+   ##                                                                        ##
+   ##               3. LAYOUT COMPONENTS / LAYOUT COMPONENTEN                ##
+   ##                                                                        ##
+   ############################################################################
+*/
 
 /* ============================================================================
    HEADER STYLING
    ============================================================================ */
+header {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    height: var(--header-height);
+    box-shadow: var(--shadow-md);
+    z-index: 1000;
+}
 
 header .navbar {
-    /* Gradient achtergrond voor moderne look */
-    background: linear-gradient(90deg, #0d6efd 0%, #0056b3 100%) !important;
-    
-    /* Hoogte zoals gespecificeerd in design */
-    min-height: var(--header-height);
-    
-    /* Schaduw voor diepte */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    padding-top: 0;
+    padding-bottom: 0;
+    height: 100%;
 }
 
-/* Logo styling */
 header .navbar-brand {
+    font-weight: 700;
     font-size: 1.4rem;
-    letter-spacing: 0.5px;
+    color: var(--color-text-primary) !important;
 }
 
-/* Navigatie links */
 header .nav-link {
-    /* Padding voor klikbare oppervlak (min 40px hoog) */
-    padding: 10px 15px !important;
-    
-    /* Transition voor smooth hover effect */
-    transition: all 0.3s ease;
-    
-    /* Afgeronde hoeken */
-    border-radius: 8px;
-    
-    /* Kleine marge tussen items */
-    margin: 0 3px;
+    padding: var(--spacing-sm) var(--spacing-md) !important;
+    border-radius: var(--radius-md);
+    transition: background-color var(--transition-fast);
 }
 
-/* Hover effect op nav links */
 header .nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
+    background-color: rgba(255, 255, 255, 0.1);
 }
-
 
 /* ============================================================================
    FOOTER STYLING
    ============================================================================ */
-
 footer {
-    /* Hoogte zoals gespecificeerd */
-    min-height: var(--footer-height);
-    
-    /* Subtiel gradient */
-    background: linear-gradient(90deg, #1e1e1e 0%, #2c2c2c 100%) !important;
+    background-color: var(--color-bg-secondary);
+    height: var(--footer-height);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
 }
 
+footer a {
+    transition: color var(--transition-fast);
+}
+
+footer a:hover {
+    color: var(--color-text-primary) !important;
+}
 
 /* ============================================================================
-   CARDS - Kaart componenten voor content
+   MAIN CONTENT AREA
    ============================================================================ */
-
-.card {
-    /* Donkere achtergrond */
-    background-color: var(--bg-card);
-    
-    /* Geen rand */
-    border: none;
-    
-    /* Afgeronde hoeken */
-    border-radius: var(--border-radius);
-    
-    /* Schaduw voor diepte */
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    
-    /* Margin onder elke card */
-    margin-bottom: 20px;
-    
-    /* Transition voor hover */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+main {
+    min-height: calc(100vh - var(--header-height) - var(--footer-height));
 }
 
-/* Hover effect op cards */
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 40px rgba(13, 110, 253, 0.2);
+main.container {
+    max-width: 1200px;
 }
 
-/* Card body */
-.card-body {
-    padding: 1.5rem;
-}
 
-/* Card title */
-.card-title {
-    color: var(--accent-primary);
-    font-weight: 600;
-}
-
+/* ############################################################################
+   ##                                                                        ##
+   ##                    4. FORM STYLING / FORMULIER STIJLEN                 ##
+   ##                                                                        ##
+   ############################################################################
+*/
 
 /* ============================================================================
-   TABLES - Tabel styling
+   FORM CONTAINER - Voor login/register forms
    ============================================================================ */
+.form-container {
+    max-width: 450px;
+    margin: 0 auto;
+    padding: var(--spacing-xl);
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
 
+/* ============================================================================
+   FORM CONTROLS - Input velden, textareas, selects
+   ============================================================================ */
+.form-control,
+.form-select {
+    background-color: var(--color-bg-dark);
+    border: 1px solid var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: var(--color-bg-dark);
+    border-color: var(--color-primary);
+    color: var(--color-text-primary);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.form-control::placeholder {
+    color: var(--color-text-muted);
+}
+
+/* Grote form controls */
+.form-control-lg {
+    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: 1.1rem;
+}
+
+/* ============================================================================
+   FORM LABELS
+   ============================================================================ */
+.form-label {
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+/* ============================================================================
+   FORM VALIDATION STATES
+   ============================================================================ */
+.form-control.is-invalid {
+    border-color: var(--color-danger);
+}
+
+.form-control.is-valid {
+    border-color: var(--color-success);
+}
+
+
+/* ############################################################################
+   ##                                                                        ##
+   ##                      5. TABLE STYLING / TABEL STIJLEN                  ##
+   ##                                                                        ##
+   ############################################################################
+*/
+
+/* ============================================================================
+   TABELLEN - Dark theme override
+   ============================================================================ */
 .table-dark {
-    /* Donkere achtergrond */
-    background-color: var(--bg-card);
-    
-    /* Afgeronde hoeken */
-    border-radius: var(--border-radius);
-    
-    /* Verberg overflow voor afgeronde hoeken */
+    --bs-table-bg: var(--color-bg-secondary);
+    --bs-table-border-color: var(--color-bg-tertiary);
+    border-radius: var(--radius-md);
     overflow: hidden;
 }
 
-/* Table header */
-.table-dark thead {
-    /* Blauwe header voor contrast */
-    background: linear-gradient(90deg, var(--accent-primary) 0%, #0056b3 100%);
-}
-
 .table-dark th {
-    /* Padding voor leesbaarheid */
-    padding: 15px 12px;
-    
-    /* Dikkere tekst */
     font-weight: 600;
-    
-    /* Geen rand */
-    border: none;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
 }
 
-/* Table cells */
 .table-dark td {
-    /* Padding */
-    padding: 12px;
-    
-    /* Subtiele rand */
-    border-color: rgba(255, 255, 255, 0.1);
-    
-    /* Verticaal centreren */
     vertical-align: middle;
+    padding: var(--spacing-md);
 }
 
 /* Hover effect op rijen */
-.table-dark tbody tr:hover {
-    background-color: rgba(13, 110, 253, 0.1);
+.table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.1) !important;
 }
 
+/* Responsive tabel wrapper */
+.table-responsive {
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+
+/* ############################################################################
+   ##                                                                        ##
+   ##                      6. CARD STYLING / KAART STIJLEN                   ##
+   ##                                                                        ##
+   ############################################################################
+*/
 
 /* ============================================================================
-   BUTTONS - Knop styling
+   KAARTEN - Voor kalender items, login box, etc.
    ============================================================================ */
-
-.btn {
-    /* Afgeronde hoeken */
-    border-radius: 25px;
-    
-    /* Padding voor minimaal 40px hoogte */
-    padding: 10px 25px;
-    
-    /* Dikkere tekst */
-    font-weight: 500;
-    
-    /* Transition voor animaties */
-    transition: all 0.3s ease;
-    
-    /* Geen rand standaard */
+.card {
+    background-color: var(--color-bg-secondary);
     border: none;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
 }
 
-/* Primary button */
+/* Hover effect op kaarten */
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.card-body {
+    padding: var(--spacing-lg);
+}
+
+.card-title {
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+}
+
+.card-footer {
+    background-color: transparent;
+    border-top: 1px solid var(--color-bg-tertiary);
+}
+
+
+/* ############################################################################
+   ##                                                                        ##
+   ##                     7. BUTTON STYLING / KNOP STIJLEN                   ##
+   ##                                                                        ##
+   ############################################################################
+*/
+
+/* ============================================================================
+   ALLE KNOPPEN - Basis stijlen
+   ============================================================================ */
+.btn {
+    border-radius: var(--radius-xl);
+    font-weight: 500;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    transition: all var(--transition-fast);
+    text-decoration: none;
+}
+
+/* Grote knoppen (login, register) */
+.btn-lg {
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: 1.1rem;
+}
+
+/* Kleine knoppen (actie knoppen in tabellen) */
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* ============================================================================
+   PRIMAIRE KNOP (Blauw)
+   ============================================================================ */
 .btn-primary {
-    background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
-    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+    border: none;
+    box-shadow: var(--shadow-sm);
 }
 
 .btn-primary:hover {
+    background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4);
+    box-shadow: var(--shadow-md);
 }
 
-/* Success button */
+/* ============================================================================
+   SUCCES KNOP (Groen)
+   ============================================================================ */
 .btn-success {
-    background: linear-gradient(135deg, #198754 0%, #146c43 100%);
-    box-shadow: 0 4px 15px rgba(25, 135, 84, 0.3);
+    background: linear-gradient(135deg, var(--color-success), #146c43);
+    border: none;
 }
 
-/* Warning button */
+.btn-success:hover {
+    background: linear-gradient(135deg, #20c997, var(--color-success));
+    transform: translateY(-2px);
+}
+
+/* ============================================================================
+   WAARSCHUWING KNOP (Geel - Edit)
+   ============================================================================ */
 .btn-warning {
-    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+    background: linear-gradient(135deg, var(--color-warning), #e0a800);
+    border: none;
     color: #000;
 }
 
-/* Danger button */
+.btn-warning:hover {
+    background: linear-gradient(135deg, #ffda6a, var(--color-warning));
+    color: #000;
+}
+
+/* ============================================================================
+   DANGER KNOP (Rood - Delete)
+   ============================================================================ */
 .btn-danger {
-    background: linear-gradient(135deg, #dc3545 0%, #bb2d3b 100%);
-    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+    background: linear-gradient(135deg, var(--color-danger), #bb2d3b);
+    border: none;
 }
 
-/* Small buttons */
-.btn-sm {
-    padding: 6px 15px;
-    font-size: 0.85rem;
+.btn-danger:hover {
+    background: linear-gradient(135deg, #f8d7da, var(--color-danger));
+    color: #000;
 }
-
 
 /* ============================================================================
-   FORMS - Formulier styling
+   OUTLINE KNOPPEN
    ============================================================================ */
-
-.form-control, .form-select {
-    /* Donkere achtergrond */
-    background-color: var(--bg-secondary);
-    
-    /* Witte tekst */
-    color: var(--text-primary);
-    
-    /* Subtiele rand */
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    
-    /* Afgeronde hoeken */
-    border-radius: 10px;
-    
-    /* Padding */
-    padding: 12px 15px;
-    
-    /* Transition voor focus */
-    transition: all 0.3s ease;
+.btn-outline-light {
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: var(--color-text-primary);
 }
 
-/* Focus state */
-.form-control:focus, .form-select:focus {
-    background-color: var(--bg-secondary);
-    color: var(--text-primary);
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+.btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--color-text-primary);
 }
 
-/* Placeholder tekst */
-.form-control::placeholder {
-    color: var(--text-muted);
-}
-
-/* Form labels */
-.form-label {
-    font-weight: 500;
-    margin-bottom: 8px;
+.btn-outline-light.active {
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 
-/* ============================================================================
-   ALERTS - Meldingen styling
-   ============================================================================ */
+/* ############################################################################
+   ##                                                                        ##
+   ##                8. ALERTS / MELDINGEN                                   ##
+   ##                                                                        ##
+   ############################################################################
+*/
 
 .alert {
-    /* Afgeronde hoeken */
-    border-radius: var(--border-radius);
-    
-    /* Geen rand */
+    border-radius: var(--radius-md);
     border: none;
-    
-    /* Schaduw */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    
-    /* Padding */
-    padding: 15px 20px;
+    box-shadow: var(--shadow-sm);
 }
 
-/* Close button in alert */
-.alert .btn-close {
-    filter: invert(1);
+.alert-success {
+    background-color: rgba(25, 135, 84, 0.2);
+    color: #75b798;
 }
 
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #ea868f;
+}
+
+.alert-warning {
+    background-color: rgba(255, 193, 7, 0.2);
+    color: #ffda6a;
+}
+
+.alert-info {
+    background-color: rgba(13, 202, 240, 0.2);
+    color: #6edff6;
+}
+
+
+/* ############################################################################
+   ##                                                                        ##
+   ##         9. BADGES (STATUS INDICATORS) / BADGES (STATUS INDICATOREN)    ##
+   ##                                                                        ##
+   ############################################################################
+*/
+
+.badge {
+    font-weight: 500;
+    padding: 0.4em 0.8em;
+    border-radius: var(--radius-xl);
+}
+
+
+/* ############################################################################
+   ##                                                                        ##
+   ##            10. ANIMATIES EN OVERGANGEN / ANIMATIONS & TRANSITIONS      ##
+   ##                                                                        ##
+   ############################################################################
+*/
 
 /* ============================================================================
-   RESPONSIVE DESIGN - Aanpassingen voor verschillende schermformaten
+   FADE IN ANIMATIE - Voor pagina elementen
    ============================================================================ */
-
-/* Tablets en kleine laptops (max 992px) */
-@media (max-width: 992px) {
-    .container {
-        padding: 0 20px;
-    }
-    
-    /* Navbar aanpassingen */
-    header .navbar-nav {
-        padding: 15px 0;
-    }
-    
-    header .nav-item {
-        margin: 5px 0;
-    }
-}
-
-/* Telefoons (max 768px) */
-@media (max-width: 768px) {
-    /* Kleinere fonts */
-    body {
-        font-size: 14px;
-    }
-    
-    /* Tabellen horizontaal scrollbaar */
-    .table-responsive {
-        overflow-x: auto;
-    }
-    
-    .table {
-        font-size: 0.85rem;
-    }
-    
-    /* Cards kleiner */
-    .card-body {
-        padding: 1rem;
-    }
-    
-    /* Knoppen full width op mobiel */
-    .btn-lg {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-    
-    /* Navigatie in kolom */
-    .navbar-nav {
-        flex-direction: column;
-        text-align: center;
-    }
-}
-
-/* Kleine telefoons (max 576px) */
-@media (max-width: 576px) {
-    /* Meer compacte padding */
-    body {
-        padding-top: 80px;
-        padding-bottom: 70px;
-    }
-    
-    /* H2 kleiner */
-    h2 {
-        font-size: 1.5rem;
-    }
-    
-    /* Cards geen margin */
-    .card {
-        margin: 10px 0;
-        border-radius: 10px;
-    }
-}
-
-
-/* ============================================================================
-   ANIMATIONS - Animaties voor betere UX
-   ============================================================================ */
-
-/* Fade in animatie */
 @keyframes fadeIn {
     from {
         opacity: 0;
         transform: translateY(20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-/* Pas toe op main content */
-main {
+.fade-in {
     animation: fadeIn 0.5s ease-out;
 }
 
-/* Pulse animatie voor belangrijke knoppen */
+/* ============================================================================
+   PULSE ANIMATIE - Voor notificaties
+   ============================================================================ */
 @keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.4);
-    }
-    70% {
-        box-shadow: 0 0 0 10px rgba(25, 135, 84, 0);
-    }
+
+    0%,
     100% {
-        box-shadow: 0 0 0 0 rgba(25, 135, 84, 0);
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
     }
 }
 
-.btn-success {
+.pulse {
     animation: pulse 2s infinite;
 }
 
 
+/* ############################################################################
+   ##                                                                        ##
+   ##            11. RESPONSIVE DESIGN / MEDIA QUERIES                       ##
+   ##                                                                        ##
+   ############################################################################
+   
+   Media queries passen de styling aan voor verschillende schermgroottes.
+   Mobile-first approach: we schrijven eerst mobiel, dan desktop.
+   
+   Bootstrap breakpoints:
+   - xs: < 576px (mobiel)
+   - sm: >= 576px (grote mobiel)
+   - md: >= 768px (tablet)
+   - lg: >= 992px (desktop)
+   - xl: >= 1200px (grote desktop)
+   - xxl: >= 1400px (extra groot)
+*/
+
 /* ============================================================================
-   SCROLLBAR STYLING - Aangepaste scrollbar
+   KLEINE SCHERMEN (MOBIEL) - Onder 576px
    ============================================================================ */
+@media (max-width: 575.98px) {
 
-/* Webkit browsers (Chrome, Safari, Edge) */
-::-webkit-scrollbar {
-    width: 10px;
+    /* Kleinere font voor mobiel */
+    body {
+        font-size: 0.9rem;
+    }
+
+    /* Minder padding op cards */
+    .card-body {
+        padding: var(--spacing-md);
+    }
+
+    /* Stapel tabel acties verticaal */
+    .table td:last-child .btn {
+        margin-bottom: 0.25rem;
+        width: 100%;
+    }
+
+    /* Kleinere heading */
+    h1,
+    .h1 {
+        font-size: 1.5rem;
+    }
+
+    h2,
+    .h2 {
+        font-size: 1.25rem;
+    }
+
+    /* Vollere breedte knoppen */
+    .btn-lg {
+        width: 100%;
+    }
 }
-
-::-webkit-scrollbar-track {
-    background: var(--bg-dark);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--bg-secondary);
-    border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--accent-primary);
-}
-
 
 /* ============================================================================
-   EINDE VAN HET BESTAND
+   MEDIUM SCHERMEN (TABLET) - 576px tot 768px
+   ============================================================================ */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .container {
+        padding-left: var(--spacing-lg);
+        padding-right: var(--spacing-lg);
+    }
+}
+
+/* ============================================================================
+   GROTE SCHERMEN (DESKTOP) - 992px en hoger
+   ============================================================================ */
+@media (min-width: 992px) {
+
+    /* Meer padding op desktop */
+    main.container {
+        padding-top: var(--spacing-xl);
+    }
+
+    /* Grotere kaarten op desktop */
+    .card-body {
+        padding: var(--spacing-xl);
+    }
+}
+
+
+/* ############################################################################
+   ##                                                                        ##
+   ##                  12. UTILITY CLASSES / HULP KLASSEN                    ##
+   ##                                                                        ##
+   ############################################################################
+*/
+
+/* Gaming glow effect */
+.glow-primary {
+    box-shadow: 0 0 20px rgba(13, 110, 253, 0.5);
+}
+
+.glow-success {
+    box-shadow: 0 0 20px rgba(25, 135, 84, 0.5);
+}
+
+/* Text gradient */
+.text-gradient {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-info));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ============================================================================
+   EINDE VAN STYLESHEET / END OF STYLESHEET
    ============================================================================ */

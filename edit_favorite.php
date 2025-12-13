@@ -1,12 +1,17 @@
 <?php
-// This file is edit_favorite.php - Edit a favorite game.
-// Author: Harsha Kanaparthi.
-// Date: Improved on 10-12-2025.
-// Description: Loads favorite by ID, form to edit title, description, note.
-// Improvements: Permission check, pre-fill, validation.
+/**
+ * ============================================================================
+ * edit_favorite.php - FAVORIETE GAME BEWERKEN PAGINA
+ * ============================================================================
+ * 
+ * AUTEUR: Harsha Kanaparthi | STUDENTNUMMER: 2195344 | DATUM: 30-09-2025
+ * 
+ * WAT DOET DIT BESTAND?
+ * Formulier om een favoriete game te bewerken.
+ * ============================================================================
+ */
 
 require_once 'functions.php';
-
 checkSessionTimeout();
 
 if (!isLoggedIn()) {
@@ -15,7 +20,6 @@ if (!isLoggedIn()) {
 }
 
 $userId = getUserId();
-
 $id = $_GET['id'] ?? 0;
 
 if (!is_numeric($id)) {
@@ -24,8 +28,8 @@ if (!is_numeric($id)) {
 }
 
 $favorites = getFavoriteGames($userId);
-
-$game = array_filter($favorites, function($g) use ($id) { return $g['game_id'] == $id; });
+$game = array_filter($favorites, function ($g) use ($id) {
+    return $g['game_id'] == $id; });
 $game = reset($game);
 
 if (!$game) {
@@ -52,37 +56,62 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Favorite - GamePlan Scheduler</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="bg-dark text-light">
     <?php include 'header.php'; ?>
-    <main class="container mt-5 pt-5">
+
+    <main class="container mt-4">
         <?php echo getMessage(); ?>
         <?php if ($error): ?>
-            <div class="alert alert-danger"><?php echo safeEcho($error); ?></div>
-        <?php endif; ?>
-        <h2>Edit Favorite Game</h2>
-        <form method="POST">
-            <div class="mb-3">
-                <label for="title" class="form-label">Game Title</label>
-                <input type="text" id="title" name="title" class="form-control" required maxlength="100" value="<?php echo safeEcho($game['titel']); ?>" aria-label="Game Title">
+            <div class="alert alert-danger"><?php echo safeEcho($error); ?></div><?php endif; ?>
+
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header bg-warning text-dark">
+                        <h4 class="mb-0"><i class="bi bi-pencil me-2"></i>Edit Favorite Game</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Game Title *</label>
+                                <input type="text" id="title" name="title" class="form-control" required maxlength="100"
+                                    value="<?php echo safeEcho($game['titel']); ?>">
+                            </div>
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea id="description" name="description" class="form-control" rows="2"
+                                    maxlength="500"><?php echo safeEcho($game['description']); ?></textarea>
+                            </div>
+                            <div class="mb-4">
+                                <label for="note" class="form-label">Personal Note</label>
+                                <textarea id="note" name="note" class="form-control"
+                                    rows="2"><?php echo safeEcho($game['note']); ?></textarea>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-warning">
+                                    <i class="bi bi-check-circle me-1"></i>Update
+                                </button>
+                                <a href="profile.php" class="btn btn-outline-secondary">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea id="description" name="description" class="form-control" rows="2" maxlength="500" aria-label="Game Description"><?php echo safeEcho($game['description']); ?></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="note" class="form-label">Note</label>
-                <textarea id="note" name="note" class="form-control" rows="2" aria-label="Note"><?php echo safeEcho($game['note']); ?></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Update</button>
-        </form>
+        </div>
     </main>
+
     <?php include 'footer.php'; ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

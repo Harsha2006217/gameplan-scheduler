@@ -1,30 +1,132 @@
 <?php
-// This file is header.php - Top part of every page.
-// Author: Harsha Kanaparthi.
-// Date: Improved on 10-12-2025.
-// Description: Logo, menu with links, Bootstrap navbar for responsive menu (hamburger on mobile).
-// Improvements: Made navbar collapse on small screens, highlighted "Add Event" as green button.
-
+/**
+ * ============================================================================
+ * header.php - NAVIGATIE HEADER COMPONENT
+ * ============================================================================
+ * 
+ * AUTEUR: Harsha Kanaparthi | STUDENTNUMMER: 2195344 | DATUM: 30-09-2025
+ * 
+ * WAT DOET DIT BESTAND?
+ * Dit is de navigatie balk die bovenaan ELKE pagina verschijnt.
+ * Het wordt ingevoegd met <?php include 'header.php'; ?>
+ * 
+ * FUNCTIONALITEIT:
+ * - Logo met link naar home (index.php)
+ * - Navigatie menu met alle belangrijke pagina's
+ * - Hamburger menu op mobiel (responsive)
+ * - Uitlog knop
+ * 
+ * DESIGN KEUZES:
+ * - Fixed-top: header blijft zichtbaar bij scrollen
+ * - Dark theme met blauwe accenten (gaming look)
+ * - Bootstrap navbar voor responsiviteit
+ * ============================================================================
+ */
 ?>
-<header class="fixed-top bg-primary p-3 mb-4"> <!-- fixed-top sticks to top, p-3 padding. -->
-    <div class="container d-flex justify-content-between align-items-center"> <!-- Container centers, d-flex for layout. -->
-        <a href="index.php" class="text-decoration-none"> <!-- Link to home, no underline. -->
-            <h1 class="h4 mb-0 text-white">GamePlan Scheduler</h1> <!-- Logo text. -->
-        </a>
-        <nav class="navbar navbar-expand-lg"> <!-- Navbar for menu. -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <!-- Hamburger button on mobile. -->
+
+<!-- 
+    BOOTSTRAP NAVBAR COMPONENT
+    ==========================
+    fixed-top: Header blijft altijd bovenaan, ook bij scrollen
+    navbar-expand-lg: Op grote schermen (>992px) zijn menu items zichtbaar
+                      Op kleine schermen wordt het een hamburger menu
+    bg-primary: Blauwe achtergrond (Bootstrap primary kleur)
+    shadow: Subtiele schaduw voor diepte effect
+-->
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top shadow">
+        <div class="container">
+
+            <!-- 
+                LOGO / BRAND
+                ============
+                Link naar de homepage met het app logo en naam
+                bi-controller: Bootstrap icon voor game controller
+            -->
+            <a class="navbar-brand d-flex align-items-center fw-bold" href="index.php">
+                <i class="bi bi-controller fs-4 me-2"></i>
+                GamePlan Scheduler
+            </a>
+
+            <!-- 
+                HAMBURGER BUTTON (alleen zichtbaar op mobiel)
+                =============================================
+                data-bs-toggle="collapse": Bootstrap JavaScript opent het menu
+                data-bs-target="#navbarNav": ID van het menu dat opent
+                aria-controls: Accessibility - welk element wordt bestuurd
+                aria-expanded: Accessibility - is menu open of dicht
+            -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav"> <!-- Collapse hides on small screens. -->
-                <ul class="navbar-nav"> <!-- List of links. -->
-                    <li class="nav-item"><a class="nav-link text-white" href="index.php">Home</a></li> <!-- Each li is a menu item. -->
-                    <li class="nav-item"><a class="nav-link text-white" href="profile.php">Profile</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="add_friend.php">Friends</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="add_schedule.php">Add Schedule</a></li>
-                    <li class="nav-item"><a class="nav-link text-white btn btn-success ms-2" href="add_event.php">Add Event</a></li> <!-- Green button for highlight. -->
-                    <li class="nav-item"><a class="nav-link text-white" href="index.php?logout=1">Logout</a></li>
+
+            <!-- 
+                NAVIGATIE MENU
+                ==============
+                collapse navbar-collapse: Verborgen op mobiel, zichtbaar op desktop
+                id="navbarNav": Moet overeenkomen met data-bs-target hierboven
+            -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+
+                <!-- ms-auto: Menu items rechts uitlijnen -->
+                <ul class="navbar-nav ms-auto align-items-center">
+
+                    <!-- HOME link -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.php">
+                            <i class="bi bi-house-door me-1"></i>Home
+                        </a>
+                    </li>
+
+                    <!-- PROFIEL link -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.php">
+                            <i class="bi bi-person me-1"></i>Profile
+                        </a>
+                    </li>
+
+                    <!-- VRIENDEN link -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="add_friend.php">
+                            <i class="bi bi-people me-1"></i>Friends
+                        </a>
+                    </li>
+
+                    <!-- SCHEDULE TOEVOEGEN link -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="add_schedule.php">
+                            <i class="bi bi-calendar-plus me-1"></i>Add Schedule
+                        </a>
+                    </li>
+
+                    <!-- 
+                        ADD EVENT BUTTON
+                        ================
+                        Dit is een opvallende knop (btn-success = groen)
+                        Volgens verbetering #1003: "Evenement toevoegen" prominent maken
+                    -->
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-success" href="add_event.php">
+                            <i class="bi bi-plus-circle me-1"></i>Add Event
+                        </a>
+                    </li>
+
+                    <!-- 
+                        LOGOUT LINK
+                        ===========
+                        Stuurt naar index.php met logout parameter
+                        index.php handelt de logout af via logout() functie
+                    -->
+                    <li class="nav-item ms-lg-2">
+                        <a class="nav-link text-warning" href="index.php?logout=1">
+                            <i class="bi bi-box-arrow-right me-1"></i>Logout
+                        </a>
+                    </li>
+
                 </ul>
             </div>
-        </nav>
-    </div>
+
+        </div>
+    </nav>
 </header>

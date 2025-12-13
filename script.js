@@ -1,339 +1,514 @@
 /**
  * ============================================================================
- * script.js - CLIENT-SIDE JAVASCRIPT
+ * script.js - Client-Side JavaScript voor GamePlan Scheduler
  * ============================================================================
  * 
- * AUTEUR: Harsha Kanaparthi | STUDENTNUMMER: 2195344 | DATUM: 30-09-2025
+ * @author      Harsha Kanaparthi
+ * @student     2195344
+ * @date        30-09-2025
+ * @version     1.0
+ * @project     GamePlan Scheduler
  * 
- * WAT DOET DIT BESTAND?
- * Alle JavaScript code voor de GamePlan Scheduler applicatie.
- * Dit bestand zorgt voor:
- * - Formulier validatie (voordat data naar server wordt gestuurd)
- * - Reminder pop-ups voor events
- * - Interactieve feedback voor gebruikers
+ * ============================================================================
+ * BESCHRIJVING / DESCRIPTION:
+ * ============================================================================
+ * Dit JavaScript bestand bevat alle client-side functionaliteit:
  * 
+ * 1. FORM VALIDATIE - Controleert invoer voordat het naar server gaat
+ * 2. BEVESTIGINGSBERICHTEN - Vraagt bevestiging voor destructieve acties
+ * 3. REMINDER POP-UPS - Toont herinneringen voor events
+ * 4. UI VERBETERINGEN - Interactieve elementen
+ * 
+ * This JavaScript file contains all client-side functionality for
+ * form validation, confirmations, and interactive UI elements.
+ * 
+ * ============================================================================
  * WAAROM CLIENT-SIDE VALIDATIE?
- * - Snellere feedback (geen server request nodig)
- * - Betere gebruikerservaring
- * - Minder serverbelasting
+ * ============================================================================
+ * Client-side validatie is AANVULLING op server-side validatie, niet vervanging!
  * 
- * LET OP: Server-side validatie (in PHP) is ALTIJD nog nodig!
- * Client-side validatie kan worden omzeild door hackers.
+ * Voordelen:
+ * - Snellere feedback aan gebruiker (geen server request nodig)
+ * - Betere gebruikerservaring
+ * - Minder onnodige server requests
+ * 
+ * Nadelen / Waarschuwing:
+ * - JavaScript kan worden uitgeschakeld
+ * - Kan worden omzeild door hackers
+ * - ALTIJD server-side validatie nodig!
  * ============================================================================
  */
 
 
-// ============================================================================
-// LOGIN FORMULIER VALIDATIE
-// ============================================================================
+// ############################################################################
+// ##                                                                        ##
+// ##            1. LOGIN FORMULIER VALIDATIE                                ##
+// ##                                                                        ##
+// ############################################################################
 
 /**
- * validateLoginForm() - Valideert het login formulier
+ * validateLoginForm() - Valideer Login Formulier
  * 
- * WORDT AANGEROEPEN: onsubmit="return validateLoginForm();"
- * RETURN: true = formulier mag verzonden, false = stopped verzenden
+ * Deze functie wordt aangeroepen wanneer de gebruiker op de login knop klikt.
+ * Het controleert of alle velden correct zijn ingevuld voordat het
+ * formulier naar de server wordt gestuurd.
  * 
- * CONTROLES:
- * 1. Email is niet leeg
- * 2. Email heeft geldig formaat (bevat @ en .)
- * 3. Wachtwoord is niet leeg
+ * @returns {boolean} true om formulier te versturen, false om te blokkeren
+ * 
+ * HOE WERKT DIT?
+ * 1. Functie wordt aangeroepen via onsubmit="return validateLoginForm();"
+ * 2. Als functie true teruggeeft: formulier wordt verstuurd
+ * 3. Als functie false teruggeeft: formulier wordt NIET verstuurd
  */
 function validateLoginForm() {
-    // Haal waarden op uit formulier velden
-    // .value = de ingevoerde tekst
-    // .trim() = verwijder spaties aan begin en eind
+    // ========================================================================
+    // STAP 1: HAAL DE WAARDEN OP UIT DE INVOERVELDEN
+    // ========================================================================
+    // document.getElementById() vindt een HTML element op basis van zijn id
+    // .value haalt de ingevoerde tekst op
+    // .trim() verwijdert spaties aan begin en eind (BUG FIX #1001!)
+    // ========================================================================
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value.trim();
-    
-    // Controle 1: Zijn beide velden ingevuld?
+
+    // ========================================================================
+    // STAP 2: CONTROLEER OF VELDEN NIET LEEG ZIJN
+    // ========================================================================
+    // !email is true als email leeg is (lege string is "falsy" in JavaScript)
+    // ========================================================================
     if (!email || !password) {
-        // alert() toont een pop-up bericht
+        // Toon foutmelding aan gebruiker
         alert('Email and password are required.');
-        // return false = stop het verzenden van het formulier
+        // Return false = formulier wordt NIET verstuurd
         return false;
     }
-    
-    // Controle 2: Is het email formaat geldig?
-    // Regex uitleg: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    // ^ = begin van string
-    // [^\s@]+ = één of meer tekens dat geen spatie of @ is
-    // @ = letterlijke @
-    // [^\s@]+ = domein (bijv. "gmail")
-    // \. = letterlijke punt
-    // [^\s@]+ = extensie (bijv. "com")
-    // $ = einde van string
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        alert('Invalid email format. Please use: name@example.com');
+
+    // ========================================================================
+    // STAP 3: CONTROLEER EMAIL FORMAAT MET REGULIERE EXPRESSIE (REGEX)
+    // ========================================================================
+    // Regex uitleg:
+    // [^\s@]+ = één of meer tekens die NIET spatie of @ zijn
+    // @       = letterlijk @-teken
+    // [^\s@]+ = één of meer tekens die NIET spatie of @ zijn
+    // \.      = letterlijk punt (escaped met \)
+    // [^\s@]+ = één of meer tekens die NIET spatie of @ zijn
+    // 
+    // .test() controleert of de string overeenkomt met het patroon
+    // ========================================================================
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+        alert('Please enter a valid email address (e.g., name@example.com).');
         return false;
     }
-    
-    // Alles OK - formulier mag verzonden worden
+
+    // ========================================================================
+    // STAP 4: ALLES OK - LAAT FORMULIER DOORGAAN
+    // ========================================================================
+    // Return true = formulier wordt verstuurd naar server
+    // ========================================================================
     return true;
 }
 
 
-// ============================================================================
-// REGISTRATIE FORMULIER VALIDATIE
-// ============================================================================
+// ############################################################################
+// ##                                                                        ##
+// ##            2. REGISTRATIE FORMULIER VALIDATIE                          ##
+// ##                                                                        ##
+// ############################################################################
 
 /**
- * validateRegisterForm() - Valideert het registratie formulier
+ * validateRegisterForm() - Valideer Registratie Formulier
  * 
- * CONTROLES:
- * 1. Alle velden zijn ingevuld
- * 2. Gebruikersnaam maximaal 50 karakters
- * 3. Email heeft geldig formaat
- * 4. Wachtwoord minimaal 8 karakters
+ * Controleert of alle registratie velden correct zijn:
+ * - Username: niet leeg, max 50 karakters
+ * - Email: geldig formaat
+ * - Password: minimaal 8 karakters
+ * 
+ * @returns {boolean} true om door te gaan, false om te blokkeren
  */
 function validateRegisterForm() {
+    // Haal waarden op
     const username = document.getElementById('username').value.trim();
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value.trim();
-    
-    // Controle 1: Alle velden verplicht
+
+    // ========================================================================
+    // VALIDATIE: ALLE VELDEN VERPLICHT
+    // ========================================================================
     if (!username || !email || !password) {
-        alert('All fields are required.');
+        alert('All fields are required. Please fill in username, email, and password.');
         return false;
     }
-    
-    // Controle 2: Gebruikersnaam lengte
+
+    // ========================================================================
+    // VALIDATIE: USERNAME LENGTE
+    // ========================================================================
+    // .length geeft het aantal karakters in de string
+    // ========================================================================
     if (username.length > 50) {
-        alert('Username is too long (maximum 50 characters).');
+        alert('Username is too long. Maximum 50 characters allowed.');
         return false;
     }
-    
-    // Controle 3: Email formaat
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        alert('Invalid email format.');
+
+    // ========================================================================
+    // VALIDATIE: GEEN SPATIES IN USERNAME (optioneel maar handig)
+    // ========================================================================
+    // /^\s*$/ matcht strings die ALLEEN whitespace bevatten
+    // ========================================================================
+    if (/^\s*$/.test(username)) {
+        alert('Username cannot be only spaces.');
         return false;
     }
-    
-    // Controle 4: Wachtwoord lengte (beveiliging)
+
+    // ========================================================================
+    // VALIDATIE: EMAIL FORMAAT
+    // ========================================================================
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+        alert('Please enter a valid email address.');
+        return false;
+    }
+
+    // ========================================================================
+    // VALIDATIE: WACHTWOORD LENGTE (minimaal 8 karakters)
+    // ========================================================================
+    // 8 karakters is een goede balans tussen veiligheid en usability
+    // ========================================================================
     if (password.length < 8) {
         alert('Password must be at least 8 characters for security.');
         return false;
     }
-    
+
+    // Alles OK
     return true;
 }
 
 
-// ============================================================================
-// SCHEDULE FORMULIER VALIDATIE
-// ============================================================================
+// ############################################################################
+// ##                                                                        ##
+// ##            3. SCHEDULE FORMULIER VALIDATIE                             ##
+// ##                                                                        ##
+// ############################################################################
 
 /**
- * validateScheduleForm() - Valideert het speelschema formulier
+ * validateScheduleForm() - Valideer Schedule Formulier
  * 
- * CONTROLES:
- * 1. Game titel is niet leeg en geen spaties alleen
- * 2. Datum is in de toekomst
- * 3. Tijd heeft correct formaat
- * 4. Vrienden lijst heeft geen lege items
+ * Controleert speelschema formulier:
+ * - Game title: verplicht, niet alleen spaties (BUG FIX #1001!)
+ * - Date: verplicht, moet in de toekomst zijn (BUG FIX #1004!)
+ * - Time: geldig formaat
+ * - Friends/Shared: optioneel, maar geldig formaat als ingevuld
+ * 
+ * @returns {boolean} true om door te gaan, false om te blokkeren
  */
 function validateScheduleForm() {
+    // Haal waarden op
     const gameTitle = document.getElementById('game_title').value.trim();
     const date = document.getElementById('date').value;
     const time = document.getElementById('time').value;
-    const friendsStr = document.getElementById('friends_str').value.trim();
-    const sharedWithStr = document.getElementById('shared_with_str').value.trim();
-    
-    // Controle 1: Game titel verplicht (lost BUG #1001 op)
-    // /^\s*$/ = regex die alleen spaties matcht
+
+    // Optionele velden (kunnen null zijn als niet op pagina)
+    const friendsElement = document.getElementById('friends_str');
+    const sharedElement = document.getElementById('shared_with_str');
+    const friendsStr = friendsElement ? friendsElement.value.trim() : '';
+    const sharedWithStr = sharedElement ? sharedElement.value.trim() : '';
+
+    // ========================================================================
+    // VALIDATIE: GAME TITLE (BUG FIX #1001!)
+    // ========================================================================
+    // Controleert op lege string EN string met alleen spaties
+    // Dit voorkomt dat het profiel wordt opgeslagen met lege games
+    // ========================================================================
     if (!gameTitle || /^\s*$/.test(gameTitle)) {
-        alert('Game title is required and cannot be only spaces.');
+        alert('Game title is required and cannot contain only spaces.');
         return false;
     }
-    
-    // Controle 2: Datum moet in de toekomst liggen
-    // new Date(date) = maak Date object van de geselecteerde datum
-    // new Date() = huidige datum en tijd
+
+    // ========================================================================
+    // VALIDATIE: DATUM IN DE TOEKOMST (BUG FIX #1004!)
+    // ========================================================================
+    // new Date(date) maakt een datum object van de string
+    // new Date() zonder argument geeft de huidige datum/tijd
+    // 
+    // We resetten de uren naar 0 zodat een datum VANDAAG ook geldig is
+    // ========================================================================
+    if (!date) {
+        alert('Please select a date.');
+        return false;
+    }
+
     const selectedDate = new Date(date);
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Reset tijd naar middernacht voor vergelijking
-    
-    if (!date || selectedDate < today) {
-        alert('Date must be today or in the future.');
+    today.setHours(0, 0, 0, 0); // Reset naar begin van vandaag
+
+    if (selectedDate < today) {
+        alert('Date must be today or in the future. You cannot schedule in the past.');
         return false;
     }
-    
-    // Controle 3: Tijd formaat (HH:MM)
-    // ([01]?[0-9]|2[0-3]) = uur: 0-9, 10-19, of 20-23
-    // : = letterlijke dubbele punt
-    // [0-5][0-9] = minuten: 00-59
-    if (!/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(time)) {
-        alert('Invalid time format. Please use HH:MM (e.g., 14:30).');
+
+    // ========================================================================
+    // VALIDATIE: TIJD FORMAAT
+    // ========================================================================
+    // Regex voor 24-uurs formaat: 00:00 tot 23:59
+    // ========================================================================
+    const timePattern = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+    if (!time || !timePattern.test(time)) {
+        alert('Please enter a valid time in HH:MM format (e.g., 14:30).');
         return false;
     }
-    
-    // Controle 4: Geen lege items in komma-gescheiden lijsten
-    if (friendsStr && !/^[a-zA-Z0-9,\s]*$/.test(friendsStr)) {
-        alert('Friends list can only contain letters, numbers, and commas.');
+
+    // ========================================================================
+    // VALIDATIE: KOMMA-GESCHEIDEN VELDEN
+    // ========================================================================
+    // Controleert dat usernames alleen geldige karakters bevatten
+    // [a-zA-Z0-9,\s]* = alleen letters, cijfers, komma's en spaties
+    // ========================================================================
+    const listPattern = /^[a-zA-Z0-9_,\s]*$/;
+    if (friendsStr && !listPattern.test(friendsStr)) {
+        alert('Friends field contains invalid characters. Use only letters, numbers, and commas.');
         return false;
     }
-    
-    if (sharedWithStr && !/^[a-zA-Z0-9,\s]*$/.test(sharedWithStr)) {
-        alert('Shared with list can only contain letters, numbers, and commas.');
+    if (sharedWithStr && !listPattern.test(sharedWithStr)) {
+        alert('Shared with field contains invalid characters. Use only letters, numbers, and commas.');
         return false;
     }
-    
+
+    // Alles OK
     return true;
 }
 
 
-// ============================================================================
-// EVENT FORMULIER VALIDATIE
-// ============================================================================
+// ############################################################################
+// ##                                                                        ##
+// ##            4. EVENT FORMULIER VALIDATIE                                ##
+// ##                                                                        ##
+// ############################################################################
 
 /**
- * validateEventForm() - Valideert het evenement formulier
+ * validateEventForm() - Valideer Event Formulier
  * 
- * CONTROLES:
- * 1. Titel is niet leeg en max 100 karakters
- * 2. Datum is in de toekomst
- * 3. Tijd heeft correct formaat
- * 4. Beschrijving maximaal 500 karakters
- * 5. Externe link is een geldige URL
+ * Controleert evenement formulier met alle velden.
+ * 
+ * @returns {boolean} true om door te gaan, false om te blokkeren
  */
 function validateEventForm() {
+    // Haal waarden op
     const title = document.getElementById('title').value.trim();
     const date = document.getElementById('date').value;
     const time = document.getElementById('time').value;
-    const description = document.getElementById('description').value;
-    const externalLink = document.getElementById('external_link').value;
-    const sharedWithStr = document.getElementById('shared_with_str').value.trim();
-    
-    // Controle 1: Titel verplicht met max lengte
+    const descriptionElement = document.getElementById('description');
+    const description = descriptionElement ? descriptionElement.value : '';
+    const externalLinkElement = document.getElementById('external_link');
+    const externalLink = externalLinkElement ? externalLinkElement.value.trim() : '';
+    const sharedElement = document.getElementById('shared_with_str');
+    const sharedWithStr = sharedElement ? sharedElement.value.trim() : '';
+
+    // ========================================================================
+    // VALIDATIE: TITEL (BUG FIX #1001!)
+    // ========================================================================
     if (!title || /^\s*$/.test(title)) {
-        alert('Title is required and cannot be only spaces.');
+        alert('Event title is required and cannot contain only spaces.');
         return false;
     }
-    
+
     if (title.length > 100) {
-        alert('Title is too long (maximum 100 characters).');
+        alert('Event title is too long. Maximum 100 characters allowed.');
         return false;
     }
-    
-    // Controle 2: Datum in toekomst
+
+    // ========================================================================
+    // VALIDATIE: DATUM (BUG FIX #1004!)
+    // ========================================================================
+    if (!date) {
+        alert('Please select a date for the event.');
+        return false;
+    }
+
     const selectedDate = new Date(date);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
-    if (!date || selectedDate < today) {
-        alert('Date must be today or in the future.');
+
+    if (selectedDate < today) {
+        alert('Event date must be today or in the future.');
         return false;
     }
-    
-    // Controle 3: Tijd formaat
-    if (!/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(time)) {
-        alert('Invalid time format. Please use HH:MM.');
+
+    // ========================================================================
+    // VALIDATIE: TIJD FORMAAT
+    // ========================================================================
+    const timePattern = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+    if (!time || !timePattern.test(time)) {
+        alert('Please enter a valid time in HH:MM format.');
         return false;
     }
-    
-    // Controle 4: Beschrijving lengte
+
+    // ========================================================================
+    // VALIDATIE: BESCHRIJVING LENGTE
+    // ========================================================================
     if (description.length > 500) {
-        alert('Description is too long (maximum 500 characters).');
+        alert('Description is too long. Maximum 500 characters allowed.');
         return false;
     }
-    
-    // Controle 5: URL formaat (als ingevuld)
-    // Deze regex controleert of het begint met http:// of https://
-    if (externalLink && !/^https?:\/\/.+/.test(externalLink)) {
-        alert('External link must start with http:// or https://');
+
+    // ========================================================================
+    // VALIDATIE: EXTERNE LINK (optioneel, maar moet geldig zijn als ingevuld)
+    // ========================================================================
+    // Eenvoudige URL check: moet beginnen met http:// of https://
+    // ========================================================================
+    if (externalLink) {
+        const urlPattern = /^https?:\/\/.+/i;
+        if (!urlPattern.test(externalLink)) {
+            alert('External link must be a valid URL starting with http:// or https://');
+            return false;
+        }
+    }
+
+    // ========================================================================
+    // VALIDATIE: SHARED WITH (komma-gescheiden)
+    // ========================================================================
+    const listPattern = /^[a-zA-Z0-9_,\s]*$/;
+    if (sharedWithStr && !listPattern.test(sharedWithStr)) {
+        alert('Shared with field contains invalid characters.');
         return false;
     }
-    
-    // Controle 6: Shared with formaat
-    if (sharedWithStr && !/^[a-zA-Z0-9,\s]*$/.test(sharedWithStr)) {
-        alert('Shared with list can only contain letters, numbers, and commas.');
-        return false;
-    }
-    
+
+    // Alles OK
     return true;
 }
 
 
-// ============================================================================
-// REMINDER FUNCTIONALITEIT
-// ============================================================================
+// ############################################################################
+// ##                                                                        ##
+// ##            5. DOCUMENT READY - INITIALISATIE                           ##
+// ##                                                                        ##
+// ############################################################################
 
 /**
- * Wanneer de pagina volledig is geladen, controleer op reminders.
+ * DOMContentLoaded Event Handler
  * 
- * DOMContentLoaded = event dat afgaat wanneer HTML is geparsed
- * Dit is beter dan window.onload omdat we niet wachten op afbeeldingen
+ * Deze code wordt uitgevoerd zodra de DOM volledig is geladen.
+ * Hier initialiseren we JavaScript functionaliteit.
+ * 
+ * DOMContentLoaded vs load:
+ * - DOMContentLoaded: DOM is klaar (HTML geparsed)
+ * - load: alles is geladen (incl. afbeeldingen, CSS, etc.)
+ * 
+ * DOMContentLoaded is sneller en meestal voldoende.
  */
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('GamePlan Scheduler loaded - Checking for reminders...');
-    
-    // De reminders worden via PHP (index.php) als JSON doorgegeven
-    // en automatisch getoond via een inline script block
+document.addEventListener('DOMContentLoaded', function () {
+    // ========================================================================
+    // CONSOLE LOG VOOR DEBUGGING
+    // ========================================================================
+    // Dit helpt bij ontwikkeling om te zien of het script laadt
+    // ========================================================================
+    console.log('GamePlan Scheduler - JavaScript loaded successfully');
+    console.log('Checking for reminders...');
+
+    // ========================================================================
+    // INITIALISEER TOOLTIPS (ALS BOOTSTRAP AANWEZIG)
+    // ========================================================================
+    // Tooltips zijn kleine pop-ups die verschijnen bij hover
+    // ========================================================================
+    if (typeof bootstrap !== 'undefined') {
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        const tooltipList = [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el));
+    }
+
+    // ========================================================================
+    // AUTO-DISMISS ALERTS NA 5 SECONDEN
+    // ========================================================================
+    // Zoek alle alert elementen en sluit ze automatisch na 5 seconden
+    // ========================================================================
+    const alerts = document.querySelectorAll('.alert-dismissible');
+    alerts.forEach(alert => {
+        setTimeout(() => {
+            // Gebruik Bootstrap's Alert class om netjes te sluiten
+            if (typeof bootstrap !== 'undefined') {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }
+        }, 5000); // 5000 milliseconden = 5 seconden
+    });
+
+    // ========================================================================
+    // NOTIFICATIE TOESTEMMING VRAGEN
+    // ========================================================================
+    // Web Notifications API voor reminder pop-ups
+    // ========================================================================
+    if ('Notification' in window) {
+        if (Notification.permission === 'default') {
+            // Vraag toestemming aan gebruiker
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    console.log('Notification permission granted');
+                }
+            });
+        }
+    }
 });
 
 
-// ============================================================================
-// HULP FUNCTIES
-// ============================================================================
+// ############################################################################
+// ##                                                                        ##
+// ##            6. HELPER FUNCTIES / UTILITY FUNCTIONS                      ##
+// ##                                                                        ##
+// ############################################################################
 
 /**
- * showNotification() - Toont een mooie notificatie (alternatief voor alert)
+ * showNotification() - Toon Browser Notificatie
  * 
- * @param {string} message - Het bericht om te tonen
- * @param {string} type - 'success', 'error', 'warning', 'info'
+ * Toont een native browser notificatie als toestemming is gegeven.
+ * 
+ * @param {string} title   De titel van de notificatie
+ * @param {string} message Het bericht
+ * @param {string} icon    (optioneel) URL naar icoon
  */
-function showNotification(message, type = 'info') {
-    // Maak container als deze nog niet bestaat
-    let container = document.getElementById('notification-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'notification-container';
-        container.style.cssText = 'position: fixed; top: 80px; right: 20px; z-index: 9999;';
-        document.body.appendChild(container);
+function showNotification(title, message, icon = null) {
+    if ('Notification' in window && Notification.permission === 'granted') {
+        const options = {
+            body: message,
+            icon: icon || '/favicon.ico',
+            badge: icon || '/favicon.ico',
+            vibrate: [200, 100, 200] // Vibratie patroon voor mobiel
+        };
+        new Notification(title, options);
+    } else {
+        // Fallback naar alert
+        alert(`${title}\n\n${message}`);
     }
-    
-    // Bepaal kleur op basis van type
-    const colors = {
-        success: '#198754',
-        error: '#dc3545',
-        warning: '#ffc107',
-        info: '#0dcaf0'
-    };
-    
-    // Maak notificatie element
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-        background: ${colors[type] || colors.info};
-        color: white;
-        padding: 15px 25px;
-        border-radius: 10px;
-        margin-bottom: 10px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        animation: slideIn 0.3s ease;
-    `;
-    notification.textContent = message;
-    
-    // Voeg toe aan container
-    container.appendChild(notification);
-    
-    // Verwijder na 5 seconden
-    setTimeout(() => {
-        notification.style.animation = 'fadeOut 0.3s ease';
-        setTimeout(() => notification.remove(), 300);
-    }, 5000);
 }
 
+/**
+ * formatDate() - Formatteer Datum voor Weergave
+ * 
+ * Zet een ISO datum (YYYY-MM-DD) om naar een leesbaar formaat.
+ * 
+ * @param {string} dateString De datum string
+ * @returns {string} Geformatteerde datum (bijv. "15 October 2025")
+ */
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+}
 
 /**
- * confirmDelete() - Vraagt bevestiging voor verwijderen
+ * formatTime() - Formatteer Tijd voor Weergave
  * 
- * @param {string} itemType - Wat wordt verwijderd (bijv. "friend", "event")
- * @returns {boolean} - true als gebruiker bevestigt
+ * Zet 24-uurs tijd om naar 12-uurs formaat.
+ * 
+ * @param {string} timeString De tijd string (HH:MM)
+ * @returns {string} Geformatteerde tijd (bijv. "2:30 PM")
  */
-function confirmDelete(itemType) {
-    return confirm(`Are you sure you want to delete this ${itemType}? This action cannot be undone.`);
+function formatTime(timeString) {
+    const [hours, minutes] = timeString.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${minutes} ${ampm}`;
 }
 
 
 // ============================================================================
-// EINDE VAN HET BESTAND
+// EINDE VAN JAVASCRIPT BESTAND / END OF JAVASCRIPT FILE
 // ============================================================================

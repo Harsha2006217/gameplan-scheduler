@@ -1,159 +1,58 @@
 <?php
-// ============================================================================
-// DELETE.PHP - Universal Delete Handler
-// ============================================================================
-// Author       : Harsha Kanaparthi (Student Number: 2195344)
-// Date         : 30-09-2025
-// Version      : 1.0
-// Project      : GamePlan Scheduler - MBO-4 Software Development Examination
-// ============================================================================
-// DESCRIPTION:
-// This file handles DELETE operations for multiple data types.
-// It uses URL parameters to determine what to delete:
-// - ?type=friend&id=123 → Delete friend with ID 123
-// - ?type=schedule&id=456 → Delete schedule with ID 456
-// - ?type=event&id=789 → Delete event with ID 789
-// - ?type=favorite&id=101 → Delete favorite game with ID 101
-//
-// SECURITY FEATURES:
-// - User must be logged in
-// - User can only delete their OWN data (ownership verified)
-// - Soft delete used where applicable (deleted_at timestamp)
-// - Invalid types/IDs redirect safely
-//
-// SOFT DELETE EXPLANATION:
-// Instead of permanently removing data from the database:
-// - We set deleted_at = NOW() (current timestamp)
-// - The record still exists but is "marked as deleted"
-// - WHERE deleted_at IS NULL filters out deleted records
-// - Benefits: Data can be recovered, audit trail maintained
-// ============================================================================
+// delete.php - Delete Action Handler
+// Author: Harsha Kanaparthi
+// Date: 30-09-2025
+// Description: 
+// This script doesn't have a visible page. 
+// It receives a request (e.g. "delete friend ID 5") and executes it, 
+// then sends the user back to the previous page.
 
-
-// Include core functions
 require_once 'functions.php';
-
-// Check session timeout
 checkSessionTimeout();
 
-// Must be logged in
+// Security: User must be logged in.
 if (!isLoggedIn()) {
     header("Location: login.php");
     exit;
 }
 
-// Get user ID
+// Get the 'type' (what to delete) and 'id' (which one) from the URL.
+$type = $_GET['type'] ?? '';
+$id = $_GET['id'] ?? 0;
 $userId = getUserId();
+$error = '';
 
-
-// ============================================================================
-// GET DELETE PARAMETERS FROM URL
-// ============================================================================
-// $_GET contains URL parameters
-// Example URL: delete.php?type=friend&id=5
-
-$type = $_GET['type'] ?? '';  // What to delete (friend, schedule, event, favorite)
-$id = $_GET['id'] ?? 0;       // ID of the record to delete
-
-
-// ============================================================================
-// VALIDATE ID
-// ============================================================================
-// ID must be a number greater than 0
-
-if (!is_numeric($id) || $id <= 0) {
-    setMessage('danger', 'Invalid item ID.');
-    header("Location: index.php");
-    exit;
+// --- Switch Logic ---
+// Decide which deletion function to call based on the 'type'.
+if ($type == 'schedule') {
+    $error = deleteSchedule($userId, $id);
+    $redirect = 'index.php'; // Schedules are on the dashboard
+} elseif ($type == 'event') {
+    $error = deleteEvent($userId, $id);
+    $redirect = 'index.php'; // Events are on the dashboard
+} elseif ($type == 'favorite') {
+    $error = deleteFavoriteGame($userId, $id);
+    $redirect = 'profile.php'; // Favorites are on profile page
+} elseif ($type == 'friend') {
+    $error = deleteFriend($userId, $id);
+    $redirect = 'add_friend.php'; // Friends are on friend page
+} else {
+    // If someone tries to hack the URL with an unknown type
+    $error = 'Invalid delete type.';
+    $redirect = 'index.php';
 }
 
-
-// ============================================================================
-// PROCESS DELETE BASED ON TYPE
-// ============================================================================
-// switch statement handles different delete types
-
-switch ($type) {
-
-    // ========================================================================
-    // DELETE FRIEND
-    // ========================================================================
-    case 'friend':
-        // deleteFriend() verifies ownership and soft deletes
-        $error = deleteFriend($userId, $id);
-
-        if ($error) {
-            setMessage('danger', $error);
-        } else {
-            setMessage('success', 'Friend removed successfully.');
-        }
-
-        // Redirect back to friends page
-        header("Location: add_friend.php");
-        break;
-
-
-    // ========================================================================
-    // DELETE SCHEDULE
-    // ========================================================================
-    case 'schedule':
-        // deleteSchedule() verifies ownership and soft deletes
-        $error = deleteSchedule($userId, $id);
-
-        if ($error) {
-            setMessage('danger', $error);
-        } else {
-            setMessage('success', 'Schedule deleted successfully.');
-        }
-
-        header("Location: index.php");
-        break;
-
-
-    // ========================================================================
-    // DELETE EVENT
-    // ========================================================================
-    case 'event':
-        // deleteEvent() verifies ownership and soft deletes
-        $error = deleteEvent($userId, $id);
-
-        if ($error) {
-            setMessage('danger', $error);
-        } else {
-            setMessage('success', 'Event deleted successfully.');
-        }
-
-        header("Location: index.php");
-        break;
-
-
-    // ========================================================================
-    // DELETE FAVORITE GAME
-    // ========================================================================
-    case 'favorite':
-        // deleteFavoriteGame() removes from UserGames table
-        $error = deleteFavoriteGame($userId, $id);
-
-        if ($error) {
-            setMessage('danger', $error);
-        } else {
-            setMessage('success', 'Game removed from favorites.');
-        }
-
-        header("Location: profile.php");
-        break;
-
-
-    // ========================================================================
-    // INVALID TYPE
-    // ========================================================================
-    default:
-        // Unknown type - redirect with error
-        setMessage('danger', 'Invalid delete type specified.');
-        header("Location: index.php");
-        break;
+// --- Feedback ---
+// Set a Green message (Success) or Red message (Error) for the next page.
+if ($error) {
+    setMessage('danger', $error);
+} else {
+    // ucfirst capitalizes first letter: 'friend' -> 'Friend'
+    setMessage('success', ucfirst($type) . ' removed successfully!');
 }
 
-// Always exit after redirect
+// --- Redirect ---
+// Send user back to the appropriate page.
+header("Location: " . $redirect);
 exit;
 ?>

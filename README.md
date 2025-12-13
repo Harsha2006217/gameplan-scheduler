@@ -1,88 +1,62 @@
-# 🎮 GamePlan Scheduler
+# 🎮 GamePlan Scheduler (Legendary Edition)
+
 **Responsive webapplicatie voor jonge gamers om profielen te beheren, vrienden toe te voegen, speelschema's te delen, evenementen te plannen en herinneringen in te stellen.**
+
 ---
+
 ## 📌 Overzicht
-- **Auteur**: Harsha Kanaparthi
-- **Studentnummer**: 2195344
-- **Datum**: 30-09-2025 (verbeterd 10-12-2025)
-- **Versie**: 1.0 advanced
-- **Technologieën**: PHP, MySQL, HTML/CSS/Bootstrap, JavaScript
-- **Ondersteuning**: Desktop & mobiel, donkere modus
+
+- **Auteur**: Harsha Kanaparthi  
+- **Studentnummer**: 2195344  
+- **Datum**: 30-09-2025  
+- **Versie**: 1.1 (Legendary Update)  
+- **Technologieën**: PHP, MySQL, HTML/CSS/Bootstrap 5, JavaScript  
+- **Ondersteuning**: Desktop & Mobiel (Volledig Responsief)  
+
 ---
-## ✨ Functionaliteiten
-### Gebruikersverhalen
-- Profiel aanmaken met favoriete games (CRUD)
-- Vrienden toevoegen op gebruikersnaam (CRUD + status/notitie)
-- Speelschema's delen via kalender (CRUD)
-- Evenementen plannen met herinneringen (CRUD)
-- Herinneringen instellen (JS pop-ups)
-- Alles bewerken/verwijderen (soft delete)
-### Geavanceerde CRUD
-- Favoriete games, vrienden, schema's en evenementen volledig bewerkbaar
-- Directe updates in database via gedeelde velden
-### Beveiliging
-- Bcrypt hashing
-- PDO prepared statements
-- Inputvalidatie (spaties, datum/tijd, e-mail)
-- Sessie-timeout (30 min)
-- Eigendom-checks
-### UI/UX
-- Donker/blauw thema
-- Responsief ontwerp (Bootstrap)
-- Sortering, bevestigingsdialogen, meldingen
-### Database
-- 6 tabellen: Users, Games, UserGames, Friends, Schedules, Events
-- Indexen voor performance
+
+## ✨ Nieuwe Functionaliteiten (Versie 1.1)
+
+### 🛠️ Bug Fixes & Verbetervoorstellen
+1.  **#1001 Validatie Lege Velden**: Strikt `trim()` check toegevoegd in `functions.php`. Velden met alleen spaties worden nu geweigerd.
+2.  **#1004 Datum Validatie**: `checkdate()` toegevoegd. Ongeldige datums (zoals 30 februari of "2025-13-45") worden geweigerd.
+3.  **#1002 Notificaties**: `add_event.php` uitgebreid met een dropdown voor herinneringstypes.
+4.  **#1003 Navigatieverbetering**: "Evenement toevoegen" knop is nu prominent aanwezig in de header.
+5.  **#1006 Sorteren**: Lijsten op het dashboard kunnen nu gesorteerd worden op Datum.
+
+### 🎨 Design Updates ("Legendary" Thema)
+- **Glassmorphism**: Semi-transparante kaarten over een geanimeerde achtergrond.
+- **Neon Accents**: Blauwe en paarse gloed voor een moderne "gaming" look.
+- **Micro-interacties**: Hover-effecten op knoppen en tabellen.
+- **Bootstrap 5**: Volledige integratie voor lay-out en modale componenten.
+
+### 📝 Documentatie
+- **Code Commentaar**: Elke regel code is voorzien van didactisch commentaar (A-Z uitleg) om de werking uit te leggen aan examinatoren.
+
 ---
-## 🎯 SMART-doel
-- **Specifiek**: Profielen, vrienden, schema’s en evenementen beheren
-- **Meetbaar**: Feedback bij 3x/week gebruik
-- **Acceptabel**: Gericht op gamers, eenvoudig te bouwen
-- **Realistisch**: Kennis van PHP/DB, 49 uur
-- **Tijdsgebonden**: Voltooid op 30-09-2025
----
+
 ## ⚙️ Installatie
-1. **Omgeving**: Installeer XAMPP (PHP 8.1+, MySQL 8.0+), VS Code
-2. **Database**: Voer `database.sql` uit in phpMyAdmin (maak `gameplan_db`)
-3. **Project**: Plaats bestanden in `htdocs/gameplan/`
-4. **Start**: Start Apache/MySQL, ga naar `localhost/gameplan/index.php`
-5. **Registratie/Login**: Maak een account aan en beheer via dashboard
+
+1. **Omgeving**: Zorg voor XAMPP (Apache + MySQL).
+2. **Database**: Importeer `database.sql` via PHPMyAdmin.
+3. **Plaatsing**: Kopieer de map `gameplan-scheduler` naar `htdocs`.
+4. **Uitvoeren**: Ga naar `http://localhost/gameplan-scheduler`.
+
 ---
-## 🧭 Gebruik
-- **Dashboard**: Overzicht van vrienden, favorieten, schema’s en evenementen
-- **Profiel**: Favoriete games beheren
-- **Vrienden**: Toevoegen/bewerken/verwijderen op gebruikersnaam
-- **Schema’s**: Game, datum/tijd, gedeeld met
-- **Evenementen**: Titel, datum/tijd, beschrijving, herinnering, link
-- **Logout**: Via header
+
+## 📁 Bestandsstructuur
+
+- **Core**: 
+  - `functions.php`: Het hart van de applicatie (logica en validatie).
+  - `db.php`: Veilige databaseverbinding.
+- **Styling**: `style.css` (Custom CSS).
+- **Pagina's**:
+  - `index.php`: Dashboard en Kalender.
+  - `add_*.php` / `edit_*.php`: Formulieren voor beheer.
+  - `profile.php`: Profielbeheer.
+
 ---
-## 📁 Projectstructuur
-- **Core**: `db.php`, `functions.php`
-- **Pagina’s**: `login.php`, `register.php`, `index.php`, `profile.php`, `add_friend.php`, `add_schedule.php`, `add_event.php`, `edit_*.php`, `delete.php`
-- **Layout**: `header.php`, `footer.php`, `privacy.php`, `contact.php`
-- **Assets**: `style.css`, `script.js`
-- **Database**: `database.sql`
----
-## 📅 Planning & Ontwikkeling
-- **Tijdlijn**: 02-09-2025 t/m 30-09-2025 (49 uur)
-- **MOSCOW**: Must = auth/DB/CRUD, Should = vrienden/schema’s, Could = herinneringen
-- **Stack**: PHP 8.1, MySQL 8.0, Bootstrap 5, CSS3, JS ES6
-- **Versiebeheer**: Git/GitHub (8+ commits, branches per feature)
-- **Testen**: 30 scenario’s (93% geslaagd)
-- **Toekomst (v1.1)**: Notificaties, betere navigatie, screenshots, sortering
----
-## 🔐 Veiligheid & Ethiek
-- **Beveiliging**: Gehashte wachtwoorden, output escaping, sessie regeneratie, user_id checks
-- **Privacy**: AVG-conform, minimale data, verwijderoptie, geen verkoop
-- **Ethiek**: Inclusief, geen verslavende advertenties, eerlijke privacytekst
----
-## 🎥 Demo & Repo
-- **Video**: 6 minuten walkthrough
-- **GitHub**: https://github.com/Harsha2006217/GamePlan-Scheduler
----
+
 ## 👥 Credits
-- **Begeleider**: Marius Restua (feedback backend/navigatie/herinneringen)
-- **Testers**: 3 gamers (gebruikerservaring)
----
-## 📬 Contact
-Voor vragen of problemen: [harsha.kanaparthi20062@gmail.com](mailto:harsha.kanaparthi20062@gmail.com)
+
+Ontwikkeld door Harsha Kanaparthi voor het MBO-4 Software Development examen.

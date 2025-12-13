@@ -1,1007 +1,458 @@
 <?php
-// ============================================================================
-// FUNCTIONS.PHP - Core Functions and Database Queries
-// ============================================================================
-// Author       : Harsha Kanaparthi (Student Number: 2195344)
-// Date         : 30-09-2025
-// Version      : 1.0 (with Bug Fixes #1001 and #1004)
-// Project      : GamePlan Scheduler - MBO-4 Software Development Examination
-// ============================================================================
-// DESCRIPTION:
-// This is the BRAIN of the application! It contains all the important
-// functions that handle database operations, user authentication, and
-// data validation.
+// functions.php - Core Functions and Database Queries
+// Author: Harsha Kanaparthi
+// Date: 30-09-2025
+// Version: 1.1 (Legendary Edition)
+// Description: 
+// This file is the "Engine Room" of the application. It contains all the reusable code (functions)
+// for database interactions, user validation, and security measures.
 //
-// SECTIONS IN THIS FILE:
-// 1. Session & Security Setup
-// 2. Helper Functions (validation, messages, escaping)
-// 3. User Authentication (login, register, logout)
-// 4. Profile Management (favorite games)
-// 5. Friends Management (add, edit, delete friends)
-// 6. Schedules Management (gaming sessions)
-// 7. Events Management (tournaments, events)
-// 8. Calendar Functions (merged view)
-//
-// BUG FIXES IMPLEMENTED:
-// - #1001: Validation for empty fields/spaces (trim() check)
-// - #1004: Improved date validation with format checking
-//
-// SECURITY FEATURES:
-// - Input validation on all user data
-// - PDO prepared statements (SQL injection protection)
-// - Output escaping (XSS protection)
-// - Session timeout (30 minutes)
-// - Password hashing (bcrypt)
-// ============================================================================
+// NL: Dit bestand is de "Motor" van de applicatie. Het bevat alle functies voor database interactie,
+// validatie van invoer en beveiliging.
 
+// --- 0. Setup ---
 
-// ============================================================================
-// STEP 1: START OUTPUT BUFFERING
-// ============================================================================
-// Output buffering prevents "headers already sent" errors.
-// When we use header() to redirect, PHP needs to send headers BEFORE any output.
-// ob_start() stores all output in a buffer until we're ready to send it.
-
+// Start output buffering. This is a technical trick to capture all HTML output in a memory buffer 
+// before sending it to the browser. This prevents "Headers already sent" errors when we use header().
 ob_start();
 
-
-// ============================================================================
-// STEP 2: INCLUDE DATABASE CONNECTION
-// ============================================================================
-// require_once loads the db.php file exactly once.
-// If the file was already loaded, it won't load again (prevents errors).
-// This gives us access to the getDBConnection() function.
-
+// Include the database connection script. 'require_once' ensures it's only loaded once.
 require_once 'db.php';
 
-
-// ============================================================================
-// STEP 3: START SESSION IF NOT ALREADY STARTED
-// ============================================================================
-// Sessions allow us to store user data (like user_id) across page requests.
-// Without sessions, the website wouldn't know who is logged in.
-
-// Check if a session is already running
-// PHP_SESSION_NONE means no session has started yet
+// --- Session Management ---
+// Sessions allow us to remember who the user is as they move from page to page.
 if (session_status() === PHP_SESSION_NONE) {
-    // Start a new session
-    // This creates a unique session ID stored in a cookie
-    session_start();
-
-    // SECURITY: Regenerate session ID to prevent session fixation attacks
-    // Session fixation is when an attacker sets a known session ID
-    // Regenerating creates a new random ID, making the old one useless
-    session_regenerate_id(true);
+    session_start(); // Start the session if it's not already running.
+    session_regenerate_id(true); // Security: Generate a new session ID to prevent Session Hijacking.
 }
 
-
-// ============================================================================
-// SECTION: HELPER FUNCTIONS
-// ============================================================================
-// These small functions are used throughout the application.
-// They handle common tasks like escaping output and showing messages.
-
+// --- 1. Helper Functions (Hulp Functies) ---
 
 /**
- * safeEcho - Secure Output Escaping
+ * Function: safeEcho
+ * Purpose: Protects against XSS (Cross-Site Scripting) attacks.
+ * Explanation: Before printing user input to the screen, we must convert special characters 
+ * (like < and >) into harmless codes. This prevents malicious scripts from running.
  * 
- * WHAT IT DOES:
- * Converts special HTML characters to safe versions that won't execute.
- * This prevents XSS (Cross-Site Scripting) attacks.
- * 
- * XSS ATTACK EXAMPLE:
- * If a user enters: <script>alert('hacked')</script>
- * Without escaping: The script would RUN in the browser!
- * With escaping: It displays as harmless text: &lt;script&gt;...
- * 
- * HOW IT WORKS:
- * < becomes &lt;
- * > becomes &gt;
- * " becomes &quot;
- * ' becomes &#039;
- * & becomes &amp;
- * 
- * @param string $string The text to make safe
- * @return string Safe text that can be displayed in HTML
- * 
- * USAGE EXAMPLE:
- * echo safeEcho($user['username']); // Safe to display
+ * @param string $string The unsafe text.
+ * @return string The safe, clean text.
  */
 function safeEcho($string)
 {
-    // htmlspecialchars() converts special characters to HTML entities
-    // ENT_QUOTES: Convert both single (') and double (") quotes
-    // 'UTF-8': Use UTF-8 encoding for international characters
-    return htmlspecialchars($string ?? '', ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }
 
-
 /**
- * validateRequired - Check Required Fields (BUG FIX #1001)
+ * Function: validateRequired (BUG FIX #1001 Implemented)
+ * Purpose: Checks if a field is empty or contains only spaces.
+ * Explanation: We use trim() to remove spaces from the start and end. 
+ * If the result is empty, the user just typed spaces.
  * 
- * WHAT IT DOES:
- * Validates that a field has a value and is not just empty spaces.
- * This fixes Bug #1001 where fields with only spaces were accepted.
- * 
- * BUG #1001 EXPLANATION:
- * Before: A user could enter "     " (only spaces) as a game title
- *         This would save to the database as empty/blank
- * After:  We use trim() to remove spaces, then check if anything remains
- *         "     " becomes "" (empty) = REJECTED with error message
- * 
- * @param string $value The value to validate
- * @param string $fieldName Name of the field (for error messages)
- * @param int $maxLength Maximum allowed length (0 = no limit)
- * @return string|null Error message if invalid, null if valid
- * 
- * USAGE EXAMPLE:
- * if ($error = validateRequired($title, "Game Title", 100)) {
- *     return $error; // Stop and show error
- * }
+ * @param string $value The input to check.
+ * @param string $fieldName The name of the field for the error message.
+ * @param int $maxLength Optional maximum length check.
+ * @return string|null Returns error message string if invalid, or null if valid.
  */
 function validateRequired($value, $fieldName, $maxLength = 0)
 {
-    // TRIM: Remove whitespace from beginning and end
-    // "  Hello World  " becomes "Hello World"
-    // "     " becomes "" (empty string)
+    // BUG FIX #1001: trim() removes invisible spaces.
+    // ' ' -> '' (empty).
     $value = trim($value);
 
-    // CHECK IF EMPTY OR ONLY SPACES
-    // empty() returns true if: "", 0, null, false, "0"
-    // preg_match checks for strings that are ONLY whitespace
-    // ^\s*$ means: start (^), any whitespace (\s*), end ($)
+    // Check if empty OR if it matches a pattern of only whitespace
     if (empty($value) || preg_match('/^\s*$/', $value)) {
-        // Return error message with field name
         return "$fieldName may not be empty or contain only spaces.";
     }
 
-    // CHECK MAXIMUM LENGTH
-    // Only check if maxLength was specified (> 0)
+    // Check line length if a max length is set
     if ($maxLength > 0 && strlen($value) > $maxLength) {
         return "$fieldName exceeds maximum length of $maxLength characters.";
     }
 
-    // No errors - return null to indicate success
-    return null;
+    return null; // No errors
 }
 
-
 /**
- * validateDate - Check Date Format and Value (BUG FIX #1004)
+ * Function: validateDate (BUG FIX #1004 Implemented)
+ * Purpose: Ensures the date is a real calendar date and is in the future.
+ * Explanation: '2025-02-30' is invalid (Feb has max 29 days). We catch this here.
  * 
- * WHAT IT DOES:
- * Validates that a date is in correct format AND is in the future.
- * This fixes Bug #1004 where invalid dates like "2025-13-45" were accepted.
- * 
- * BUG #1004 EXPLANATION:
- * Before: Invalid dates caused database errors
- *         "2025-13-45" (month 13, day 45) was not caught
- * After:  We validate format YYYY-MM-DD with checkdate()
- *         Only real dates are accepted
- * 
- * THE VALIDATION PROCESS:
- * 1. Check if date string matches YYYY-MM-DD pattern
- * 2. Extract year, month, day from the string
- * 3. Use PHP's checkdate() to verify it's a real date
- * 4. Compare with current date to ensure it's in the future
- * 
- * @param string $date The date to validate (format: YYYY-MM-DD)
- * @return string|null Error message if invalid, null if valid
- * 
- * USAGE EXAMPLE:
- * if ($error = validateDate($eventDate)) {
- *     return $error; // Stop and show error
- * }
+ * @param string $date The date string (YYYY-MM-DD).
+ * @return string|null Error message or null.
  */
 function validateDate($date)
 {
-    // STEP 1: Check basic format with regex
-    // ^ = start of string
-    // \d{4} = exactly 4 digits (year)
-    // - = literal dash
-    // \d{2} = exactly 2 digits (month and day)
-    // $ = end of string
-    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
-        return "Invalid date format. Use YYYY-MM-DD.";
+    // BUG FIX #1004: Strict date checking using checkdate().
+    // Format expected: YYYY-MM-DD
+    $parts = explode('-', $date);
+    if (count($parts) == 3) {
+        // specific check: month, day, year
+        if (!checkdate($parts[1], $parts[2], $parts[0])) {
+            return "Invalid date: This date does not exist in the calendar.";
+        }
+    } else {
+        return "Invalid date format.";
     }
 
-    // STEP 2: Split the date into parts
-    // explode splits string by delimiter (-)
-    // list assigns values to three variables
-    // "2025-09-30" becomes $year=2025, $month=09, $day=30
-    list($year, $month, $day) = explode('-', $date);
-
-    // STEP 3: Verify it's a real date using checkdate()
-    // checkdate(month, day, year) returns true if valid
-    // Examples:
-    // checkdate(2, 29, 2024) = true (leap year)
-    // checkdate(2, 29, 2025) = false (not leap year)
-    // checkdate(13, 1, 2025) = false (no month 13)
-    // checkdate(4, 31, 2025) = false (April has 30 days)
-    if (!checkdate((int) $month, (int) $day, (int) $year)) {
-        return "Invalid date. Please enter a real calendar date.";
+    // Check if date is in the past (only future events allowed)
+    // strtotime converts string to a timestamp number.
+    if (strtotime($date) < strtotime(date('Y-m-d'))) {
+        return "Date must be in the future.";
     }
 
-    // STEP 4: Check if date is in the future
-    // strtotime converts date string to Unix timestamp (seconds since 1970)
-    // time() returns current Unix timestamp
-    // strtotime('today') gives today at 00:00:00 (allow scheduling for today)
-    if (strtotime($date) < strtotime('today')) {
-        return "Date must be today or in the future.";
-    }
-
-    // All checks passed - date is valid
-    return null;
+    return null; // Valid
 }
 
-
 /**
- * validateTime - Check Time Format
- * 
- * WHAT IT DOES:
- * Validates that time is in correct HH:MM format.
- * 
- * VALID EXAMPLES: 09:30, 14:00, 23:59, 00:00
- * INVALID EXAMPLES: 25:00, 12:60, 1:30, abc
- * 
- * THE REGEX EXPLAINED:
- * ^         = Start of string
- * ([01]?    = Optionally 0 or 1 (for 00-19)
- * [0-9]     = Followed by any digit (01-09, 10-19)
- * |         = OR
- * 2[0-3])   = 20-23
- * :         = Literal colon
- * [0-5][0-9] = 00-59 (minutes)
- * $         = End of string
- * 
- * @param string $time The time to validate (format: HH:MM)
- * @return string|null Error message if invalid, null if valid
+ * Function: validateTime
+ * Purpose: Checks if time is in HH:MM format using Regular Expressions (Regex).
  */
 function validateTime($time)
 {
-    // Check if time matches valid 24-hour format
+    // Regex explanation:
+    // ^ = start
+    // ([01]?[0-9]|2[0-3]) = 00-19 OR 20-23 (Hours)
+    // : = separator
+    // [0-5][0-9] = 00-59 (Minutes)
+    // $ = end
     if (!preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/', $time)) {
-        return "Invalid time format. Use HH:MM (24-hour format).";
+        return "Invalid time format (HH:MM).";
     }
     return null;
 }
 
-
 /**
- * validateEmail - Check Email Address Format
- * 
- * WHAT IT DOES:
- * Uses PHP's built-in email validation to check if email is valid.
- * 
- * VALID EXAMPLES: user@example.com, name.surname@domain.co.uk
- * INVALID EXAMPLES: user@, @domain.com, user name@domain.com
- * 
- * @param string $email The email address to validate
- * @return string|null Error message if invalid, null if valid
+ * Function: validateEmail
+ * Purpose: Uses PHP's built-in filter to check for valid email format (@ and .).
  */
 function validateEmail($email)
 {
-    // FILTER_VALIDATE_EMAIL is PHP's built-in email validator
-    // It checks for proper email format: local@domain.tld
-    // Returns false if email is invalid
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        return "Invalid email format. Please enter a valid email address.";
+        return "Invalid email format.";
     }
     return null;
 }
 
-
 /**
- * validateUrl - Check URL Format
- * 
- * WHAT IT DOES:
- * Validates that a URL has proper format (http:// or https://).
- * Only validates if URL is provided (empty URLs are allowed).
- * 
- * @param string $url The URL to validate
- * @return string|null Error message if invalid, null if valid
+ * Function: validateUrl
+ * Purpose: Checks if a string is a valid URL (http://...).
  */
 function validateUrl($url)
 {
-    // Only validate if URL is not empty (optional field)
     if (!empty($url) && !filter_var($url, FILTER_VALIDATE_URL)) {
-        return "Invalid URL format. Include http:// or https://";
+        return "Invalid URL format.";
     }
     return null;
 }
 
-
 /**
- * validateCommaSeparated - Check Comma-Separated List
- * 
- * WHAT IT DOES:
- * Validates that a comma-separated list doesn't have empty items.
- * Used for friend lists and shared-with lists.
- * 
- * VALID: "user1, user2, user3"
- * INVALID: "user1,, user2" (empty item between commas)
- * 
- * @param string $value The comma-separated string
- * @param string $fieldName Name of the field (for error messages)
- * @return string|null Error message if invalid, null if valid
+ * Function: validateCommaSeparated
+ * Purpose: Checks lists like "Tom, Jerry, Spike" to ensure no empty items exist.
  */
 function validateCommaSeparated($value, $fieldName)
 {
-    // Empty value is valid (optional field)
     if (empty($value))
-        return null;
-
-    // Split by comma
-    $items = explode(',', $value);
-
-    // Check each item
+        return null; // Empty is allowed (optional field)
+    $items = explode(',', $value); // Split by comma
     foreach ($items as $item) {
-        // Trim spaces and check if empty
-        $item = trim($item);
-        if (empty($item)) {
-            return "$fieldName contains empty items. Remove extra commas.";
-        }
+        $item = trim($item); // Remove spaces
+        if (empty($item))
+            return "$fieldName contains empty items.";
     }
     return null;
 }
 
+// --- Session Message Functions ---
+// These functions help show green success bars or red error bars on the next page.
 
-/**
- * setMessage - Store Flash Message in Session
- * 
- * WHAT IT DOES:
- * Stores a message in the session to be displayed on the next page.
- * "Flash messages" appear once and then disappear.
- * 
- * MESSAGE TYPES:
- * - 'success' = Green message (operation succeeded)
- * - 'danger'  = Red message (error occurred)
- * - 'warning' = Yellow message (caution)
- * - 'info'    = Blue message (information)
- * 
- * @param string $type The Bootstrap alert type
- * @param string $msg The message to display
- * 
- * USAGE:
- * setMessage('success', 'Profile updated!');
- * header('Location: profile.php');
- */
 function setMessage($type, $msg)
 {
-    // Store in session - will persist until we read it
+    // Store message in user session variable (server-side memory)
     $_SESSION['message'] = ['type' => $type, 'msg' => $msg];
 }
 
-
-/**
- * getMessage - Retrieve and Display Flash Message
- * 
- * WHAT IT DOES:
- * Gets the stored message, creates HTML to display it, then deletes it.
- * The message only displays once (that's why it's called "flash").
- * 
- * @return string HTML for the alert, or empty string if no message
- * 
- * USAGE:
- * echo getMessage(); // Shows message if exists, then removes it
- */
 function getMessage()
 {
-    // Check if a message exists in the session
+    // Check if there is a message waiting
     if (isset($_SESSION['message'])) {
-        // Get the message
         $msg = $_SESSION['message'];
-
-        // Delete it from session (so it only shows once)
-        unset($_SESSION['message']);
-
-        // Return Bootstrap alert HTML
-        // alert-{type} gives the appropriate color
+        unset($_SESSION['message']); // Remove after showing once (Flash message)
+        // Return HTML for Bootstrap Alert component
         return "<div class='alert alert-{$msg['type']} alert-dismissible fade show' role='alert'>
                     {$msg['msg']}
                     <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
                 </div>";
     }
-    // No message - return empty string
     return '';
 }
 
+// --- Auth Helpers ---
 
-// ============================================================================
-// SECTION: SESSION MANAGEMENT FUNCTIONS
-// ============================================================================
-
-/**
- * isLoggedIn - Check if User is Logged In
- * 
- * WHAT IT DOES:
- * Checks if there's a user_id stored in the session.
- * If yes, user is logged in. If no, user is a guest.
- * 
- * @return bool True if logged in, false if not
- */
 function isLoggedIn()
 {
-    // isset() checks if variable exists and is not null
-    // If user_id exists in session, user is logged in
     return isset($_SESSION['user_id']);
 }
 
-
-/**
- * getUserId - Get Current User's ID
- * 
- * WHAT IT DOES:
- * Returns the logged-in user's ID from the session.
- * Returns 0 if no user is logged in.
- * 
- * @return int User ID or 0
- */
 function getUserId()
 {
-    // If logged in, return user_id cast to integer
-    // If not logged in, return 0
     return isLoggedIn() ? (int) $_SESSION['user_id'] : 0;
 }
 
-
-/**
- * updateLastActivity - Track User Activity
- * 
- * WHAT IT DOES:
- * Updates the last_activity timestamp in the database.
- * Used to track when a user was last active.
- * 
- * @param PDO $pdo Database connection
- * @param int $userId The user's ID
- */
 function updateLastActivity($pdo, $userId)
 {
-    // Update the last_activity field to current time
     $stmt = $pdo->prepare("UPDATE Users SET last_activity = CURRENT_TIMESTAMP WHERE user_id = :user_id AND deleted_at IS NULL");
     $stmt->execute(['user_id' => $userId]);
 }
 
-
-/**
- * checkSessionTimeout - Logout Inactive Users
- * 
- * WHAT IT DOES:
- * Checks if user has been inactive for more than 30 minutes.
- * If so, destroys their session and redirects to login page.
- * This is a SECURITY feature to protect user accounts.
- * 
- * WHY 30 MINUTES?
- * - Short enough to protect accounts on shared computers
- * - Long enough that users won't be logged out mid-task
- * - Common standard for web applications
- * 
- * HOW IT WORKS:
- * 1. Check if user is logged in
- * 2. Check if last_activity timestamp exists
- * 3. Calculate time since last activity
- * 4. If > 1800 seconds (30 min), logout
- * 5. Update last_activity to current time
- */
 function checkSessionTimeout()
 {
-    // Only check for logged-in users who have a last_activity timestamp
-    if (isLoggedIn() && isset($_SESSION['last_activity'])) {
-        // Calculate seconds since last activity
-        $inactiveTime = time() - $_SESSION['last_activity'];
-
-        // 1800 seconds = 30 minutes
-        if ($inactiveTime > 1800) {
-            // Session expired! Destroy and redirect
-            session_destroy();
-            header("Location: login.php?msg=session_timeout");
-            exit;
-        }
+    // 1800 seconds = 30 minutes
+    if (isLoggedIn() && isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {
+        session_destroy(); // Kill session
+        header("Location: login.php?msg=session_timeout"); // Kick to login
+        exit;
     }
-
-    // Update last activity to current time
-    $_SESSION['last_activity'] = time();
+    $_SESSION['last_activity'] = time(); // Reset timer
 }
 
-
-// ============================================================================
-// SECTION: USER AUTHENTICATION FUNCTIONS
-// ============================================================================
+// --- 2. User Authentication (Inloggen/Registreren) ---
 
 /**
- * registerUser - Create New User Account
- * 
- * WHAT IT DOES:
- * Creates a new user account with validated and secure data.
- * 
- * REGISTRATION PROCESS:
- * 1. Validate all input fields
- * 2. Check if email already exists
- * 3. Hash the password with bcrypt
- * 4. Insert new user into database
- * 
- * SECURITY FEATURES:
- * - Input validation with validateRequired()
- * - Email format validation
- * - Password minimum length check
- * - Password hashing with bcrypt (PASSWORD_BCRYPT)
- * - Prepared statements prevent SQL injection
- * 
- * @param string $username User's display name
- * @param string $email User's email address
- * @param string $password User's password (plain text)
- * @return string|null Error message if failed, null if success
+ * Function: registerUser
+ * Purpose: Creates a new user in the database.
+ * Security: Uses password_hash() (Bcrypt) to secure passwords.
  */
 function registerUser($username, $email, $password)
 {
-    // Get database connection
-    $pdo = getDBConnection();
+    $pdo = getDBConnection(); // Open connection
 
-    // ========================================================================
-    // STEP 1: VALIDATE ALL INPUTS
-    // ========================================================================
-
-    // Validate username (required, max 50 chars)
+    // Step 1: Validate all inputs
     if ($err = validateRequired($username, "Username", 50))
         return $err;
-
-    // Validate email format
     if ($err = validateEmail($email))
         return $err;
-
-    // Validate password (required)
     if ($err = validateRequired($password, "Password"))
         return $err;
+    if (strlen($password) < 8)
+        return "Password must be at least 8 characters.";
 
-    // Password minimum length (security requirement)
-    if (strlen($password) < 8) {
-        return "Password must be at least 8 characters for security.";
-    }
-
-    // ========================================================================
-    // STEP 2: CHECK IF EMAIL ALREADY EXISTS
-    // ========================================================================
+    // Step 2: Check for duplicate email
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM Users WHERE email = :email AND deleted_at IS NULL");
     $stmt->execute(['email' => $email]);
+    if ($stmt->fetchColumn() > 0)
+        return "Email already registered.";
 
-    if ($stmt->fetchColumn() > 0) {
-        return "This email is already registered. Please login or use a different email.";
-    }
-
-    // ========================================================================
-    // STEP 3: HASH THE PASSWORD
-    // ========================================================================
-    // NEVER store plain text passwords!
-    // password_hash() creates a secure one-way hash
-    // PASSWORD_BCRYPT uses blowfish algorithm (very secure)
-    // The hash includes a random salt (no two hashes are the same)
+    // Step 3: Hash the password (one-way encryption)
     $hash = password_hash($password, PASSWORD_BCRYPT);
 
-    // ========================================================================
-    // STEP 4: INSERT NEW USER INTO DATABASE
-    // ========================================================================
+    // Step 4: Save to Database
     $stmt = $pdo->prepare("INSERT INTO Users (username, email, password_hash) VALUES (:username, :email, :hash)");
-
     try {
-        $stmt->execute([
-            'username' => trim($username),
-            'email' => trim($email),
-            'hash' => $hash
-        ]);
-
-        // Success! Return null (no error)
-        return null;
-
+        $stmt->execute(['username' => $username, 'email' => $email, 'hash' => $hash]);
+        return null; // Returns null on success
     } catch (PDOException $e) {
-        // Log the actual error for developers
         error_log("Registration failed: " . $e->getMessage());
-
-        // Return user-friendly message (don't expose details)
-        return "Registration failed. Please try again later.";
+        return "Registration failed. Please try again.";
     }
 }
 
-
 /**
- * loginUser - Authenticate User
- * 
- * WHAT IT DOES:
- * Verifies user credentials and starts a login session.
- * 
- * LOGIN PROCESS:
- * 1. Validate input fields
- * 2. Find user by email in database
- * 3. Verify password against stored hash
- * 4. Create session with user data
- * 
- * SECURITY FEATURES:
- * - Password verified with password_verify() (timing-safe comparison)
- * - Session ID regenerated (prevents session fixation)
- * - Last activity updated (for timeout tracking)
- * 
- * @param string $email User's email address
- * @param string $password User's password (plain text)
- * @return string|null Error message if failed, null if success
+ * Function: loginUser
+ * Purpose: Verifies credentials and starts a session.
  */
 function loginUser($email, $password)
 {
-    // Get database connection
     $pdo = getDBConnection();
 
-    // ========================================================================
-    // STEP 1: VALIDATE INPUTS
-    // ========================================================================
     if ($err = validateRequired($email, "Email"))
         return $err;
     if ($err = validateRequired($password, "Password"))
         return $err;
 
-    // ========================================================================
-    // STEP 2: FIND USER BY EMAIL
-    // ========================================================================
+    // Retrieve the user by email
     $stmt = $pdo->prepare("SELECT user_id, username, password_hash FROM Users WHERE email = :email AND deleted_at IS NULL");
-    $stmt->execute(['email' => trim($email)]);
+    $stmt->execute(['email' => $email]);
     $user = $stmt->fetch();
 
-    // ========================================================================
-    // STEP 3: VERIFY PASSWORD
-    // ========================================================================
-    // Check if user exists AND password matches
-    // password_verify() compares plain password against stored hash
-    // It uses timing-safe comparison (prevents timing attacks)
+    // Verify password match against the stored hash
     if (!$user || !password_verify($password, $user['password_hash'])) {
-        // Generic error message (don't reveal if email exists or not)
-        return "Invalid email or password. Please try again.";
+        return "Invalid email or password.";
     }
 
-    // ========================================================================
-    // STEP 4: CREATE LOGIN SESSION
-    // ========================================================================
-    // Store user data in session
+    // Success: Set session variables
     $_SESSION['user_id'] = $user['user_id'];
     $_SESSION['username'] = $user['username'];
-    $_SESSION['last_activity'] = time();
-
-    // Regenerate session ID for security
-    session_regenerate_id(true);
-
-    // Update last activity in database
+    session_regenerate_id(true); // Prevent fixation attacks
     updateLastActivity($pdo, $user['user_id']);
 
-    // Success! Return null (no error)
     return null;
 }
 
-
-/**
- * logout - End User Session
- * 
- * WHAT IT DOES:
- * Destroys the user session and redirects to login page.
- */
 function logout()
 {
-    // Destroy all session data
     session_destroy();
-
-    // Redirect to login page
     header("Location: login.php");
     exit;
 }
 
+// --- 3. Profile & Games (Profiel & Favoriete Spellen) ---
 
-// ============================================================================
-// SECTION: PROFILE MANAGEMENT (FAVORITE GAMES)
-// ============================================================================
-
-/**
- * getOrCreateGameId - Get Existing Game or Create New One
- * 
- * WHAT IT DOES:
- * Looks for a game by title. If found, returns its ID.
- * If not found, creates a new game and returns the new ID.
- * 
- * @param PDO $pdo Database connection
- * @param string $title Game title
- * @param string $description Game description
- * @return int Game ID
- */
 function getOrCreateGameId($pdo, $title, $description = '')
 {
-    // Trim whitespace
     $title = trim($title);
-
-    // Empty title = invalid
     if (empty($title))
         return 0;
 
-    // Try to find existing game (case-insensitive)
+    // Check if game exists globally in the games table
     $stmt = $pdo->prepare("SELECT game_id FROM Games WHERE LOWER(titel) = LOWER(:title) AND deleted_at IS NULL");
     $stmt->execute(['title' => $title]);
     $row = $stmt->fetch();
 
-    // If found, return existing ID
     if ($row)
         return $row['game_id'];
 
-    // Not found - create new game
+    // Else check if it exists but was 'soft deleted' and restore it, OR create new
+    // For simplicity, we just insert new if not active.
     $stmt = $pdo->prepare("INSERT INTO Games (titel, description) VALUES (:titel, :description)");
     $stmt->execute(['titel' => $title, 'description' => $description]);
-
-    // Return the new game's ID
     return $pdo->lastInsertId();
 }
 
-
-/**
- * addFavoriteGame - Add Game to User's Favorites
- * 
- * WHAT IT DOES:
- * Adds a game to the user's favorites list with an optional note.
- * 
- * @param int $userId User's ID
- * @param string $title Game title
- * @param string $description Game description
- * @param string $note Personal note about the game
- * @return string|null Error message if failed, null if success
- */
 function addFavoriteGame($userId, $title, $description = '', $note = '')
 {
     $pdo = getDBConnection();
 
-    // Validate game title (Bug Fix #1001)
+    // Bug Fix #1001 applied via validateRequired
     if ($err = validateRequired($title, "Game title", 100))
         return $err;
 
-    // Get or create game ID
     $gameId = getOrCreateGameId($pdo, $title, $description);
 
-    // Check if already in favorites
+    // Prevent duplicate favorites for same user
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM UserGames WHERE user_id = :user_id AND game_id = :game_id");
     $stmt->execute(['user_id' => $userId, 'game_id' => $gameId]);
+    if ($stmt->fetchColumn() > 0)
+        return "Game already in favorites.";
 
-    if ($stmt->fetchColumn() > 0) {
-        return "This game is already in your favorites.";
-    }
-
-    // Add to favorites
+    // Link user to game
     $stmt = $pdo->prepare("INSERT INTO UserGames (user_id, game_id, note) VALUES (:user_id, :game_id, :note)");
     $stmt->execute(['user_id' => $userId, 'game_id' => $gameId, 'note' => $note]);
-
     return null;
 }
 
-
-/**
- * updateFavoriteGame - Update Game Details
- * 
- * WHAT IT DOES:
- * Updates the title, description, and note for a favorite game.
- * 
- * @param int $userId User's ID
- * @param int $gameId Game's ID
- * @param string $title New title
- * @param string $description New description
- * @param string $note New note
- * @return string|null Error message if failed, null if success
- */
 function updateFavoriteGame($userId, $gameId, $title, $description, $note)
 {
     $pdo = getDBConnection();
 
-    // Validate game title (Bug Fix #1001)
     if ($err = validateRequired($title, "Game title", 100))
         return $err;
 
-    // Check ownership - user must own this favorite
+    // Check permissions
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM UserGames WHERE user_id = :user_id AND game_id = :game_id");
     $stmt->execute(['user_id' => $userId, 'game_id' => $gameId]);
+    if ($stmt->fetchColumn() == 0)
+        return "No permission to edit.";
 
-    if ($stmt->fetchColumn() == 0) {
-        return "You don't have permission to edit this game.";
-    }
-
-    // Update game details
+    // Update main game info (Global update - cautious decision)
+    // Note: In a real multi-user app, we might check if other users use this game before changing title.
     $stmt = $pdo->prepare("UPDATE Games SET titel = :titel, description = :description WHERE game_id = :game_id AND deleted_at IS NULL");
-    $stmt->execute(['titel' => trim($title), 'description' => $description, 'game_id' => $gameId]);
+    $stmt->execute(['titel' => $title, 'description' => $description, 'game_id' => $gameId]);
 
-    // Update user's note
+    // Update personal note
     $stmt = $pdo->prepare("UPDATE UserGames SET note = :note WHERE user_id = :user_id AND game_id = :game_id");
     $stmt->execute(['note' => $note, 'user_id' => $userId, 'game_id' => $gameId]);
-
     return null;
 }
 
-
-/**
- * deleteFavoriteGame - Remove Game from Favorites
- * 
- * @param int $userId User's ID
- * @param int $gameId Game's ID
- * @return string|null Error message if failed, null if success
- */
 function deleteFavoriteGame($userId, $gameId)
 {
     $pdo = getDBConnection();
-
-    // Delete from UserGames (not soft delete - just remove the link)
+    // Simply unlink the user from the game
     $stmt = $pdo->prepare("DELETE FROM UserGames WHERE user_id = :user_id AND game_id = :game_id");
     $stmt->execute(['user_id' => $userId, 'game_id' => $gameId]);
-
     return null;
 }
 
-
-/**
- * getFavoriteGames - Get User's Favorite Games
- * 
- * @param int $userId User's ID
- * @return array Array of favorite games
- */
 function getFavoriteGames($userId)
 {
     $pdo = getDBConnection();
-
-    // Get games joined with UserGames for notes
-    $stmt = $pdo->prepare("
-        SELECT g.game_id, g.titel, g.description, ug.note 
-        FROM UserGames ug 
-        JOIN Games g ON ug.game_id = g.game_id 
-        WHERE ug.user_id = :user_id AND g.deleted_at IS NULL
-        ORDER BY g.titel ASC
-    ");
+    // SQL JOIN: Combine Games info with UserGames note
+    $stmt = $pdo->prepare("SELECT g.game_id, g.titel, g.description, ug.note FROM UserGames ug JOIN Games g ON ug.game_id = g.game_id WHERE ug.user_id = :user_id AND g.deleted_at IS NULL");
     $stmt->execute(['user_id' => $userId]);
-
     return $stmt->fetchAll();
 }
 
+// --- 4. Friends (Vrienden) ---
 
-// ============================================================================
-// SECTION: FRIENDS MANAGEMENT
-// ============================================================================
-
-/**
- * addFriend - Add a Friend by Username
- * 
- * @param int $userId User's ID
- * @param string $friendUsername Friend's username
- * @param string $note Note about the friend
- * @param string $status Friend's status
- * @return string|null Error message if failed, null if success
- */
 function addFriend($userId, $friendUsername, $note = '', $status = 'Offline')
 {
     $pdo = getDBConnection();
 
-    // Validate username (Bug Fix #1001)
     if ($err = validateRequired($friendUsername, "Friend username", 50))
         return $err;
     if ($err = validateRequired($status, "Status", 50))
         return $err;
 
-    // Check if already friends (case-insensitive)
+    // Check duplication
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM Friends WHERE user_id = :user_id AND LOWER(friend_username) = LOWER(:friend_username) AND deleted_at IS NULL");
-    $stmt->execute(['user_id' => $userId, 'friend_username' => trim($friendUsername)]);
+    $stmt->execute(['user_id' => $userId, 'friend_username' => $friendUsername]);
+    if ($stmt->fetchColumn() > 0)
+        return "Already friends.";
 
-    if ($stmt->fetchColumn() > 0) {
-        return "You're already friends with this user.";
-    }
-
-    // Add friend
+    // Insert
     $stmt = $pdo->prepare("INSERT INTO Friends (user_id, friend_username, note, status) VALUES (:user_id, :friend_username, :note, :status)");
-    $stmt->execute([
-        'user_id' => $userId,
-        'friend_username' => trim($friendUsername),
-        'note' => $note,
-        'status' => trim($status)
-    ]);
-
+    $stmt->execute(['user_id' => $userId, 'friend_username' => $friendUsername, 'note' => $note, 'status' => $status]);
     return null;
 }
 
-
-/**
- * updateFriend - Update Friend Details
- * 
- * @param int $userId User's ID
- * @param int $friendId Friend record ID
- * @param string $friendUsername Updated username
- * @param string $note Updated note
- * @param string $status Updated status
- * @return string|null Error message if failed, null if success
- */
 function updateFriend($userId, $friendId, $friendUsername, $note, $status)
 {
     $pdo = getDBConnection();
 
-    // Validate inputs (Bug Fix #1001)
     if ($err = validateRequired($friendUsername, "Friend username", 50))
         return $err;
     if ($err = validateRequired($status, "Status", 50))
         return $err;
 
-    // Check ownership
+    // Verify ownership first
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM Friends WHERE user_id = :user_id AND friend_id = :friend_id AND deleted_at IS NULL");
     $stmt->execute(['user_id' => $userId, 'friend_id' => $friendId]);
+    if ($stmt->fetchColumn() == 0)
+        return "Not friends or no permission.";
 
-    if ($stmt->fetchColumn() == 0) {
-        return "Friend not found or you don't have permission to edit.";
-    }
-
-    // Update friend
     $stmt = $pdo->prepare("UPDATE Friends SET friend_username = :friend_username, note = :note, status = :status WHERE user_id = :user_id AND friend_id = :friend_id AND deleted_at IS NULL");
-    $stmt->execute([
-        'friend_username' => trim($friendUsername),
-        'note' => $note,
-        'status' => trim($status),
-        'user_id' => $userId,
-        'friend_id' => $friendId
-    ]);
-
+    $stmt->execute(['friend_username' => $friendUsername, 'note' => $note, 'status' => $status, 'user_id' => $userId, 'friend_id' => $friendId]);
     return null;
 }
 
-
-/**
- * deleteFriend - Remove Friend (Soft Delete)
- * 
- * @param int $userId User's ID
- * @param int $friendId Friend record ID
- * @return string|null Error message if failed, null if success
- */
 function deleteFriend($userId, $friendId)
 {
     $pdo = getDBConnection();
-
-    // Soft delete - set deleted_at timestamp
+    // Soft Delete: Mark deleted_at timestamp instead of removing row. Data recovery possible.
     $stmt = $pdo->prepare("UPDATE Friends SET deleted_at = NOW() WHERE user_id = :user_id AND friend_id = :friend_id");
     $stmt->execute(['user_id' => $userId, 'friend_id' => $friendId]);
-
     return null;
 }
 
-
-/**
- * getFriends - Get User's Friends List
- * 
- * @param int $userId User's ID
- * @return array Array of friends
- */
 function getFriends($userId)
 {
     $pdo = getDBConnection();
-
-    $stmt = $pdo->prepare("SELECT friend_id, friend_username as username, status, note FROM Friends WHERE user_id = :user_id AND deleted_at IS NULL ORDER BY friend_username ASC");
+    $stmt = $pdo->prepare("SELECT friend_id, friend_username as username, status, note FROM Friends WHERE user_id = :user_id AND deleted_at IS NULL");
     $stmt->execute(['user_id' => $userId]);
-
     return $stmt->fetchAll();
 }
 
+// --- 5. Schedules (Speelschema's) ---
 
-// ============================================================================
-// SECTION: SCHEDULES MANAGEMENT
-// ============================================================================
-
-/**
- * addSchedule - Create New Gaming Schedule
- * 
- * @param int $userId User's ID
- * @param string $gameTitle Game being played
- * @param string $date Date of session (YYYY-MM-DD)
- * @param string $time Start time (HH:MM)
- * @param string $friendsStr Comma-separated friends
- * @param string $sharedWithStr Comma-separated users to share with
- * @return string|null Error message if failed, null if success
- */
 function addSchedule($userId, $gameTitle, $date, $time, $friendsStr = '', $sharedWithStr = '')
 {
     $pdo = getDBConnection();
 
-    // Validate all inputs (Bug Fix #1001 and #1004)
+    // Validate inputs
     if ($err = validateRequired($gameTitle, "Game title", 100))
         return $err;
     if ($err = validateDate($date))
-        return $err;
+        return $err; // Uses new strict date check
     if ($err = validateTime($time))
         return $err;
     if ($err = validateCommaSeparated($friendsStr, "Friends"))
@@ -1009,77 +460,35 @@ function addSchedule($userId, $gameTitle, $date, $time, $friendsStr = '', $share
     if ($err = validateCommaSeparated($sharedWithStr, "Shared With"))
         return $err;
 
-    // Get or create game
     $gameId = getOrCreateGameId($pdo, $gameTitle);
 
-    // Insert schedule
+    // Create Schedule
     $stmt = $pdo->prepare("INSERT INTO Schedules (user_id, game_id, date, time, friends, shared_with) VALUES (:user_id, :game_id, :date, :time, :friends, :shared_with)");
-    $stmt->execute([
-        'user_id' => $userId,
-        'game_id' => $gameId,
-        'date' => $date,
-        'time' => $time,
-        'friends' => $friendsStr,
-        'shared_with' => $sharedWithStr
-    ]);
-
+    $stmt->execute(['user_id' => $userId, 'game_id' => $gameId, 'date' => $date, 'time' => $time, 'friends' => $friendsStr, 'shared_with' => $sharedWithStr]);
     return null;
 }
 
-
-/**
- * getSchedules - Get User's Schedules
- * 
- * @param int $userId User's ID
- * @param string $sort Sort order (date ASC, date DESC, etc.)
- * @return array Array of schedules
- */
 function getSchedules($userId, $sort = 'date ASC')
 {
     $pdo = getDBConnection();
+    // Security: Whitelist sort options to prevent SQL injection via ORDER BY
+    $validSorts = ['date ASC', 'date DESC', 'time ASC', 'time DESC'];
+    $sort = in_array($sort, $validSorts) ? $sort : 'date ASC';
 
-    // Whitelist sort options to prevent SQL injection
-    $allowedSorts = ['date ASC', 'date DESC', 'time ASC', 'time DESC'];
-    if (!in_array($sort, $allowedSorts)) {
-        $sort = 'date ASC';
-    }
-
-    $stmt = $pdo->prepare("
-        SELECT s.schedule_id, g.titel AS game_titel, s.date, s.time, s.friends, s.shared_with 
-        FROM Schedules s 
-        JOIN Games g ON s.game_id = g.game_id 
-        WHERE s.user_id = :user_id AND s.deleted_at IS NULL 
-        ORDER BY $sort 
-        LIMIT 50
-    ");
+    $stmt = $pdo->prepare("SELECT s.schedule_id, g.titel AS game_titel, s.date, s.time, s.friends, s.shared_with FROM Schedules s JOIN Games g ON s.game_id = g.game_id WHERE s.user_id = :user_id AND s.deleted_at IS NULL ORDER BY $sort LIMIT 50");
     $stmt->execute(['user_id' => $userId]);
-
     return $stmt->fetchAll();
 }
 
-
-/**
- * editSchedule - Update Existing Schedule
- * 
- * @param int $userId User's ID
- * @param int $scheduleId Schedule ID
- * @param string $gameTitle Game title
- * @param string $date Date
- * @param string $time Time
- * @param string $friendsStr Friends
- * @param string $sharedWithStr Shared with
- * @return string|null Error message if failed, null if success
- */
 function editSchedule($userId, $scheduleId, $gameTitle, $date, $time, $friendsStr = '', $sharedWithStr = '')
 {
     $pdo = getDBConnection();
 
-    // Check ownership
-    if (!checkOwnership($pdo, 'Schedules', 'schedule_id', $scheduleId, $userId)) {
-        return "You don't have permission to edit this schedule.";
-    }
+    // Check permission
+    if (!checkOwnership($pdo, 'Schedules', 'schedule_id', $scheduleId, $userId))
+        return "No permission to edit.";
 
-    // Validate all inputs (Bug Fix #1001 and #1004)
+    // Validate
     if ($err = validateRequired($gameTitle, "Game title", 100))
         return $err;
     if ($err = validateDate($date))
@@ -1091,101 +500,51 @@ function editSchedule($userId, $scheduleId, $gameTitle, $date, $time, $friendsSt
     if ($err = validateCommaSeparated($sharedWithStr, "Shared With"))
         return $err;
 
-    // Get or create game
     $gameId = getOrCreateGameId($pdo, $gameTitle);
 
-    // Update schedule
     $stmt = $pdo->prepare("UPDATE Schedules SET game_id = :game_id, date = :date, time = :time, friends = :friends, shared_with = :shared_with WHERE schedule_id = :id AND user_id = :user_id AND deleted_at IS NULL");
-    $stmt->execute([
-        'game_id' => $gameId,
-        'date' => $date,
-        'time' => $time,
-        'friends' => $friendsStr,
-        'shared_with' => $sharedWithStr,
-        'id' => $scheduleId,
-        'user_id' => $userId
-    ]);
-
+    $stmt->execute(['game_id' => $gameId, 'date' => $date, 'time' => $time, 'friends' => $friendsStr, 'shared_with' => $sharedWithStr, 'id' => $scheduleId, 'user_id' => $userId]);
     return null;
 }
 
-
-/**
- * deleteSchedule - Remove Schedule (Soft Delete)
- * 
- * @param int $userId User's ID
- * @param int $scheduleId Schedule ID
- * @return string|null Error message if failed, null if success
- */
 function deleteSchedule($userId, $scheduleId)
 {
     $pdo = getDBConnection();
 
-    // Check ownership
-    if (!checkOwnership($pdo, 'Schedules', 'schedule_id', $scheduleId, $userId)) {
-        return "You don't have permission to delete this schedule.";
-    }
+    if (!checkOwnership($pdo, 'Schedules', 'schedule_id', $scheduleId, $userId))
+        return "No permission to delete.";
 
-    // Soft delete
     $stmt = $pdo->prepare("UPDATE Schedules SET deleted_at = NOW() WHERE schedule_id = :id AND user_id = :user_id");
     $stmt->execute(['id' => $scheduleId, 'user_id' => $userId]);
-
     return null;
 }
 
+// --- 6. Events (Evenementen) ---
 
-// ============================================================================
-// SECTION: EVENTS MANAGEMENT
-// ============================================================================
-
-/**
- * addEvent - Create New Event
- * 
- * @param int $userId User's ID
- * @param string $title Event title
- * @param string $date Event date
- * @param string $time Event time
- * @param string $description Event description
- * @param string $reminder Reminder setting
- * @param string $externalLink External URL
- * @param string $sharedWithStr Users to share with
- * @return string|null Error message if failed, null if success
- */
 function addEvent($userId, $title, $date, $time, $description, $reminder, $externalLink = '', $sharedWithStr = '')
 {
     $pdo = getDBConnection();
 
-    // Validate all inputs (Bug Fix #1001 and #1004)
+    // Validate
     if ($err = validateRequired($title, "Title", 100))
         return $err;
     if ($err = validateDate($date))
         return $err;
     if ($err = validateTime($time))
         return $err;
-
-    // Description is optional, but check length if provided
-    if (!empty($description) && strlen($description) > 500) {
-        return "Description too long (maximum 500 characters).";
-    }
-
-    // Validate reminder option
-    if (!in_array($reminder, ['none', '1_hour', '1_day'])) {
-        return "Invalid reminder option selected.";
-    }
-
+    if (!empty($description) && strlen($description) > 500)
+        return "Description too long (max 500 characters).";
+    if (!in_array($reminder, ['none', '1_hour', '1_day']))
+        return "Invalid reminder option.";
     if ($err = validateUrl($externalLink))
         return $err;
     if ($err = validateCommaSeparated($sharedWithStr, "Shared With"))
         return $err;
 
-    // Insert event
-    $stmt = $pdo->prepare("
-        INSERT INTO Events (user_id, title, date, time, description, reminder, external_link, shared_with) 
-        VALUES (:user_id, :title, :date, :time, :description, :reminder, :external_link, :shared_with)
-    ");
+    $stmt = $pdo->prepare("INSERT INTO Events (user_id, title, date, time, description, reminder, external_link, shared_with) VALUES (:user_id, :title, :date, :time, :description, :reminder, :external_link, :shared_with)");
     $stmt->execute([
         'user_id' => $userId,
-        'title' => trim($title),
+        'title' => $title,
         'date' => $date,
         'time' => $time,
         'description' => $description,
@@ -1193,94 +552,45 @@ function addEvent($userId, $title, $date, $time, $description, $reminder, $exter
         'external_link' => $externalLink,
         'shared_with' => $sharedWithStr
     ]);
-
     return null;
 }
 
-
-/**
- * getEvents - Get User's Events
- * 
- * @param int $userId User's ID
- * @param string $sort Sort order
- * @return array Array of events
- */
 function getEvents($userId, $sort = 'date ASC')
 {
     $pdo = getDBConnection();
+    $validSorts = ['date ASC', 'date DESC', 'time ASC', 'time DESC'];
+    $sort = in_array($sort, $validSorts) ? $sort : 'date ASC';
 
-    // Whitelist sort options
-    $allowedSorts = ['date ASC', 'date DESC', 'time ASC', 'time DESC'];
-    if (!in_array($sort, $allowedSorts)) {
-        $sort = 'date ASC';
-    }
-
-    $stmt = $pdo->prepare("
-        SELECT event_id, title, date, time, description, reminder, external_link, shared_with 
-        FROM Events 
-        WHERE user_id = :user_id AND deleted_at IS NULL 
-        ORDER BY $sort 
-        LIMIT 50
-    ");
+    $stmt = $pdo->prepare("SELECT event_id, title, date, time, description, reminder, external_link, shared_with FROM Events WHERE user_id = :user_id AND deleted_at IS NULL ORDER BY $sort LIMIT 50");
     $stmt->execute(['user_id' => $userId]);
-
     return $stmt->fetchAll();
 }
 
-
-/**
- * editEvent - Update Existing Event
- * 
- * @param int $userId User's ID
- * @param int $eventId Event ID
- * @param string $title Event title
- * @param string $date Event date
- * @param string $time Event time
- * @param string $description Event description
- * @param string $reminder Reminder setting
- * @param string $externalLink External URL
- * @param string $sharedWithStr Users to share with
- * @return string|null Error message if failed, null if success
- */
 function editEvent($userId, $eventId, $title, $date, $time, $description, $reminder, $externalLink = '', $sharedWithStr = '')
 {
     $pdo = getDBConnection();
 
-    // Check ownership
-    if (!checkOwnership($pdo, 'Events', 'event_id', $eventId, $userId)) {
-        return "You don't have permission to edit this event.";
-    }
+    if (!checkOwnership($pdo, 'Events', 'event_id', $eventId, $userId))
+        return "No permission to edit.";
 
-    // Validate all inputs (Bug Fix #1001 and #1004)
     if ($err = validateRequired($title, "Title", 100))
         return $err;
     if ($err = validateDate($date))
         return $err;
     if ($err = validateTime($time))
         return $err;
-
-    if (!empty($description) && strlen($description) > 500) {
-        return "Description too long (maximum 500 characters).";
-    }
-
-    if (!in_array($reminder, ['none', '1_hour', '1_day'])) {
-        return "Invalid reminder option selected.";
-    }
-
+    if (!empty($description) && strlen($description) > 500)
+        return "Description too long (max 500 characters).";
+    if (!in_array($reminder, ['none', '1_hour', '1_day']))
+        return "Invalid reminder option.";
     if ($err = validateUrl($externalLink))
         return $err;
     if ($err = validateCommaSeparated($sharedWithStr, "Shared With"))
         return $err;
 
-    // Update event
-    $stmt = $pdo->prepare("
-        UPDATE Events 
-        SET title = :title, date = :date, time = :time, description = :description, 
-            reminder = :reminder, external_link = :external_link, shared_with = :shared_with 
-        WHERE event_id = :id AND user_id = :user_id AND deleted_at IS NULL
-    ");
+    $stmt = $pdo->prepare("UPDATE Events SET title = :title, date = :date, time = :time, description = :description, reminder = :reminder, external_link = :external_link, shared_with = :shared_with WHERE event_id = :id AND user_id = :user_id AND deleted_at IS NULL");
     $stmt->execute([
-        'title' => trim($title),
+        'title' => $title,
         'date' => $date,
         'time' => $time,
         'description' => $description,
@@ -1290,174 +600,67 @@ function editEvent($userId, $eventId, $title, $date, $time, $description, $remin
         'id' => $eventId,
         'user_id' => $userId
     ]);
-
     return null;
 }
 
-
-/**
- * deleteEvent - Remove Event (Soft Delete)
- * 
- * @param int $userId User's ID
- * @param int $eventId Event ID
- * @return string|null Error message if failed, null if success
- */
 function deleteEvent($userId, $eventId)
 {
     $pdo = getDBConnection();
 
-    // Check ownership
-    if (!checkOwnership($pdo, 'Events', 'event_id', $eventId, $userId)) {
-        return "You don't have permission to delete this event.";
-    }
+    if (!checkOwnership($pdo, 'Events', 'event_id', $eventId, $userId))
+        return "No permission to delete.";
 
-    // Soft delete
     $stmt = $pdo->prepare("UPDATE Events SET deleted_at = NOW() WHERE event_id = :id AND user_id = :user_id");
     $stmt->execute(['id' => $eventId, 'user_id' => $userId]);
-
     return null;
 }
 
+// --- 7. General & Helper ---
 
-// ============================================================================
-// SECTION: HELPER FUNCTIONS FOR DATA MANAGEMENT
-// ============================================================================
-
-/**
- * getGames - Get All Games
- * 
- * @return array Array of all games
- */
 function getGames()
 {
     $pdo = getDBConnection();
-
     $stmt = $pdo->query("SELECT game_id, titel, description FROM Games WHERE deleted_at IS NULL ORDER BY titel");
-
     return $stmt->fetchAll();
 }
 
-
-/**
- * checkOwnership - Verify User Owns a Record
- * 
- * WHAT IT DOES:
- * Checks if a specific record belongs to the current user.
- * Used before editing or deleting to prevent unauthorized access.
- * 
- * @param PDO $pdo Database connection
- * @param string $table Table name
- * @param string $idColumn ID column name
- * @param int $id Record ID
- * @param int $userId User's ID
- * @return bool True if user owns the record, false otherwise
- */
 function checkOwnership($pdo, $table, $idColumn, $id, $userId)
 {
-    // Prepared statement to check if record exists and belongs to user
+    // Dynamic query helper to check if a user owns a row
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM $table WHERE $idColumn = :id AND user_id = :user_id AND deleted_at IS NULL");
     $stmt->execute(['id' => $id, 'user_id' => $userId]);
-
-    // Return true if count > 0 (record exists and belongs to user)
     return $stmt->fetchColumn() > 0;
 }
 
-
-// ============================================================================
-// SECTION: CALENDAR FUNCTIONS
-// ============================================================================
-
-/**
- * getCalendarItems - Get Merged Calendar View
- * 
- * WHAT IT DOES:
- * Combines schedules and events into a single sorted list.
- * Used for the calendar overview on the dashboard.
- * 
- * @param int $userId User's ID
- * @return array Merged and sorted array of schedules and events
- */
 function getCalendarItems($userId)
 {
-    // Get schedules and events
+    // Merge Schedules + Events into a single chronological list
     $schedules = getSchedules($userId);
     $events = getEvents($userId);
 
-    // Merge into single array
     $items = array_merge($schedules, $events);
 
-    // Sort by date and time
+    // Sort combined list
     usort($items, function ($a, $b) {
-        // Create timestamps for comparison
         $dateA = strtotime($a['date'] . ' ' . $a['time']);
         $dateB = strtotime($b['date'] . ' ' . $b['time']);
-
-        // Return comparison result (-1, 0, or 1)
         return $dateA <=> $dateB;
     });
-
     return $items;
 }
 
-
-/**
- * getReminders - Get Events That Need Reminders
- * 
- * WHAT IT DOES:
- * Finds events that should show a reminder pop-up.
- * Used by JavaScript to display reminder notifications.
- * 
- * @param int $userId User's ID
- * @return array Events that need reminder notification
- */
 function getReminders($userId)
 {
-    // Get all events
+    // Logic to find events near "now" (simulated check for next 24h or hour)
+    // In this MVP, we just return upcoming events with reminders enabled for JS to parse.
     $events = getEvents($userId);
-
     $reminders = [];
-
     foreach ($events as $event) {
-        // Skip events with no reminder set
-        if ($event['reminder'] == 'none')
-            continue;
-
-        // Calculate event time
-        $eventTime = strtotime($event['date'] . ' ' . $event['time']);
-
-        // Calculate reminder time based on setting
-        // 1 hour = 3600 seconds, 1 day = 86400 seconds
-        $offset = ($event['reminder'] == '1_hour') ? 3600 : 86400;
-        $reminderTime = $eventTime - $offset;
-
-        // Check if reminder time is now (within last minute)
-        $now = time();
-        if ($reminderTime <= $now && $reminderTime > ($now - 60)) {
+        if ($event['reminder'] != 'none') {
+            // Simplified logic: If event is in future, pass to JS to handle specific timing
             $reminders[] = $event;
         }
     }
-
     return $reminders;
 }
-
-
-// ============================================================================
-// FILE COMPLETE
-// ============================================================================
-// This file contains all the core functions for GamePlan Scheduler.
-//
-// SUMMARY OF BUG FIXES:
-// ✓ #1001: validateRequired() now checks for empty strings and whitespace-only
-// ✓ #1004: validateDate() now validates format AND checks with checkdate()
-//
-// SECURITY FEATURES IMPLEMENTED:
-// ✓ Input validation on all user input
-// ✓ Output escaping with safeEcho()
-// ✓ Prepared statements for all database queries
-// ✓ Password hashing with bcrypt
-// ✓ Session timeout after 30 minutes
-// ✓ Ownership checks before editing/deleting
-//
-// © 2025 GamePlan Scheduler by Harsha Kanaparthi
-// ============================================================================
 ?>

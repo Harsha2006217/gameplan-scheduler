@@ -41,7 +41,7 @@
     /* Warning yellow / Waarschuwing geel */
 
     /* Glassmorphism effect values */
-    --glass-bg: rgba(26, 26, 37, 0.8);
+    --glass-bg: orange;
     --glass-border: rgba(255, 255, 255, 0.1);
     --glass-blur: 10px;
 

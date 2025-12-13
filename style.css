@@ -1,614 +1,279 @@
-/* ============================================================================
-   STYLE.CSS - GamePlan Scheduler Custom Styles
-   ============================================================================
-   Author       : Harsha Kanaparthi (Student Number: 2195344)
-   Date         : 30-09-2025
-   Version      : 1.0
-   Project      : GamePlan Scheduler - MBO-4 Software Development Examination
-   ============================================================================
-   DESCRIPTION:
-   This file contains custom CSS styles that work alongside Bootstrap 5.
-   It defines the visual theme, animations, and responsive adjustments.
+/* 
+   style.css - GamePlan Scheduler Custom Styles
+   Author: Harsha Kanaparthi
+   Date: 30-09-2025
+   Description:
+   This stylesheet provides the "Legendary" and "Advanced" look for the application.
+   It works on top of Bootstrap 5 to create a unique, gaming-inspired dark theme.
    
-   DESIGN SPECIFICATIONS (from design document):
-   - Theme: Dark mode with blue accents
-   - Header Height: 80 pixels
-   - Main Section: 80% width with rounded corners
-   - Footer Height: 50 pixels
-   - Buttons: 40px height with icons for mobile usability
-   - Colors: Black, blue (#0d6efd), white text
-   
-   CSS STRUCTURE:
-   1. CSS Variables (Custom Properties)
-   2. Base Styles (HTML, Body)
-   3. Typography
-   4. Layout Components (Header, Main, Footer)
-   5. Card and Table Styles
-   6. Form Styles
-   7. Button Styles
-   8. Utility Classes
-   9. Animations
-   10. Media Queries (Responsive)
-   ============================================================================ */
+   Design Philosophy:
+   - "Glassmorphism": Semi-transparent backgrounds with blur effects.
+   - "Neon Glow": Blue and purple accents to give a high-tech feel.
+   - "Responsive": Fits perfectly on mobile and desktop.
+   - "User Friendly": High contrast text and clear interactive elements.
+*/
 
+/* Import Google Font 'Orbitron' for gaming headers and 'Roboto' for body text */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap');
 
-/* ============================================================================
-   SECTION 1: CSS VARIABLES (Custom Properties)
-   ============================================================================
-   CSS variables allow us to define values once and reuse them.
-   --variable-name: value;
-   Usage: var(--variable-name);
-   This makes changing the theme easy - just change the variable!
-   ============================================================================ */
-
-:root {
-    /* PRIMARY COLORS */
-    /* --primary: Main brand color (Bootstrap blue) */
-    --primary: #0d6efd;
-
-    /* --primary-dark: Darker shade for hover states */
-    --primary-dark: #0b5ed7;
-
-    /* --success: Green for success messages/buttons */
-    --success: #198754;
-
-    /* --danger: Red for errors/delete buttons */
-    --danger: #dc3545;
-
-    /* --warning: Yellow for warnings */
-    --warning: #ffc107;
-
-    /* --info: Light blue for information */
-    --info: #0dcaf0;
-
-
-    /* BACKGROUND COLORS */
-    /* --bg-dark: Main dark background */
-    --bg-dark: #212529;
-
-    /* --bg-secondary: Slightly lighter for cards */
-    --bg-secondary: #343a40;
-
-    /* --bg-darker: Even darker for inputs */
-    --bg-darker: #1a1d20;
-
-
-    /* TEXT COLORS */
-    /* --text-light: Main text color on dark backgrounds */
-    --text-light: #f8f9fa;
-
-    /* --text-muted: Secondary/less important text */
-    --text-muted: #adb5bd;
-
-
-    /* BORDER COLORS */
-    --border-color: #495057;
-
-
-    /* SPACING */
-    /* --header-height: Fixed header height */
-    --header-height: 80px;
-
-    /* --footer-height: Fixed footer height */
-    --footer-height: 50px;
-
-
-    /* TRANSITIONS */
-    /* --transition-fast: Quick animations (0.2 seconds) */
-    --transition-fast: 0.2s ease;
-
-    /* --transition-normal: Standard animations (0.3 seconds) */
-    --transition-normal: 0.3s ease;
-
-
-    /* BORDER RADIUS */
-    /* --radius-sm: Small rounded corners */
-    --radius-sm: 0.375rem;
-
-    /* --radius-md: Medium rounded corners */
-    --radius-md: 0.5rem;
-
-    /* --radius-lg: Large rounded corners (cards) */
-    --radius-lg: 1rem;
-
-
-    /* SHADOWS */
-    /* --shadow-sm: Small shadow for subtle depth */
-    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-
-    /* --shadow-md: Medium shadow for cards */
-    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
-
-    /* --shadow-lg: Large shadow for prominent elements */
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
-}
-
-
-/* ============================================================================
-   SECTION 2: BASE STYLES
-   ============================================================================
-   Styles applied to the HTML and body elements.
-   These set the foundation for the entire page.
-   ============================================================================ */
-
-/* ALL ELEMENTS: Use border-box sizing */
-/* border-box: Width includes padding and border, not just content */
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-}
-
-
-/* HTML ELEMENT */
-/* scroll-behavior: Smooth scrolling when clicking anchor links */
-html {
-    scroll-behavior: smooth;
-}
-
-
-/* BODY ELEMENT */
+/* --- General Body Styles --- */
+/* Everything starts here. Dark background, white text. */
 body {
-    /* Background color: Dark theme */
-    background-color: var(--bg-dark);
-
-    /* Text color: Light for contrast */
-    color: var(--text-light);
-
-    /* Font family: Inter is modern and clean, with fallbacks */
-    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-
-    /* Line height: 1.6 is comfortable for reading */
-    line-height: 1.6;
-
-    /* Minimum height: At least full viewport height */
+    background: #0f0c29;
+    /* Deep dark blue/purple background */
+    background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+    /* Modern Gradient */
+    color: #e0e0e0;
+    /* Off-white text for better readability than pure white */
+    font-family: 'Roboto', sans-serif;
+    /* Clean, modern font for main text */
     min-height: 100vh;
+    /* Ensure full height coverage */
+    padding-top: 80px;
+    /* Space for the fixed header */
+    padding-bottom: 70px;
+    /* Space for the fixed footer */
+    overflow-x: hidden;
+    /* Prevent horizontal scrolling */
 }
 
-
-/* ============================================================================
-   SECTION 3: TYPOGRAPHY
-   ============================================================================
-   Heading and text styles.
-   ============================================================================ */
-
-/* HEADINGS */
-/* All headings share these styles */
+/* --- Typography --- */
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-    font-weight: 700;
-    line-height: 1.3;
-    margin-bottom: 0.5rem;
+    font-family: 'Orbitron', sans-serif;
+    /* Gaming font for headers */
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(13, 110, 253, 0.7);
+    /* Blue glow effect */
+    margin-bottom: 1.5rem;
 }
 
-
-/* LINKS */
-a {
-    color: var(--info);
-    transition: color var(--transition-fast);
+/* --- Header Styling --- */
+header {
+    background: rgba(13, 20, 40, 0.95) !important;
+    /* Semi-transparent dark blue */
+    backdrop-filter: blur(10px);
+    /* Blur effect behind the header */
+    border-bottom: 2px solid #0d6efd;
+    /* Blue border line */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    /* Shadow for depth */
+    transition: all 0.3s ease;
 }
 
-/* Links on hover: Slightly lighter blue */
-a:hover {
-    color: var(--primary);
+header h1 {
+    font-size: 1.5rem;
+    letter-spacing: 2px;
 }
 
-
-/* ============================================================================
-   SECTION 4: LAYOUT COMPONENTS
-   ============================================================================
-   Header, main content area, and footer styles.
-   ============================================================================ */
-
-/* HEADER */
-/* Fixed at top with specific height */
-header.fixed-top {
-    height: var(--header-height);
-    display: flex;
-    align-items: center;
-    z-index: 1030;
-    box-shadow: var(--shadow-md);
+/* --- Navigation Links --- */
+.nav-link {
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
-
-/* MAIN CONTENT AREA */
-/* 80% width as per design document */
-main.container {
-    max-width: 80%;
-    margin: 0 auto;
-    padding-top: calc(var(--header-height) + 2rem);
-    padding-bottom: calc(var(--footer-height) + 3rem);
+.nav-link:hover {
+    color: #0d6efd !important;
+    /* Bright blue on hover */
+    text-shadow: 0 0 8px #0d6efd;
 }
 
-
-/* FOOTER */
-/* Fixed at bottom with specific height */
-footer.fixed-bottom {
-    height: var(--footer-height);
-    display: flex;
-    align-items: center;
-    z-index: 1020;
-}
-
-
-/* ============================================================================
-   SECTION 5: CARD AND TABLE STYLES
-   ============================================================================
-   Styles for Bootstrap cards and tables.
-   ============================================================================ */
-
-/* CARDS */
-/* Override Bootstrap card dark background */
-.card.bg-secondary {
-    background-color: var(--bg-secondary) !important;
-}
-
-
-/* Card hover effect: Subtle lift */
+/* --- Cards (Glassmorphism) --- */
+/* Used for dashboard items like profile, forms, lists */
 .card {
-    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+    background: rgba(44, 44, 44, 0.7);
+    /* Semi-transparent grey */
+    backdrop-filter: blur(10px);
+    /* Glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Subtle white border */
+    border-radius: 15px;
+    /* Rounded corners */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    /* Deep shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 25px;
 }
 
 .card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-5px);
+    /* Lift up slightly on hover */
+    box-shadow: 0 12px 40px 0 rgba(13, 110, 253, 0.4);
+    /* Blue glow on hover */
+    border-color: #0d6efd;
 }
 
-
-/* CALENDAR CARDS (no transform on hover, just shadow) */
-.hover-shadow:hover {
-    box-shadow: 0 0 20px rgba(13, 110, 253, 0.3);
+.card-title {
+    color: #0d6efd;
+    /* Highlight titles in blue */
+    font-weight: bold;
 }
 
-
-/* TABLES */
-/* Dark table with hover effect */
+/* --- Tables --- */
 .table-dark {
-    --bs-table-bg: var(--bg-secondary);
-    --bs-table-hover-bg: rgba(255, 255, 255, 0.05);
-}
-
-
-/* Table header styling */
-.table-dark thead.table-primary th {
-    background-color: var(--primary);
-    color: white;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
-    padding: 1rem 0.75rem;
-}
-
-
-/* Table cells */
-.table-dark td {
-    padding: 0.875rem 0.75rem;
-    vertical-align: middle;
-}
-
-
-/* ============================================================================
-   SECTION 6: FORM STYLES
-   ============================================================================
-   Input, select, and textarea styling.
-   ============================================================================ */
-
-/* FORM INPUTS */
-/* Dark styled inputs */
-.form-control.bg-dark,
-.form-select.bg-dark {
-    background-color: var(--bg-darker) !important;
-    border-color: var(--border-color);
-    color: var(--text-light);
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
-}
-
-
-/* Input focus state: Blue glow */
-.form-control.bg-dark:focus,
-.form-select.bg-dark:focus {
-    background-color: var(--bg-darker) !important;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-    color: var(--text-light);
-}
-
-
-/* Placeholder text color */
-.form-control::placeholder {
-    color: var(--text-muted);
-    opacity: 0.7;
-}
-
-
-/* FORM LABELS */
-.form-label {
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-    color: var(--text-light);
-}
-
-
-/* Required field indicator */
-.form-label .text-danger {
-    font-weight: 700;
-}
-
-
-/* Form help text */
-.form-text {
-    font-size: 0.875rem;
-    margin-top: 0.375rem;
-}
-
-
-/* ============================================================================
-   SECTION 7: BUTTON STYLES
-   ============================================================================
-   Custom button styling with hover effects.
-   Design spec: 40px height for mobile usability.
-   ============================================================================ */
-
-/* ALL BUTTONS */
-/* Minimum height 40px as per design */
-.btn {
-    min-height: 40px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    font-weight: 500;
-    border-radius: var(--radius-sm);
-    transition: all var(--transition-fast);
-}
-
-
-/* LARGE BUTTONS */
-/* Extra padding for primary actions */
-.btn-lg {
-    min-height: 48px;
-    padding: 0.75rem 1.5rem;
-    font-size: 1.1rem;
-}
-
-
-/* BUTTON HOVER EFFECTS */
-/* Primary button */
-.btn-primary:hover {
-    background-color: var(--primary-dark);
-    transform: translateY(-1px);
-}
-
-
-/* Success button */
-.btn-success:hover {
-    background-color: #157347;
-    transform: translateY(-1px);
-}
-
-
-/* Danger button */
-.btn-danger:hover {
-    background-color: #bb2d3b;
-    transform: translateY(-1px);
-}
-
-
-/* OUTLINE BUTTONS */
-/* Lighter border and fill on hover */
-.btn-outline-light:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.btn-outline-warning:hover {
-    background-color: var(--warning);
-    color: #000;
-}
-
-.btn-outline-danger:hover {
-    background-color: var(--danger);
-    color: #fff;
-}
-
-.btn-outline-info:hover {
-    background-color: var(--info);
-    color: #000;
-}
-
-
-/* ============================================================================
-   SECTION 8: UTILITY CLASSES
-   ============================================================================
-   Custom helper classes for common styling needs.
-   ============================================================================ */
-
-/* Text truncation (with ellipsis) */
-.text-truncate {
+    background-color: transparent;
+    border-radius: 10px;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    /* Keeps borders rounded */
 }
 
-
-/* BADGE STYLES */
-/* Status badges */
-.badge {
-    font-weight: 500;
-    padding: 0.4em 0.8em;
-}
-
-
-/* ALERT STYLES */
-/* Flash message alerts */
-.alert {
-    border-radius: var(--radius-md);
+.table-dark th {
+    background-color: #0d6efd;
+    /* Header background */
+    color: white;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    letter-spacing: 1px;
     border: none;
 }
 
-
-/* Alert close button */
-.alert .btn-close {
-    filter: brightness(0) invert(1);
+.table-dark td {
+    background-color: rgba(30, 30, 30, 0.8);
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.table-dark tr:hover td {
+    background-color: rgba(13, 110, 253, 0.1);
+    /* Slight blue tint on hover */
+}
 
-/* ============================================================================
-   SECTION 9: ANIMATIONS
-   ============================================================================
-   Keyframe animations for page elements.
-   ============================================================================ */
+/* --- Buttons --- */
+.btn {
+    border-radius: 50px;
+    /* Fully rounded buttons */
+    padding: 10px 25px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
 
-/* FADE IN ANIMATION */
-/* Used for page load effects */
+.btn-primary {
+    background: linear-gradient(45deg, #0d6efd, #00c6ff);
+    /* Blue gradient */
+    border: none;
+    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, #00c6ff, #0d6efd);
+    /* Reverse gradient */
+    transform: scale(1.05);
+    /* Grow slightly */
+    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.6);
+}
+
+.btn-danger {
+    background: linear-gradient(45deg, #ff416c, #ff4b2b);
+    /* Red gradient */
+    border: none;
+}
+
+.btn-warning {
+    background: linear-gradient(45deg, #f7b733, #fc4a1a);
+    /* Orange gradient */
+    border: none;
+    color: white;
+}
+
+/* --- Forms --- */
+.form-control,
+.form-select {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 10px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: #0d6efd;
+    color: white;
+    box-shadow: 0 0 10px rgba(13, 110, 253, 0.5);
+    /* Blue glow focus */
+}
+
+/* Placeholder text color */
+::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+/* --- Alerts and Messages --- */
+.alert {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.5s ease-out;
+}
+
+/* --- Footer --- */
+footer {
+    background: rgba(10, 10, 20, 0.95);
+    backdrop-filter: blur(5px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: #aaa;
+    padding: 15px 0;
+}
+
+footer a {
+    color: #0d6efd;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+footer a:hover {
+    color: #fff;
+    text-shadow: 0 0 5px #fff;
+}
+
+/* --- Animations --- */
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(20px);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
     }
 }
 
-
-/* Apply fade-in to main content */
-main.container>section {
-    animation: fadeIn 0.5s ease forwards;
+main {
+    animation: fadeIn 0.8s ease-out;
+    /* Fade in main content */
 }
 
-/* Staggered animation for multiple sections */
-main.container>section:nth-child(2) {
-    animation-delay: 0.1s;
-}
-
-main.container>section:nth-child(3) {
-    animation-delay: 0.2s;
-}
-
-main.container>section:nth-child(4) {
-    animation-delay: 0.3s;
-}
-
-main.container>section:nth-child(5) {
-    animation-delay: 0.4s;
-}
-
-
-/* PULSE ANIMATION */
-/* For notification badges */
-@keyframes pulse {
-
-    0%,
-    100% {
-        transform: scale(1);
+/* --- Responsive Helpers --- */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
     }
 
-    50% {
-        transform: scale(1.05);
-    }
-}
-
-
-/* ============================================================================
-   SECTION 10: MEDIA QUERIES (Responsive Design)
-   ============================================================================
-   Adjustments for different screen sizes.
-   - Mobile: < 576px
-   - Tablet: 576px - 991px
-   - Desktop: 992px+
-   ============================================================================ */
-
-/* TABLET AND BELOW (< 992px) */
-@media (max-width: 991.98px) {
-
-    /* Main content: Full width on smaller screens */
-    main.container {
-        max-width: 95%;
+    h1 {
+        font-size: 2rem;
     }
 
-    /* Navbar collapse adjustment */
-    .navbar-collapse {
-        background-color: var(--primary);
-        border-radius: var(--radius-md);
-        padding: 1rem;
-        margin-top: 0.5rem;
-    }
-}
-
-
-/* MOBILE (< 576px) */
-@media (max-width: 575.98px) {
-
-    /* Full width content */
-    main.container {
-        max-width: 100%;
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
-
-    /* Stack table cells if needed */
     .table-responsive {
-        font-size: 0.875rem;
-    }
-
-    /* Smaller buttons on mobile */
-    .btn-sm {
-        padding: 0.375rem 0.5rem;
-        font-size: 0.75rem;
-    }
-
-    /* Header logo smaller */
-    header .h4 {
-        font-size: 1.1rem;
-    }
-
-    /* Cards: Full width */
-    .card-body {
-        padding: 1rem;
-    }
-
-    /* Footer text smaller */
-    footer .small {
-        font-size: 0.75rem;
+        overflow-x: auto;
     }
 }
-
-
-/* LARGE DESKTOP (> 1400px) */
-@media (min-width: 1400px) {
-
-    /* Wider main content on large screens */
-    main.container {
-        max-width: 75%;
-    }
-}
-
-
-/* ============================================================================
-   END OF STYLESHEET
-   ============================================================================
-   
-   SUMMARY:
-   - Dark theme with blue accents
-   - Responsive design (mobile-first adjustments)
-   - Smooth animations and transitions
-   - Accessible color contrasts
-   - Bootstrap 5 compatible overrides
-   
-   DESIGN SPECIFICATIONS MET:
-   ✓ Header height: 80px
-   ✓ Footer height: 50px
-   ✓ Main section: 80% width
-   ✓ Dark theme: Black, blue, white text
-   ✓ Buttons: 40px minimum height
-   ✓ Rounded corners on cards
-   
-   © 2025 GamePlan Scheduler by Harsha Kanaparthi
-   ============================================================================ */

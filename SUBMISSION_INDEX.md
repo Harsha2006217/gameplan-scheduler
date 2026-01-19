@@ -14,7 +14,8 @@
 | 3 | **VALIDATION_QUICK_REFERENCE.md** | Quick at-a-glance reference sheet | 5 KB |
 | 4 | **CODE_FLOW_DIAGRAMS.md** | Visual ASCII flowcharts for all major flows | 36 KB |
 | 5 | **VALIDATIE_DOCUMENTATIE_NL.md** | 🇳🇱 Complete Dutch/Nederlands version | 24 KB |
-| 6 | **EASY_EXPLANATION_GUIDE.md** | 📚 Beginner-friendly simple explanation | 10 KB |
+| 6 | **EASY_EXPLANATION_GUIDE.md** | 📚 Beginner-friendly simple explanation | 12 KB |
+| 7 | **VALIDATION_TEST_CASES.md** | 🧪 99 test cases with expected results | 13 KB |
 
 ---
 

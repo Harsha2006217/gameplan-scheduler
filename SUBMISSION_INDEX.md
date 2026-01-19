@@ -12,7 +12,8 @@
 | 1 | **VALIDATION_DOCUMENTATION.md** | Complete A-Z guide with all validations, flows, and diagrams | 39 KB |
 | 2 | **ALGORITHMS_SUBMISSION.md** | All 12 validation algorithms formatted for submission | 13 KB |
 | 3 | **VALIDATION_QUICK_REFERENCE.md** | Quick at-a-glance reference sheet | 5 KB |
-| 4 | **CODE_FLOW_DIAGRAMS.md** | Visual ASCII flowcharts for all major flows | 14 KB |
+| 4 | **CODE_FLOW_DIAGRAMS.md** | Visual ASCII flowcharts for all major flows | 36 KB |
+| 5 | **VALIDATIE_DOCUMENTATIE_NL.md** | 🇳🇱 Complete Dutch/Nederlands version | 24 KB |
 
 ---
 

@@ -22,6 +22,7 @@
 | 11 | **USER_MANUAL.md** | 📖 End-user guide with screenshots | 9 KB |
 | 12 | **FUNCTION_REFERENCE.md** | ⚙️ All 35+ functions documented | 13 KB |
 | 13 | **GLOSSARY.md** | 📚 Technical terms explained (EN/NL) | 7 KB |
+| 14 | **ERROR_MESSAGES_REFERENCE.md** | ⚠️ All error messages & solutions | 7 KB |
 
 ---
 

@@ -26,6 +26,7 @@
 | 15 | **CHANGELOG.md** | 📜 Version history & development log | 5 KB |
 | 16 | **CSS_DOCUMENTATION.md** | 🎨 Design system & styling guide | 7 KB |
 | 17 | **FILE_DEPENDENCIES.md** | 🔗 Architecture & file connections | 8 KB |
+| 18 | **EXAM_PREPARATION_GUIDE.md** | 🎓 Quick answers & demo script | 6 KB |
 
 ---
 

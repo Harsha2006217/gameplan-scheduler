@@ -24,6 +24,7 @@
 | 13 | **GLOSSARY.md** | 📚 Technical terms explained (EN/NL) | 7 KB |
 | 14 | **ERROR_MESSAGES_REFERENCE.md** | ⚠️ All error messages & solutions | 7 KB |
 | 15 | **CHANGELOG.md** | 📜 Version history & development log | 5 KB |
+| 16 | **CSS_DOCUMENTATION.md** | 🎨 Design system & styling guide | 7 KB |
 
 ---
 

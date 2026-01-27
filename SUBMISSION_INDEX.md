@@ -19,6 +19,7 @@
 | 8 | **DATABASE_DOCUMENTATION.md** | 🗄️ Complete database schema & ERD | 14 KB |
 | 9 | **SECURITY_DOCUMENTATION.md** | 🔒 All security measures explained | 11 KB |
 | 10 | **COMPLETE_PROJECT_SUMMARY.md** | 📋 Final submission overview | 9 KB |
+| 11 | **USER_MANUAL.md** | 📖 End-user guide with screenshots | 8 KB |
 
 ---
 

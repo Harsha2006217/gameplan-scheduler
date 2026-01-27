@@ -28,6 +28,7 @@
 | 17 | **FILE_DEPENDENCIES.md** | 🔗 Architecture & file connections | 8 KB |
 | 18 | **EXAM_PREPARATION_GUIDE.md** | 🎓 Quick answers & demo script | 6 KB |
 | 19 | **ONE_PAGE_SUMMARY.md** | 📄 Printable quick reference | 4 KB |
+| 20 | **CODE_REVIEW_CHECKLIST.md** | ✅ QA verification checklist | 6 KB |
 
 ---
 

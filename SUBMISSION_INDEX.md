@@ -37,6 +37,18 @@
 | 26 | **DATABASE_SQL_FILE_DOCUMENTATION.md** | 📄 database.sql File Ref | 6 KB |
 | 27 | **DB_PHP_DOCUMENTATION.md** | 📄 db.php Logic Ref | 5 KB |
 | 28 | **DELETE_DOCUMENTATION.md** | 📄 delete.php Logic Ref | 4 KB |
+| 29 | **EDIT_EVENT_DOCUMENTATION.md** | 📄 edit_event.php Logic Ref | 6 KB |
+| 30 | **EDIT_FAVORITE_DOCUMENTATION.md** | 📄 edit_favorite.php Logic Ref | 5 KB |
+| 31 | **EDIT_FRIEND_DOCUMENTATION.md** | 📄 edit_friend.php Logic Ref | 5 KB |
+| 32 | **EDIT_SCHEDULE_DOCUMENTATION.md** | 📄 edit_schedule.php Logic Ref | 5 KB |
+| 33 | **FOOTER_DOCUMENTATION.md** | 📄 footer.php Component Ref | 3 KB |
+| 34 | **FUNCTIONS_DOCUMENTATION.md** | 📄 functions.php Logic Ref | 7 KB |
+| 35 | **HEADER_DOCUMENTATION.md** | 📄 header.php Component Ref | 4 KB |
+| 36 | **INDEX_DOCUMENTATION.md** | 📄 index.php Logic Ref | 7 KB |
+| 37 | **LOGIN_DOCUMENTATION.md** | 📄 login.php Logic Ref | 6 KB |
+| 38 | **PRIVACY_DOCUMENTATION.md** | 📄 privacy.php Logic Ref | 4 KB |
+| 39 | **PROFILE_DOCUMENTATION.md** | 📄 profile.php Logic Ref | 6 KB |
+| 40 | **REGISTER_DOCUMENTATION.md** | 📄 register.php Logic Ref | 6 KB |
 
 ---
 

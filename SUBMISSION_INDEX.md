@@ -7,16 +7,18 @@
 
 ## 📁 DOCUMENTATION FILES CREATED
 
-| # | File | Description | Size |
-|---|------|-------------|------|
-| 1 | **VALIDATION_DOCUMENTATION.md** | Complete A-Z guide with all validations, flows, and diagrams | 39 KB |
-| 2 | **ALGORITHMS_SUBMISSION.md** | All 12 validation algorithms formatted for submission | 13 KB |
-| 3 | **VALIDATION_QUICK_REFERENCE.md** | Quick at-a-glance reference sheet | 5 KB |
-| 4 | **CODE_FLOW_DIAGRAMS.md** | Visual ASCII flowcharts for all major flows | 36 KB |
-| 5 | **VALIDATIE_DOCUMENTATIE_NL.md** | 🇳🇱 Complete Dutch/Nederlands version | 24 KB |
-| 6 | **EASY_EXPLANATION_GUIDE.md** | 📚 Beginner-friendly simple explanation | 12 KB |
-| 7 | **VALIDATION_TEST_CASES.md** | 🧪 99 test cases with expected results | 13 KB |
-| 8 | **DATABASE_DOCUMENTATION.md** | 🗄️ Complete database schema & ERD | 14 KB |
+| # | File Name | Description | Size |
+|---|---|---|---|
+| **0** | **VOLLEDIGE_PROJECT_DOCUMENTATIE_A_TOT_Z.md** | 🏆 **MASTER HANDLEIDING (NL)** | 10 KB |
+| 1 | **README.md** | Project Overview (English) | 2 KB |
+| 2 | **VALIDATION_DOCUMENTATION.md** | Complete A-Z guide with all validations | 39 KB |
+| 3 | **ALGORITHMS_SUBMISSION.md** | All 12 validation algorithms formatted | 13 KB |
+| 4 | **VALIDATION_QUICK_REFERENCE.md** | Quick at-a-glance reference sheet | 5 KB |
+| 5 | **CODE_FLOW_DIAGRAMS.md** | Visual ASCII flowcharts for all flows | 36 KB |
+| 6 | **VALIDATIE_DOCUMENTATIE_NL.md** | 🇳🇱 Complete Dutch/Nederlands version | 24 KB |
+| 7 | **EASY_EXPLANATION_GUIDE.md** | 📚 Beginner-friendly simple explanation | 12 KB |
+| 8 | **VALIDATION_TEST_CASES.md** | 🧪 99 test cases with expected results | 13 KB |
+| 9 | **DATABASE_DOCUMENTATION.md** | 🗄️ Complete database schema & ERD | 14 KB |
 | 9 | **SECURITY_DOCUMENTATION.md** | 🔒 All security measures explained | 11 KB |
 | 10 | **COMPLETE_PROJECT_SUMMARY.md** | 📋 Final submission overview | 9 KB |
 | 11 | **USER_MANUAL.md** | 📖 End-user guide with screenshots | 9 KB |

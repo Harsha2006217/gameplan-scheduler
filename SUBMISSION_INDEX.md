@@ -10,6 +10,27 @@
 | # | File Name | Description | Size |
 |---|---|---|---|
 | **0** | **VOLLEDIGE_PROJECT_DOCUMENTATIE_A_TOT_Z.md** | 🏆 **MASTER HANDLEIDING (NL)** | 10 KB |
+| 0a | **UITLEG_DB_PHP.md** | 🇳🇱 Regel-voor-regel uitleg db.php | 3 KB |
+| 0b | **UITLEG_FUNCTIONS_PHP.md** | 🇳🇱 Regel-voor-regel uitleg functions.php | 5 KB |
+| 0c | **UITLEG_LOGIN_PHP.md** | 🇳🇱 Regel-voor-regel uitleg login.php | 4 KB |
+| 0d | **UITLEG_INDEX_PHP.md** | 🇳🇱 Regel-voor-regel uitleg index.php | 5 KB |
+| 0e | **UITLEG_REGISTER_PHP.md** | 🇳🇱 Regel-voor-regel uitleg register.php | 4 KB |
+| 0f | **UITLEG_DELETE_PHP.md** | 🇳🇱 Regel-voor-regel uitleg delete.php | 4 KB |
+| 0g | **UITLEG_PROFILE_PHP.md** | 🇳🇱 Regel-voor-regel uitleg profile.php | 4 KB |
+| 0h | **UITLEG_CONTACT_PHP.md** | 🇳🇱 Regel-voor-regel uitleg contact.php | 3 KB |
+| 0i | **UITLEG_PRIVACY_PHP.md** | 🇳🇱 Regel-voor-regel uitleg privacy.php | 3 KB |
+| 0j | **UITLEG_ADD_EVENT_PHP.md** | 🇳🇱 Regel-voor-regel uitleg add_event.php | 4 KB |
+| 0k | **UITLEG_ADD_FRIEND_PHP.md** | 🇳🇱 Regel-voor-regel uitleg add_friend.php | 3 KB |
+| 0l | **UITLEG_ADD_SCHEDULE_PHP.md** | 🇳🇱 Regel-voor-regel uitleg add_schedule.php | 4 KB |
+| 0m | **UITLEG_EDIT_EVENT_PHP.md** | 🇳🇱 Regel-voor-regel uitleg edit_event.php | 4 KB |
+| 0n | **UITLEG_EDIT_FAVORITE_PHP.md** | 🇳🇱 Regel-voor-regel uitleg edit_favorite.php | 4 KB |
+| 0o | **UITLEG_EDIT_FRIEND_PHP.md** | 🇳🇱 Regel-voor-regel uitleg edit_friend.php | 4 KB |
+| 0p | **UITLEG_EDIT_SCHEDULE_PHP.md** | 🇳🇱 Regel-voor-regel uitleg edit_schedule.php | 4 KB |
+| 0q | **UITLEG_HEADER_PHP.md** | 🇳🇱 Regel-voor-regel uitleg header.php | 3 KB |
+| 0r | **UITLEG_FOOTER_PHP.md** | 🇳🇱 Regel-voor-regel uitleg footer.php | 3 KB |
+| 0s | **UITLEG_SCRIPT_JS.md** | 🇳🇱 Regel-voor-regel uitleg script.js | 4 KB |
+| 0t | **UITLEG_STYLE_CSS.md** | 🇳🇱 Regel-voor-regel uitleg style.css | 4 KB |
+| 0u | **UITLEG_DATABASE_SQL.md** | 🇳🇱 Regel-voor-regel uitleg database.sql | 4 KB |
 | 1 | **README.md** | Project Overview (English) | 2 KB |
 | 2 | **VALIDATION_DOCUMENTATION.md** | Complete A-Z guide with all validations | 39 KB |
 | 3 | **ALGORITHMS_SUBMISSION.md** | All 12 validation algorithms formatted | 13 KB |

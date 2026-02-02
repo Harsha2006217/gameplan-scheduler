@@ -34,6 +34,7 @@
 | 23 | **ADD_FRIEND_DOCUMENTATION.md** | 📄 add_friend.php Logic Ref | 6 KB |
 | 24 | **ADD_SCHEDULE_DOCUMENTATION.md** | 📄 add_schedule.php Logic Ref | 5 KB |
 | 25 | **CONTACT_DOCUMENTATION.md** | 📄 contact.php Logic Ref | 4 KB |
+| 26 | **DATABASE_SQL_FILE_DOCUMENTATION.md** | 📄 database.sql File Ref | 6 KB |
 
 ---
 

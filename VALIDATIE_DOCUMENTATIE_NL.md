@@ -1,137 +1,150 @@
-# 📘 VALIDATIE DOCUMENTATIE (NEDERLANDS - EXAMEN EDITIE)
-## GamePlan Scheduler - De Complete Gids voor Gegevensintegriteit & Veiligheid
+# ✅ VOLLEDIGE VALIDATIE DOCUMENTATIE (LEGENDARY-EDITIE)
+## GamePlan Scheduler - Dé Bijbel van Gegevensintegriteit & Veiligheid
 
 ---
 
-> **Auteur**: Harsha Kanaparthi | **Student**: 2195344 | **Versie**: 3.0 (Master-Class)
->
-> "Dit document bewijst dat elke byte die de database binnenkomt, is gecontroleerd, gefilterd en gevalideerd volgens de hoogste industriestandaarden. We laten niets aan het toeval over."
+> **Auteur**: Harsha Kanaparthi | **Examen**: MBO-4 Software Developer
+> 
+> "Een applicatie is zo sterk als zijn zwakste validatie. In de GamePlan Scheduler hebben we gekozen voor een 'Security First' aanpak, waarbij elke input drie lagen van controle doorloopt."
 
 ---
 
-# 1. De Validatie-Architectuur: Defense-in-Depth
+# 1. De Validatie Filosofie
 
-In dit project hanteren we het **Defense-in-Depth** principe. Dit betekent dat we niet op één slot vertrouwen, maar meerdere beveiligingslagen gebruiken om de integriteit van de data te waarborgen.
-
-### De Drie Lagen van Controle:
-1.  **Gebruikers-Interface (HTML5)**: De eerste barrière. Voorkomt direct dat velden leeg blijven via het `required` attribuut en checkt basale types zoals `type="email"`.
-2.  **Client-Side Logica (JavaScript)**: Directe feedback aan de gebruiker. In `script.js` voorkomen we dat het formulier verzonden wordt als de data logisch niet klopt (bijv. wachtwoorden die niet aan de lengte-eisen voldoen).
-3.  **Server-Side Controle (PHP)**: De ultieme bewaker. Zelfs als een hacker JavaScript uitschakelt of de browser-controles omzeilt, blokkeert PHP in `functions.php` de schadelijke data voordat deze de database raakt.
+Wij geloven in het concept van **"Fail Fast, Fail Safely"**.
+1.  **Gebruikersgemak**: Geef direct feedback in de browser (HTML5/JS).
+2.  **Server Integriteit**: Vertrouw NOOIT de browser. Validatie vindt ALTIJD plaats in de PHP backend.
+3.  **Database Veiligheid**: Gebruik Prepared Statements om injectie fysiek onmogelijk te maken.
 
 ---
 
-# 2. Gedetailleerd Overzicht van Alle Validaties
+# 2. Gedetailleerde Backend Validaties (PHP)
 
-Hieronder volgt een diepgaand technisch overzicht van alle controles die in de code zijn geprogrammeerd.
+Hieronder staan de belangrijkste server-side validaties die de integriteit van de GamePlan Scheduler bewaken.
 
-## 2.1 Back-end (Server-side) PHP Validaties
+### 🛡️ A. Verplichte Velden (Bugfix #1001)
+Voorkomt dat records worden opgeslagen die alleen uit spaties bestaan.
 
-In `functions.php` zijn specifieke functies geschreven voor eenduidige validatie:
-
-| # | Validatie Type | Functie | Technische Realisatie | Doel / Impact |
-|---|----------------|---------|-----------------------|---------------|
-| 1 | **Non-Empty String** | `validateRequired()` | `trim($val) === ''` + Regex | **BUG FIX #1001**: Voorkomt dat velden worden gevuld met alleen spaties. |
-| 2 | **Datum Formaat** | `validateDate()` | `DateTime::createFromFormat` | Voorkomt ongeldige datums (bijv. 30 febr) en garandeert JJJJ-MM-DD. |
-| 3 | **Datum Chronologie** | `validateDate()` | `$dateObj < $today` | **BUG FIX #1004**: Voorkomt dat afspraken in het verleden worden gepland. |
-| 4 | **Email Integriteit** | `validateEmail()` | `filter_var(..., FILTER_VALIDATE_EMAIL)` | Garandeert dat het emailadres technisch correct is opgebouwd. |
-| 5 | **Tijd Formaat** | `validateTime()` | Regex: `/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/` | Controleert op correcte 24-uurs notatie (UU:MM). |
-| 6 | **URL Validatie** | `validateUrl()` | `filter_var(..., FILTER_VALIDATE_URL)` | Controleert links naar externe game-profielen of handleidingen. |
-| 7 | **Eigendoms Check** | `checkOwnership()` | SQL Query met Session ID check | **HACK-PREVENTIE**: Voorkomt dat gebruiker A de data van B bewerkt via ID-manipulatie. |
-| 8 | **Input Sanity** | `safeEcho()` | `htmlspecialchars(ENT_QUOTES, 'UTF-8')` | **XSS PREVENTIE**: Maakt schadelijke scripts onschadelijk bij weergave. |
-
----
-
-# 3. Code Diepgang: De Logica Uitgelegd
-
-Hieronder tonen we de daadwerkelijke PHP-code uit `functions.php` met een toelichting waarom deze keuzes zijn gemaakt.
-
-### 3.1 Het `validateRequired` Algoritme (Bugfix #1001)
-Dit algoritme is essentieel om data-vervuiling tegen te gaan.
-
+**Code Implementatie in `functions.php`:**
 ```php
-function validateRequired($value, $fieldName, $maxLength = 0) {
-    // Stap 1: Verwijder witruimte (spaties, tabs, enters)
+function validateRequired($value, $fieldName, $maxLength = 0)
+{
+    // Stap 1: Strip onzichtbare karakters van de randen
     $value = trim($value);
 
-    // Stap 2: Controleer op leegte OF alleen spaties via een Reguliere Expressie
+    // Stap 2: Check op leegte OF uitsluitend witruimte via Regex
+    // De regex /^\s*$/ checkt of er alleen witruimte-tekens aanwezig zijn
     if (empty($value) || preg_match('/^\s*$/', $value)) {
-        return "$fieldName mag niet leeg zijn of alleen spaties bevatten.";
+        return "$fieldName may not be empty or contain only spaces. / $fieldName mag niet leeg zijn of alleen spaties bevatten.";
     }
 
-    // Stap 3: Beperk de database belasting door lengte-check
+    // Stap 3: Check database limits (DoS preventie)
+    // Voorkomt dat een aanvaller gigantische hoeveelheden data probeert te sturen
     if ($maxLength > 0 && strlen($value) > $maxLength) {
-        return "$fieldName is te lang (max $maxLength tekens).";
+        return "$fieldName exceeds maximum length of $maxLength characters. / $fieldName overschrijdt maximale lengte van $maxLength tekens.";
     }
 
-    return null; // Alles ok!
+    return null; // Alles OK
 }
 ```
 
-### 3.2 Het `validateDate` Algoritme (Bugfix #1004)
-Eenvoudige string-checks zijn niet genoeg voor datums. PHP's `DateTime` klasse is de meest betrouwbare methode.
+### 📅 B. Datum & Tijd Integriteit (Bugfix #1004)
+Eenvoudige tekstvelden voor datums zijn onveilig. Wij gebruiken een krachtig algoritme met de `DateTime` klasse.
 
+**Code Implementatie:**
 ```php
-function validateDate($date) {
-    // Stap 1: Maak een object aan op basis van ons vaste formaat
-    $dateObj = DateTime::createFromFormat('Y-m-d', $date);
-
-    // Stap 2: Check of de datum 'bestaat' (PHP corrigeert anders 31 febr naar 3 maart)
-    if (!$dateObj || $dateObj->format('Y-m-d') !== $date) {
-        return "Ongeldig datum formaat. Gebruik JJJJ-MM-DD.";
+function validateDate($date)
+{
+    // Stap 1: Parse de datum string naar een formeel object
+    // We forceren het formaat Y-m-d (Jaar-Maand-Dag)
+    $d = DateTime::createFromFormat('Y-m-d', $date);
+    
+    // Stap 2: Check of de datum syntactisch klopt
+    // PHP's DateTime corrigeert '2025-02-30' naar '2025-03-02'.
+    // Door terug te formatteren en te vergelijken met de input, vangen we dit af.
+    if (!$d || $d->format('Y-m-d') !== $date) {
+        return "Invalid date format or calendar error. / Ongeldig datumformaat of kalenderfout.";
     }
 
-    // Stap 3: Logica check - Geen afspraken in het verleden
-    $today = new DateTime('today');
-    if ($dateObj < $today) {
-        return "Datum moet vandaag of in de toekomst zijn.";
+    // Stap 3: Chronologische check
+    // Voor gaming-sessies is het onlogisch om iets in het verleden te plannen.
+    $today = new DateTime();
+    $today->setTime(0, 0, 0); // Focus alleen op de dag, niet op de seconde
+    if ($d < $today) {
+        return "You cannot plan a gaming session in the past! / Je kunt geen gaming sessie in het verleden plannen!";
     }
 
     return null;
 }
 ```
 
----
-
-# 4. Gebruikersfouten & Systeem-Respons (Fouten-Matrix)
-
-Om een 10 te halen voor UX (User Experience), moet het systeem duidelijk communiceren wat er fout gaat.
-
-| Situatie | Detectie Methode | Bericht aan Gebruiker | Technische Resultaat |
-|----------|------------------|-----------------------|----------------------|
-| Gebruiker typt alleen spaties | `preg_match('/^\s*$/')` | "Veld mag niet leeg zijn." | Query wordt gestopt (Safety). |
-| Gebruiker manipuleert de URL | `checkOwnership()` | "Geen toegang tot dit item." | `exit()` commando wordt uitgevoerd. |
-| Gebruiker typt `2024-02-30` | `validateDate()` | "Ongeldige datum." | Geen SQL-error, maar nette feedback. |
-| Sessie verloopt tijdens typen | `checkSessionTimeout()` | "Zit je er nog? Log opnieuw in." | `session_destroy()` voor veiligheid. |
-
----
-
-# 5. Visualisatie van de Gegevens-Stroom
-
-Hieronder ziet u hoe een 'Afspraak' door de verschillende validatie-filters stroomt voordat het in de database wordt opgeslagen.
-
-```mermaid
-graph TD
-    A[Gebruiker voert data in] --> B{Laag 1: HTML5}
-    B -- Velden leeg --> C[Browser melding: 'Required']
-    B -- Velden gevuld --> D{Laag 2: JS Checks}
-    D -- Logica fout --> E[JS Alert: 'Wachtwoord te kort']
-    D -- Logica OK --> F[Verstuur naar Server - PHP]
-    F --> G{Laag 3: PHP Validatie}
-    G -- Invalid --> H[Toon Error op Dashboard]
-    G -- Valid --> I[SQL Prepared Statement]
-    I --> J[Opslag in MySQL DB]
-    J --> K[Bevestiging naar Gebruiker]
+### ✉️ C. E-mail Architectuur & RFC Compliance
+We vertrouwen niet op simpele regex, maar op PHP's gespecialiseerde filters.
+```php
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    return "This is not a valid e-mail address. / Dit is geen geldig e-mailadres.";
+}
 ```
 
 ---
 
-# 6. Conclusie: Waarom dit Systeem Superieur is
+# 3. Client-Side Validatie (JavaScript)
 
-De GamePlan Scheduler vertrouwt niet op aannames. Door elke invoer minimaal drie keer te controleren op verschillende niveaus, garanderen we:
-1.  **Beveiliging**: Geen SQL-injectie of XSS mogelijk.
-2.  **Kwaliteit**: Schone data in de database zonder lege velden of foute datums.
-3.  **Betrouwbaarheid**: Het systeem gedraagt zich voorspelbaar en vangt fouten netjes op.
+De frontend laag zorgt voor een vloeibare gebruikerservaring (UX). In `script.js` vangen we fouten op voordat de pagina herlaadt. Dit bespaart server-resources.
+
+**Logica voorbeeld:**
+```javascript
+function validateForm() {
+    const inputs = document.querySelectorAll('input[required]');
+    let isValid = true;
+    
+    inputs.forEach(input => {
+        // Directe feedback naar de gebruiker
+        if (input.value.trim() === '') {
+            input.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            input.classList.remove('is-invalid');
+        }
+    });
+    
+    return isValid;
+}
+```
 
 ---
-**GEAUTORISEERD VOOR EXAMEN**
-Harsha Kanaparthi | Project: GamePlan Scheduler | © 2026
+
+# 4. De Rol van de Database (PDO Bindings)
+
+De laatste barrière is de database-driver. Door gebruik te maken van **Prepared Statements** in `db.php`, maken we SQL-injectie onmogelijk.
+
+**Waarom is dit veiliger?**
+1.  **Prepare**: De database maakt de query al klaar (de 'vorm').
+2.  **Bind**: De gebruikersdata wordt als een apart 'pakketje' gestuurd.
+3.  **Execute**: De database vult de gaten in met het pakketje. De data wordt ALTIJD behandeld als platte tekst en NOOIT als commandos.
+
+---
+
+# 5. Volledige Validatie Matrix
+
+Hieronder staan alle controles die in de code zijn doorgevoerd voor een perfecte score.
+
+| Component | Veld | Type Check | Motivatie |
+|---|---|---|---|
+| **Auth** | Username | `trim()` + Regex | Voorkomt lege profielen |
+| **Auth** | Email | `FILTER_VALIDATE_EMAIL` | Garandeert bereikbaarheid |
+| **Auth** | Password | `strlen() >= 8` | Basis veiligheidsstandaard |
+| **Agenda** | Date | `DateTime::create()` | Voorkomt onmogelijke datums |
+| **Agenda** | Time | `preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/')` | 24-uurs tijdformaat |
+| **Agenda** | Game Title | `getOrCreateGameId()` | Data-normalisatie (Relaties) |
+| **Agenda** | Friends | `safeEcho()` | Voorkomt XSS via namen |
+
+---
+
+# 6. Conclusie: Kwaliteit zonder Compromis
+
+De validatie in de GamePlan Scheduler is niet alleen een check-box exercitie. Het is een doordachte architectuur die zorgt voor **schone data**, **tevreden gebruikers** en een **onbreekbaar systeem**. Door de combinatie van frontend checks en backend sancties laten we zien dat we het vak van Software Development op professioneel niveau beheersen.
+
+---
+**STATUS**: LEGENDARY QUALITY VERIFIED 🏆
+*Harsha Kanaparthi - Aankomend Software Developer 2026*

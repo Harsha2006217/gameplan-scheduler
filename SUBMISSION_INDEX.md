@@ -32,7 +32,7 @@
 | 0t | **UITLEG_STYLE_CSS.md** | 🇳🇱 Regel-voor-regel uitleg style.css | 4 KB |
 | 0u | **UITLEG_DATABASE_SQL.md** | 🇳🇱 Regel-voor-regel uitleg database.sql | 4 KB |
 | 0v | **UITLEG_LOGOUT_PHP.md** | 🇳🇱 Regel-voor-regel uitleg logout.php | 3 KB |
-| 0w | **ALGORITMEN_LOGICA_NL.md** | 🇳🇱 Technische logica & beslisbomen | 5 KB |
+| 0w | **ALGORITMEN_LOGICA_NL.md** | 🇳🇱 Technische logica & beslisbomen | 6 KB |
 | 0x | **TEST_CASES_LOGBOEK_NL.md** | 🇳🇱 Kwaliteit & Test logboek (99+ cases) | 4 KB |
 | 0y | **CODE_FLOW_DIAGRAMMEN_NL.md** | 🇳🇱 Visuele code-stromen (Diagrammen) | 5 KB |
 | 0z | **SECURITY_BEVEILIGING_HART_NL.md** | 🇳🇱 Beveiligings-overzicht (Haken & Ogen) | 5 KB |
@@ -47,7 +47,7 @@
 | 1i | **DESIGN_SYSTEEM_NL.md** | 🇳🇱 Kleuren, styling & vormgeving | 3 KB |
 | 1j | **LOGICA_REFERENTIE_JS_NL.md** | 🇳🇱 Uitleg over de JavaScript werking | 3 KB |
 | 1k | **DATABASE_DOCUMENTATIE_NL.md** | 🇳🇱 Database architectuur & relaties | 3 KB |
-| 1l | **FUNCTIE_REFERENTIE_NL.md** | 🇳🇱 Alle PHP functies naslagwerk | 4 KB |
+| 1l | **FUNCTIE_REFERENTIE_NL.md** | 🇳🇱 Alle PHP functies naslagwerk | 5 KB |
 | 1m | **BESTANDS_SAMENHANG_NL.md** | 🇳🇱 Architectuur & bestandskoppelingen | 3 KB |
 | 1n | **KWALITEITS_CHECKLIST_NL.md** | 🇳🇱 Code review & QA checklist | 3 KB |
 | 1o | **PROJECT_REFLECTIE_NL.md** | 🇳🇱 Terugblik op het leerproces | 3 KB |
@@ -72,7 +72,7 @@
 | 4 | **ALGORITHMS_SUBMISSION.md** | All 12 validation algorithms formatted | 13 KB |
 | 5 | **VALIDATION_QUICK_REFERENCE.md** | Quick at-a-glance reference sheet | 5 KB |
 | 6 | **CODE_FLOW_DIAGRAMS.md** | Visual ASCII flowcharts for all flows | 36 KB |
-| 7 | **VALIDATIE_DOCUMENTATIE_NL.md** | 🇳🇱 Complete Dutch/Nederlands version | 7 KB |
+| 7 | **VALIDATIE_DOCUMENTATIE_NL.md** | 🇳🇱 Complete Dutch/Nederlands version | 6 KB |
 | 8 | **EASY_EXPLANATION_GUIDE.md** | 📚 Beginner-friendly simple explanation | 12 KB |
 | 9 | **VALIDATION_TEST_CASES.md** | 🧪 99 test cases with expected results | 13 KB |
 | 10 | **DATABASE_DOCUMENTATION.md** | 🗄️ Complete database schema & ERD | 14 KB |

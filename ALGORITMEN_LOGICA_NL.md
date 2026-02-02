@@ -21,108 +21,110 @@ In de GamePlan Scheduler gebruiken we algoritmen voor drie hoofddoeleinden:
 # 2. De Kern-Algoritmen (Diepgaande Analyse)
 
 ### 2.1 Het "Spatie-Filter" Algoritme (Bugfix #1001)
-Voorkomt dat gebruikers de database vervuilen met schijnbaar lege velden.
+Voorkomt dat gebruikers de database vervuilen met schijnbaar lege velden die alleen whitespace bevatten. Dit is een veelvoorkomende zwakte in web-applicaties.
 
 **Logische Stappen:**
-1.  **Trim**: Verwijder onzichtbare karakters van de randen.
-2.  **Empty Check**: Is de string nu lengte 0?
-3.  **Regex Audit**: Gebruik `/^\s*$/` om te verifiëren dat er geen tabbladen of newlines verstopt zitten.
-4.  **Resultaat**: Alleen betekenisvolle data wordt geaccepteerd.
+1.  **Trim**: Verwijder onzichtbare karakters (`\n`, `\t`, spaties) van de randen via `trim()`.
+2.  **Empty Check**: Is de string na trimmen nog steeds lengte 0?
+3.  **Regex Audit**: Gebruik de reguliere expressie `/^\s*$/` om te verifiëren dat er geen malafide verborgen tekens aanwezig zijn.
+4.  **Resultaat**: Alleen betekenisvolle, leesbare data wordt geaccepteerd.
 
 ### 2.2 Het "Strict Date Consistency" Algoritme (Bugfix #1004)
-Eenvoudige HTML-datumvelden zijn te omzeilen. Dit backend algoritme garandeert 100% integriteit.
+Eenvoudige HTML-datumvelden zijn te omzeilen door hackers via de browser console. Dit backend algoritme in Python-stijl pseudocode garandeert 100% integriteit.
 
 **Pseudocode:**
 ```
 BEGIN Algoritme_Datum_Validatie(datum_string)
     1.  Probeer object 'd' te maken van datum_string (Formaat Y-m-d)
     2.  ALS (d is ongeldig) OF (d->formaat(Y-m-d) != datum_string) DAN
-        RETOURNEER "Ongeldige kalenderdatum"
-    3.  Vandaag = Nu_Zonder_Tijd()
+        RETOURNEER "Foutmelding: Ongeldige kalenderdatum"
+    
+    3.  Vandaag = SysteemDatum_Zonder_Tijd()
     4.  ALS d < Vandaag DAN
-        RETOURNEER "Datum ligt in het verleden"
-    5.  RETOURNEER Succes
+        RETOURNEER "Foutmelding: Datum ligt in het verleden"
+    
+    5.  RETOURNEER Succes_Geldig
 EINDE
 ```
 
-### 2.3 Het "Game ID Switch" Algoritme (getOrCreateGameId)
-Dit algoritme zorgt voor een **Single Source of Truth** in de database.
+### 2.3 Het "Game ID Factory" Algoritme (getOrCreateGameId)
+Dit algoritme zorgt voor een **Single Source of Truth** (SSoT) in de database, ook wel normalisatie genoemd.
 
 **Logica:**
-1.  Zoek in de tabel `Games` naar de titel (Case-Insensitive).
-2.  Indien gevonden: Retourneer het ID.
-3.  Indien niet gevonden:
-    - Start een Veilige Transactie.
-    - Voeg spel toe.
-    - `lastInsertId` ophalen.
-    - Beëindig Transactie.
-4.  Dit voorkomt duplicaten en bespaart MB's aan opslagruimte.
+1.  Ontvang de titel (bijv. "Minecraft") van de gebruiker.
+2.  Zoek in de tabel `Games` naar deze titel (Case-Insensitive).
+3.  Indien gevonden: Gebruik het bestaande `game_id`.
+4.  Indien niet gevonden (Nieuw spel):
+    - Voer een `INSERT` query uit.
+    - Haal het zojuist gegenereerde ID op via `lastInsertId()`.
+5.  Koppel de agenda-afspraak aan dit ID.
+*Binst: Bespaart redundantie en voorkomt dat hetzelfde spel onder verschillende ID's in de database komt.*
 
 ---
 
-# 3. Geavanceerde Logica: Sorteren & Filteren
+# 3. Geavanceerde Sorteer-Logica: De Dynamic Merge
 
-### 2.4 De "Dashboard Merge" Logica
-Op de homepagina (index.php) worden verschillende databronnen samengevoegd.
+### 2.4 De "Dashboard Aggregate" Logica
+Op de homepagina (index.php) worden verschillende databronnen (`Schedules` en `Events`) samengevoegd tot één kalenderoverzicht.
 
 **Algoritme:**
-1.  Haal `Schedules` op (WHERE user_id = X).
-2.  Haal `Events` op (WHERE user_id = X).
-3.  Combineer deze in één PHP Array.
-4.  **Sorteeralgoritme (usort)**:
-    - Vergelijk element A en B op basis van de `date` kolom.
-    - Gebruik `strtotime()` om datums om te zetten in vergelijkbare integers (timestamps).
-    - Sorteer oplopend (Nieuwste bovenaan).
+1.  Query A: Haal alle `Schedules` van de huidige gebruiker.
+2.  Query B: Haal alle `Events` van de huidige gebruiker.
+3.  Merge: Combineer beide resultaten in één grote PHP associatieve array.
+4.  **Sorteer-Algoritme (usort)**:
+    - Vergelijk element X en Y op basis van de datum-sleutel.
+    - Converteer datums naar Unix Timestamps via `strtotime()`.
+    - Orden van laag naar hoog (Toekomst eerst).
 
 ---
 
-# 4. Authenticatie: De Hashing Loop
+# 4. Cryptografische Hashing: De Veiligheids-Loop
 
-Het inlogproces volgt een strikt cryptografisch algoritme.
+Het inlogproces volgt een strikt eenrichtings-algoritme (Hashing).
 
 **Proces:**
-1.  Email wordt gezocht via een **B-Tree Index** (voor razendsnelle lookup).
-2.  Wachtwoord wordt nooit direct vergeleken (`$a == $b` is onveilig).
-3.  **password_verify() Algoritme**:
-    - Haal de "salt" en de "hash" uit de database string.
-    - Voer hetzelfde hash-algoritme uit op het ingevoerde wachtwoord met deze salt.
-    - Vergelijk de resultaten in "Constant Time" om timing-attacks te voorkomen.
+1.  **Lookup**: Zoek de gebruiker op email via een **B-Tree Index**.
+2.  **Verify**: Gebruik het `password_verify()` algoritme. 
+    - Dit algoritme is "Timing Attack Resistant". 
+    - Het stopt niet bij de eerste foute letter, maar controleert altijd even lang om te voorkomen dat hackers tijdverschillen kunnen meten.
+3.  **Sessie**: Na succesvolle verificatie wordt er een nieuwe cryptografische sleutel (`session_id`) gegenereerd.
 
 ---
 
-# 5. Beveiliging: De SQL Bind-Parameter Loop
+# 5. SQL Veiligheid: De Bind-Parameter Loop
 
-Hoe voorkomen we SQL Injection op algoritmisch niveau?
+Hoe voorkomen we SQL Injection op logisch niveau?
 
-1.  **Prepare**: De database compileert de query *zonder* data.
-2.  **Bind**: De data wordt als een apart pakketje gestuurd.
-3.  **Execute**: De database plakt de data erin als "platte tekst", nooit als commando.
-*Dit algoritme maakt het fysiek onmogelijk voor een hacker om de database-structuur aan te passen via een invoerveld.*
+1.  **Template Fase**: Stuur de query `SELECT * FROM Users WHERE id = ?`.
+2.  **Binding Fase**: Vertel de database: "De `?` is de waarde `5`".
+3.  **Execution Fase**: De database voert de query uit.
+*Zelfs als een hacker `5; DROP TABLE Users` typt, ziet de database dit als één lange naam van een id, en voert het commando nooit uit.*
 
 ---
 
-# 6. Beslisboom: Validatie Layers
+# 6. Architectuur: De Validatie Beslisboom
 
 ```mermaid
 graph TD
-    A[Gebruiker klikt op Opslaan] --> B{Heeft Browser JS aan?}
-    B -- JA --> C[JS Validatie Snel-Check]
-    B -- NEE --> D[Sla over naar Server]
-    C -- FAIL --> E[Toon rode melding in Browser]
-    C -- OK --> D
-    D --> F[PHP Backend Sanctie-Check]
-    F --> G{Checks OK?}
-    G -- NEE --> H[Redirect met Session Error]
-    G -- JA --> I[SQL Prepared Statement]
-    I --> J[Koppel aan User-ID]
-    J --> K[Toon Succesvol Bericht]
+    A[Gebruiker klikt op 'Opslaan'] --> B{Check JavaScript?}
+    B -- JA --> C[JS Client-side Filter]
+    B -- NEE --> D[Direct naar Server]
+    C -- ONGELDIG --> E[Toon browser error]
+    C -- GELDIG --> D
+    D --> F[PHP Backend Sanctie-Controle]
+    F --> G{Checks voldaan?}
+    G -- NEE --> H[Sessie-Redirect met Error]
+    G -- JA --> I[SQL Prepared Statement Data Bind]
+    I --> J[Opslag in Database]
+    J --> K[Toon Succesvol Bericht op Dashboard]
 ```
 
 ---
 
 # 7. Conclusie
-Door deze documentatie laten we de examencommissie zien dat de GamePlan Scheduler niet "per ongeluk" werkt. Elke actie is het resultaat van een doordacht algoritme dat stabiliteit, snelheid en veiligheid garandeert.
+
+Dit document bewijst dat de GamePlan Scheduler niet "per ongeluk" werkt. Elke actie, van het inloggen tot het sorteren van een game-afspraak, is het resultaat van een doordacht algoritme dat stabiliteit, snelheid en veiligheid garandeert. Dit is het niveau van architecturaal denken dat vereist is voor een moderne Software Developer.
 
 ---
 **GEAUTORISEERD VOOR MBO-4 EXAMEN**
-*Harsha Kanaparthi*
+*Harsha Kanaparthi - 2026*

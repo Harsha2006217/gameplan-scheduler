@@ -95,54 +95,42 @@
                     <!-- HOME LINK - Dashboard met kalender weergave -->
                     <li class="nav-item">
                         <a class="nav-link text-white" href="index.php">
-                            🏠 Home
+                            🏠 Home / Dashboard
                         </a>
                     </li>
                     
-                    <!-- PROFILE LINK - Manage favorite games -->
                     <!-- PROFIEL LINK - Beheer favoriete spellen -->
                     <li class="nav-item">
                         <a class="nav-link text-white" href="profile.php">
-                            👤 Profile
+                            👤 Profile / Profiel
                         </a>
                     </li>
                     
-                    <!-- FRIENDS LINK - Manage gaming friends -->
                     <!-- VRIENDEN LINK - Beheer gaming vrienden -->
                     <li class="nav-item">
                         <a class="nav-link text-white" href="add_friend.php">
-                            👥 Friends
+                            👥 Friends / Vrienden
                         </a>
                     </li>
                     
-                    <!-- ADD SCHEDULE LINK - Add gaming sessions -->
                     <!-- SCHEMA TOEVOEGEN LINK - Voeg gaming sessies toe -->
                     <li class="nav-item">
                         <a class="nav-link text-white" href="add_schedule.php">
-                            📅 Schedule
+                            📅 Schedule / Planning
                         </a>
                     </li>
                     
-                    <!-- 
-                        ADD EVENT BUTTON - Prominent green button
-                        EVENEMENT TOEVOEGEN KNOP - Opvallende groene knop
-                        
-                        btn-success: Green button (stands out)
-                        ms-2: Left margin for spacing
-                        
-                        Per design: "Evenement toevoegen" should be prominent
-                    -->
+                    <!-- EVENEMENT TOEVOEGEN KNOP - Opvallende groene knop -->
                     <li class="nav-item">
                         <a class="nav-link text-white btn btn-success ms-2 px-3" href="add_event.php">
-                            🎯 Add Event
+                            🎯 Add Event / Evenement
                         </a>
                     </li>
                     
-                    <!-- LOGOUT LINK - End session and redirect to login -->
-                    <!-- UITLOGGEN LINK - Beëindig sessie en redirect naar login -->
+                    <!-- LOGOUT LINK - Beëindig sessie en redirect naar login -->
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="index.php?logout=1">
-                            🚪 Logout
+                        <a class="nav-link text-white" href="logout.php">
+                            🚪 Logout / Uitloggen
                         </a>
                     </li>
                     

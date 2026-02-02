@@ -9,7 +9,7 @@
 
 | # | File Name | Description | Size |
 |---|---|---|---|
-| **0** | **VOLLEDIGE_PROJECT_DOCUMENTATIE_A_TOT_Z.md** | 🏆 **MASTER HANDLEIDING (NL)** | 10 KB |
+| **0** | **VOLLEDIGE_PROJECT_DOCUMENTATIE_A_TOT_Z.md** | 🏆 **MASTER HANDLEIDING (NL)** | 9 KB |
 | 0a | **UITLEG_DB_PHP.md** | 🇳🇱 Regel-voor-regel uitleg db.php | 3 KB |
 | 0b | **UITLEG_FUNCTIONS_PHP.md** | 🇳🇱 Regel-voor-regel uitleg functions.php | 5 KB |
 | 0c | **UITLEG_LOGIN_PHP.md** | 🇳🇱 Regel-voor-regel uitleg login.php | 4 KB |
@@ -31,12 +31,45 @@
 | 0s | **UITLEG_SCRIPT_JS.md** | 🇳🇱 Regel-voor-regel uitleg script.js | 4 KB |
 | 0t | **UITLEG_STYLE_CSS.md** | 🇳🇱 Regel-voor-regel uitleg style.css | 4 KB |
 | 0u | **UITLEG_DATABASE_SQL.md** | 🇳🇱 Regel-voor-regel uitleg database.sql | 4 KB |
+| 0v | **UITLEG_LOGOUT_PHP.md** | 🇳🇱 Regel-voor-regel uitleg logout.php | 3 KB |
+| 0w | **ALGORITMEN_LOGICA_NL.md** | 🇳🇱 Technische logica & beslisbomen | 5 KB |
+| 0x | **TEST_CASES_LOGBOEK_NL.md** | 🇳🇱 Kwaliteit & Test logboek (99+ cases) | 4 KB |
+| 0y | **CODE_FLOW_DIAGRAMMEN_NL.md** | 🇳🇱 Visuele code-stromen (Diagrammen) | 5 KB |
+| 0z | **SECURITY_BEVEILIGING_HART_NL.md** | 🇳🇱 Beveiligings-overzicht (Haken & Ogen) | 5 KB |
+| 1a | **VERSIEGESCHIEDENIS_NL.md** | 🇳🇱 Ontwikkelingshistorie (Changelog) | 3 KB |
+| 1b | **INSTALLATIE_HANDLEIDING_NL.md** | 🇳🇱 Stap-voor-stap installatie gids | 3 KB |
+| 1c | **EXAMEN_CHECKLIST_NL.md** | 🇳🇱 Checklist voor de presentatie | 3 KB |
+| 1d | **GEBRUIKERSHANDLEIDING_NL.md** | 🇳🇱 Volledige handleiding (Uitleg gebruik) | 4 KB |
+| 1e | **BEGRIPPENLIJST_NL.md** | 🇳🇱 Verklarende woordenlijst (Techniek) | 4 KB |
+| 1f | **EXAMEN_SPIEKBRIEFJE_NL.md** | 🇳🇱 Tips & Antwoorden voor een "10" | 3 KB |
+| 1g | **FOUTMELDINGEN_OVERZICHT_NL.md** | 🇳🇱 Uitleg bij alle foutmeldingen | 3 KB |
+| 1h | **VALIDATIE_SNEL_OVERZICHT_NL.md** | 🇳🇱 Snel-overzicht van alle controles | 3 KB |
+| 1i | **DESIGN_SYSTEEM_NL.md** | 🇳🇱 Kleuren, styling & vormgeving | 3 KB |
+| 1j | **LOGICA_REFERENTIE_JS_NL.md** | 🇳🇱 Uitleg over de JavaScript werking | 3 KB |
+| 1k | **DATABASE_DOCUMENTATIE_NL.md** | 🇳🇱 Database architectuur & relaties | 3 KB |
+| 1l | **FUNCTIE_REFERENTIE_NL.md** | 🇳🇱 Alle PHP functies naslagwerk | 4 KB |
+| 1m | **BESTANDS_SAMENHANG_NL.md** | 🇳🇱 Architectuur & bestandskoppelingen | 3 KB |
+| 1n | **KWALITEITS_CHECKLIST_NL.md** | 🇳🇱 Code review & QA checklist | 3 KB |
+| 1o | **PROJECT_REFLECTIE_NL.md** | 🇳🇱 Terugblik op het leerproces | 3 KB |
+| 1p | **ONDERHOUDS_GIDS_NL.md** | 🇳🇱 Gids voor uitbreiding & onderhoud | 3 KB |
+| 1q | **DEMO_SCRIPT_EXAMEN_NL.md** | 🇳🇱 Presentatie gids (Stap-voor-stap) | 3 KB |
+| 1r | **SAMENVATTING_OP_EEN_PAGINA_NL.md** | 🇳🇱 Snelle project preview (1 pagina) | 3 KB |
+| 1s | **MAKKELIJKE_UITLEG_GIDS_NL.md** | 🇳🇱 Begrijpelijke uitleg voor de leek | 3 KB |
+| 1t | **PRESENTATIE_SLIDES_NL.md** | 🇳🇱 Interactieve Slide Deck voor examen | 3 KB |
+| 1u | **EIND_CONTROLE_VOOR_INLEVERING_NL.md** | 🇳🇱 Laatste checklist voor inlevering | 3 KB |
+| 1v | **README_NL.md** | 🇳🇱 Project Overzicht & Snelstart | 3 KB |
+| 1w | **EXAMEN_PRESENTATIE_SCRIPT_NL.md** | 🇳🇱 Script voor je openingspraatje! | 2 KB |
+| 1x | **MOCK_EXAMENVRAGEN_NL.md** | 🇳🇱 Voorbereiding op vragen van de commissie | 3 KB |
+| 1y | **FUNCTIONEEL_ONTWERP_NL.md** | 🇳🇱 Gebruikerservaring & Use Cases (FO) | 3 KB |
+| 1z | **TECHNISCH_ONTWERP_NL.md** | 🇳🇱 Architectuur & Stack (TO) | 2 KB |
+| 1aa | **PLAN_VAN_AANPAK_NL.md** | 🇳🇱 Projectbeheersing & Planning (PvA) | 2 KB |
+| 1bb | **DEBUG_GIDS_OMGEVING_NL.md** | 🇳🇱 Hulp bij fouten op andere computers | 2 KB |
 | 1 | **README.md** | Project Overview (English) | 2 KB |
 | 2 | **VALIDATION_DOCUMENTATION.md** | Complete A-Z guide with all validations | 39 KB |
 | 3 | **ALGORITHMS_SUBMISSION.md** | All 12 validation algorithms formatted | 13 KB |
 | 4 | **VALIDATION_QUICK_REFERENCE.md** | Quick at-a-glance reference sheet | 5 KB |
 | 5 | **CODE_FLOW_DIAGRAMS.md** | Visual ASCII flowcharts for all flows | 36 KB |
-| 6 | **VALIDATIE_DOCUMENTATIE_NL.md** | 🇳🇱 Complete Dutch/Nederlands version | 24 KB |
+| 6 | **VALIDATIE_DOCUMENTATIE_NL.md** | 🇳🇱 Complete Dutch/Nederlands version | 7 KB |
 | 7 | **EASY_EXPLANATION_GUIDE.md** | 📚 Beginner-friendly simple explanation | 12 KB |
 | 8 | **VALIDATION_TEST_CASES.md** | 🧪 99 test cases with expected results | 13 KB |
 | 9 | **DATABASE_DOCUMENTATION.md** | 🗄️ Complete database schema & ERD | 14 KB |

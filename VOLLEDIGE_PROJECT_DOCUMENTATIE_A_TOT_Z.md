@@ -11,15 +11,17 @@
 # 📑 Inhoudsopgave
 
 1.  **Project Introductie** (Wat is het en waarom?)
-2.  **Uitleg voor de Leek** (Hoe werkt het?)
-3.  **Technische Architectuur** (Mappenstructuur & Bestanden)
-4.  **Database Ontwerp** (SQL & Relaties)
-5.  **Code Diepgang (Bestand per Bestand)**
+2.  **Formele Documentatie (FO / TO / PvA / Reflectie)** 🏆
+3.  **Uitleg voor de Leek** (Hoe werkt het?)
+4.  **Technische Architectuur** (Mappenstructuur & Bestanden)
+5.  **Database Ontwerp** (SQL & Relaties)
+6.  **Code Diepgang (Bestand per Bestand)**
     *   *Core*: db.php, functions.php
     *   *Auth*: login.php, register.php
     *   *Pages*: index.php, add_*.php, edit_*.php
-6.  **Beveiliging & Kwaliteit** (Waarom dit project een '10' waard is)
-7.  **Veelgestelde Examenvragen**
+7.  **Beveiliging & Kwaliteit** (Waarom dit project een '10' waard is)
+8.  **Examen Voorbereiding (Mock Vragen & Slides)** 🎓
+9.  **Project Reflectie & Onderhoud** (Vooruitblik)
 
 ---
 
@@ -35,6 +37,16 @@ Dit project toont aan dat ik alle kerntaken van een Software Developer beheers:
 2.  **Back-end**: PHP (Object Oriented / Procedural mix).
 3.  **Database**: MySQL (Relational Design).
 4.  **Security**: Preventie van SQL Injection, XSS, en Data Leaks.
+
+---
+
+# 2. Formele Documentatie (De Basis) 🏆
+
+Voor een volledig overzicht van het projectontwerp en de planning, verwijs ik naar de volgende formele documenten:
+
+*   [FUNCTIONEEL_ONTWERP_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/FUNCTIONEEL_ONTWERP_NL.md): Alle Use Cases en gebruikers-behoeften (FO).
+*   [TECHNISCH_ONTWERP_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/TECHNISCH_ONTWERP_NL.md): De architectuur, technologie stack en database model (TO).
+*   [PLAN_VAN_AANPAK_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/PLAN_VAN_AANPAK_NL.md): Hoe het project is beheerst en gepland (PvA).
 
 ---
 
@@ -146,21 +158,24 @@ Waarom is dit project "Examen-proof" en een 10 waard?
 
 ---
 
-# 7. Veelgestelde Examenvragen & Antwoorden 🎓
+# 8. Examen Voorbereiding (De Finale) 🎓
 
-**Vraag 1: "Wat gebeurt er als ik in de URL het ID verander van edit_event.php?id=5 naar id=6 (van iemand anders)?"**
-*Antwoord*: Mijn code checkt in `functions.php` altijd of `user_id` overeenkomt met de ingelogde gebruiker. Als jij ID 6 niet bezit, zegt de code: "Geen toestemming" of "Niet gevonden". Dit heet *Authorization*.
+Om je optimaal voor te bereiden op de grote dag, heb ik de volgende tools voor je klaarstaan:
 
-**Vraag 2: "Waarom gebruik je functions.php en zet je niet alle code in de pagina zelf?"**
-*Antwoord*: Dit heet **DRY** (Don't Repeat Yourself). Als ik de login-logica op 3 plekken nodig heb, schrijf ik het 1 keer in `functions.php`. Dat maakt onderhoud makkelijker en de code netter.
+1.  **Mock Examenvragen**: [MOCK_EXAMENVRAGEN_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/MOCK_EXAMENVRAGEN_NL.md) - De 10 meest waarschijnlijke vragen van de commissie.
+2.  **Interactieve Slides**: [PRESENTATIE_SLIDES_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/PRESENTATIE_SLIDES_NL.md) - Gebruik deze tijdens je presentatie.
+3.  **Presentatie Script**: [EXAMEN_PRESENTATIE_SCRIPT_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/EXAMEN_PRESENTATIE_SCRIPT_NL.md) - Jouw openingspraatje.
 
-**Vraag 3: "Hoe bescherm je tegen sessie-diefstal?"**
-*Antwoord*: Ik gebruik `session_regenerate_id(true)` bij het inloggen. Dit geeft de gebruiker een vers 'toegangskaartje', zodat een oude gestolen kaart niet meer werkt.
+---
+
+# 9. Project Reflectie & Onderhoud 🧠
+
+In de [PROJECT_REFLECTIE_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/PROJECT_REFLECTIE_NL.md) vind je een diepgaande analyse van wat ik heb geleerd en hoe ik de applicatie in de toekomst zou kunnen uitbreiden (bijvoorbeeld naar een mobiele app).
 
 ---
 
 # Conclusie
 
-Dit project is **volledig**, **veilig**, en **gebruiksklare software**. Elk bestand heeft een duidelijk doel, de code is voorzien van commentaar (Engels/Nederlands), en er is rekening gehouden met echte bedrijfsrisico's zoals beveiliging en datavelies.
+Dit project is **volledig**, **veilig**, en **gebruiksklare software**. Elk bestand heeft een duidelijk doel, de code is voorzien van commentaar (Engels/Nederlands), en er is rekening gehouden met echte bedrijfsrisico's zoals beveiliging en dataverlies dankzij de FO, TO en PvA documentatie.
 
 ✅ **Klaar voor beoordeling.**

@@ -14,14 +14,15 @@
 2.  **Formele Documentatie (FO / TO / PvA / Reflectie)** 🏆
 3.  **Uitleg voor de Leek** (Hoe werkt het?)
 4.  **Technische Architectuur** (Mappenstructuur & Bestanden)
-5.  **Database Ontwerp** (SQL & Relaties)
-6.  **Code Diepgang (Bestand per Bestand)**
+5.  **Professionele Infrastructuur** (Licentie & Hygiëne) 🛠️
+6.  **Database Ontwerp** (SQL & Relaties)
+7.  **Code Diepgang (Bestand per Bestand)**
     *   *Core*: db.php, functions.php
     *   *Auth*: login.php, register.php
     *   *Pages*: index.php, add_*.php, edit_*.php
-7.  **Beveiliging & Kwaliteit** (Waarom dit project een '10' waard is)
-8.  **Examen Voorbereiding (Mock Vragen & Slides)** 🎓
-9.  **Project Reflectie & Onderhoud** (Vooruitblik)
+8.  **Beveiliging & Kwaliteit** (Waarom dit project een '10' waard is)
+9.  **Examen Voorbereiding (Mock Vragen & Slides)** 🎓
+10. **Inlever Instructies** (ZIP & Database) 📦
 
 ---
 
@@ -75,7 +76,16 @@ Het project gebruikt een standaard PHP structuur. Hier is de "Plattegrond":
 
 ---
 
-# 4. Database Ontwerp (De Kluis) 🗄️
+# 5. Professionele Infrastructuur 🛠️
+
+In een zakelijke omgeving is code alleen niet genoeg. Daarom bevat dit project:
+*   [LICENSE](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/LICENSE): Een **MIT Licentie** die aangeeft hoe anderen met de code mogen omgaan.
+*   [.gitignore](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/.gitignore): Voorkomt dat tijdelijke bestanden (zoals backups of systeembestanden) in de kluis belanden.
+*   [SUBMISSION_INSTRUCTIES_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/SUBMISSION_INSTRUCTIES_NL.md): Een handleiding voor het correct inleveren van dit project.
+
+---
+
+# 6. Database Ontwerp (De Kluis) 🗄️
 
 We gebruiken 4 tabellen die met elkaar praten (Relaties):
 
@@ -168,9 +178,10 @@ Om je optimaal voor te bereiden op de grote dag, heb ik de volgende tools voor j
 
 ---
 
-# 9. Project Reflectie & Onderhoud 🧠
+# 9. Project Reflectie & Inleveren 🧠
 
-In de [PROJECT_REFLECTIE_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/PROJECT_REFLECTIE_NL.md) vind je een diepgaande analyse van wat ik heb geleerd en hoe ik de applicatie in de toekomst zou kunnen uitbreiden (bijvoorbeeld naar een mobiele app).
+*   **Reflectie**: [PROJECT_REFLECTIE_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/PROJECT_REFLECTIE_NL.md) - Een diepgaande analyse van wat ik heb geleerd.
+*   **Inleveren**: [SUBMISSION_INSTRUCTIES_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/SUBMISSION_INSTRUCTIES_NL.md) - Volg deze stappen voor een foutloze inlevering.
 
 ---
 

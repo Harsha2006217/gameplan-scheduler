@@ -55,5 +55,12 @@ Kijk in de volgende bestanden voor een perfecte presentatie:
 *   [PRESENTATIE_SLIDES_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/PRESENTATIE_SLIDES_NL.md)
 
 ---
+
+## 🛠️ Professionele Hygiëne
+*   **Licentie**: [MIT License](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/LICENSE)
+*   **Project Hygiëne**: [.gitignore](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/.gitignore)
+*   **Inleveren**: [SUBMISSION_INSTRUCTIES_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/SUBMISSION_INSTRUCTIES_NL.md)
+
+---
 **Ontwikkeld door Harsha Kanaparthi**
 *Vragen? Check de documentatie of bekijk de broncode.*

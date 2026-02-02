@@ -32,10 +32,10 @@
 | 0t | **UITLEG_STYLE_CSS.md** | 🇳🇱 Regel-voor-regel uitleg style.css | 4 KB |
 | 0u | **UITLEG_DATABASE_SQL.md** | 🇳🇱 Regel-voor-regel uitleg database.sql | 4 KB |
 | 0v | **UITLEG_LOGOUT_PHP.md** | 🇳🇱 Regel-voor-regel uitleg logout.php | 3 KB |
-| 0w | **ALGORITMEN_LOGICA_NL.md** | 🇳🇱 Technische logica & beslisbomen | 6 KB |
+| 4 | [ALGORITMEN_LOGICA_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/ALGORITMEN_LOGICA_NL.md) | 10 KB | Complexity & Logic Deep-Dive (Legendary) |
 | 0x | **TEST_CASES_LOGBOEK_NL.md** | 🇳🇱 Kwaliteit & Test logboek (99+ cases) | 5 KB |
 | 0y | **CODE_FLOW_DIAGRAMMEN_NL.md** | 🇳🇱 Visuele code-stromen (Diagrammen) | 5 KB |
-| 0z | **SECURITY_BEVEILIGING_HART_NL.md** | 🇳🇱 Beveiligings-overzicht (Haken & Ogen) | 6 KB |
+| 5 | [SECURITY_BEVEILIGING_HART_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/SECURITY_BEVEILIGING_HART_NL.md) | 10 KB | Defense-in-Depth Security Guide (Master) |
 | 1a | **VERSIEGESCHIEDENIS_NL.md** | 🇳🇱 Ontwikkelingshistorie (Changelog) | 3 KB |
 | 1b | **INSTALLATIE_HANDLEIDING_NL.md** | 🇳🇱 Stap-voor-stap installatie gids | 3 KB |
 | 1c | **EXAMEN_CHECKLIST_NL.md** | 🇳🇱 Checklist voor de presentatie | 3 KB |
@@ -47,7 +47,7 @@
 | 1i | **DESIGN_SYSTEEM_NL.md** | 🇳🇱 Kleuren, styling & vormgeving | 3 KB |
 | 1j | **LOGICA_REFERENTIE_JS_NL.md** | 🇳🇱 Uitleg over de JavaScript werking | 3 KB |
 | 1k | **DATABASE_DOCUMENTATIE_NL.md** | 🇳🇱 Database architectuur & relaties | 3 KB |
-| 1l | **FUNCTIE_REFERENTIE_NL.md** | 🇳🇱 Alle PHP functies naslagwerk | 5 KB |
+| 20 | [FUNCTIE_REFERENTIE_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/FUNCTIE_REFERENTIE_NL.md) | 10 KB | Exhaustive Function API Reference |
 | 1m | **BESTANDS_SAMENHANG_NL.md** | 🇳🇱 Architectuur & bestandskoppelingen | 3 KB |
 | 1n | **KWALITEITS_CHECKLIST_NL.md** | 🇳🇱 Code review & QA checklist | 3 KB |
 | 1o | **PROJECT_REFLECTIE_NL.md** | 🇳🇱 Terugblik op het leerproces | 3 KB |

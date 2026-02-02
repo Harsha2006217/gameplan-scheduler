@@ -1,62 +1,62 @@
 # 🎮 GamePlan Scheduler (Legendary Edition)
+## The Ultimate Gaming Planner for the MBO-4 Examination
 
-**Responsive webapplicatie voor jonge gamers om profielen te beheren, vrienden toe te voegen, speelschema's te delen, evenementen te plannen en herinneringen in te stellen.**
-
----
-
-## 📌 Overzicht
-
-- **Auteur**: Harsha Kanaparthi  
-- **Studentnummer**: 2195344  
-- **Datum**: 30-09-2025  
-- **Versie**: 1.1 (Legendary Update)  
-- **Technologieën**: PHP, MySQL, HTML/CSS/Bootstrap 5, JavaScript  
-- **Ondersteuning**: Desktop & Mobiel (Volledig Responsief)  
+**A secure, responsive web application for gamers to manage profiles, add friends, share play schedules, plan events, and set reminders.**
 
 ---
 
-## ✨ Nieuwe Functionaliteiten (Versie 1.1)
+## 📌 Overview
 
-### 🛠️ Bug Fixes & Verbetervoorstellen
-1.  **#1001 Validatie Lege Velden**: Strikt `trim()` check toegevoegd in `functions.php`. Velden met alleen spaties worden nu geweigerd.
-2.  **#1004 Datum Validatie**: `checkdate()` toegevoegd. Ongeldige datums (zoals 30 februari of "2025-13-45") worden geweigerd.
-3.  **#1002 Notificaties**: `add_event.php` uitgebreid met een dropdown voor herinneringstypes.
-4.  **#1003 Navigatieverbetering**: "Evenement toevoegen" knop is nu prominent aanwezig in de header.
-5.  **#1006 Sorteren**: Lijsten op het dashboard kunnen nu gesorteerd worden op Datum.
-
-### 🎨 Design Updates ("Legendary" Thema)
-- **Glassmorphism**: Semi-transparante kaarten over een geanimeerde achtergrond.
-- **Neon Accents**: Blauwe en paarse gloed voor een moderne "gaming" look.
-- **Micro-interacties**: Hover-effecten op knoppen en tabellen.
-- **Bootstrap 5**: Volledige integratie voor lay-out en modale componenten.
-
-### 📝 Documentatie
-- **Code Commentaar**: Elke regel code is voorzien van didactisch commentaar (A-Z uitleg) om de werking uit te leggen aan examinatoren.
+- **Author**: Harsha Kanaparthi  
+- **Student Number**: 2195344  
+- **Date**: 2026-02-02  
+- **Version**: 1.1 (Legendary Update)  
+- **Technologies**: PHP 8.x, MySQL (PDO), HTML/CSS/Bootstrap 5, JavaScript  
+- **Support**: Desktop & Mobile (Fully Responsive)  
 
 ---
 
-## ⚙️ Installatie
+## ✨ Key Features (Version 1.1)
 
-1. **Omgeving**: Zorg voor XAMPP (Apache + MySQL).
-2. **Database**: Importeer `database.sql` via PHPMyAdmin.
-3. **Plaatsing**: Kopieer de map `gameplan-scheduler` naar `htdocs`.
-4. **Uitvoeren**: Ga naar `http://localhost/gameplan-scheduler`.
+### 🛠️ Bug Fixes & Technical Improvements
+1.  **#1001 Empty Field Validation**: Strict `trim()` check added in `functions.php`. Fields containing only spaces are now rejected to ensure data integrity.
+2.  **#1004 Date Integrity**: Implemented `DateTime` validation. Invalid dates (e.g., February 30th) and past dates are strictly rejected.
+3.  **#1002 Notifications Ext.**: `add_event.php` enhanced with a dropdown for notification types (1 hour, 1 day, etc.).
+4.  **#1003 Navigation Polish**: "Add Event" button is now prominently placed in the header for extreme usability.
+5.  **#1006 Chronological Sorting**: Dashboard lists are now sorted by Date/Time using custom sorting algorithms.
+
+### 🎨 Design Excellence ("Legendary" Theme)
+- **Glassmorphism**: Semi-transparent UI cards over an animated gaming background.
+- **Neon Accents**: Cyberpunk-inspired blue and purple glow for a modern aesthetic.
+- **Micro-interactions**: Smooth hover effects on buttons, inputs, and tables.
+- **Bootstrap 5**: Full integration for professional layout and modal components.
+
+### 📝 Documentation
+- **Line-by-Line Technical Guides**: Every core file includes a Dutch explanation (`UITLEG_*.md`) for examiners.
+- **Defense-in-Depth**: Comprehensive security documentation covering OWASP Top 10 mitigations.
 
 ---
 
-## 📁 Bestandsstructuur
+## ⚙️ Installation
 
-- **Core**: 
-  - `functions.php`: Het hart van de applicatie (logica en validatie).
-  - `db.php`: Veilige databaseverbinding.
-- **Styling**: `style.css` (Custom CSS).
-- **Pagina's**:
-  - `index.php`: Dashboard en Kalender.
-  - `add_*.php` / `edit_*.php`: Formulieren voor beheer.
-  - `profile.php`: Profielbeheer.
+1. **Environment**: Ensure XAMPP (Apache + MySQL) is running.
+2. **Database**: Import `database.sql` via PHPMyAdmin.
+3. **Storage**: Copy the `gameplan-scheduler` folder to your `htdocs` directory.
+4. **Run**: Navigate to `http://localhost/gameplan-scheduler` (or your local IP).
 
 ---
 
-## 👥 Credits
+## 📂 Documentation entry point
 
-Ontwikkeld door Harsha Kanaparthi voor het MBO-4 Software Development examen.
+For a full overview of all 70+ documents, please start at the [SUBMISSION_INDEX.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/SUBMISSION_INDEX.md).
+
+---
+
+## 🎓 Exam Preparation
+If you are Harsha, please review:
+*   [DEMO_SCRIPT_EXAMEN_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/DEMO_SCRIPT_EXAMEN_NL.md)
+*   [PRESENTATIE_SLIDES_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/PRESENTATIE_SLIDES_NL.md)
+
+---
+**Developed by Harsha Kanaparthi**  
+*MBO-4 Software Development Examination Portfolio*

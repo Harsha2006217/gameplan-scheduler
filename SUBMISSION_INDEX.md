@@ -64,47 +64,48 @@
 | 1z | **TECHNISCH_ONTWERP_NL.md** | 🇳🇱 Architectuur & Stack (TO) | 2 KB |
 | 1aa | **PLAN_VAN_AANPAK_NL.md** | 🇳🇱 Projectbeheersing & Planning (PvA) | 2 KB |
 | 1bb | **DEBUG_GIDS_OMGEVING_NL.md** | 🇳🇱 Hulp bij fouten op andere computers | 2 KB |
-| 1 | **README.md** | Project Overview (English) | 2 KB |
-| 2 | **VALIDATION_DOCUMENTATION.md** | Complete A-Z guide with all validations | 39 KB |
-| 3 | **ALGORITHMS_SUBMISSION.md** | All 12 validation algorithms formatted | 13 KB |
-| 4 | **VALIDATION_QUICK_REFERENCE.md** | Quick at-a-glance reference sheet | 5 KB |
-| 5 | **CODE_FLOW_DIAGRAMS.md** | Visual ASCII flowcharts for all flows | 36 KB |
-| 6 | **VALIDATIE_DOCUMENTATIE_NL.md** | 🇳🇱 Complete Dutch/Nederlands version | 7 KB |
-| 7 | **EASY_EXPLANATION_GUIDE.md** | 📚 Beginner-friendly simple explanation | 12 KB |
-| 8 | **VALIDATION_TEST_CASES.md** | 🧪 99 test cases with expected results | 13 KB |
-| 9 | **DATABASE_DOCUMENTATION.md** | 🗄️ Complete database schema & ERD | 14 KB |
-| 9 | **SECURITY_DOCUMENTATION.md** | 🔒 All security measures explained | 11 KB |
-| 10 | **COMPLETE_PROJECT_SUMMARY.md** | 📋 Final submission overview | 9 KB |
-| 11 | **USER_MANUAL.md** | 📖 End-user guide with screenshots | 9 KB |
-| 12 | **FUNCTION_REFERENCE.md** | ⚙️ All 35+ functions documented | 13 KB |
-| 13 | **GLOSSARY.md** | 📚 Technical terms explained (EN/NL) | 7 KB |
-| 14 | **ERROR_MESSAGES_REFERENCE.md** | ⚠️ All error messages & solutions | 7 KB |
-| 15 | **CHANGELOG.md** | 📜 Version history & development log | 5 KB |
-| 16 | **CSS_DOCUMENTATION.md** | 🎨 Design system & styling guide | 7 KB |
-| 17 | **FILE_DEPENDENCIES.md** | 🔗 Architecture & file connections | 8 KB |
-| 18 | **EXAM_PREPARATION_GUIDE.md** | 🎓 Quick answers & demo script | 6 KB |
-| 19 | **ONE_PAGE_SUMMARY.md** | 📄 Printable quick reference | 4 KB |
-| 20 | **CODE_REVIEW_CHECKLIST.md** | ✅ QA verification checklist | 6 KB |
-| 21 | **JAVASCRIPT_DOCUMENTATION.md** | 📜 JS Code Ref (A-Z Deep Dive) | 8 KB |
-| 22 | **ADD_EVENT_DOCUMENTATION.md** | 📄 add_event.php Logic Ref | 6 KB |
-| 23 | **ADD_FRIEND_DOCUMENTATION.md** | 📄 add_friend.php Logic Ref | 6 KB |
-| 24 | **ADD_SCHEDULE_DOCUMENTATION.md** | 📄 add_schedule.php Logic Ref | 5 KB |
-| 25 | **CONTACT_DOCUMENTATION.md** | 📄 contact.php Logic Ref | 4 KB |
-| 26 | **DATABASE_SQL_FILE_DOCUMENTATION.md** | 📄 database.sql File Ref | 6 KB |
-| 27 | **DB_PHP_DOCUMENTATION.md** | 📄 db.php Logic Ref | 5 KB |
-| 28 | **DELETE_DOCUMENTATION.md** | 📄 delete.php Logic Ref | 4 KB |
-| 29 | **EDIT_EVENT_DOCUMENTATION.md** | 📄 edit_event.php Logic Ref | 6 KB |
-| 30 | **EDIT_FAVORITE_DOCUMENTATION.md** | 📄 edit_favorite.php Logic Ref | 5 KB |
-| 31 | **EDIT_FRIEND_DOCUMENTATION.md** | 📄 edit_friend.php Logic Ref | 5 KB |
-| 32 | **EDIT_SCHEDULE_DOCUMENTATION.md** | 📄 edit_schedule.php Logic Ref | 5 KB |
-| 33 | **FOOTER_DOCUMENTATION.md** | 📄 footer.php Component Ref | 3 KB |
-| 34 | **FUNCTIONS_DOCUMENTATION.md** | 📄 functions.php Logic Ref | 7 KB |
-| 35 | **HEADER_DOCUMENTATION.md** | 📄 header.php Component Ref | 4 KB |
-| 36 | **INDEX_DOCUMENTATION.md** | 📄 index.php Logic Ref | 7 KB |
-| 37 | **LOGIN_DOCUMENTATION.md** | 📄 login.php Logic Ref | 6 KB |
-| 38 | **PRIVACY_DOCUMENTATION.md** | 📄 privacy.php Logic Ref | 4 KB |
-| 39 | **PROFILE_DOCUMENTATION.md** | 📄 profile.php Logic Ref | 6 KB |
-| 40 | **REGISTER_DOCUMENTATION.md** | 📄 register.php Logic Ref | 6 KB |
+| 1cc | **SUBMISSION_INSTRUCTIES_NL.md** | 🇳🇱 Instructies voor zippen & inleveren | 2 KB |
+| 2 | **README.md** | Project Overview (English) | 3 KB |
+| 3 | **VALIDATION_DOCUMENTATION.md** | Complete A-Z guide with all validations | 39 KB |
+| 4 | **ALGORITHMS_SUBMISSION.md** | All 12 validation algorithms formatted | 13 KB |
+| 5 | **VALIDATION_QUICK_REFERENCE.md** | Quick at-a-glance reference sheet | 5 KB |
+| 6 | **CODE_FLOW_DIAGRAMS.md** | Visual ASCII flowcharts for all flows | 36 KB |
+| 7 | **VALIDATIE_DOCUMENTATIE_NL.md** | 🇳🇱 Complete Dutch/Nederlands version | 7 KB |
+| 8 | **EASY_EXPLANATION_GUIDE.md** | 📚 Beginner-friendly simple explanation | 12 KB |
+| 9 | **VALIDATION_TEST_CASES.md** | 🧪 99 test cases with expected results | 13 KB |
+| 10 | **DATABASE_DOCUMENTATION.md** | 🗄️ Complete database schema & ERD | 14 KB |
+| 11 | **SECURITY_DOCUMENTATION.md** | 🔒 All security measures explained | 11 KB |
+| 12 | **COMPLETE_PROJECT_SUMMARY.md** | 📋 Final submission overview | 9 KB |
+| 13 | **USER_MANUAL.md** | 📖 End-user guide with screenshots | 9 KB |
+| 14 | **FUNCTION_REFERENCE.md** | ⚙️ All 35+ functions documented | 13 KB |
+| 15 | **GLOSSARY.md** | 📚 Technical terms explained (EN/NL) | 7 KB |
+| 16 | **ERROR_MESSAGES_REFERENCE.md** | ⚠️ All error messages & solutions | 7 KB |
+| 17 | **CHANGELOG.md** | 📜 Version history & development log | 5 KB |
+| 18 | **CSS_DOCUMENTATION.md** | 🎨 Design system & styling guide | 7 KB |
+| 19 | **FILE_DEPENDENCIES.md** | 🔗 Architecture & file connections | 8 KB |
+| 20 | **EXAM_PREPARATION_GUIDE.md** | 🎓 Quick answers & demo script | 6 KB |
+| 21 | **ONE_PAGE_SUMMARY.md** | 📄 Printable quick reference | 4 KB |
+| 22 | **CODE_REVIEW_CHECKLIST.md** | ✅ QA verification checklist | 6 KB |
+| 23 | **JAVASCRIPT_DOCUMENTATION.md** | 📜 JS Code Ref (A-Z Deep Dive) | 8 KB |
+| 24 | **ADD_EVENT_DOCUMENTATION.md** | 📄 add_event.php Logic Ref | 6 KB |
+| 25 | **ADD_FRIEND_DOCUMENTATION.md** | 📄 add_friend.php Logic Ref | 6 KB |
+| 26 | **ADD_SCHEDULE_DOCUMENTATION.md** | 📄 add_schedule.php Logic Ref | 5 KB |
+| 27 | **CONTACT_DOCUMENTATION.md** | 📄 contact.php Logic Ref | 4 KB |
+| 28 | **DATABASE_SQL_FILE_DOCUMENTATION.md** | 📄 database.sql File Ref | 6 KB |
+| 29 | **DB_PHP_DOCUMENTATION.md** | 📄 db.php Logic Ref | 5 KB |
+| 30 | **DELETE_DOCUMENTATION.md** | 📄 delete.php Logic Ref | 4 KB |
+| 31 | **EDIT_EVENT_DOCUMENTATION.md** | 📄 edit_event.php Logic Ref | 6 KB |
+| 32 | **EDIT_FAVORITE_DOCUMENTATION.md** | 📄 edit_favorite.php Logic Ref | 5 KB |
+| 33 | **EDIT_FRIEND_DOCUMENTATION.md** | 📄 edit_friend.php Logic Ref | 5 KB |
+| 34 | **EDIT_SCHEDULE_DOCUMENTATION.md** | 📄 edit_schedule.php Logic Ref | 5 KB |
+| 35 | **FOOTER_DOCUMENTATION.md** | 📄 footer.php Component Ref | 3 KB |
+| 36 | **FUNCTIONS_DOCUMENTATION.md** | 📄 functions.php Logic Ref | 7 KB |
+| 37 | **HEADER_DOCUMENTATION.md** | 📄 header.php Component Ref | 4 KB |
+| 38 | **INDEX_DOCUMENTATION.md** | 📄 index.php Logic Ref | 7 KB |
+| 39 | **LOGIN_DOCUMENTATION.md** | 📄 login.php Logic Ref | 6 KB |
+| 40 | **PRIVACY_DOCUMENTATION.md** | 📄 privacy.php Logic Ref | 4 KB |
+| 41 | **PROFILE_DOCUMENTATION.md** | 📄 profile.php Logic Ref | 6 KB |
+| 42 | **REGISTER_DOCUMENTATION.md** | 📄 register.php Logic Ref | 6 KB |
 
 ---
 

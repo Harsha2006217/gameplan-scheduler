@@ -31,6 +31,7 @@
 | 20 | **CODE_REVIEW_CHECKLIST.md** | ✅ QA verification checklist | 6 KB |
 | 21 | **JAVASCRIPT_DOCUMENTATION.md** | 📜 JS Code Ref (A-Z Deep Dive) | 8 KB |
 | 22 | **ADD_EVENT_DOCUMENTATION.md** | 📄 add_event.php Logic Ref | 6 KB |
+| 23 | **ADD_FRIEND_DOCUMENTATION.md** | 📄 add_friend.php Logic Ref | 6 KB |
 
 ---
 

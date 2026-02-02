@@ -36,6 +36,7 @@
 | 25 | **CONTACT_DOCUMENTATION.md** | 📄 contact.php Logic Ref | 4 KB |
 | 26 | **DATABASE_SQL_FILE_DOCUMENTATION.md** | 📄 database.sql File Ref | 6 KB |
 | 27 | **DB_PHP_DOCUMENTATION.md** | 📄 db.php Logic Ref | 5 KB |
+| 28 | **DELETE_DOCUMENTATION.md** | 📄 delete.php Logic Ref | 4 KB |
 
 ---
 

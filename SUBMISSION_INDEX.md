@@ -32,6 +32,7 @@
 | 21 | **JAVASCRIPT_DOCUMENTATION.md** | 📜 JS Code Ref (A-Z Deep Dive) | 8 KB |
 | 22 | **ADD_EVENT_DOCUMENTATION.md** | 📄 add_event.php Logic Ref | 6 KB |
 | 23 | **ADD_FRIEND_DOCUMENTATION.md** | 📄 add_friend.php Logic Ref | 6 KB |
+| 24 | **ADD_SCHEDULE_DOCUMENTATION.md** | 📄 add_schedule.php Logic Ref | 5 KB |
 
 ---
 

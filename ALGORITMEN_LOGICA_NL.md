@@ -9,89 +9,95 @@
 
 ---
 
-# 1. Wat is een Algoritme in dit Project?
+# 1. Ontwerpfilosofie van de Algoritmen
 
 In de GamePlan Scheduler gebruiken we algoritmen voor drie hoofddoeleinden:
-1.  **Validatie**: Beslissen of data de database mag betreden.
-2.  **Beveiliging**: Versleutelen en verifiëren van identiteiten.
-3.  **Data Management**: Het slim sorteren en koppelen van informatie.
+1.  **Determinisme**: Dezelfde input moet altijd tot dezelfde correcte output leiden.
+2.  **Beveiliging (Atomiciteit)**: Een operatie slaagt volledig of faalt volledig (geen halve data in de database).
+3.  **Performantie**: Gebruik van efficiënte zoek- en sorteermethoden om de UI vloeibaar te houden.
 
 ---
 
-# 2. De Kern-Algoritmen (Pseudocode & Logica)
+# 2. De Kern-Algoritmen (Diepgaande Analyse)
 
 ### 2.1 Het "Spatie-Filter" Algoritme (Bugfix #1001)
-Voorkomt dat gebruikers de database vervuilen met schijnbaar lege, maar technisch gevulde (spaties) velden.
+Voorkomt dat gebruikers de database vervuilen met schijnbaar lege velden.
+
+**Logische Stappen:**
+1.  **Trim**: Verwijder onzichtbare karakters van de randen.
+2.  **Empty Check**: Is de string nu lengte 0?
+3.  **Regex Audit**: Gebruik `/^\s*$/` om te verifiëren dat er geen tabbladen of newlines verstopt zitten.
+4.  **Resultaat**: Alleen betekenisvolle data wordt geaccepteerd.
+
+### 2.2 Het "Strict Date Consistency" Algoritme (Bugfix #1004)
+Eenvoudige HTML-datumvelden zijn te omzeilen. Dit backend algoritme garandeert 100% integriteit.
 
 **Pseudocode:**
 ```
-BEGIN Algoritme_Trim_Check(input)
-    1.  NieuweInvoer = VerwijderWitruimte(input) // PHP trim()
-    2.  ALS Lengte(NieuweInvoer) == 0 DAN
-        RETOURNEER "Fout: Veld is leeg"
-    3.  ALS Regex_Match("/^\s*$/", input) DAN
-        RETOURNEER "Fout: Alleen spaties niet toegestaan"
-    4.  RETOURNEER Succes
+BEGIN Algoritme_Datum_Validatie(datum_string)
+    1.  Probeer object 'd' te maken van datum_string (Formaat Y-m-d)
+    2.  ALS (d is ongeldig) OF (d->formaat(Y-m-d) != datum_string) DAN
+        RETOURNEER "Ongeldige kalenderdatum"
+    3.  Vandaag = Nu_Zonder_Tijd()
+    4.  ALS d < Vandaag DAN
+        RETOURNEER "Datum ligt in het verleden"
+    5.  RETOURNEER Succes
 EINDE
 ```
 
-### 2.2 Het Datum-Integriteit Algoritme (Bugfix #1004)
-Eenvoudige HTML-datumvelden zijn onveilig. Dit server-side algoritme garandeert 100% correcte data.
+### 2.3 Het "Game ID Switch" Algoritme (getOrCreateGameId)
+Dit algoritme zorgt voor een **Single Source of Truth** in de database.
 
-**Stappenplan:**
-1.  **Input**: Ontvang een string (bijv. "2026-02-30").
-2.  **Parsen**: Probeer een `DateTime` object te maken met het formaat `Y-m-d`.
-3.  **Consistentie Check**: Vergelijk de input-string met de output van het object. 
-    - *Waarom?* PHP corrigeert 30 februari naar 2 maart. Wij blokkeren dit.
-4.  **Chronologie**: Check of `GekozenDatum < SysteemDatum`.
-5.  **Output**: Blokkeer als de datum in het verleden ligt.
-
----
-
-# 3. Geavanceerde Database Logica: Normalisatie
-
-Om de database in de **3e Normaalvorm (3NF)** te houden, gebruiken we een slim algoritme bij het toevoegen van spellen.
-
-### 2.3 `getOrCreateGameId()` Algoritme
-Voorkomt dat het spel "Fortnite" 100 keer in de database komt te staan.
-
-```php
-// De logica in mensentaal:
-1. Ontvang de speltitel van de gebruiker.
-2. Zoek in de 'Games' tabel of dit spel al bekend is (Case-Insensitive).
-3. ALS spel gevonden:
-    - Haal het bestaande ID op.
-4. ANDERS (Nieuw spel):
-    - Voeg de titel toe aan de 'Games' tabel.
-    - Haal het zojuist aangemaakte ID op (lastInsertId).
-5. Koppel de afspraak aan dit specifieke ID.
-```
+**Logica:**
+1.  Zoek in de tabel `Games` naar de titel (Case-Insensitive).
+2.  Indien gevonden: Retourneer het ID.
+3.  Indien niet gevonden:
+    - Start een Veilige Transactie.
+    - Voeg spel toe.
+    - `lastInsertId` ophalen.
+    - Beëindig Transactie.
+4.  Dit voorkomt duplicaten en bespaart MB's aan opslagruimte.
 
 ---
 
-# 4. Authenticatie: De Veiligheids-Loop
+# 3. Geavanceerde Logica: Sorteren & Filteren
 
-Wanneer een gebruiker probeert in te loggen, volgt het systeem dit strikte pad:
-
-### 2.4 Login Algoritme
-1.  **Start**: Ontvang email en wachtwoord.
-2.  **Lookup**: Doe een `SELECT` query met een `Prepared Statement` op de email.
-3.  **Check**: Bestaat de gebruiker? (Zo nee: Stop).
-4.  **Hashing**: Vergelijk het ingevoerde wachtwoord met de `password_hash` in de database via `password_verify()`.
-5.  **Sessie**: 
-    - Indien match: Genereer nieuw Session ID, update `last_activity`.
-    - Indien geen match: Toon generieke foutmelding (nooit "Wachtwoord is fout" voor veiligheid).
-
----
-
-# 5. Het "Soft-Delete" Algoritme (Data-Integriteit)
-
-Wij verwijderen nooit echt rijen uit de database. Dit is een professionele standaard.
+### 2.4 De "Dashboard Merge" Logica
+Op de homepagina (index.php) worden verschillende databronnen samengevoegd.
 
 **Algoritme:**
-- **Actie**: `UPDATE table SET deleted_at = NOW() WHERE id = :id`.
-- **Display Logica**: Bij elk overzicht voegen we een filter toe: `WHERE deleted_at IS NULL`.
-- **Resultaat**: De gebruiker denkt dat het weg is, maar de data is behouden voor back-ups of herstel.
+1.  Haal `Schedules` op (WHERE user_id = X).
+2.  Haal `Events` op (WHERE user_id = X).
+3.  Combineer deze in één PHP Array.
+4.  **Sorteeralgoritme (usort)**:
+    - Vergelijk element A en B op basis van de `date` kolom.
+    - Gebruik `strtotime()` om datums om te zetten in vergelijkbare integers (timestamps).
+    - Sorteer oplopend (Nieuwste bovenaan).
+
+---
+
+# 4. Authenticatie: De Hashing Loop
+
+Het inlogproces volgt een strikt cryptografisch algoritme.
+
+**Proces:**
+1.  Email wordt gezocht via een **B-Tree Index** (voor razendsnelle lookup).
+2.  Wachtwoord wordt nooit direct vergeleken (`$a == $b` is onveilig).
+3.  **password_verify() Algoritme**:
+    - Haal de "salt" en de "hash" uit de database string.
+    - Voer hetzelfde hash-algoritme uit op het ingevoerde wachtwoord met deze salt.
+    - Vergelijk de resultaten in "Constant Time" om timing-attacks te voorkomen.
+
+---
+
+# 5. Beveiliging: De SQL Bind-Parameter Loop
+
+Hoe voorkomen we SQL Injection op algoritmisch niveau?
+
+1.  **Prepare**: De database compileert de query *zonder* data.
+2.  **Bind**: De data wordt als een apart pakketje gestuurd.
+3.  **Execute**: De database plakt de data erin als "platte tekst", nooit als commando.
+*Dit algoritme maakt het fysiek onmogelijk voor een hacker om de database-structuur aan te passen via een invoerveld.*
 
 ---
 
@@ -99,22 +105,24 @@ Wij verwijderen nooit echt rijen uit de database. Dit is een professionele stand
 
 ```mermaid
 graph TD
-    A[Start Submit] --> B[HTML5 Checks]
-    B -- FAIL --> C[Browser Stopt]
-    B -- OK --> D[JS Validatie]
-    D -- FAIL --> E[Toon Bericht]
-    D -- OK --> F[PHP Backend]
+    A[Gebruiker klikt op Opslaan] --> B{Heeft Browser JS aan?}
+    B -- JA --> C[JS Validatie Snel-Check]
+    B -- NEE --> D[Sla over naar Server]
+    C -- FAIL --> E[Toon rode melding in Browser]
+    C -- OK --> D
+    D --> F[PHP Backend Sanctie-Check]
     F --> G{Checks OK?}
-    G -- NEE --> H[Redirect met Error]
+    G -- NEE --> H[Redirect met Session Error]
     G -- JA --> I[SQL Prepared Statement]
-    I --> J[Opslag in DB]
-    J --> K[Einde]
+    I --> J[Koppel aan User-ID]
+    J --> K[Toon Succesvol Bericht]
 ```
 
 ---
 
 # 7. Conclusie
-Door deze documentatie van algoritmen laten we zien dat de GamePlan Scheduler niet "per ongeluk" werkt, maar dat elke functie is doordacht en gebouwd op logica. Dit is de basis van een professionele software architectuur.
+Door deze documentatie laten we de examencommissie zien dat de GamePlan Scheduler niet "per ongeluk" werkt. Elke actie is het resultaat van een doordacht algoritme dat stabiliteit, snelheid en veiligheid garandeert.
 
 ---
-**GEAUTORISEERD VOOR EXAMEN** - Harsha Kanaparthi
+**GEAUTORISEERD VOOR MBO-4 EXAMEN**
+*Harsha Kanaparthi*

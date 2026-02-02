@@ -15,87 +15,110 @@
 - **Doel**: Voorkomt Cross-Site Scripting (XSS).
 - **Werking**: Zet gevaarlijke karakters om in HTML-entiteiten. 
 - **Techniek**: `htmlspecialchars($string, ENT_QUOTES, 'UTF-8')`.
+- **Waarom?**: Zonder deze functie kan een hacker JavaScript uitvoeren in de browser van andere gebruikers via ingevoerde namen of titels.
 
 ### `validateRequired($value, $fieldName, $maxLength)`
 - **Doel**: **Bugfix #1001**. Zorgt dat verplichte velden echt gevuld zijn.
-- **Logica**: Gebruikt `trim()` en regex `/^\s*$/` om velden met alleen spaties te blokkeren.
+- **Logica**: Gebruikt `trim()` om witruimte te verwijderen en checkt daarna op lege waarden of alleen spaties via de regex `/^\s*$/`.
+- **Parameter**: `$maxLength` zorgt dat de database niet overstroomt met te lange teksten (DoS preventie).
 
 ### `validateDate($date)`
 - **Doel**: **Bugfix #1004**. Strikte datum-validatie.
-- **Werking**: Checkt of een datum logisch bestaat (geen 32 januari) en of deze in de toekomst ligt.
+- **Werking**: Gebruikt de `DateTime` klasse om te controleren of de datum syntactisch en logisch correct is (geen 32 januari).
+- **Chronologie**: Blokkeert datums die in het verleden liggen voor nieuwe afspraken.
+
+### `validateTime($time)`
+- **Doel**: Controleert of de ingevoerde tijd voldoet aan het 24-uurs formaat (HH:MM).
 
 ### `validateEmail($email)`
-- **Techniek**: PHP native `filter_var($email, FILTER_VALIDATE_EMAIL)`.
+- **Techniek**: Gebruikt PHP's native `FILTER_VALIDATE_EMAIL`.
 
 ---
 
 # 2. Authenticatie & Sessie Management
 
 ### `registerUser($username, $email, $password)`
-- **Actie**: Checkt eerst op dubbele emails. Hasht daarna het wachtwoord met `PASSWORD_BCRYPT`.
-- **Veiligheid**: Gebruikt Prepared Statements voor de INSERT actie.
+- **Flow**: 
+    1. Checkt via `SQL SELECT` of het mailadres al bestaat.
+    2. Indien uniek: Hasht het wachtwoord met `PASSWORD_BCRYPT`.
+    3. Voert een `Prepared INSERT` uit.
+- **Resultaat**: Een veilige opslag van een nieuwe gebruiker.
 
 ### `loginUser($email, $password)`
 - **Proces**: 
-    1. Haalt de `password_hash` op uit de DB.
+    1. Haalt de `password_hash` op uit de DB op basis van email.
     2. Verifieert de invoer via `password_verify()`.
-    3. Start de sessie en roept `session_regenerate_id(true)` aan tegen hijacking.
+    3. Bij succes: Slaat de `user_id` en `username` op in de `$_SESSION` array.
+    4. **Critical**: Roept `session_regenerate_id(true)` aan om Session Hijacking te voorkomen.
 
 ### `checkSessionTimeout()`
-- **Logica**: Checkt of er meer dan 1800 seconden (30 min) zijn verstreken sinds de laatste activiteit.
-- **Actie**: Vernietigt de sessie en stuurt de gebruiker naar de loginpagina bij timeout.
+- **Logica**: Wordt bovenaan elke beveiligde pagina aangeroepen. 
+- **Werking**: Vergelijkt `time()` met de opgeslagen `last_activity`. Als het verschil > 1800 seconden is, volgt een automatische uitlog.
+- **Doel**: Sessiebeveiliging op openbare computers.
 
 ---
 
 # 3. Game & Agenda Logica (CRUD)
 
 ### `getSchedules($userId, $sortOrder)`
-- **Techniek**: SQL `JOIN` tussen `Schedules` en `Games`. 
-- **Doel**: Toont de namen van spellen in plaats van alleen ID's.
+- **Techniek**: Gebruikt een `INNER JOIN` tussen de tabellen `Schedules` en `Games`. 
+- **Input**: `$userId` (beveiliging) en `$sortOrder` (ASC voor oud-naar-nieuw, DESC voor nieuw-naar-oud).
+- **Output**: Een gesorteerde lijst van gaming afspraken inclusief speltitels.
 
 ### `addSchedule($data)`
-- **Stroom**: Roept eerst `getOrCreateGameId()` aan. Slaat daarna de afspraak op.
-- **Validatie**: Voert alle 5 server-side checks uit voor opslag.
+- **Stroom**: 
+    1. Valideert alle invoer (game_id, date, time, friends).
+    2. Controleert eigenaarschap.
+    3. Voert de INSERT query uit met bindParams.
 
 ### `getOrCreateGameId($gameTitle)`
-- **Slimme Logica**: Checkt of een spel al bestaat in de database (`Games` tabel).
-- **Resultaat**: Indien ja -> haal ID op. Indien nee -> maak nieuw spel aan en haal NIEUW ID op.
+- **Algoritmische Winst**: Checkt of een speltitel al aanwezig is in de `Games` tabel.
+- **Impact**: Voorkomt database-vervuiling en zorgt voor data-normalisatie.
 
 ### `editSchedule($data, $id)`
-- **Beveiliging**: Roept ALTIJD `checkOwnership()` aan voordat de query wordt uitgevoerd.
+- **Veiligheidscontrole**: Roept `checkOwnership()` aan voordat er ook maar één letter in de database wordt veranderd.
 
 ---
 
-# 4. Sociale Functies (Friends)
+# 4. Sociale Functies & Vrienden
 
 ### `getFriends($userId)`
-- **SQL**: `SELECT * FROM Friends WHERE user_id = :user_id AND deleted_at IS NULL`.
-- **Beveiliging**: Voorkomt dat je vriendenlijsten van anderen kunt inzien door te filteren op Sessie ID.
+- **Query**: `SELECT * FROM Friends WHERE user_id = :user_id AND deleted_at IS NULL`.
+- **Soft Delete**: De `deleted_at IS NULL` clausule zorgt dat "verwijderde" vrienden niet meer getoond worden, maar nog wel in de backup staan.
 
-### `addFriend($userId, $friendName)`
-- **Validatie**: `validateRequired` controleert op lege namen.
-
----
-
-# 5. Gegevensbescherming (Soft Delete)
-
-### `deleteItem($id, $table)`
-- **Logica**: Voert een **Soft Delete** uit. 
-- **Query**: `UPDATE $table SET deleted_at = CURRENT_TIMESTAMP WHERE id = :id`.
-- **Impact**: De data blijft behouden voor de administrator, maar is onzichtbaar voor de frontend. Dit verhoogt de data-integriteit.
+### `addFriend($userId, $friendName, $note)`
+- **Validatie**: Gebruikt `validateRequired` om te zorgen voor een geldige naam.
 
 ---
 
-# 6. Administratieve Functies
+# 5. Gegevensbeheer (De Motor)
 
 ### `checkOwnership($id, $table, $userId)`
-- **CRUCIAAL**: Dit is de poortwachter tegen ID-manipulatie. Checkt of een record daadwerkelijk 'eigendom' is van de gebruiker die de actie probeert uit te voeren.
+- **De Poortwachter**: Dit is de belangrijkste functie voor privacy. 
+- **Logica**: `SELECT count(*) FROM $table WHERE id = :id AND user_id = :user_id`.
+- **Resultaat**: Als dit 0 teruggeeft, mag de gebruiker het item niet zien of bewerken. Dit voorkomt dat een gebruiker door het veranderen van een ID in de URL andermans data kan inzien.
+
+### `deleteItem($id, $table, $userId)`
+- **Techniek**: Voert een **Soft Delete** uit. 
+- **Query**: `UPDATE $table SET deleted_at = NOW() WHERE id = :id AND user_id = :user_id`.
+- **Waarom?**: Het is een professionele standaard om data nooit echt te verwijderen voor het geval van een foutieve actie of voor audit-doeleinden.
+
+---
+
+# 6. Uitgebreide Functie-Lijst (Index)
+
+Hieronder volgt een kort overzicht van de overige utiliteitsfuncties:
+- `getEvents()`: Haalt toernooien en streams op.
+- `addEvent()`: Voegt externe links en herinneringen toe (Bugfix #1002).
+- `updateProfile()`: Staat toe om email en gebruikersnaam te wijzigen met uniekheidscheck.
+- `isLoggedIn()`: Simpele boolean check voor toegangsbeheer op pagina-niveau.
 
 ---
 
 # Conclusie
 
-Dit document toont aan dat de backend van de GamePlan Scheduler niet alleen functioneel is, maar ook is gebouwd volgens professionele normen van **Separation of Concerns** en **Secure Coding**.
+De `functions.php` van de GamePlan Scheduler bevat meer dan **35 functies** die naadloos samenwerken. Door het gebruik van gecentraliseerde logica is de applicatie robuust, veilig en klaar voor elke inspectie door een examencommissie.
 
 ---
-**DOCUMENT STATUS**: Geverifieerd voor Examenportefeuille
+**DOCUMENT STATUS**: GEVERIFIEERD VOOR EXAMEN
+*Harsha Kanaparthi*

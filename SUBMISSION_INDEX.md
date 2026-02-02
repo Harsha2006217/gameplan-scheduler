@@ -65,6 +65,8 @@
 | 1aa | **PLAN_VAN_AANPAK_NL.md** | 🇳🇱 Projectbeheersing & Planning (PvA) | 2 KB |
 | 1bb | **DEBUG_GIDS_OMGEVING_NL.md** | 🇳🇱 Hulp bij fouten op andere computers | 2 KB |
 | 1cc | **SUBMISSION_INSTRUCTIES_NL.md** | 🇳🇱 Instructies voor zippen & inleveren | 2 KB |
+| 1dd | **.gitignore** | 🛠️ Project hygiëne / uitsluitingsbestand | 1 KB |
+| 1ee | **LICENSE** | ⚖️ MIT Licentie & Gebruikersrechten | 1 KB |
 | 2 | **README.md** | Project Overview (English) | 3 KB |
 | 3 | **VALIDATION_DOCUMENTATION.md** | Complete A-Z guide with all validations | 39 KB |
 | 4 | **ALGORITHMS_SUBMISSION.md** | All 12 validation algorithms formatted | 13 KB |

@@ -1,0 +1,22 @@
+# XAMPP / Local Development
+.DS_Store
+Thumbs.db
+*.bak
+*.tmp
+
+# VS Code
+.vscode/
+
+# Browser / OS specific
+.DS_Store
+ehthumbs.db
+Icon?
+
+# If there were vendor folders or node_modules
+# vendor/
+# node_modules/
+
+# Local database exports
+*.sql
+!database.sql
+# Ensure database.sql is tracked, but any personal backups are ignored.

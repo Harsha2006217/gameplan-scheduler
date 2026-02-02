@@ -1,43 +1,85 @@
-# 📅 PLAN VAN AANPAK (PvA)
-## GamePlan Scheduler - Projectbeheersing & Planning
+# 📅 PLAN VAN AANPAK (PvA) - MASTER EDITIE
+## GamePlan Scheduler - Projectbeheersing, Methodologie & Kwaliteit
 
 ---
 
-> **Auteur**: Harsha Kanaparthi | **Examen**: MBO-4 Software Developer
+> **Auteur**: Harsha Kanaparthi | **Examen**: MBO-4 Software Developer | **Project**: GamePlan Scheduler
+> 
+> "Een goed begin is het halve werk. Dit document beschrijft de strategie en planning die zijn gehanteerd om de GamePlan Scheduler te realiseren binnen de gestelde tijd en kwaliteitseisen."
 
 ---
 
-# 1. Project-achtergrond
-Dit project is gestart om de behoefte aan een gecentraliseerde gaming-agenda voor hobby-gamers te vervullen. Het project is uitgevoerd binnen een Agile/Scrum-achtige setting, waarbij iteratieve verbeteringen zijn doorgevoerd op basis van testresultaten.
+# 1. Projectachtergrond & Probleemstelling
+
+Veel fanatieke gamers hebben moeite met het organiseren van hun hobby. De versnippering van afspraken over verschillende platformen (Discord, WhatsApp, in-game) leidt tot "no-shows" en irritatie. 
+
+**De Uitdaging**: Hoe bouwen we een tool die simpel genoeg is voor dagelijks gebruik, maar technisch robuust genoeg om gebruikersgegevens veilig te beheren? Dit project bewijst mijn vermogen om een dergelijk vraagstuk om te zetten in werkende software.
+
+---
 
 # 2. Projectgrenzen (Scope)
-### Wel in scope:
-- Gebruikersbeheer (Registratie/Login).
-- Agenda management (Create, Read, Update, Delete).
-- Vriendenlijst & Favoriete games.
-- Beveiliging (SQLi & XSS preventie).
 
-### Niet in scope:
-- Real-time chat (WebSocket).
-- Betalingssystemen of premium accounts.
+Om de focus te behouden op **technische uitmuntendheid** boven kwantiteit, zijn de volgende grenzen getrokken:
 
-# 3. Kwaliteitswaarborging
-Kwaliteit is gewaarborgd door:
-1.  **Peer Reviews**: Continue code checks.
-2.  **Validatie-Matrix**: 99+ testcases die elke functie controleren.
-3.  **Versiebeheer**: Gebruik van Git om wijzigingen te loggen en reverts mogelijk te maken.
+### ✅ Binnen Scope:
+- **Veiligheids-Core**: Authenticatie met sterke hashing en PDO.
+- **Agenda-Logic**: Volledige CRUD (Create, Read, Update, Delete) voor planningen.
+- **Sociale Connectie**: Vriendenbeheer en favoriete game-tracking.
+- **UX/UI**: Een modern Glassmorphism design dat op alle schermen werkt.
 
-# 4. Risico-beheersing
-| Risico | Impact | Mitigatie (Oplossing) |
-|---|---|---|
-| Dataverlies | Hoog | Regelmatige SQL dumps en Git commits. |
-| Beveiligingslek | Hoog | Gebruik van Bcrypt en Prepared Statements. |
-| Browser incompatibiliteit | Laag | Gebruik van Bootstrap voor een solide CSS basis. |
-
-# 5. Planning Iteraties
-- **Week 1-2**: Database ontwerp en kern-PHP functies.
-- **Week 3-4**: Front-end realisatie (Glassmorphism) en Validatie-laag.
-- **Week 5**: Documentatie-overhaal en Examen-voorbereiding.
+### ❌ Buiten Scope:
+- **Echte API-koppelingen**: Live data ophalen van Steam/PlayStation (vanwege tijdgebrek en complexiteit van 3rd party API's).
+- **Betalingssystemen**: De app is bedoeld als een gratis community tool.
 
 ---
-**GEAUTORISEERD VOOR PORTFOLIO** - Harsha Kanaparthi
+
+# 3. Ontwikkelmethode: Agile/Scrum (Lite)
+
+Gezien de relatief korte looptijd van het project is gekozen voor een **iteratieve ontwikkelmethode**.
+
+1.  **Iteratie 1 (De Fundering)**: Database ontwerp en de connectie-laag (`db.php`).
+2.  **Iteratie 2 (De Motor)**: Realisatie van de PHP backend functies (`functions.php`).
+3.  **Iteratie 3 (Het Gezicht)**: Bouwen van de HTML/CSS templates.
+4.  **Iteratie 4 (Veiligheid & Testen)**: Implementatie van de validatie-matrix en security fixes.
+5.  **Iteratie 5 (Overhaal)**: Documentatie en examen-voorbereiding.
+
+---
+
+# 4. Ontwikkelomgeving & Tools
+
+Voor een professionele workflow zijn de volgende keuzes gemaakt:
+- **IDE**: Visual Studio Code (met PHP Intelephense voor statische analyse).
+- **Local Host**: XAMPP (Apache 2.4 / PHP 8.1.10).
+- **Databasebeheer**: PHPMyAdmin voor visuele modellering.
+- **Versiebeheer**: Git (lokaal) voor het loggen van de voortgang en het kunnen 'reverten' bij kritieke bugs.
+
+---
+
+# 5. Kwaliteits- & Risicobeheersing
+
+| Risico | Kans | Impact | Mitigatie (Oplossing) |
+|---|---|---|---|
+| **SQL Injection** | Laag | Kritiek | Gebruik van de PDO driver met prepared statements. |
+| **Data Corruptie** | Middel | Hoog | Gebruik van Foreign Keys en Database-Constraints. |
+| **UX-Frictie** | Middel | Laag | Client-side validatie voor directere feedback. |
+| **Browser Fouten** | Laag | Laag | Testen in Chrome, Firefox en Edge. |
+
+---
+
+# 6. Kwaliteitscriteria
+
+Het project is pas "geslaagd" als het voldoet aan de volgende eisen:
+- **Security Audit**: Geen directie query-interpolatie in de hele app.
+- **Code Hygiëne**: Geen onnodige witruimte, consistente inspringing en Nederlands/Engels commentaar.
+- **Performance**: Pagina's moeten lokaal binnen < 200ms inladen.
+- **Toegankelijkheid**: Kleurcontrasten moeten voldoen aan de basis WCAG-richtlijnen.
+
+---
+
+# 7. Conclusie
+
+Door deze gestructureerde aanpak is de GamePlan Scheduler niet zomaar "bij elkaar geprogrammeerd", maar is er sprake van een **planmatig software-engineering proces**. De focus op veiligheid vanaf de eerste dag (Iteratie 1) heeft geleid tot een product dat klaar is voor de echte wereld.
+
+---
+**GEAUTORISEERD VOOR EXAMEN**
+*Harsha Kanaparthi - 2026*

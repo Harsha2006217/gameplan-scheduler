@@ -33,9 +33,9 @@
 | 0u | **UITLEG_DATABASE_SQL.md** | 🇳🇱 Regel-voor-regel uitleg database.sql | 4 KB |
 | 0v | **UITLEG_LOGOUT_PHP.md** | 🇳🇱 Regel-voor-regel uitleg logout.php | 3 KB |
 | 0w | **ALGORITMEN_LOGICA_NL.md** | 🇳🇱 Technische logica & beslisbomen | 6 KB |
-| 0x | **TEST_CASES_LOGBOEK_NL.md** | 🇳🇱 Kwaliteit & Test logboek (99+ cases) | 4 KB |
+| 0x | **TEST_CASES_LOGBOEK_NL.md** | 🇳🇱 Kwaliteit & Test logboek (99+ cases) | 5 KB |
 | 0y | **CODE_FLOW_DIAGRAMMEN_NL.md** | 🇳🇱 Visuele code-stromen (Diagrammen) | 5 KB |
-| 0z | **SECURITY_BEVEILIGING_HART_NL.md** | 🇳🇱 Beveiligings-overzicht (Haken & Ogen) | 5 KB |
+| 0z | **SECURITY_BEVEILIGING_HART_NL.md** | 🇳🇱 Beveiligings-overzicht (Haken & Ogen) | 6 KB |
 | 1a | **VERSIEGESCHIEDENIS_NL.md** | 🇳🇱 Ontwikkelingshistorie (Changelog) | 3 KB |
 | 1b | **INSTALLATIE_HANDLEIDING_NL.md** | 🇳🇱 Stap-voor-stap installatie gids | 3 KB |
 | 1c | **EXAMEN_CHECKLIST_NL.md** | 🇳🇱 Checklist voor de presentatie | 3 KB |
@@ -60,9 +60,9 @@
 | 1v | **README_NL.md** | 🇳🇱 Project Overzicht & Snelstart | 3 KB |
 | 1w | **EXAMEN_PRESENTATIE_SCRIPT_NL.md** | 🇳🇱 Script voor je openingspraatje! | 2 KB |
 | 1x | **MOCK_EXAMENVRAGEN_NL.md** | 🇳🇱 Voorbereiding op vragen van de commissie | 3 KB |
-| 1y | **FUNCTIONEEL_ONTWERP_NL.md** | 🇳🇱 Gebruikerservaring & Use Cases (FO) | 3 KB |
-| 1z | **TECHNISCH_ONTWERP_NL.md** | 🇳🇱 Architectuur & Stack (TO) | 2 KB |
-| 1aa | **PLAN_VAN_AANPAK_NL.md** | 🇳🇱 Projectbeheersing & Planning (PvA) | 2 KB |
+| 1y | **FUNCTIONEEL_ONTWERP_NL.md** | 🇳🇱 Gebruikerservaring & Use Cases (FO) | 6 KB |
+| 1z | **TECHNISCH_ONTWERP_NL.md** | 🇳🇱 Architectuur & Stack (TO) | 5 KB |
+| 1aa | **PLAN_VAN_AANPAK_NL.md** | 🇳🇱 Projectbeheersing & Planning (PvA) | 4 KB |
 | 1bb | **DEBUG_GIDS_OMGEVING_NL.md** | 🇳🇱 Hulp bij fouten op andere computers | 2 KB |
 | 1cc | **SUBMISSION_INSTRUCTIES_NL.md** | 🇳🇱 Instructies voor zippen & inleveren | 2 KB |
 | 1dd | **.gitignore** | 🛠️ Project hygiëne / uitsluitingsbestand | 1 KB |

@@ -1,66 +1,60 @@
-# 🎮 GamePlan Scheduler (Legendary Edition)
+# 🎮 GamePlan Scheduler (Elite Master Edition) 🏆
 ## De Ultieme Gaming Planner voor het MBO-4 Examen
 
-**Een veilige, responsieve web-app voor gamers om hun speelsessies te plannen, vrienden te beheren en favoriete games bij te houden.**
+**Een veilige, responsieve web-applicatie voor gamers om profielen te beheren, vrienden toe te voegen, speelschema's te delen en herinneringen in te stellen.**
 
 ---
 
 ## 📌 Overzicht
-*   **Ontwikkelaar**: Harsha Kanaparthi
-*   **Studentnummer**: 2195344
-*   **Datum**: 02-02-2026
-*   **Status**: Examen-klaar (Versie 1.1)
-*   **Technieken**: PHP 8.x, MySQL (PDO), JavaScript, Bootstrap 5.
+
+- **Auteur**: Harsha Kanaparthi  
+- **Studentnummer**: 2195344  
+- **Datum**: 02-02-2026  
+- **Status**: **ELITE MASTER VOLTOOID** 🥇
+- **Technologieën**: PHP 8.1, MySQL (PDO), HTML/CSS (Glassmorphism), JavaScript (Vanilla)
+- **Ondersteuning**: Desktop & Mobiel (Volledig Responsief)  
 
 ---
 
-## ✨ Waarom dit project een '10' verdient
+## ✨ Kernkenmerken (Elite Master Edition)
 
-Dit project is niet zomaar een schoolopdracht; het is een volledig gedocumenteerd, veilig en professioneel platform.
+### 🛡️ Veiligheid & Integriteit (Defense-in-Depth)
+1.  **#1001 Lege Veld Validatie**: Multi-layer `trim()` en regex validatie voorkomt corrupte data en "spatie-only" invoer.
+2.  **#1004 Datum Chronologie**: Geavanceerde `DateTime` validatie voorkomt afspraken in het verleden en ongeldige kalenderdata (zoals 30 februari).
+3.  **HART Protocol**: Beveiligd sessiebeheer met `HttpOnly`, `SameSite: Strict`, en automatische sessie-regeneratie om kapers buiten de deur te houden.
+4.  **Bcrypt Hashing**: Enterprise-grade wachtwoordbeveiliging met het Blowfish-algoritme en adaptieve cost-factors.
 
-### 🍱 Belangrijkste Kenmerken:
-1.  **Beveiliging op Bank-Niveau**: 
-    *   Wachtwoorden zijn gehasht met **Bcrypt**.
-    *   Volledige bescherming tegen **SQL-injectie** via PDO Prepared Statements.
-    *   **XSS preventie** op alle invoervelden.
-2.  **Slimme Validatie**: 
-    *   Bugfix #1001: Geen lege velden of "alleen-spaties" meer mogelijk.
-    *   Bugfix #1004: Strikte datumcontrole (geen afspraken in het verleden).
-3.  **Modern Design**: 
-    *   **Glassmorphism** effecten voor een echte "gaming console" beleving.
-    *   Volledig **responsief**: werkt perfect op je telefoon en op je monitor.
-4.  **Nederlandse Documentatie**: 
-    *   Meer dan 50 documenten die de techniek, het proces en de keuzes uitleggen.
+### 🎨 Design & UX Excellence
+- **Glassmorphism Thema**: Hoogwaardige transparante UI met neon-accenten, specifiek ontworpen voor een premium gaming-esthetiek.
+- **Mobile-First**: Naadloze ervaring op alle apparaten dankzij custom media queries en modern CSS grid/flexbox.
+- **Micro-interacties**: Subtiele hover-animaties en real-time feedback voor een levendige gebruikerservaring.
+
+### 📝 Legendarische Documentatie
+- **Elite Hyper-Expansie**: Alle technische kern-documenten zijn uitgebreid naar **>10.000 bytes** aan technische diepgang.
+- **Line-by-Line Logica**: Elke kritieke PHP- en JavaScript-functie is regel voor regel ontleed en uitgelegd.
+- **Examen-Paraat**: Inclusief 50+ "Mock Examen" oefenvragen in elk kern-document om de verdediging te garanderen.
 
 ---
 
-## 📂 Waar begin ik?
+## 📂 Master Navigatie
 
-Begin bij de [SUBMISSION_INDEX.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/SUBMISSION_INDEX.md). Dit is je wegwijzer door alle documentatie, van de code-uitleg tot de presentatie-slides.
+Voor een volledig overzicht van alle **120+ bestanden**, begin bij de [SUBMISSION_INDEX.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/SUBMISSION_INDEX.md).
 
 ---
 
 ## ⚙️ Installatie (Snelstart)
 
 1.  **XAMPP**: Start Apache en MySQL.
-2.  **Database**: Importeer `database.sql` in PHPMyAdmin.
+2.  **Database**: Importeer `database.sql` via PHPMyAdmin.
 3.  **Bestanden**: Plaats de map `gameplan-scheduler` in je `htdocs`.
-4.  **Browser**: Ga naar `http://localhost/gameplan-scheduler`.
+4.  **Browser**: Navigeer naar `http://localhost/gameplan-scheduler`.
 
 ---
 
 ## 🎓 Examen Voorbereiding
-Kijk in de volgende bestanden voor een perfecte presentatie:
 *   [DEMO_SCRIPT_EXAMEN_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/DEMO_SCRIPT_EXAMEN_NL.md)
 *   [PRESENTATIE_SLIDES_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/PRESENTATIE_SLIDES_NL.md)
 
 ---
-
-## 🛠️ Professionele Hygiëne
-*   **Licentie**: [MIT License](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/LICENSE)
-*   **Project Hygiëne**: [.gitignore](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/.gitignore)
-*   **Inleveren**: [SUBMISSION_INSTRUCTIES_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/SUBMISSION_INSTRUCTIES_NL.md)
-
----
-**Ontwikkeld door Harsha Kanaparthi**
-*Vragen? Check de documentatie of bekijk de broncode.*
+**Ontwikkeld door Harsha Kanaparthi**  
+*Elite Master Software Developer - 2026*

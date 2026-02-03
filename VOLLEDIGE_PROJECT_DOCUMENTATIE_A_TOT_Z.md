@@ -45,9 +45,9 @@ Dit project toont aan dat ik alle kerntaken van een Software Developer beheers:
 
 Voor een volledig overzicht van het projectontwerp en de planning, verwijs ik naar de volgende formele documenten:
 
-*   [FUNCTIONEEL_ONTWERP_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/FUNCTIONEEL_ONTWERP_NL.md): Alle Use Cases en gebruikers-behoeften (FO).
-*   [TECHNISCH_ONTWERP_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/TECHNISCH_ONTWERP_NL.md): De architectuur, technologie stack en database model (TO).
-*   [PLAN_VAN_AANPAK_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/PLAN_VAN_AANPAK_NL.md): Hoe het project is beheerst en gepland (PvA).
+*   [FO_GAMEPLAN_SCHEDULER_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/FO_GAMEPLAN_SCHEDULER_NL.md): Alle Use Cases en gebruikers-behoeften (FO).
+*   [TO_GAMEPLAN_SCHEDULER_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/TO_GAMEPLAN_SCHEDULER_NL.md): De architectuur, technologie stack en database model (TO).
+*   [PVA_GAMEPLAN_SCHEDULER_NL.md](file:///c:/xampp/htdocs/K1-W3-gameplan-scheduler-Harsha%20Kanaparthi/gameplan-scheduler/PVA_GAMEPLAN_SCHEDULER_NL.md): Hoe het project is beheerst en gepland (PVA).
 
 ---
 

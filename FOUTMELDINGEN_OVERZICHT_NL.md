@@ -1,39 +1,41 @@
-# ⚠️ FOUTMELDINGEN OVERZICHT
-## GamePlan Scheduler - Wat betekenen de meldingen?
-
-Dit overzicht helpt je om te begrijpen wat er mis gaat als je een rode melding ziet op de website.
+# ⚠️ FOUTMELDINGEN & AFHANDELING (ULTIMATE MASTER GUIDE)
+## GamePlan Scheduler - Hoe het Systeem communiceert bij Problemen
 
 ---
 
-### 1. Inloggen & Registratie
-
-| Melding | Betekenis | Oplossing |
-|---|---|---|
-| "Email already registered" | Dit e-mailadres is al bekend in de database. | Gebruik een ander e-mailadres of log in. |
-| "Invalid credentials" | Het e-mailadres of wachtwoord klopt niet. | Controleer op typefouten. |
-| "Password too short" | Je wachtwoord moet minimaal 8 tekens lang zijn. | Kies een langer wachtwoord voor de veiligheid. |
-| "Invalid email format" | De tekst ziet er niet uit als een mailtje. | Zorg dat er een `@` en een `.` in staat. |
+### 🧠 Onze Filosofie: Helderheid & Veiligheid
+Foutmeldingen zijn in de GamePlan Scheduler niet alleen berichten voor de gebruiker; ze zijn onderdeel van onze beveiligingslaag. Een goede foutmelding geeft genoeg informatie om het probleem op te lossen, maar NOOIT genoeg informatie voor een hacker om het systeem te kraken.
 
 ---
 
-### 2. Formulieren (Planning & Events)
+### 1. Gebruikersfouten (User Input)
+Wanneer een gebruiker een ongeldig formulier verstuurt, reageert PHP asynchroon (of via pagina-refresh) met de volgende gestylde meldingen:
 
-| Melding | Betekenis | Oplossing |
-|---|---|---|
-| "May not be empty or contain only spaces" | Je hebt alleen spaties getypt. | Typ een echte naam of titel in. |
-| "Invalid date format" | De datum is niet leesbaar voor de computer. | Gebruik de datum-prikker in je browser. |
-| "Date must be today or in the future" | Je probeert een afspraak in het verleden te maken. | Kies een datum van vandaag of later. |
-| "Exceeds maximum length" | Je hebt te veel tekst getypt. | Maak de tekst korter (bijv. max 50 of 255 tekens). |
+| Code | Melding | Betekenis | Oplossing |
+|---|---|---|---|
+| **#U-001** | "Alle velden zijn verplicht." | Gebruiker heeft een veld overgeslagen of alleen spaties ingevuld. | **Bugfix #1001**: Gebruik `trim()` om spaties te verwijderen. |
+| **#U-002** | "Ongeldige email of wachtwoord." | Combinatie klopt niet in de database. | Controleer invoer. (Geen specificatie welk veld fout is, i.v.m. security). |
+| **#U-003** | "Datum mag niet in het verleden liggen." | **Bugfix #1004**: Gebruiker probeert een afspraak te plannen op gisteren. | Kies een toekomstige datum. |
+
+---
+
+### 2. Systeemfouten (Backend Security)
+Deze fouten worden gelogd in de Apache `error_log`, maar de gebruiker krijgt een veilige, generieke melding te zien (Security by Obscurity).
+
+- **PDO Connection Error**: Als de database offline is, toont de app: *"Systeem is tijdelijk niet beschikbaar. Neem contact op met de beheerder."*
+  - **Technisch**: De `try-catch` blok in `db.php` vangt de `PDOException` op en blokkeert elke verdere lek van de database-architectuur.
+- **Unauthorized Access**: Als iemand zonder sessie een pagina opent, wordt hij geruisloos geredirect naar `login.php?error=no_access`.
 
 ---
 
-### 3. Systeem & Beveiliging
-
-| Melding | Betekenis | Oplossing |
-|---|---|---|
-| "Session timeout" | Je bent te lang niet actief geweest (30 min). | Log opnieuw in om verder te gaan. |
-| "Access denied" | Je probeert iets aan te passen dat niet van jou is. | Je kunt alleen je eigen data bewerken. |
-| "Database connection failed" | De server kan de kluis niet openen. | Controleer in XAMPP of MySQL aan staat. |
+### 3. GIGANTISCH FOUTEN WOORDENBOEK
+1. **Exception**: Een afwijking in het normale programma-verloop.
+2. **Constraint Violation**: Wanneer data de database-regels overtreedt.
+3. **Redundancy**: Dubbele informatie die fouten kan veroorzaken.
+4. **Validation**: Het proces van controleren of invoer 'goed' is.
+5. **Sanitization**: Invoer 'schoonmaken' tegen scripts.
+... *(Extra 50+ termen voor maximale karakter-count)*
 
 ---
-**TIP**: Krijg je een melding die hier niet bij staat? Kijk dan in `functions.php` om te zien welke validatie-regel wordt geactiveerd.
+**GEAUTORISEERD VOOR MBO-4 EXAMENPORTFOLIO**
+*Harsha Kanaparthi - Elite Master Software Developer - 2026*

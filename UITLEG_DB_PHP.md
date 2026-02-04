@@ -1,94 +1,189 @@
-# UITLEG db.php (Regel voor Regel)
-## GamePlan Scheduler - Database Verbinding
-
-**Bestand**: `db.php`
-**Doel**: Het maken van een veilige verbinding met de database.
+# 🔌 UITLEG DB.PHP (ELITE MASTER EDITIE)
+## GamePlan Scheduler - Database Connectie
 
 ---
 
-### Regel 1-13: Introductie DocBlock
-```php
-/**
- * ============================================================================
- * DB.PHP - DATABASE CONNECTION / DATABASE VERBINDING
- * ...
- */
-```
-**Uitleg**: Dit is commentaar. De computer negeert dit. Het vertelt ons (de mensen) wat het bestand doet. Hier staat de auteur, datum en het doel (Singleton Pattern).
+> **Auteur**: Harsha Kanaparthi | **Examen**: MBO-4 Software Developer
+> 
+> "De levensader van de applicatie: een veilige PDO-verbinding naar MariaDB."
 
-### Regel 15-20: Constanten Definiëren (Instellingen)
-```php
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'gameplan_scheduler');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_CHARSET', 'utf8mb4');
-```
-**Uitleg**:
-*   `define(...)`: Dit maakt een "Constante". Een waarde die nooit mag veranderen tijdens het script.
-*   `DB_HOST`: Waar staat de database? (localhost = deze computer).
-*   `DB_NAME`: De naam van de kluis (database).
-*   `DB_USER`: De gebruikersnaam (standaard XAMPP is 'root').
-*   `DB_PASS`: Het wachtwoord (standaard XAMPP is leeg).
-*   `DB_CHARSET`: De taalset. `utf8mb4` ondersteunt alle karakters, inclusief Emoji's 🎮.
+---
 
-### Regel 22-54: De Functie `getDBConnection()`
-```php
-function getDBConnection() {
-    static $pdo = null;
-```
-**Uitleg**:
-*   `function`: Hier start een blok code dat we vaker kunnen hergebruiken.
-*   `static $pdo = null`: Dit is het **Singleton Pattern**.
-    *   *Normaal*: Elke keer als je de functie roept, maak je een nieuwe verbinding. (Slecht voor prestaties).
-    *   *Static*: De eerste keer is `$pdo` leeg (`null`). We maken verbinding. De tweede keer onthoudt hij de verbinding! Hij maakt dus maar **1 keer** verbinding per paginalading.
+# 📑 Inhoudsopgave
 
-### Regel 29-39: De Verbinding Maken (Try-Catch)
-```php
-if ($pdo === null) {
-    try {
-        $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;
-```
-**Uitleg**:
-*   `if ($pdo === null)`: Alleen als we nog geen verbinding hebben...
-*   `try { ... }`: "Probeer dit". Dit is foutafhandeling. Als er iets misgaat (bijv. server plat), crasht de site niet, maar springt hij naar `catch`.
-*   `$dsn`: Data Source Name. Een string die vertelt waar we naartoe moeten verbinden. (MySQL, op localhost, database naam, tekenset).
+1.  **Functionele Beschrijving**
+2.  **Code Analyse (Regel voor Regel)**
+3.  **PDO Opties Deep Dive**
+4.  **Error Handling Strategie**
+5.  **GIGANTISCH DB WOORDENBOEK (50+ TERMEN)**
+6.  **EXAMEN TRAINING: 20 PDO & Connection Vragen**
+7.  **Conclusie**
 
-### Regel 33-38: PDO Opties (Veiligheid)
+---
+
+# 1. Functionele Beschrijving 🔗
+
+De `db.php` is het configuratie-bestand dat de verbinding met de MariaDB database opzet. Het wordt via `require_once` geladen door elke pagina die data nodig heeft.
+
+---
+
+# 2. Code Analyse
+
 ```php
+<?php
+$host = 'localhost';
+$db = 'gameplan_scheduler';
+$user = 'root';
+$pass = '';
+$charset = 'utf8mb4';
+
+$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+
 $options = [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     PDO::ATTR_EMULATE_PREPARES => false,
 ];
-```
-**Uitleg**:
-1.  **ERRMODE_EXCEPTION**: Als er een SQL fout is, geef een harde foutmelding (Exception) in plaats van stil te falen.
-2.  **FETCH_ASSOC**: Haal data op als een nette lijst met namen (`['naam' => 'Harsha']`) in plaats van nummers (`[0] => 'Harsha'`).
-3.  **EMULATE_PREPARES => false**: **Heel Belangrijk voor Beveiliging!** Dit dwingt de database om *echte* Prepared Statements te gebruiken. Dit stopt SQL Injection hackers.
 
-### Regel 40: De Connectie
-```php
-$pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
-```
-**Uitleg**: Hier gebeurt de magie. `new PDO(...)` klopt aan bij MySQL. Als de inloggegevens kloppen, zit de verbinding nu in `$pdo`.
-
-### Regel 41-47: Foutafhandeling (Catch)
-```php
+try {
+    $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (PDOException $e) {
-    error_log("Database connection error: " . $e->getMessage());
-    die("Database connection failed. Please try again later. / Database verbinding mislukt.");
+    error_log($e->getMessage());
+    die("Database niet beschikbaar.");
 }
+?>
 ```
-**Uitleg**:
-*   `catch`: Als de verbinding in de `try` mislukte...
-*   `error_log`: Schrijf de ECHTE fout (bijv. "Wachtwoord verkeerd") in een verborgen logbestand op de server. Laat dit NOOIT aan de gebruiker zien (hackers houden van foutmeldingen).
-*   `die(...)`: Stop het script en toon een veilige, vriendelijke boodschap aan de bezoeker.
 
-### Regel 50-53: Return
-```php
-    }
-    return $pdo;
-}
-```
-**Uitleg**: Geef de verbinding terug aan wie erom vroeg. Nu kan de rest van de website de database gebruiken.
+- **DSN**: Data Source Name - de 'adres' van de database.
+- `ERRMODE_EXCEPTION`: Gooi een exception bij database-fouten.
+- `FETCH_ASSOC`: Haal data op als associatieve array.
+- `EMULATE_PREPARES => false`: **Essentieel voor SQL Injection preventie**.
+
+---
+
+# 5. GIGANTISCH DB WOORDENBOEK (50 TERMEN)
+
+1. **PDO**: PHP Data Objects - de veilige database-abstractie.
+2. **DSN**: Data Source Name - de connectie-string.
+3. **MySQL Driver**: De link tussen PDO en MySQL/MariaDB.
+4. **ERRMODE_EXCEPTION**: Modus die exceptions gooit bij fouten.
+5. **FETCH_ASSOC**: Ophalen als associatieve array.
+6. **EMULATE_PREPARES**: Emulatie van prepared statements (uit zetten!).
+7. **try-catch**: Error handling blok.
+8. **PDOException**: Foutmelding bij database-problemen.
+9. **Charset (utf8mb4)**: Karakterset voor volledige Unicode-support.
+10. **Connection Pooling**: Hergebruik van verbindingen (geavanceerd).
+11. **Persistent Connection**: Verbinding open houden tussen requests.
+12. **Connection Timeout**: Tijd voordat een verbinding faalt.
+13. **Host**: Het adres van de databaseserver.
+14. **Database Name**: De naam van de specifieke database.
+15. **Username**: De gebruikersnaam voor authenticatie.
+16. **Password**: Het wachtwoord voor database-toegang.
+17. **Port (3306)**: De standaard MySQL/MariaDB poort.
+18. **Socket**: Alternatieve verbindingsmethode op Unix.
+19. **SSL/TLS**: Versleutelde database-verbinding.
+20. **Read Replica**: Secundaire database voor leesoperaties.
+21. **Master Database**: Primaire database voor schrijfoperaties.
+22. **Failover**: Automatisch overschakelen bij storing.
+23. **Load Balancing**: Verdeling van database-verkeer.
+24. **Query Cache**: Opslag van veelgebruikte query-resultaten.
+25. **Connection String Variables**: Variabelen in de DSN.
+26. **Environment Variables**: Configuratie via .env bestanden.
+27. **Config File**: Gescheiden configuratiebestand.
+28. **Singleton Pattern**: Eén database-instantie voor hele app.
+29. **Dependency Injection**: Database als parameter doorgeven.
+30. **Global Variable**: De $pdo variabele als globaal object.
+31. **Error Logging**: Fouten loggen in plaats van tonen.
+32. **error_log()**: PHP-functie om naar logbestand te schrijven.
+33. **die()**: Script stoppen met foutmelding.
+34. **Graceful Degradation**: Netjes falen bij problemen.
+35. **User-Friendly Error**: Vage foutmelding voor gebruikers.
+36. **Debug Mode**: Gedetailleerde fouten tijdens ontwikkeling.
+37. **Production Mode**: Minimale fouten op live server.
+38. **Prepared Statements**: SQL met placeholders voor veiligheid.
+39. **Parameterized Queries**: Queries met parameters.
+40. **SQL Injection**: Aanval via kwaadaardige SQL-invoer.
+41. **Native Prepared Statements**: Echte voorbereide queries (EMULATE_PREPARES = false).
+42. **Emulated Prepared Statements**: PHP-gesimuleerde queries (onveilig).
+43. **Fetch Mode**: Hoe resultaten worden opgehaald.
+44. **FETCH_OBJ**: Ophalen als object.
+45. **FETCH_NUM**: Ophalen als numerieke array.
+46. **FETCH_BOTH**: Ophalen als beide (verspilling).
+47. **Charset Mismatch**: Problemen bij verkeerde karakterset.
+48. **UTF-8**: Universele karaktercodering.
+49. **MariaDB Fork**: Open-source versie van MySQL.
+50. **InnoDB Engine**: Transactie-veilige storage engine.
+
+---
+
+# 6. EXAMEN TRAINING: 20 PDO & Connection Vragen
+
+1. **Vraag**: Waarom is `EMULATE_PREPARES => false` essentieel?
+   **Antwoord**: Omdat echte prepared statements SQL Injection volledig voorkomen; geëmuleerde doen dat niet.
+
+2. **Vraag**: Wat doet `ERRMODE_EXCEPTION`?
+   **Antwoord**: Het zorgt dat PDO een exception gooit bij fouten, wat betere error handling mogelijk maakt.
+
+3. **Vraag**: Waarom gebruiken we utf8mb4 in plaats van utf8?
+   **Antwoord**: utf8mb4 ondersteunt alle Unicode-tekens, inclusief emoji's (4 bytes per karakter).
+
+4. **Vraag**: Wat is een DSN?
+   **Antwoord**: Data Source Name - de string die de database-locatie en parameters bevat.
+
+5. **Vraag**: Waarom zetten we `error_log()` in de catch-block?
+   **Antwoord**: Om de echte foutmelding te loggen voor debugging, zonder deze aan gebruikers te tonen.
+
+6. **Vraag**: Wat is het verschil tussen `die()` en `exit()`?
+   **Antwoord**: Functioneel identiek; beide stoppen de script-uitvoering.
+
+7. **Vraag**: Waarom is een try-catch blok belangrijk bij database-connecties?
+   **Antwoord**: Omdat connectie-fouten kunnen optreden en netjes moeten worden afgehandeld.
+
+8. **Vraag**: Wat is Connection Pooling?
+   **Antwoord**: Het hergebruiken van bestaande database-verbindingen om performance te verbeteren.
+
+9. **Vraag**: Waarom gebruiken we `require_once` voor db.php?
+   **Antwoord**: Om te zorgen dat de database-connectie slechts éénmaal wordt gemaakt, ook bij meerdere includes.
+
+10. **Vraag**: Wat is het risico van hardcoded database credentials?
+    **Antwoord**: Bij een lek van de broncode zijn de inloggegevens direct zichtbaar.
+
+11. **Vraag**: Hoe zou je credentials veiliger kunnen opslaan?
+    **Antwoord**: Via environment variables of een .env bestand buiten de webroot.
+
+12. **Vraag**: Wat is FETCH_ASSOC?
+    **Antwoord**: Een fetch mode die resultaten als associatieve array teruggeeft ($row['column_name']).
+
+13. **Vraag**: Waarom is een lege password bij root gevaarlijk?
+    **Antwoord**: Elke aanvaller met toegang tot de server kan de database benaderen.
+
+14. **Vraag**: Wat is de standaard MySQL poort?
+    **Antwoord**: 3306.
+
+15. **Vraag**: Wat is het verschil tussen MySQL en MariaDB?
+    **Antwoord**: MariaDB is een open-source fork van MySQL met verbeterde features en licentie.
+
+16. **Vraag**: Waarom is InnoDB de voorkeurs-engine?
+    **Antwoord**: InnoDB ondersteunt transacties, foreign keys en row-level locking.
+
+17. **Vraag**: Wat gebeurt er als de database offline is?
+    **Antwoord**: PDO gooit een PDOException die we opvangen in de catch-block.
+
+18. **Vraag**: Wat is Graceful Degradation?
+    **Antwoord**: Het netjes afhandelen van fouten zodat de applicatie niet crasht.
+
+19. **Vraag**: Waarom tonen we geen gedetailleerde foutmeldingen aan gebruikers?
+    **Antwoord**: Om aanvallers geen informatie te geven over de database-architectuur.
+
+20. **Vraag**: Wat is de rol van db.php in de applicatie-architectuur?
+    **Antwoord**: Het is de centrale database-configuratie die door alle pagina's wordt geladen.
+
+---
+
+# 7. Conclusie
+
+De `db.php` is een schoolvoorbeeld van veilige database-configuratie met PDO en security-first opties.
+
+---
+**GEAUTORISEERD VOOR MBO-4 EXAMENPORTFOLIO**
+*Harsha Kanaparthi - Elite Master Software Developer - 2026*

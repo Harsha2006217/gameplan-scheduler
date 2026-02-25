@@ -1,68 +1,64 @@
 <?php
 /**
  * ============================================================================
- * INDEX.PHP - DASHBOARD / KALENDER OVERZICHT
+ * INDEX.PHP - DASHBOARD / KALENDEROVERZICHT
  * ============================================================================
- * Author / Auteur: Harsha Kanaparthi | Student: 2195344 | Date: 30-09-2025
- * 
- * ENGLISH:
- * Main dashboard page showing friends, favorites, schedules, events, and calendar.
- * This is the home page after login - the central hub of the application.
- * 
- * DUTCH:
- * Hoofd dashboard pagina met vrienden, favorieten, schema's, evenementen, en kalender.
- * Dit is de homepagina na inloggen - het centrale punt van de applicatie.
- * 
- * FEATURES:
- * - Friends list with status
- * - Favorite games table
- * - Schedules with sorting
- * - Events with sorting
- * - Combined calendar view
- * - Reminder pop-ups (JavaScript)
+ * Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
+ *
+ * Hoofd-dashboardpagina met vrienden, favorieten, schema's, evenementen
+ * en kalender. Dit is de homepagina na het inloggen — het centrale punt
+ * van de applicatie.
+ *
+ * FUNCTIES:
+ * - Vriendenlijst met status
+ * - Tabel met favoriete spellen
+ * - Schema's met sorteermogelijkheid
+ * - Evenementen met sorteermogelijkheid
+ * - Gecombineerd kalenderoverzicht
+ * - Herinnerings-pop-ups (JavaScript)
  * ============================================================================
  */
 
 require_once 'functions.php';
 
-// Check session timeout (30 min inactivity) / Controleer sessie timeout (30 min inactiviteit)
+// Controleer sessie-timeout (30 min. inactiviteit)
 checkSessionTimeout();
 
-// Redirect to login if not logged in / Redirect naar login als niet ingelogd
+// Stuur door naar loginpagina als niet ingelogd
 if (!isLoggedIn()) {
     header("Location: login.php");
     exit;
 }
 
-// Get current user ID / Haal huidige gebruiker ID op
+// Haal het huidige gebruikers-ID op
 $userId = getUserId();
 
-// Update last activity for session tracking / Update laatste activiteit voor sessie tracking
+// Werk de laatste activiteit bij voor sessietracking
 updateLastActivity(getDBConnection(), $userId);
 
-// Get sort parameters from URL / Haal sorteer parameters uit URL
+// Haal sorteerparameters op uit de URL
 $sortSchedules = $_GET['sort_schedules'] ?? 'date ASC';
-$sortEvents = $_GET['sort_events'] ?? 'date ASC';
+$sortEvents    = $_GET['sort_events']    ?? 'date ASC';
 
-// Fetch all user data / Haal alle gebruikersdata op
-$friends = getFriends($userId);
-$favorites = getFavoriteGames($userId);
-$schedules = getSchedules($userId, $sortSchedules);
-$events = getEvents($userId, $sortEvents);
+// Haal alle gebruikersdata op
+$friends       = getFriends($userId);
+$favorites     = getFavoriteGames($userId);
+$schedules     = getSchedules($userId, $sortSchedules);
+$events        = getEvents($userId, $sortEvents);
 $calendarItems = getCalendarItems($userId);
-$reminders = getReminders($userId);
+$reminders     = getReminders($userId);
 
-// Handle logout / Afhandeling uitloggen
+// Verwerk uitloggen
 if (isset($_GET['logout'])) {
     logout();
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="GamePlan Scheduler Dashboard - Your gaming calendar and schedule manager">
+    <meta name="description" content="GamePlan Scheduler Dashboard - Jouw gaming-kalender en schema-beheer">
     <title>Dashboard - GamePlan Scheduler</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -71,27 +67,27 @@ if (isset($_GET['logout'])) {
     <?php include 'header.php'; ?>
     
     <main class="container mt-5 pt-5">
-        <!-- Session messages (success/error) -->
+        <!-- Sessieberichten (succes/fout) -->
         <?php echo getMessage(); ?>
         
         <!-- ================================================================
-             SECTION 1: FRIENDS LIST / VRIENDEN LIJST
+             SECTIE 1: VRIENDENLIJST
              ================================================================ -->
         <section class="mb-5">
-            <h2>👥 Friends List / Vriendenlijst</h2>
+            <h2>👥 Vriendenlijst</h2>
             <div class="table-responsive">
                 <table class="table table-dark table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th>Username / Gebruikersnaam</th>
+                            <th>Gebruikersnaam</th>
                             <th>Status</th>
-                            <th>Note / Notitie</th>
-                            <th>Actions / Acties</th>
+                            <th>Notitie</th>
+                            <th>Acties</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($friends)): ?>
-                            <tr><td colspan="4" class="text-center text-secondary">No friends yet. Add some! / Nog geen vrienden. Voeg toe!</td></tr>
+                            <tr><td colspan="4" class="text-center text-secondary">Nog geen vrienden. Voeg er een toe!</td></tr>
                         <?php else: ?>
                             <?php foreach ($friends as $friend): ?>
                                 <tr>
@@ -103,8 +99,8 @@ if (isset($_GET['logout'])) {
                                     </td>
                                     <td><?php echo safeEcho($friend['note']); ?></td>
                                     <td>
-                                        <a href="edit_friend.php?id=<?php echo $friend['friend_id']; ?>" class="btn btn-sm btn-warning">✏️ Edit</a>
-                                        <a href="delete.php?type=friend&id=<?php echo $friend['friend_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this friend? / Deze vriend verwijderen?');">🗑️ Delete</a>
+                                        <a href="edit_friend.php?id=<?php echo $friend['friend_id']; ?>" class="btn btn-sm btn-warning">✏️ Bewerken</a>
+                                        <a href="delete.php?type=friend&id=<?php echo $friend['friend_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Weet je zeker dat je deze vriend wilt verwijderen?');">🗑️ Verwijderen</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -112,27 +108,27 @@ if (isset($_GET['logout'])) {
                     </tbody>
                 </table>
             </div>
-            <a href="add_friend.php" class="btn btn-primary">➕ Add Friend / Vriend Toevoegen</a>
+            <a href="add_friend.php" class="btn btn-primary">➕ Vriend toevoegen</a>
         </section>
         
         <!-- ================================================================
-             SECTION 2: FAVORITE GAMES / FAVORIETE SPELLEN
+             SECTIE 2: FAVORIETE SPELLEN
              ================================================================ -->
         <section class="mb-5">
-            <h2>🎮 Favorite Games / Favoriete Spellen</h2>
+            <h2>🎮 Favoriete spellen</h2>
             <div class="table-responsive">
                 <table class="table table-dark table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th>Title / Titel</th>
-                            <th>Description / Beschrijving</th>
-                            <th>Note / Notitie</th>
-                            <th>Actions / Acties</th>
+                            <th>Titel</th>
+                            <th>Beschrijving</th>
+                            <th>Notitie</th>
+                            <th>Acties</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($favorites)): ?>
-                            <tr><td colspan="4" class="text-center text-secondary">No favorites yet. Add some! / Nog geen favorieten. Voeg toe!</td></tr>
+                            <tr><td colspan="4" class="text-center text-secondary">Nog geen favorieten. Voeg er een toe!</td></tr>
                         <?php else: ?>
                             <?php foreach ($favorites as $game): ?>
                                 <tr>
@@ -140,8 +136,8 @@ if (isset($_GET['logout'])) {
                                     <td><?php echo safeEcho($game['description']); ?></td>
                                     <td><?php echo safeEcho($game['note']); ?></td>
                                     <td>
-                                        <a href="edit_favorite.php?id=<?php echo $game['game_id']; ?>" class="btn btn-sm btn-warning">✏️ Edit</a>
-                                        <a href="delete.php?type=favorite&id=<?php echo $game['game_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Remove from favorites? / Uit favorieten verwijderen?');">🗑️ Delete</a>
+                                        <a href="edit_favorite.php?id=<?php echo $game['game_id']; ?>" class="btn btn-sm btn-warning">✏️ Bewerken</a>
+                                        <a href="delete.php?type=favorite&id=<?php echo $game['game_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Uit favorieten verwijderen?');">🗑️ Verwijderen</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -149,33 +145,33 @@ if (isset($_GET['logout'])) {
                     </tbody>
                 </table>
             </div>
-            <a href="profile.php" class="btn btn-primary">➕ Add Favorite / Favoriet Toevoegen</a>
+            <a href="profile.php" class="btn btn-primary">➕ Favoriet toevoegen</a>
         </section>
         
         <!-- ================================================================
-             SECTION 3: SCHEDULES / SCHEMA'S (with sorting)
+             SECTIE 3: SCHEMA'S (met sorteermogelijkheid)
              ================================================================ -->
         <section class="mb-5">
             <h2>
-                📅 Schedules / Schema's
-                <a href="?sort_schedules=date ASC" class="btn btn-sm btn-light ms-2">📆 Date ↑</a>
-                <a href="?sort_schedules=date DESC" class="btn btn-sm btn-light">📆 Date ↓</a>
+                📅 Schema's
+                <a href="?sort_schedules=date ASC" class="btn btn-sm btn-light ms-2">📆 Datum ↑</a>
+                <a href="?sort_schedules=date DESC" class="btn btn-sm btn-light">📆 Datum ↓</a>
             </h2>
             <div class="table-responsive">
                 <table class="table table-dark table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th>Game / Spel</th>
-                            <th>Date / Datum</th>
-                            <th>Time / Tijd</th>
-                            <th>Friends / Vrienden</th>
-                            <th>Shared / Gedeeld</th>
-                            <th>Actions / Acties</th>
+                            <th>Spel</th>
+                            <th>Datum</th>
+                            <th>Tijd</th>
+                            <th>Vrienden</th>
+                            <th>Gedeeld met</th>
+                            <th>Acties</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($schedules)): ?>
-                            <tr><td colspan="6" class="text-center text-secondary">No schedules yet. / Nog geen schema's.</td></tr>
+                            <tr><td colspan="6" class="text-center text-secondary">Nog geen schema's.</td></tr>
                         <?php else: ?>
                             <?php foreach ($schedules as $schedule): ?>
                                 <tr>
@@ -186,7 +182,7 @@ if (isset($_GET['logout'])) {
                                     <td><?php echo safeEcho($schedule['shared_with']); ?></td>
                                     <td>
                                         <a href="edit_schedule.php?id=<?php echo $schedule['schedule_id']; ?>" class="btn btn-sm btn-warning">✏️</a>
-                                        <a href="delete.php?type=schedule&id=<?php echo $schedule['schedule_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete? / Verwijderen?');">🗑️</a>
+                                        <a href="delete.php?type=schedule&id=<?php echo $schedule['schedule_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Verwijderen?');">🗑️</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -194,34 +190,34 @@ if (isset($_GET['logout'])) {
                     </tbody>
                 </table>
             </div>
-            <a href="add_schedule.php" class="btn btn-primary">➕ Add Schedule / Schema Toevoegen</a>
+            <a href="add_schedule.php" class="btn btn-primary">➕ Schema toevoegen</a>
         </section>
         
         <!-- ================================================================
-             SECTION 4: EVENTS / EVENEMENTEN (with sorting)
+             SECTIE 4: EVENEMENTEN (met sorteermogelijkheid)
              ================================================================ -->
         <section class="mb-5">
             <h2>
-                🎯 Events / Evenementen
-                <a href="?sort_events=date ASC" class="btn btn-sm btn-light ms-2">📆 Date ↑</a>
-                <a href="?sort_events=date DESC" class="btn btn-sm btn-light">📆 Date ↓</a>
+                🎯 Evenementen
+                <a href="?sort_events=date ASC" class="btn btn-sm btn-light ms-2">📆 Datum ↑</a>
+                <a href="?sort_events=date DESC" class="btn btn-sm btn-light">📆 Datum ↓</a>
             </h2>
             <div class="table-responsive">
                 <table class="table table-dark table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th>Title / Titel</th>
-                            <th>Date / Datum</th>
-                            <th>Time / Tijd</th>
-                            <th>Description / Beschrijving</th>
-                            <th>Reminder / Herinnering</th>
+                            <th>Titel</th>
+                            <th>Datum</th>
+                            <th>Tijd</th>
+                            <th>Beschrijving</th>
+                            <th>Herinnering</th>
                             <th>Link</th>
-                            <th>Actions / Acties</th>
+                            <th>Acties</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($events)): ?>
-                            <tr><td colspan="7" class="text-center text-secondary">No events yet. / Nog geen evenementen.</td></tr>
+                            <tr><td colspan="7" class="text-center text-secondary">Nog geen evenementen.</td></tr>
                         <?php else: ?>
                             <?php foreach ($events as $event): ?>
                                 <tr>
@@ -232,12 +228,12 @@ if (isset($_GET['logout'])) {
                                     <td><span class="badge bg-info"><?php echo safeEcho($event['reminder']); ?></span></td>
                                     <td>
                                         <?php if (!empty($event['external_link'])): ?>
-                                            <a href="<?php echo safeEcho($event['external_link']); ?>" target="_blank" class="btn btn-sm btn-outline-info">🔗 Open</a>
+                                            <a href="<?php echo safeEcho($event['external_link']); ?>" target="_blank" class="btn btn-sm btn-outline-info">🔗 Openen</a>
                                         <?php endif; ?>
                                     </td>
                                     <td>
                                         <a href="edit_event.php?id=<?php echo $event['event_id']; ?>" class="btn btn-sm btn-warning">✏️</a>
-                                        <a href="delete.php?type=event&id=<?php echo $event['event_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete? / Verwijderen?');">🗑️</a>
+                                        <a href="delete.php?type=event&id=<?php echo $event['event_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Verwijderen?');">🗑️</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -245,18 +241,18 @@ if (isset($_GET['logout'])) {
                     </tbody>
                 </table>
             </div>
-            <a href="add_event.php" class="btn btn-success">➕ Add Event / Evenement Toevoegen</a>
+            <a href="add_event.php" class="btn btn-success">➕ Evenement toevoegen</a>
         </section>
         
         <!-- ================================================================
-             SECTION 5: CALENDAR OVERVIEW / KALENDER OVERZICHT
+             SECTIE 5: KALENDEROVERZICHT
              ================================================================ -->
         <section class="mb-5">
-            <h2>📆 Calendar Overview / Kalender Overzicht</h2>
+            <h2>📆 Kalenderoverzicht</h2>
             <div class="row">
                 <?php if (empty($calendarItems)): ?>
                     <div class="col-12">
-                        <p class="text-secondary text-center">No upcoming items. Add schedules or events! / Geen komende items. Voeg schema's of evenementen toe!</p>
+                        <p class="text-secondary text-center">Geen komende items. Voeg schema's of evenementen toe!</p>
                     </div>
                 <?php else: ?>
                     <?php foreach ($calendarItems as $item): ?>
@@ -294,11 +290,11 @@ if (isset($_GET['logout'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="script.js"></script>
     
-    <!-- Reminder pop-ups -->
+    <!-- Herinnerings-pop-ups -->
     <script>
         const reminders = <?php echo json_encode($reminders); ?>;
         reminders.forEach(reminder => {
-            alert(`🔔 Reminder: ${reminder['title']} at ${reminder['time']}\n🔔 Herinnering: ${reminder['title']} om ${reminder['time']}`);
+            alert(`🔔 Herinnering: ${reminder['title']} om ${reminder['time']}`);
         });
     </script>
 </body>

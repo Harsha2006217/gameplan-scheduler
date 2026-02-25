@@ -11,35 +11,34 @@
    ============================================================================ */
 
 /* ============================================================================
-   SECTION 1: CSS VARIABLES / CSS VARIABELEN
+   SECTIE 1: CSS VARIABELEN
    ============================================================================
-   ENGLISH: Define reusable colors and values for consistent styling.
-   DUTCH: Definieer herbruikbare kleuren en waarden voor consistente styling.
+   Definieer herbruikbare kleuren en waarden voor consistente styling.
 */
 :root {
     /* Primary colors - Gaming dark theme */
     --bg-dark: #0a0a0f;
-    /* Very dark background / Zeer donkere achtergrond */
+    /* Zeer donkere achtergrond */
     --bg-secondary: #12121a;
-    /* Card backgrounds / Kaart achtergronden */
+    /* Kaartachtergronden */
     --bg-card: #1a1a25;
-    /* Elevated surfaces / Verhoogde oppervlakken */
+    /* Verhoogde oppervlakken */
     --accent-blue: #0d6efd;
-    /* Primary blue accent / Primaire blauwe accent */
+    /* Primaire blauwe accentkleur */
     --accent-cyan: #00d4ff;
-    /* Neon cyan for highlights / Neon cyaan voor highlights */
+    /* Neon-cyaan voor highlights */
     --accent-purple: #9d4edd;
-    /* Purple accent / Paarse accent */
+    /* Paarse accentkleur */
     --text-primary: #ffffff;
-    /* Main text color / Hoofd tekstkleur */
+    /* Hoofdtekstkleur */
     --text-secondary: #b0b0b0;
-    /* Secondary text / Secundaire tekst */
+    /* Secundaire tekst */
     --success: #28a745;
-    /* Success green / Succes groen */
+    /* Succesgroen */
     --danger: #dc3545;
-    /* Danger red / Gevaar rood */
+    /* Gevaarrood */
     --warning: #ffc107;
-    /* Warning yellow / Waarschuwing geel */
+    /* Waarschuwingsgeel */
 
     /* Glassmorphism effect values */
     --glass-bg: rgba(255, 255, 255, 0.05);
@@ -50,13 +49,13 @@
     --header-height: 80px;
     --footer-height: 50px;
     --button-min-height: 40px;
-    /* Minimum 40px for mobile / Minimum 40px voor mobiel */
+    /* Minimaal 40px voor mobiel */
     --border-radius: 12px;
     --border-radius-lg: 20px;
 }
 
 /* ============================================================================
-   SECTION 2: BASE STYLES / BASIS STIJLEN
+   SECTIE 2: BASIS STIJLEN
    ============================================================================ */
 
 /* Reset and base body styling */
@@ -73,9 +72,9 @@ body {
     font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
     min-height: 100vh;
     padding-top: calc(var(--header-height) + 20px);
-    /* Space for fixed header */
+    /* Ruimte voor vaste header */
     padding-bottom: calc(var(--footer-height) + 30px);
-    /* Space for fixed footer */
+    /* Ruimte voor vaste footer */
     line-height: 1.6;
 }
 
@@ -85,7 +84,7 @@ html {
 }
 
 /* ============================================================================
-   SECTION 3: HEADER STYLES / HEADER STIJLEN
+   SECTIE 3: HEADER STIJLEN
    ============================================================================ */
 
 header {
@@ -161,7 +160,7 @@ header h1:hover {
 }
 
 /* ============================================================================
-   SECTION 4: FOOTER STYLES / FOOTER STIJLEN
+   SECTIE 4: FOOTER STIJLEN
    ============================================================================ */
 
 footer {
@@ -191,7 +190,7 @@ footer a:hover {
 }
 
 /* ============================================================================
-   SECTION 5: MAIN CONTAINER STYLES / HOOFD CONTAINER STIJLEN
+   SECTIE 5: HOOFD CONTAINER STIJLEN
    ============================================================================ */
 
 main.container {
@@ -231,10 +230,9 @@ main h1 {
 }
 
 /* ============================================================================
-   SECTION 6: CARD AND TABLE STYLES / KAART EN TABEL STIJLEN
+   SECTIE 6: KAART EN TABEL STIJLEN
    ============================================================================
-   ENGLISH: Glassmorphism effect for modern look.
-   DUTCH: Glassmorfisme effect voor moderne look.
+   Glassmorfisme-effect voor een moderne look.
 */
 
 .card {
@@ -300,7 +298,7 @@ main h1 {
 }
 
 /* ============================================================================
-   SECTION 7: FORM STYLES / FORMULIER STIJLEN
+   SECTIE 7: FORMULIER STIJLEN
    ============================================================================ */
 
 .form-control,
@@ -341,10 +339,9 @@ textarea.form-control {
 }
 
 /* ============================================================================
-   SECTION 8: BUTTON STYLES / KNOP STIJLEN
+   SECTIE 8: KNOP STIJLEN
    ============================================================================
-   ENGLISH: Minimum 40px height for mobile usability as per design spec.
-   DUTCH: Minimaal 40px hoogte voor mobiele bruikbaarheid volgens design spec.
+   Minimaal 40px hoogte voor mobiele bruikbaarheid conform het ontwerp.
 */
 
 .btn {
@@ -407,7 +404,7 @@ textarea.form-control {
 }
 
 /* ============================================================================
-   SECTION 9: ALERT STYLES / ALERT STIJLEN
+   SECTIE 9: MELDING STIJLEN
    ============================================================================ */
 
 .alert {
@@ -443,7 +440,7 @@ textarea.form-control {
 }
 
 /* ============================================================================
-   SECTION 10: CALENDAR CARDS / KALENDER KAARTEN
+   SECTIE 10: KALENDER KAARTEN
    ============================================================================ */
 
 .calendar-card {
@@ -461,7 +458,7 @@ textarea.form-control {
 }
 
 /* ============================================================================
-   SECTION 11: LOGIN/REGISTER PAGE STYLES
+   SECTIE 11: INLOGGEN/REGISTREREN PAGINASTIJLEN
    ============================================================================ */
 
 .auth-container {
@@ -481,13 +478,12 @@ textarea.form-control {
 }
 
 /* ============================================================================
-   SECTION 12: RESPONSIVE DESIGN / RESPONSIEF ONTWERP
+   SECTIE 12: RESPONSIEF ONTWERP
    ============================================================================
-   ENGLISH: Adapts layout for tablets and mobile phones.
-   DUTCH: Past layout aan voor tablets en mobiele telefoons.
+   Past de lay-out aan voor tablets en mobiele telefoons.
 */
 
-/* Tablet view (max 992px) */
+/* Tabletweergave (max. 992px) */
 @media (max-width: 992px) {
     main.container {
         width: 95%;
@@ -499,7 +495,7 @@ textarea.form-control {
     }
 }
 
-/* Mobile view (max 768px) */
+/* Mobiele weergave (max. 768px) */
 @media (max-width: 768px) {
     :root {
         --header-height: 70px;
@@ -576,7 +572,7 @@ textarea.form-control {
 }
 
 /* ============================================================================
-   SECTION 13: ANIMATIONS / ANIMATIES
+   SECTIE 13: ANIMATIES
    ============================================================================ */
 
 /* Fade in animation for page load */
@@ -614,7 +610,7 @@ main {
 }
 
 /* ============================================================================
-   SECTION 14: UTILITY CLASSES / HULP KLASSEN
+   SECTIE 14: HULPKLASSEN
    ============================================================================ */
 
 .text-cyan {
@@ -661,5 +657,5 @@ main {
 }
 
 /* ============================================================================
-   END OF STYLESHEET / EINDE VAN STYLESHEET
+   EINDE VAN STYLESHEET
    ============================================================================ */

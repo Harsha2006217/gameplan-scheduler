@@ -1061,7 +1061,7 @@ De functie `safeEcho()` converteert speciale HTML-tekens naar veilige entiteiten
 Dit voorkomt dat kwaadaardige scripts in de browser worden uitgevoerd.
 
 **B4 - Sessie regeneratie**
-Na succesvol inloggen wordt `session_regenerate_id(true)` aangeroepen. Dit maakt een nieuw sessie-ID aan en vernietigt het oude. Dit beschermt tegen sessie-fixatie aanvallen.
+Na succesvol inloggen wordt `session_regenerate_id(true)` aangeroepen in de `loginUser()` functie. Dit maakt een nieuw sessie-ID aan en vernietigt het oude. Dit beschermt tegen sessie-fixatie aanvallen waarbij een aanvaller een sessie-ID probeert te hergebruiken.
 
 **B5 - Sessie timeout**
 Na 30 minuten inactiviteit wordt de sessie automatisch vernietigd. Dit beschermt tegen het scenario dat iemand een computer onbeheerd achterlaat.

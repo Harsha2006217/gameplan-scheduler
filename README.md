@@ -41,9 +41,9 @@ GamePlan Scheduler is een webapplicatie waarmee gamers hun gaming-activiteiten k
 
 ### Voor wie is het bedoeld?
 
-De applicatie is bedoeld voor gamers die hun speelsessies willen plannen en coordineren met vrienden. Het lost het probleem op dat gamers geen centraal overzicht hebben van wanneer ze met wie gaan spelen.
+De applicatie is bedoeld voor gamers die hun speelsessies willen plannen en coördineren met vrienden. Het lost het probleem op dat gamers geen centraal overzicht hebben van wanneer ze met wie gaan spelen.
 
-### Gebruikte technologieen
+### Gebruikte technologieën
 
 | Technologie            | Doel                                                |
 | ---------------------- | --------------------------------------------------- |
@@ -829,7 +829,6 @@ BROWSER                          SERVER
   |                                |-- Laad functions.php
   |                                |   |-- Laad db.php
   |                                |   |-- Start sessie (session_start)
-  |                                |   |-- Regenereer sessie-ID
   |                                |
   |                                |-- isLoggedIn()
   |                                |   |-- Controleer $_SESSION['user_id']

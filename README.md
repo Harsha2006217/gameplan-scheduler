@@ -1275,7 +1275,7 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 
 ### Bug #1001: Alleen-spaties validatie
 
-**Probleem:** Gebruikers konden velden opslaan met alleen spaties (bijv. " ").
+**Probleem:** Gebruikers konden velden opslaan met alleen spaties (bijv. "   ").
 **Oorzaak:** De oude validatie controleerde alleen of het veld leeg was, niet of het alleen spaties bevatte.
 **Oplossing:** Regex controle `/^\s*$/` toegevoegd aan `validateRequired()` en alle JavaScript validatiefuncties.
 **Toegepast in:** functions.php, script.js (alle formuliervalidaties).
@@ -1286,6 +1286,20 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 **Oorzaak:** De oude validatie controleerde alleen het formaat, niet of de datum daadwerkelijk bestaat.
 **Oplossing:** `DateTime::createFromFormat()` gebruikt met strikte vergelijking (`$dateObj->format('Y-m-d') !== $date`).
 **Toegepast in:** functions.php (`validateDate()`), script.js (schema en evenement formulier).
+
+### Bug #1005: CSS glassmorphism-achtergrondkleur
+
+**Probleem:** Alle kaarten en containers hadden een harde oranje achtergrondkleur in plaats van het glassmorphism-effect.
+**Oorzaak:** De CSS-variabele `--glass-bg` stond ingesteld op `orange` in plaats van een transparante waarde.
+**Oplossing:** `--glass-bg` gewijzigd naar `rgba(255, 255, 255, 0.05)` voor een semi-transparant glaseffect passend bij het donkere gaming-thema.
+**Toegepast in:** style.css (CSS-variabelen sectie).
+
+### Bug #1006: Sessie-ID regeneratie op elke paginalaad
+
+**Probleem:** `session_regenerate_id(true)` werd bij elke paginalaad aangeroepen, niet alleen bij inloggen.
+**Oorzaak:** De functie stond in het sessie-startblok van functions.php, waardoor bij elk verzoek een nieuw sessie-ID werd gegenereerd.
+**Oplossing:** `session_regenerate_id(true)` verwijderd uit het sessie-startblok. Het wordt nu alleen aangeroepen in `loginUser()` na succesvolle authenticatie, zoals aanbevolen door beveiligingsrichtlijnen.
+**Toegepast in:** functions.php (sessie-beheer sectie).
 
 ---
 

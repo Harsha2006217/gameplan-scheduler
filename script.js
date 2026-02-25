@@ -1,17 +1,20 @@
 /**
  * ============================================================================
- * SCRIPT.JS - CLIENT-SIDE JAVASCRIPT / CLIENT-SIDE JAVASCRIPT
+ * SCRIPT.JS - CLIENT-SIDE JAVASCRIPT
  * ============================================================================
- * Author / Auteur: Harsha Kanaparthi | Student: 2195344 | Date: 30-09-2025
- * 
- * ENGLISH: Form validations, reminder pop-ups, and interactive features.
- * DUTCH: Formulier validaties, herinnering pop-ups, en interactieve functies.
- * 
- * FEATURES:
- * - Login/Register form validation
- * - Schedule/Event form validation (BUG FIX #1001: spaces check)
- * - Date validation (BUG FIX #1004: strict format)
- * - Reminder pop-up system
+ * Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
+ *
+ * Bevat alle client-side validatie, herinnering pop-ups en interactieve functies.
+ *
+ * FUNCTIES:
+ * - Login/Registratie formulier validatie
+ * - Schema/Evenement formulier validatie
+ * - Herinnering pop-up systeem
+ * - Pagina-initialisatie (smooth scroll, auto-dismiss alerts)
+ *
+ * BUGFIXES:
+ * - #1001: Alleen-spaties controle met regex /^\s*$/
+ * - #1004: Strenge datumvalidatie met new Date() + isNaN()
  * ============================================================================
  */
 

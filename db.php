@@ -1,24 +1,16 @@
 <?php
 /**
  * ============================================================================
- * DB.PHP - DATABASE CONNECTION SCRIPT / DATABASE VERBINDING SCRIPT
+ * DB.PHP - DATABASE VERBINDING
  * ============================================================================
- * 
- * ENGLISH:
- * This file creates a secure connection to the MySQL database.
- * It uses PDO (PHP Data Objects) which is the safest way to connect to databases.
- * PDO protects against SQL injection attacks by using prepared statements.
- * 
- * DUTCH / NEDERLANDS:
+ * Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
+ *
  * Dit bestand maakt een veilige verbinding met de MySQL database.
- * Het gebruikt PDO (PHP Data Objects) wat de veiligste manier is om met databases te verbinden.
- * PDO beschermt tegen SQL-injectie aanvallen door prepared statements te gebruiken.
- * 
- * ============================================================================
- * Author / Auteur: Harsha Kanaparthi
- * Student Number / Studentnummer: 2195344
- * Date / Datum: 30-09-2025
- * Project: GamePlan Scheduler
+ * Het gebruikt PDO (PHP Data Objects) wat de veiligste manier is om met
+ * databases te verbinden. PDO beschermt tegen SQL-injectie aanvallen
+ * door prepared statements te gebruiken.
+ *
+ * Ontwerppatroon: Singleton (slechts 1 verbinding per sessie)
  * ============================================================================
  */
 

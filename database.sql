@@ -1,23 +1,16 @@
 /**
  * ============================================================================
- * DATABASE.SQL - DATABASE SCHEMA SCRIPT / DATABASE SCHEMA SCRIPT
+ * DATABASE.SQL - DATABASE SCHEMA
  * ============================================================================
- * 
- * ENGLISH:
- * This SQL file creates the complete database structure for GamePlan Scheduler.
- * It defines all tables, columns, relationships, and indexes needed for the app.
- * Run this file once in phpMyAdmin to set up the database.
- * 
- * DUTCH / NEDERLANDS:
- * Dit SQL bestand maakt de complete database structuur voor GamePlan Scheduler.
- * Het definieert alle tabellen, kolommen, relaties, en indexen nodig voor de app.
+ * Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
+ *
+ * Dit SQL-bestand maakt de complete databasestructuur voor GamePlan Scheduler.
+ * Het definieert alle tabellen, kolommen, relaties en indexen.
  * Voer dit bestand eenmaal uit in phpMyAdmin om de database op te zetten.
- * 
- * ============================================================================
- * Author / Auteur: Harsha Kanaparthi
- * Student Number / Studentnummer: 2195344
- * Date / Datum: 30-09-2025
- * Project: GamePlan Scheduler
+ *
+ * Tabellen: Users, Games, UserGames, Friends, Schedules, Events
+ * Engine: InnoDB (ondersteunt foreign keys en transacties)
+ * Tekenset: utf8mb4 (ondersteunt alle Unicode-tekens)
  * ============================================================================
  */
 

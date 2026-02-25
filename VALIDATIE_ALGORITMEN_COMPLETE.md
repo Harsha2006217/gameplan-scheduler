@@ -1,64 +1,211 @@
-# GAMEPLAN SCHEDULER — COMPLETE VALIDATIE-DOCUMENTATIE A TOT Z
+# GAMEPLAN SCHEDULER — COMPLETE VALIDATIE, ALGORITMEN, FUNCTIONELE FLOWS & CODE FLOW DIAGRAMMEN
 
-**Auteur:** Harsha Kanaparthi | **Studentnummer:** 2195344 | **Datum:** 30-09-2025
-**Project:** GamePlan Scheduler | **Opleiding:** MBO-4 Software Developer
+**Auteur:** Harsha Kanaparthi | **Studentnummer:** 2195344 | **Datum:** 30-09-2025  
+**Project:** GamePlan Scheduler | **Opleiding:** MBO-4 Software Developer  
+**Kerntaak:** K1-W3 Realisatie
 
 ---
 
 ## INHOUDSOPGAVE
 
-1. [Alle Validaties — Compleet Overzicht](#1-alle-validaties)
-2. [Algoritme per Validatie](#2-algoritmen)
-3. [Alle Functionele Flows A tot Z](#3-functionele-flows)
-4. [Code Flow Diagram — Login Pagina](#4-login-flow)
-5. [Code Flow Diagram — Home Pagina Laden](#5-home-flow)
+1. [Overzicht van de Applicatie](#1-overzicht-van-de-applicatie)
+2. [Bestandsstructuur & Samenhang](#2-bestandsstructuur--samenhang)
+3. [Database Schema](#3-database-schema)
+4. [Alle Validaties — Compleet Overzicht (32 stuks)](#4-alle-validaties--compleet-overzicht)
+5. [Algoritme per Validatie](#5-algoritme-per-validatie)
+6. [Alle Functionele Flows A tot Z (13 flows)](#6-alle-functionele-flows-a-tot-z)
+7. [Code Flow Diagram — Login Pagina](#7-code-flow-diagram--login-pagina)
+8. [Code Flow Diagram — Home Pagina Laden](#8-code-flow-diagram--home-pagina-laden)
+9. [Beveiligingsmaatregelen](#9-beveiligingsmaatregelen)
+10. [Samenvatting](#10-samenvatting)
 
 ---
 
-## 1. ALLE VALIDATIES — COMPLEET OVERZICHT
+## 1. OVERZICHT VAN DE APPLICATIE
 
-Hieronder staat **elke validatie** die in de hele applicatie voorkomt, gegroepeerd per functie. Er zijn twee lagen: JavaScript (client-side, in de browser) en PHP (server-side, op de server). De server-side validatie is de echte beveiliging en kan NIET omzeild worden.
+**GamePlan Scheduler** is een webapplicatie waarmee gamers hun gaming-schema's, evenementen, vrienden en favoriete spellen kunnen beheren. De applicatie is gebouwd met:
 
-### 1.1 OVERZICHTSTABEL — ALLE 32 VALIDATIES
+| Technologie | Doel |
+|-------------|------|
+| **PHP 8+** | Server-side logica, validatie, sessie, database |
+| **MySQL/MariaDB** | Database opslag via PDO (prepared statements) |
+| **JavaScript** | Client-side formuliervalidatie |
+| **Bootstrap 5** | Responsive design, UI componenten |
+| **HTML5/CSS3** | Structuur en glassmorphism dark-theme styling |
 
-| Nr | Validatie | Type | Bestand | Regels | Waar gebruikt |
-|----|-----------|------|---------|--------|---------------|
-| V01 | E-mail niet leeg | Server | functions.php | 296 | Login |
-| V02 | Wachtwoord niet leeg | Server | functions.php | 298 | Login |
-| V03 | E-mail bestaat in database | Server | functions.php | 302-304 | Login |
-| V04 | Wachtwoord klopt (bcrypt verify) | Server | functions.php | 307 | Login |
-| V05 | Gebruikersnaam niet leeg, max 50 | Server | functions.php | 259 | Registratie |
-| V06 | E-mail geldig formaat | Server | functions.php | 261 | Registratie |
-| V07 | Wachtwoord niet leeg | Server | functions.php | 263 | Registratie |
-| V08 | Wachtwoord minimaal 8 tekens | Server | functions.php | 265-266 | Registratie |
-| V09 | E-mail nog niet geregistreerd | Server | functions.php | 269-272 | Registratie |
-| V10 | Speltitel niet leeg, max 100 | Server | functions.php | 504 | Schedule, Favorite |
-| V11 | Datum geldig formaat JJJJ-MM-DD | Server | functions.php | 101-106 | Schedule, Event |
-| V12 | Datum vandaag of toekomst | Server | functions.php | 111-114 | Schedule, Event |
-| V13 | Tijd geldig formaat UU:MM | Server | functions.php | 126-128 | Schedule, Event |
-| V14 | Komma-gescheiden niet leeg items | Server | functions.php | 164-170 | Schedule, Event |
-| V15 | Eventtitel niet leeg, max 100 | Server | functions.php | 571 | Event |
-| V16 | Beschrijving max 500 tekens | Server | functions.php | 577-578 | Event |
-| V17 | Herinnering whitelist | Server | functions.php | 579-580 | Event |
-| V18 | URL geldig formaat | Server | functions.php | 150-152 | Event |
-| V19 | Vriendnaam niet leeg, max 50 | Server | functions.php | 445 | Vriend |
-| V20 | Status niet leeg, max 50 | Server | functions.php | 447 | Vriend |
-| V21 | Vriend niet al toegevoegd | Server | functions.php | 451-454 | Vriend |
-| V22 | Spel niet al in favorieten | Server | functions.php | 369-372 | Favoriet |
-| V23 | Eigendomscontrole (ownership) | Server | functions.php | 640-644 | Edit/Delete |
-| V24 | Sessie timeout (30 min) | Server | functions.php | 242-247 | Alle pagina's |
-| V25 | Gebruiker ingelogd check | Server | functions.php | 211-213 | Alle pagina's |
-| V26 | XSS output escaping | Server | functions.php | 50-55 | Alle output |
-| V27 | Sorteer whitelist | Server | functions.php | 524, 594 | Dashboard |
-| V28 | Login velden leeg (JS) | Client | script.js | 49-53 | Login formulier |
-| V29 | E-mail regex (JS) | Client | script.js | 60-63 | Login/Register |
-| V30 | Registratie velden check (JS) | Client | script.js | 102-133 | Register formulier |
-| V31 | Schedule formulier check (JS) | Client | script.js | 163-224 | Schedule formulier |
-| V32 | Event formulier check (JS) | Client | script.js | 253-327 | Event formulier |
+**Kernfunctionaliteiten:**
+- Registreren en inloggen (met bcrypt wachtwoord-hashing)
+- Gaming schema's toevoegen, bewerken, verwijderen
+- Gaming evenementen beheren (met herinneringen)
+- Vriendenlijst bijhouden
+- Favoriete spellen profiel
+- Kalender overzicht (gecombineerd)
+- Sessie-timeout na 30 minuten inactiviteit
 
 ---
 
-## 2. ALGORITME PER VALIDATIE
+## 2. BESTANDSSTRUCTUUR & SAMENHANG
+
+```
+gameplan-scheduler/
+│
+├── db.php              ← Database verbinding (PDO Singleton)
+├── functions.php       ← ALLE validatie, sessie, CRUD functies (672 regels)
+├── script.js           ← Client-side validatie (433 regels)
+├── style.css           ← Glassmorphism dark-theme styling
+├── database.sql        ← Database schema (6 tabellen)
+│
+├── login.php           ← Inlog pagina + formulier
+├── register.php        ← Registratie pagina + formulier
+├── logout.php          ← Sessie vernietigen + redirect
+├── index.php           ← Dashboard (homepagina na login)
+├── profile.php         ← Profiel + favoriete spellen
+├── contact.php         ← Contact informatie
+├── privacy.php         ← Privacy beleid
+│
+├── add_schedule.php    ← Schema toevoegen formulier
+├── add_event.php       ← Evenement toevoegen formulier
+├── add_friend.php      ← Vriend toevoegen formulier
+│
+├── edit_schedule.php   ← Schema bewerken formulier
+├── edit_event.php      ← Evenement bewerken formulier
+├── edit_friend.php     ← Vriend bewerken formulier
+├── edit_favorite.php   ← Favoriet bewerken formulier
+│
+├── delete.php          ← Centraal verwijder-script (soft delete)
+├── header.php          ← Navigatie header (sessie-based)
+└── footer.php          ← Copyright footer
+```
+
+**Bestandssamenhang (hoe ze samenwerken):**
+```
+Elke pagina → require functions.php → require db.php → getDBConnection()
+                  ↓                        ↓
+           session_start()           PDO Singleton
+           validatiefuncties         prepared statements
+           CRUD functies             SQL-injectie bescherming
+```
+
+---
+
+## 3. DATABASE SCHEMA
+
+**6 tabellen** in `gameplan_db`:
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│   Users     │     │   Games     │     │  UserGames  │
+│─────────────│     │─────────────│     │─────────────│
+│ user_id PK  │←────│             │     │ user_id FK  │──→ Users
+│ username    │     │ game_id PK  │←────│ game_id FK  │──→ Games
+│ email UNIQ  │     │ titel       │     │ note        │
+│ password_hash│    │ description │     └─────────────┘
+│ last_activity│    │ deleted_at  │      (koppeltabel)
+│ deleted_at  │     └─────────────┘
+└─────────────┘
+      ↑                    ↑
+      │                    │
+┌─────────────┐     ┌─────────────┐
+│  Friends    │     │ Schedules   │
+│─────────────│     │─────────────│
+│ friend_id PK│     │ schedule_id │
+│ user_id FK  │     │ user_id FK  │──→ Users
+│ friend_user │     │ game_id FK  │──→ Games
+│ note        │     │ date        │
+│ status      │     │ time        │
+│ deleted_at  │     │ friends     │
+└─────────────┘     │ shared_with │
+                    │ deleted_at  │
+      ┌─────────────┘─────────────┘
+      │
+┌─────────────┐
+│   Events    │
+│─────────────│
+│ event_id PK │
+│ user_id FK  │──→ Users
+│ title       │
+│ date, time  │
+│ description │
+│ reminder    │  ← whitelist: none, 1_hour, 1_day
+│ external_link│
+│ shared_with │
+│ deleted_at  │
+└─────────────┘
+```
+
+---
+
+## 4. ALLE VALIDATIES — COMPLEET OVERZICHT
+
+Er zijn **32 validaties** in totaal: **27 server-side (PHP)** + **5 client-side (JavaScript)**.
+
+### 4.1 SERVER-SIDE VALIDATIES (PHP — functions.php)
+
+| Nr | Validatie | Functie | Regel | Gebruikt bij |
+|----|-----------|---------|-------|-------------|
+| V01 | E-mail niet leeg | `validateRequired()` | r.68-86 | Login |
+| V02 | Wachtwoord niet leeg | `validateRequired()` | r.68-86 | Login |
+| V03 | E-mail bestaat in database | `loginUser()` | r.302-304 | Login |
+| V04 | Wachtwoord klopt (bcrypt verify) | `loginUser()` | r.307 | Login |
+| V05 | Gebruikersnaam niet leeg, max 50 | `validateRequired()` | r.259 | Registratie |
+| V06 | E-mail geldig formaat | `validateEmail()` | r.136-142 | Registratie |
+| V07 | Wachtwoord niet leeg | `validateRequired()` | r.263 | Registratie |
+| V08 | Wachtwoord minimaal 8 tekens | `registerUser()` | r.265-266 | Registratie |
+| V09 | E-mail nog niet geregistreerd | `registerUser()` | r.269-272 | Registratie |
+| V10 | Speltitel niet leeg, max 100 | `validateRequired()` | r.504 | Schedule, Favoriet |
+| V11 | Datum geldig formaat JJJJ-MM-DD | `validateDate()` | r.97-117 | Schedule, Event |
+| V12 | Datum vandaag of toekomst | `validateDate()` | r.111-114 | Schedule, Event |
+| V13 | Tijd geldig formaat UU:MM | `validateTime()` | r.123-130 | Schedule, Event |
+| V14 | Komma-gescheiden niet leeg | `validateCommaSeparated()` | r.160-171 | Schedule, Event |
+| V15 | Eventtitel niet leeg, max 100 | `validateRequired()` | r.571 | Event |
+| V16 | Beschrijving max 500 tekens | `addEvent()` | r.577-578 | Event |
+| V17 | Herinnering whitelist | `addEvent()` | r.579-580 | Event |
+| V18 | URL geldig formaat | `validateUrl()` | r.148-154 | Event |
+| V19 | Vriendnaam niet leeg, max 50 | `validateRequired()` | r.445 | Vriend |
+| V20 | Status niet leeg, max 50 | `validateRequired()` | r.447 | Vriend |
+| V21 | Vriend niet al toegevoegd | `addFriend()` | r.451-454 | Vriend |
+| V22 | Spel niet al in favorieten | `addFavoriteGame()` | r.369-372 | Favoriet |
+| V23 | Eigendomscontrole (ownership) | `checkOwnership()` | r.640-645 | Edit/Delete |
+| V24 | Sessie timeout (30 min) | `checkSessionTimeout()` | r.239-248 | Alle pagina's |
+| V25 | Gebruiker ingelogd check | `isLoggedIn()` | r.211-213 | Alle pagina's |
+| V26 | XSS output escaping | `safeEcho()` | r.50-55 | Alle output |
+| V27 | Sorteer whitelist | `getSchedules()`/`getEvents()` | r.524, r.594 | Dashboard |
+
+### 4.2 CLIENT-SIDE VALIDATIES (JavaScript — script.js)
+
+| Nr | Validatie | Functie | Regel | Gebruikt bij |
+|----|-----------|---------|-------|-------------|
+| V28 | Login velden leeg check | `validateLoginForm()` | r.38-68 | Login formulier |
+| V29 | E-mail regex check | `validateLoginForm()` | r.60-63 | Login/Register |
+| V30 | Registratie velden check | `validateRegisterForm()` | r.93-136 | Register formulier |
+| V31 | Schedule formulier check | `validateScheduleForm()` | r.163-224 | Schedule formulier |
+| V32 | Event formulier check | `validateEventForm()` | r.253-327 | Event formulier |
+
+### 4.3 DUBBELE LAAG VALIDATIE (WAAROM?)
+
+```
+Gebruiker vult formulier in
+        ↓
+┌─────────────────────────────┐
+│ LAAG 1: JavaScript (client) │  ← Snelle feedback, UX verbetering
+│ Draait in de browser        │  ← KAN OMZEILD WORDEN (DevTools)
+└─────────────────────────────┘
+        ↓ (als JS validatie slaagt)
+┌─────────────────────────────┐
+│ LAAG 2: PHP (server)        │  ← ECHTE beveiliging
+│ Draait op de server         │  ← KAN NIET OMZEILD WORDEN
+│ Prepared statements (SQL)   │  ← Beschermt tegen SQL-injectie
+└─────────────────────────────┘
+        ↓ (als PHP validatie slaagt)
+┌─────────────────────────────┐
+│ LAAG 3: Database constraints│  ← Laatste vangnet
+│ NOT NULL, UNIQUE, FK        │  ← Voorkomt corrupte data
+└─────────────────────────────┘
+```
+
+---
+
+## 5. ALGORITME PER VALIDATIE
 
 ### ALGORITME V01-V04: LOGIN VALIDATIE
 
@@ -68,20 +215,19 @@ Hieronder staat **elke validatie** die in de hele applicatie voorkomt, gegroepee
 ALGORITME: LoginGebruiker(email, wachtwoord)
 
 STAP 1: Controleer of email NIET leeg is
-        ALS email leeg is OF email bevat alleen spaties
-            RETOURNEER foutmelding "Email mag niet leeg zijn"
+        Verwijder witruimte (trim)
+        ALS email leeg is OF alleen spaties bevat
+            RETOURNEER "Email mag niet leeg zijn"
         EINDE ALS
 
 STAP 2: Controleer of wachtwoord NIET leeg is
-        ALS wachtwoord leeg is OF wachtwoord bevat alleen spaties
-            RETOURNEER foutmelding "Wachtwoord mag niet leeg zijn"
+        ALS wachtwoord leeg is OF alleen spaties bevat
+            RETOURNEER "Wachtwoord mag niet leeg zijn"
         EINDE ALS
 
 STAP 3: Zoek gebruiker in database
         VOER UIT: SELECT user_id, username, password_hash
-                  FROM Users
-                  WHERE email = [ingevoerde email]
-                  AND deleted_at IS NULL
+                  FROM Users WHERE email = :email AND deleted_at IS NULL
         (Prepared statement — beschermt tegen SQL-injectie)
 
 STAP 4: Controleer wachtwoord met bcrypt
@@ -91,35 +237,13 @@ STAP 4: Controleer wachtwoord met bcrypt
         EINDE ALS
 
 STAP 5: Maak sessie aan
-        Sla user_id op in $_SESSION['user_id']
-        Sla username op in $_SESSION['username']
-        Genereer nieuw sessie-ID (voorkomt session fixation aanval)
-        Update laatste activiteit timestamp
+        $_SESSION['user_id'] = user_id
+        $_SESSION['username'] = username
+        session_regenerate_id(true) → voorkomt session fixation
+        updateLastActivity() → update timestamp
 
 STAP 6: RETOURNEER null (geen fout = succes)
 ```
-
-**PHP-code:**
-```php
-function loginUser($email, $password) {
-    $pdo = getDBConnection();
-    if ($err = validateRequired($email, "Email")) return $err;
-    if ($err = validateRequired($password, "Password")) return $err;
-    $stmt = $pdo->prepare("SELECT user_id, username, password_hash FROM Users WHERE email = :email AND deleted_at IS NULL");
-    $stmt->execute(['email' => $email]);
-    $user = $stmt->fetch();
-    if (!$user || !password_verify($password, $user['password_hash'])) {
-        return "Invalid email or password.";
-    }
-    $_SESSION['user_id'] = $user['user_id'];
-    $_SESSION['username'] = $user['username'];
-    session_regenerate_id(true);
-    updateLastActivity($pdo, $user['user_id']);
-    return null;
-}
-```
-
----
 
 ### ALGORITME V05-V09: REGISTRATIE VALIDATIE
 
@@ -129,90 +253,54 @@ function loginUser($email, $password) {
 ALGORITME: RegistreerGebruiker(gebruikersnaam, email, wachtwoord)
 
 STAP 1: Controleer gebruikersnaam
-        Verwijder witruimte aan begin en einde (trim)
-        ALS gebruikersnaam leeg is OF alleen spaties bevat
-            RETOURNEER "Gebruikersnaam mag niet leeg zijn"
-        ALS lengte > 50 tekens
-            RETOURNEER "Gebruikersnaam te lang (max 50)"
-        EINDE ALS
+        trim() → verwijder witruimte
+        ALS leeg OF alleen spaties → FOUT "mag niet leeg zijn"
+        ALS lengte > 50 → FOUT "te lang (max 50)"
 
 STAP 2: Controleer e-mail formaat
-        ALS email NIET voldoet aan FILTER_VALIDATE_EMAIL
+        ALS NIET voldoet aan FILTER_VALIDATE_EMAIL
             RETOURNEER "Ongeldig e-mail formaat"
-        EINDE ALS
 
 STAP 3: Controleer wachtwoord niet leeg
-        ALS wachtwoord leeg is OF alleen spaties
-            RETOURNEER "Wachtwoord mag niet leeg zijn"
-        EINDE ALS
+        ALS leeg OF alleen spaties → FOUT
 
 STAP 4: Controleer wachtwoord lengte
-        ALS lengte(wachtwoord) < 8
-            RETOURNEER "Wachtwoord moet minimaal 8 tekens zijn"
-        EINDE ALS
+        ALS strlen(wachtwoord) < 8
+            RETOURNEER "Minimaal 8 tekens"
 
-STAP 5: Controleer email uniciteit
-        VOER UIT: SELECT COUNT(*) FROM Users WHERE email = [email] AND deleted_at IS NULL
-        ALS aantal > 0
-            RETOURNEER "E-mail al geregistreerd"
-        EINDE ALS
+STAP 5: Controleer email uniciteit in database
+        SELECT COUNT(*) FROM Users WHERE email = :email AND deleted_at IS NULL
+        ALS > 0 → FOUT "E-mail al geregistreerd"
 
-STAP 6: Hash wachtwoord
-        hash = password_hash(wachtwoord, PASSWORD_BCRYPT)
-        (Bcrypt genereert automatisch een unieke salt)
-        (Wachtwoord wordt NOOIT als platte tekst opgeslagen)
+STAP 6: Hash wachtwoord met bcrypt
+        password_hash(wachtwoord, PASSWORD_BCRYPT)
+        → Bcrypt genereert automatisch unieke salt
+        → Wachtwoord NOOIT als platte tekst opgeslagen
 
-STAP 7: Sla gebruiker op
-        VOER UIT: INSERT INTO Users (username, email, password_hash)
-                  VALUES ([gebruikersnaam], [email], [hash])
-        ALS database fout
-            Log fout naar server (NIET naar gebruiker)
-            RETOURNEER "Registratie mislukt"
-        EINDE ALS
+STAP 7: Sla gebruiker op in database
+        INSERT INTO Users (username, email, password_hash)
+        ALS database fout → error_log() + generieke melding
 
 STAP 8: RETOURNEER null (succes)
 ```
 
----
-
 ### ALGORITME V10-V14: SCHEDULE VALIDATIE
 
-**Functie:** `addSchedule($userId, $gameTitle, $date, $time, $friendsStr, $sharedWithStr)` in `functions.php` (regel 500-519)
+**Functie:** `addSchedule(...)` in `functions.php` (regel 500-519)
 
 ```
 ALGORITME: VoegSchemaToe(gebruikerId, spelTitel, datum, tijd, vrienden, gedeeldMet)
 
-STAP 1: Controleer speltitel
-        Verwijder witruimte (trim)
-        ALS leeg OF alleen spaties → FOUT "Speltitel mag niet leeg zijn"
-        ALS lengte > 100 → FOUT "Speltitel te lang"
-
-STAP 2: Controleer datum (BUG FIX #1004)
-        Parseer datum met DateTime::createFromFormat('Y-m-d', datum)
-        ALS parsing mislukt OF output ≠ input → FOUT "Ongeldig datum formaat"
-        ALS datum < vandaag → FOUT "Datum moet vandaag of later zijn"
-
-STAP 3: Controleer tijd
-        ALS tijd NIET matcht met regex /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/
-            FOUT "Ongeldig tijd formaat"
-
-STAP 4: Controleer vrienden (optioneel)
-        ALS niet leeg:
-            Splits op komma's
-            VOOR ELK item: ALS na trim leeg → FOUT "Bevat lege items"
-
-STAP 5: Controleer gedeeld-met (optioneel, zelfde als stap 4)
-
-STAP 6: Zoek of maak spel
-        Zoek spel op titel (case-insensitive)
-        ALS niet gevonden → maak nieuw spel aan
-
-STAP 7: Sla schema op
-        INSERT INTO Schedules met prepared statement
-        RETOURNEER null (succes)
+STAP 1: Speltitel niet leeg, max 100 tekens
+STAP 2: Datum validatie (DateTime::createFromFormat)
+        ALS parsing mislukt OF output ≠ input → FOUT
+        ALS datum < vandaag → FOUT "moet toekomst zijn"
+STAP 3: Tijd validatie regex /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/
+STAP 4: Vrienden komma-gescheiden check (optioneel)
+STAP 5: Gedeeld-met komma-gescheiden check (optioneel)
+STAP 6: getOrCreateGameId() → zoek of maak spel (case-insensitive)
+STAP 7: INSERT INTO Schedules → RETOURNEER null
 ```
-
----
 
 ### ALGORITME V15-V18: EVENT VALIDATIE
 
@@ -221,279 +309,217 @@ STAP 7: Sla schema op
 ```
 ALGORITME: VoegEvenementToe(gebruikerId, titel, datum, tijd, beschrijving, herinnering, link, gedeeldMet)
 
-STAP 1: Titel niet leeg, max 100 tekens (zelfde als V10)
-STAP 2: Datum geldig + toekomst (zelfde als V11-V12)
-STAP 3: Tijd geldig UU:MM (zelfde als V13)
-
-STAP 4: Beschrijving lengte
-        ALS niet leeg EN lengte > 500 → FOUT "Beschrijving te lang (max 500)"
-
-STAP 5: Herinnering whitelist
-        ALS herinnering NIET in ['none', '1_hour', '1_day']
-            FOUT "Ongeldige herinnering"
-        (Whitelist = alleen deze 3 waarden zijn toegestaan)
-
-STAP 6: Externe link (optioneel)
-        ALS niet leeg EN NIET geldig volgens FILTER_VALIDATE_URL
-            FOUT "Ongeldig URL formaat"
-
-STAP 7: Gedeeld-met komma-gescheiden (zelfde als V14)
-
-STAP 8: INSERT INTO Events met prepared statement
-        RETOURNEER null (succes)
+STAP 1: Titel niet leeg, max 100 tekens
+STAP 2: Datum geldig + toekomst
+STAP 3: Tijd geldig UU:MM
+STAP 4: ALS beschrijving niet leeg EN strlen > 500 → FOUT
+STAP 5: Herinnering whitelist: ALS NIET in ['none','1_hour','1_day'] → FOUT
+STAP 6: URL validatie (optioneel): FILTER_VALIDATE_URL
+STAP 7: Gedeeld-met komma-gescheiden check
+STAP 8: INSERT INTO Events → RETOURNEER null
 ```
-
----
 
 ### ALGORITME V19-V21: VRIEND VALIDATIE
 
-**Functie:** `addFriend($userId, $friendUsername, $note, $status)` in `functions.php` (regel 441-458)
+**Functie:** `addFriend(...)` in `functions.php` (regel 441-458)
 
 ```
 ALGORITME: VoegVriendToe(gebruikerId, vriendNaam, notitie, status)
 
 STAP 1: Vriendnaam niet leeg, max 50 tekens
 STAP 2: Status niet leeg, max 50 tekens
-
 STAP 3: Duplicaat check (case-insensitive)
-        VOER UIT: SELECT COUNT(*) FROM Friends
-                  WHERE user_id = [gebruikerId]
-                  AND LOWER(friend_username) = LOWER([vriendNaam])
-                  AND deleted_at IS NULL
-        ALS aantal > 0 → FOUT "Al vrienden"
-
-STAP 4: INSERT INTO Friends met prepared statement
-        RETOURNEER null (succes)
+        SELECT COUNT(*) FROM Friends
+        WHERE user_id = :uid AND LOWER(friend_username) = LOWER(:naam)
+        AND deleted_at IS NULL
+        ALS > 0 → FOUT "Al vrienden"
+STAP 4: INSERT INTO Friends → RETOURNEER null
 ```
 
----
-
 ### ALGORITME V22: FAVORIET DUPLICAAT CHECK
-
-**Functie:** `addFavoriteGame(...)` in `functions.php` (regel 360-377)
 
 ```
 ALGORITME: VoegFavorietToe(gebruikerId, titel, beschrijving, notitie)
 
 STAP 1: Speltitel niet leeg, max 100
-STAP 2: Zoek of maak spel (case-insensitive op titel)
-
-STAP 3: Controleer of al in favorieten
-        SELECT COUNT(*) FROM UserGames WHERE user_id = ? AND game_id = ?
+STAP 2: getOrCreateGameId() (case-insensitive zoek/maak)
+STAP 3: SELECT COUNT(*) FROM UserGames WHERE user_id=? AND game_id=?
         ALS > 0 → FOUT "Spel al in favorieten"
-
-STAP 4: INSERT INTO UserGames
-        RETOURNEER null
+STAP 4: INSERT INTO UserGames → RETOURNEER null
 ```
 
----
-
-### ALGORITME V23: EIGENDOMSCONTROLE (OWNERSHIP CHECK)
-
-**Functie:** `checkOwnership($pdo, $table, $idColumn, $id, $userId)` in `functions.php` (regel 640-645)
+### ALGORITME V23: EIGENDOMSCONTROLE
 
 ```
 ALGORITME: ControleerEigendom(tabel, idKolom, id, gebruikerId)
 
-STAP 1: VOER UIT: SELECT COUNT(*) FROM [tabel]
-                  WHERE [idKolom] = [id]
-                  AND user_id = [gebruikerId]
-                  AND deleted_at IS NULL
+STAP 1: SELECT COUNT(*) FROM [tabel]
+        WHERE [idKolom] = :id AND user_id = :uid AND deleted_at IS NULL
+STAP 2: ALS count > 0 → WAAR (eigenaar)
+        ANDERS → ONWAAR (geen toestemming)
 
-STAP 2: ALS count > 0 → RETOURNEER WAAR (eigenaar)
-        ANDERS → RETOURNEER ONWAAR (geen eigenaar)
-
-Gebruikt bij: editSchedule, deleteSchedule, editEvent, deleteEvent
+Gebruikt bij: editSchedule, deleteSchedule, editEvent, deleteEvent, editFavorite
 Doel: Gebruiker A kan NIET de data van Gebruiker B bewerken/verwijderen
 ```
 
----
-
 ### ALGORITME V24: SESSIE TIMEOUT
-
-**Functie:** `checkSessionTimeout()` in `functions.php` (regel 239-248)
 
 ```
 ALGORITME: ControleerSessieTimeout()
 
-STAP 1: ALS gebruiker ingelogd EN last_activity bestaat
-            Bereken verschil = huidige_tijd - last_activity
-            ALS verschil > 1800 seconden (= 30 minuten)
-                Vernietig sessie (session_destroy)
-                Redirect naar login.php met bericht "sessie verlopen"
-                STOP
-            EINDE ALS
-        EINDE ALS
+STAP 1: ALS ingelogd EN last_activity bestaat
+            verschil = huidige_tijd - last_activity
+            ALS verschil > 1800 seconden (30 minuten)
+                session_destroy() → redirect login.php
+STAP 2: Update last_activity = time()
+```
 
-STAP 2: Update $_SESSION['last_activity'] = huidige_tijd
+### ALGORITME V25-V27: OVERIGE VALIDATIES
+
+```
+V25 — IsIngelogd():
+    RETOURNEER isset($_SESSION['user_id'])
+    Op elke beveiligde pagina: ALS niet → redirect login.php
+
+V26 — VeiligeOutput(tekst):
+    htmlspecialchars(tekst, ENT_QUOTES, 'UTF-8')
+    < wordt &lt;  > wordt &gt;  " wordt &quot;
+    Voorkomt XSS-aanvallen
+
+V27 — ValideerSortering(sorteerwaarde):
+    Whitelist = ['date ASC', 'date DESC', 'time ASC', 'time DESC']
+    ALS niet in whitelist → gebruik 'date ASC'
+    Voorkomt SQL-injectie via sorteerparameter
+```
+
+### ALGORITME V28-V32: CLIENT-SIDE VALIDATIES (JavaScript)
+
+```
+V28 — validateLoginForm():
+    1. email = trim(getElementById('email'))
+    2. password = trim(getElementById('password'))
+    3. ALS !email || !password → alert → return false
+    4. ALS email niet matcht /^[^\s@]+@[^\s@]+\.[^\s@]+$/ → alert → return false
+    5. return true
+
+V29 — E-mail regex (onderdeel van V28 en V30):
+    Regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    Betekenis: [niet-spatie-niet-@]+@[niet-spatie-niet-@]+.[niet-spatie-niet-@]+
+
+V30 — validateRegisterForm():
+    1. Haal username, email, password (met trim)
+    2. ALS een veld leeg → alert → stop
+    3. ALS username alleen spaties /^\s*$/ → alert → stop (BUG FIX #1001)
+    4. ALS username.length > 50 → alert → stop
+    5. ALS email niet geldig → alert → stop
+    6. ALS password.length < 8 → alert → stop
+    7. return true
+
+V31 — validateScheduleForm():
+    1. Haal gameTitle, date, time, friends, sharedWith
+    2. ALS gameTitle leeg/alleen spaties → alert → stop
+    3. ALS date leeg → alert → stop
+    4. ALS Date-object ongeldig → alert → stop
+    5. ALS datum < vandaag → alert → stop
+    6. ALS time niet matcht UU:MM regex → alert → stop
+    7. ALS friends ongeldige tekens → alert → stop
+    8. ALS sharedWith ongeldige tekens → alert → stop
+    9. return true
+
+V32 — validateEventForm():
+    1-2. Titel niet leeg, niet alleen spaties
+    3. Titel max 100 tekens
+    4-5. Datum verplicht, niet in verleden
+    6. Tijd geldig UU:MM
+    7. Beschrijving max 500 tekens
+    8. Externe link geldig URL regex (optioneel)
+    9. Gedeeld-met alleen letters, cijfers, komma's
+    10. return true
 ```
 
 ---
 
-### ALGORITME V25: INLOG CHECK
+## 6. ALLE FUNCTIONELE FLOWS A TOT Z
+
+### FLOW 1: REGISTRATIE — Nieuw account aanmaken
 
 ```
-ALGORITME: IsIngelogd()
-    RETOURNEER: bestaat $_SESSION['user_id']?
-    Gebruikt op: index.php, profile.php, delete.php, alle add/edit pagina's
-    ALS niet ingelogd → redirect naar login.php
-```
-
----
-
-### ALGORITME V26: XSS BESCHERMING
-
-**Functie:** `safeEcho($string)` in `functions.php` (regel 50-55)
-
-```
-ALGORITME: VeiligeOutput(tekst)
-
-STAP 1: ALS tekst is null → gebruik lege string
-STAP 2: Converteer speciale HTML-tekens:
-        < wordt &lt;
-        > wordt &gt;
-        " wordt &quot;
-        ' wordt &#039;
-        & wordt &amp;
-
-STAP 3: RETOURNEER veilige tekst
-
-Voorbeeld: <script>alert('hack')</script>
-Wordt:     &lt;script&gt;alert(&#039;hack&#039;)&lt;/script&gt;
-→ Browser toont de tekst in plaats van de code uit te voeren
-```
-
----
-
-### ALGORITME V27: SORTEER WHITELIST
-
-```
-ALGORITME: ValideerSortering(sorteerwaarde)
-
-    Toegestane waarden = ['date ASC', 'date DESC', 'time ASC', 'time DESC']
-    ALS sorteerwaarde NIET in toegestane waarden
-        Gebruik standaard 'date ASC'
-    EINDE ALS
-
-Doel: Voorkomt SQL-injectie via de sorteerparameter in de URL
-```
-
----
-
-### ALGORITME V28-V32: CLIENT-SIDE (JAVASCRIPT) VALIDATIES
-
-```
-ALGORITME: ValideerLoginFormulier() — script.js
-
-    STAP 1: Haal email op, verwijder witruimte (trim)
-    STAP 2: Haal wachtwoord op, verwijder witruimte
-    STAP 3: ALS email OF wachtwoord leeg → alert → STOP
-    STAP 4: ALS email NIET matcht regex /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-            → alert "Ongeldig e-mail formaat" → STOP
-    STAP 5: RETOURNEER true (formulier mag verzonden worden)
-```
-
-```
-ALGORITME: ValideerRegistratieFormulier() — script.js
-
-    STAP 1: Haal username, email, password op (met trim)
-    STAP 2: ALS een veld leeg → alert → STOP
-    STAP 3: ALS username matcht /^\s*$/ (alleen spaties) → alert → STOP (Bug #1001)
-    STAP 4: ALS username.length > 50 → alert → STOP
-    STAP 5: ALS email niet geldig regex → alert → STOP
-    STAP 6: ALS password.length < 8 → alert → STOP
-    STAP 7: RETOURNEER true
-```
-
-```
-ALGORITME: ValideerScheduleFormulier() — script.js
-
-    STAP 1: Haal gameTitle, date, time, friends, sharedWith op
-    STAP 2: ALS gameTitle leeg OF alleen spaties → alert → STOP (Bug #1001)
-    STAP 3: ALS date leeg → alert → STOP
-    STAP 4: Maak Date-object, ALS ongeldig → alert → STOP
-    STAP 5: ALS datum < vandaag → alert → STOP (Bug #1004)
-    STAP 6: ALS time niet matcht /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/ → alert → STOP
-    STAP 7: ALS friends bevat ongeldige tekens → alert → STOP
-    STAP 8: ALS sharedWith bevat ongeldige tekens → alert → STOP
-    STAP 9: RETOURNEER true
-```
-
-```
-ALGORITME: ValideerEventFormulier() — script.js
-
-    STAP 1-2: Titel niet leeg, niet alleen spaties (Bug #1001)
-    STAP 3: Titel max 100 tekens
-    STAP 4-5: Datum verplicht, niet in verleden (Bug #1004)
-    STAP 6: Tijd geldig UU:MM formaat
-    STAP 7: Beschrijving max 500 tekens
-    STAP 8: Externe link geldig URL regex (optioneel)
-    STAP 9: Gedeeld-met alleen letters, cijfers, komma's
-    STAP 10: RETOURNEER true
-```
-
----
-
-## 3. ALLE FUNCTIONELE FLOWS A TOT Z
-
-### FLOW 1: REGISTRATIE (Nieuw account aanmaken)
-
-```
-Gebruiker → register.php → validateRegisterForm() [JS]
-    → POST naar register.php → registerUser() [PHP]
-    → validateRequired(username) → validateEmail(email)
-    → validateRequired(password) → strlen >= 8
-    → email uniciteit check → password_hash(bcrypt)
-    → INSERT Users → redirect login.php met succesbericht
+Gebruiker opent register.php in browser
+    → require functions.php → require db.php → session_start()
+    → isLoggedIn()? JA → redirect index.php | NEE → toon formulier
+    → Gebruiker vult in: username, email, wachtwoord
+    → Klikt "Create Account"
+    → validateRegisterForm() [JavaScript V30]
+        → Controleert: velden niet leeg, username max 50, email regex, wachtwoord ≥ 8
+    → ALS JS validatie slaagt: POST naar register.php
+    → registerUser() [PHP V05-V09]
+        → validateRequired(username, 50) → validateEmail(email)
+        → validateRequired(password) → strlen ≥ 8
+        → email uniciteit check in database
+        → password_hash(bcrypt) → INSERT Users
+    → ALS succes: setMessage('success') → redirect login.php
+    → ALS fout: toon foutmelding met safeEcho()
 ```
 
 ### FLOW 2: INLOGGEN
 
 ```
-Gebruiker → login.php → validateLoginForm() [JS]
-    → POST naar login.php → loginUser() [PHP]
-    → validateRequired(email) → validateRequired(password)
-    → SELECT Users WHERE email → password_verify(bcrypt)
-    → $_SESSION['user_id'] → session_regenerate_id()
-    → updateLastActivity() → redirect index.php
+Gebruiker opent login.php
+    → require functions.php → session_start()
+    → isLoggedIn()? JA → redirect index.php | NEE → toon formulier
+    → Gebruiker vult in: email, wachtwoord
+    → Klikt "Login"
+    → validateLoginForm() [JavaScript V28-V29]
+    → POST naar login.php
+    → loginUser() [PHP V01-V04]
+        → validateRequired(email) → validateRequired(password)
+        → SELECT Users WHERE email (prepared statement)
+        → password_verify(bcrypt)
+        → $_SESSION['user_id'] + session_regenerate_id(true)
+        → updateLastActivity()
+    → ALS succes: redirect index.php
+    → ALS fout: toon "Ongeldige e-mail of wachtwoord" met safeEcho()
 ```
 
-### FLOW 3: DASHBOARD LADEN (index.php)
+### FLOW 3: DASHBOARD LADEN (index.php — Home Pagina)
 
 ```
 Browser → index.php → require functions.php → require db.php
-    → session_start() → checkSessionTimeout()
+    → session_start() → checkSessionTimeout() [V24]
     → isLoggedIn()? NEE → redirect login.php
-                     JA  → getUserId()
-    → updateLastActivity()
+                    JA  → getUserId() → updateLastActivity()
+    → Sorteer parameters uit URL ophalen ($_GET)
     → getFriends() → getFavoriteGames() → getSchedules()
     → getEvents() → getCalendarItems() → getReminders()
-    → HTML renderen met safeEcho() op ALLE output
-    → JavaScript herinneringen als alert()
+    → include header.php → getMessage() (sessie berichten)
+    → 5 HTML secties renderen met safeEcho() [V26] op ALLE output
+    → include footer.php → JavaScript herinneringen laden
 ```
 
 ### FLOW 4: SCHEMA TOEVOEGEN
 
 ```
 Gebruiker → add_schedule.php → checkSessionTimeout() → isLoggedIn()
-    → Formulier invullen → validateScheduleForm() [JS]
-    → POST → addSchedule() [PHP]
-    → validateRequired(gameTitle) → validateDate(date)
-    → validateTime(time) → validateCommaSeparated(friends)
-    → getOrCreateGameId() → INSERT Schedules
-    → redirect index.php met succesbericht
+    → Formulier: speltitel, datum, tijd, vrienden, gedeeld-met
+    → validateScheduleForm() [JavaScript V31]
+    → POST → addSchedule() [PHP V10-V14]
+        → validateRequired(gameTitle, 100) → validateDate(date)
+        → validateTime(time) → validateCommaSeparated(friends)
+        → getOrCreateGameId() → INSERT Schedules
+    → ALS succes: setMessage('success') → redirect index.php
 ```
 
 ### FLOW 5: EVENEMENT TOEVOEGEN
 
 ```
 Gebruiker → add_event.php → checkSessionTimeout() → isLoggedIn()
-    → Formulier invullen → validateEventForm() [JS]
-    → POST → addEvent() [PHP]
-    → validateRequired(title) → validateDate(date)
-    → validateTime(time) → strlen(description) <= 500
-    → in_array(reminder, whitelist) → validateUrl(link)
-    → validateCommaSeparated(sharedWith) → INSERT Events
+    → Formulier: titel, datum, tijd, beschrijving, herinnering, link, gedeeld-met
+    → validateEventForm() [JavaScript V32]
+    → POST → addEvent() [PHP V15-V18]
+        → validateRequired(title, 100) → validateDate → validateTime
+        → strlen(description) ≤ 500 → in_array(reminder, whitelist)
+        → validateUrl(link) → validateCommaSeparated(sharedWith)
+        → INSERT Events
     → redirect index.php
 ```
 
@@ -501,9 +527,11 @@ Gebruiker → add_event.php → checkSessionTimeout() → isLoggedIn()
 
 ```
 Gebruiker → add_friend.php → checkSessionTimeout() → isLoggedIn()
-    → POST → addFriend() [PHP]
-    → validateRequired(friendUsername) → validateRequired(status)
-    → duplicaat check (case-insensitive) → INSERT Friends
+    → Formulier: vriendnaam, notitie, status
+    → POST → addFriend() [PHP V19-V21]
+        → validateRequired(friendUsername, 50) → validateRequired(status, 50)
+        → duplicaat check (case-insensitive LOWER())
+        → INSERT Friends
     → redirect index.php
 ```
 
@@ -511,9 +539,11 @@ Gebruiker → add_friend.php → checkSessionTimeout() → isLoggedIn()
 
 ```
 Gebruiker → profile.php → checkSessionTimeout() → isLoggedIn()
-    → POST → addFavoriteGame() [PHP]
-    → validateRequired(title) → getOrCreateGameId()
-    → duplicaat check → INSERT UserGames
+    → Formulier: speltitel, beschrijving, notitie
+    → POST → addFavoriteGame() [PHP V10, V22]
+        → validateRequired(title, 100)
+        → getOrCreateGameId() → duplicaat check
+        → INSERT UserGames
     → redirect profile.php
 ```
 
@@ -521,71 +551,101 @@ Gebruiker → profile.php → checkSessionTimeout() → isLoggedIn()
 
 ```
 Gebruiker → edit_*.php → checkSessionTimeout() → isLoggedIn()
-    → GET id uit URL → checkOwnership(tabel, id, userId)
+    → GET id uit URL → checkOwnership() [V23]
     → ALS geen eigenaar → FOUT "Geen toestemming"
-    → Haal huidige data op → Toon formulier met vooraf ingevulde waarden
+    → Haal huidige data op → toon formulier met vooraf ingevulde waarden
     → POST → zelfde validaties als bij toevoegen
-    → UPDATE met prepared statement → redirect
+    → UPDATE met prepared statement → redirect met succesbericht
 ```
 
 ### FLOW 9: DATA VERWIJDEREN (Delete)
 
 ```
-Gebruiker → JavaScript confirm("Weet je het zeker?")
+Gebruiker klikt "Delete" knop → JavaScript confirm() dialoog
     → JA → delete.php?type=schedule&id=5
     → checkSessionTimeout() → isLoggedIn()
-    → Bepaal type (schedule/event/favorite/friend)
+    → Bepaal type: schedule / event / favorite / friend
     → Roep juiste delete-functie aan
-    → checkOwnership() → SOFT DELETE (deleted_at = NOW())
-    → setMessage(succes/fout) → redirect
+    → checkOwnership() [V23] → SOFT DELETE (deleted_at = NOW())
+    → setMessage(succes/fout) → redirect naar juiste pagina
 ```
 
 ### FLOW 10: UITLOGGEN
 
 ```
-Gebruiker → klikt "Uitloggen" → logout() [PHP]
-    → session_destroy() → redirect login.php
+Gebruiker klikt "Logout" → logout.php
+    → $_SESSION = [] (wis alle sessie variabelen)
+    → Vernietig sessie cookie
+    → session_destroy()
+    → redirect login.php?msg=logged_out
 ```
 
 ### FLOW 11: DATABASE VERBINDING
 
 ```
 Elke pagina → functions.php → db.php → getDBConnection()
-    → Singleton: ALS $pdo === null → maak nieuwe PDO verbinding
-                 ANDERS → hergebruik bestaande verbinding
+    → Singleton Pattern: ALS $pdo === null → maak nieuwe PDO verbinding
+                         ANDERS → hergebruik bestaande
+    → DSN: "mysql:host=localhost;dbname=gameplan_db;charset=utf8mb4"
     → PDO opties: ERRMODE_EXCEPTION, FETCH_ASSOC,
-                  EMULATE_PREPARES = false, PERSISTENT = true
-    → BIJ FOUT: error_log() (voor developers)
-                die() met generieke melding (voor gebruikers)
+                  EMULATE_PREPARES=false, PERSISTENT=true
+    → BIJ FOUT: error_log() + die() met generieke melding
+```
+
+### FLOW 12: SESSIE BERICHTEN (Flash Messages)
+
+```
+Actie voltooid (bijv. schema toegevoegd)
+    → setMessage('success', 'Schema succesvol toegevoegd!')
+        → $_SESSION['message'] = ['type' => 'success', 'msg' => '...']
+    → redirect naar volgende pagina
+    → getMessage() op volgende pagina
+        → Leest $_SESSION['message'] → unset() (eenmalig tonen)
+        → Retourneert HTML alert div
+    → Auto-dismiss na 5 seconden (JavaScript)
+```
+
+### FLOW 13: HERINNERING SYSTEEM
+
+```
+index.php laadt → getReminders($userId) [PHP]
+    → Haal alle events op met reminder ≠ 'none'
+    → VOOR ELK event:
+        eventTime = strtotime(datum + tijd)
+        reminderTime = eventTime - (1_hour? 3600 : 86400)
+        ALS reminderTime ≤ now EN reminderTime > now - 60
+            → Voeg toe aan herinneringen array
+    → JSON encode → JavaScript
+    → reminders.forEach(r => alert('🔔 Herinnering: ...'))
 ```
 
 ---
 
-## 4. CODE FLOW DIAGRAM — LOGIN PAGINA
+## 7. CODE FLOW DIAGRAM — LOGIN PAGINA
 
 ```
 GEBRUIKER OPENT login.php IN BROWSER
             |
             v
    +------------------+
-   | login.php r.26   |----> require_once 'functions.php'
+   | login.php r.26   |----→ require_once 'functions.php'
    | Laad functies    |        |
    +------------------+        v
             |         +------------------+
-            |         | functions.php    |----> require_once 'db.php'
+            |         | functions.php    |----→ require_once 'db.php'
             |         | r.22            |      (database beschikbaar)
             |         +------------------+
             |                  |
             |                  v
             |         +------------------+
-            |         | functions.php    |----> session_start()
+            |         | functions.php    |----→ session_start()
             |         | r.32-37         |      session_regenerate_id(true)
             |         +------------------+
             |
             v
    +------------------+      JA
-   | login.php r.35   |-----------> header("Location: index.php")
-   | isLoggedIn()?    |             exit; (al ingelogd, geen login nodig)
+   | login.php r.35   |-----------→ header("Location: index.php")
+   | isLoggedIn()?    |             exit; (al ingelogd)
    +------------------+
             | NEE
             v
@@ -601,10 +661,10 @@ GEBRUIKER OPENT login.php IN BROWSER
    +------------------+
    | script.js r.38   |  validateLoginForm() [CLIENT-SIDE]
    | JAVASCRIPT       |
-   | VALIDATIE         |  1. email = trim(document.getElementById('email'))
-   |                  |  2. password = trim(document.getElementById('password'))
-   |                  |  3. ALS !email || !password → alert() → return false
-   |                  |  4. ALS email niet matcht regex → alert() → return false
+   | VALIDATIE         |  1. email = trim(getElementById('email'))
+   |                  |  2. password = trim(getElementById('password'))
+   |                  |  3. ALS !email || !password → alert → return false
+   |                  |  4. ALS email niet matcht regex → alert → return false
    |                  |  5. return true (formulier wordt verzonden)
    +------------------+
             |
@@ -626,80 +686,71 @@ GEBRUIKER OPENT login.php IN BROWSER
    | functions.php r.292-317                             |
    |                                                      |
    | STAP 1: validateRequired($email, "Email")            |
-   |         → trim → empty check → regex spaties check   |
-   |         → ALS fout: RETOURNEER foutmelding            |
+   |         → trim → empty check → regex spaties         |
    |                                                      |
    | STAP 2: validateRequired($password, "Password")      |
-   |         → zelfde controles als stap 1                 |
    |                                                      |
    | STAP 3: Database query (prepared statement)           |
    |         SELECT user_id, username, password_hash       |
    |         FROM Users WHERE email = :email               |
    |         AND deleted_at IS NULL                        |
    |                                                      |
-   | STAP 4: password_verify($password, $user['hash'])     |
-   |         → Vergelijk met bcrypt hash                   |
-   |         → ALS mislukt: "Ongeldige e-mail of wachtw." |
+   | STAP 4: password_verify($password, hash)              |
+   |         ALS mislukt: "Ongeldige e-mail of wachtw."   |
    |                                                      |
-   | STAP 5: $_SESSION['user_id'] = $user['user_id']      |
-   |         $_SESSION['username'] = $user['username']     |
+   | STAP 5: $_SESSION['user_id'] = user_id               |
+   |         $_SESSION['username'] = username               |
    |         session_regenerate_id(true)                   |
-   |         updateLastActivity($pdo, $user['user_id'])    |
+   |         updateLastActivity()                          |
    |                                                      |
-   | STAP 6: return null (succes, geen fout)               |
+   | STAP 6: return null (succes)                          |
    +====================================================+
             |
             v
    +------------------+
-   | login.php r.65   |  if (!$error) {
-   | SUCCES CHECK     |      header("Location: index.php");
-   +------------------+      exit;
-            |              }
-            v
+   | login.php r.65   |  if (!$error):
+   | SUCCES → REDIRECT|      header("Location: index.php"); exit;
    +------------------+
-   | login.php r.127  |  ALS $error:
-   | FOUT TONEN       |  <div class="alert alert-danger">
-   |                  |    <?php echo safeEcho($error); ?>
-   |                  |  </div>
+            |
+            v (als er een fout is)
    +------------------+
+   | login.php r.127  |  <div class="alert alert-danger">
+   | FOUT TONEN       |    <?php echo safeEcho($error); ?>
+   +------------------+  </div>
 ```
 
-**Bestanden betrokken bij Login:**
-- `login.php` — Formulier en POST-verwerking
-- `functions.php` — `loginUser()`, `validateRequired()`, `isLoggedIn()`, `safeEcho()`
-- `db.php` — `getDBConnection()` (PDO Singleton)
-- `script.js` — `validateLoginForm()` (client-side)
-- `style.css` — Glassmorphism styling van het formulier
+**Bestanden betrokken:**
+- `login.php` — Formulier + POST-verwerking (227 regels)
+- `functions.php` — `loginUser()`, `validateRequired()`, `isLoggedIn()`, `safeEcho()` (672 regels)
+- `db.php` — `getDBConnection()` PDO Singleton (314 regels)
+- `script.js` — `validateLoginForm()` client-side (433 regels)
+- `style.css` — Glassmorphism styling
 
 ---
 
-## 5. CODE FLOW DIAGRAM — HOME PAGINA LADEN
+## 8. CODE FLOW DIAGRAM — HOME PAGINA LADEN
 
 ```
 GEBRUIKER NAVIGEERT NAAR index.php
             |
             v
    +------------------+
-   | index.php r.26   |----> require_once 'functions.php'
+   | index.php r.26   |----→ require_once 'functions.php'
    | LAAD FUNCTIES    |        → require_once 'db.php'
-   |                  |        → session_start()
-   |                  |        → session_regenerate_id(true)
+   |                  |        → session_start() + session_regenerate_id()
    +------------------+
             |
             v
    +------------------+
-   | index.php r.29   |----> checkSessionTimeout()
-   | SESSIE CHECK     |
-   |                  |  ALS ingelogd EN last_activity > 1800s:
-   |                  |      session_destroy()
-   |                  |      redirect login.php?msg=session_timeout
-   |                  |  ANDERS:
-   |                  |      $_SESSION['last_activity'] = time()
+   | index.php r.29   |----→ checkSessionTimeout()
+   | SESSIE CHECK     |  ALS ingelogd EN last_activity > 1800s:
+   |                  |      session_destroy() → redirect login.php
+   |                  |  ANDERS: $_SESSION['last_activity'] = time()
    +------------------+
             |
             v
    +------------------+      NEE
-   | index.php r.32   |-----------> header("Location: login.php")
+   | index.php r.32   |-----------→ header("Location: login.php")
    | isLoggedIn()?    |             exit;
    +------------------+
             | JA
@@ -712,122 +763,73 @@ GEBRUIKER NAVIGEERT NAAR index.php
             v
    +------------------+
    | index.php r.41   |  updateLastActivity($pdo, $userId)
-   | UPDATE ACTIVITEIT|  → UPDATE Users SET last_activity = CURRENT_TIMESTAMP
-   |                  |    WHERE user_id = :user_id AND deleted_at IS NULL
+   | UPDATE ACTIVITEIT|  → UPDATE Users SET last_activity = NOW()
    +------------------+
             |
             v
    +------------------+
    | index.php r.44   |  $sortSchedules = $_GET['sort_schedules'] ?? 'date ASC'
    | SORTEER PARAMS   |  $sortEvents = $_GET['sort_events'] ?? 'date ASC'
-   |                  |  (uit URL parameters)
    +------------------+
             |
             v
    +=====================================================+
-   | DATA OPHALEN UIT DATABASE (index.php r.48-53)        |
+   | DATA OPHALEN UIT DATABASE (r.48-53)                  |
    |                                                       |
-   | 1. $friends = getFriends($userId)                     |
-   |    → SELECT friend_id, friend_username, status, note  |
-   |      FROM Friends WHERE user_id = :uid                |
-   |      AND deleted_at IS NULL                           |
-   |                                                       |
-   | 2. $favorites = getFavoriteGames($userId)             |
-   |    → SELECT g.game_id, g.titel, g.description, ug.note|
-   |      FROM UserGames ug JOIN Games g                   |
-   |      ON ug.game_id = g.game_id                        |
-   |      WHERE ug.user_id = :uid AND g.deleted_at IS NULL |
-   |                                                       |
-   | 3. $schedules = getSchedules($userId, $sort)          |
-   |    → SORTEER WHITELIST validatie:                     |
-   |      in_array($sort, ['date ASC', 'date DESC',       |
-   |                        'time ASC', 'time DESC'])      |
-   |    → SELECT s.*, g.titel FROM Schedules s             |
-   |      JOIN Games g ON s.game_id = g.game_id            |
-   |      WHERE s.user_id = :uid AND s.deleted_at IS NULL  |
-   |      ORDER BY [gevalideerde sort] LIMIT 50            |
-   |                                                       |
-   | 4. $events = getEvents($userId, $sort)                |
-   |    → Zelfde whitelist + SELECT Events                 |
-   |                                                       |
-   | 5. $calendarItems = getCalendarItems($userId)         |
-   |    → Combineer schedules + events                     |
-   |    → Sorteer op datum+tijd met usort()                |
-   |                                                       |
-   | 6. $reminders = getReminders($userId)                 |
-   |    → Filter events met reminder ≠ 'none'             |
-   |    → Check of herinneringstijd bereikt is             |
+   | 1. $friends    = getFriends($userId)                 |
+   | 2. $favorites  = getFavoriteGames($userId)           |
+   | 3. $schedules  = getSchedules($userId, $sort)        |
+   |    → sorteer whitelist validatie [V27]                |
+   | 4. $events     = getEvents($userId, $sort)           |
+   |    → sorteer whitelist validatie [V27]                |
+   | 5. $calendar   = getCalendarItems($userId)           |
+   |    → merge schedules+events, usort op datum+tijd     |
+   | 6. $reminders  = getReminders($userId)               |
+   |    → filter events met actieve herinnering            |
    +=====================================================+
             |
             v
    +------------------+
    | index.php r.71   |  include 'header.php'
-   | HEADER LADEN     |  → Navigatie: Dashboard, Profiel, Uitloggen
-   |                  |  → Sessie-based: toon Uitloggen als ingelogd
+   | HEADER           |  → Navigatie: Dashboard, Profiel, Uitloggen
    +------------------+
             |
             v
    +------------------+
    | index.php r.75   |  echo getMessage()
-   | SESSIE BERICHTEN |  → Toon succes/fout van vorige actie
-   |                  |  → Wis bericht uit sessie (eenmalig)
+   | FLASH BERICHTEN  |  → Toon succes/fout van vorige actie (eenmalig)
    +------------------+
             |
             v
    +=====================================================+
-   | HTML SECTIES RENDEREN (index.php r.80-288)            |
+   | HTML SECTIES RENDEREN (r.80-288)                      |
    |                                                       |
-   | SECTIE 1: 👥 Vriendenlijst (r.80-116)               |
-   |   → Tabel met username, status badge, notitie         |
-   |   → Edit/Delete knoppen per vriend                    |
-   |   → ALLE output via safeEcho() (XSS bescherming)     |
+   | § 1: 👥 Vriendenlijst — tabel + edit/delete knoppen |
+   | § 2: 🎮 Favoriete Spellen — tabel + edit/delete     |
+   | § 3: 📅 Schema's — sorteer + tabel + edit/delete    |
+   | § 4: 🎯 Evenementen — sorteer + tabel + links       |
+   | § 5: 📆 Kalender Overzicht — cards, gesorteerd      |
    |                                                       |
-   | SECTIE 2: 🎮 Favoriete Spellen (r.121-153)          |
-   |   → Tabel met titel, beschrijving, notitie            |
-   |   → Edit/Delete knoppen                               |
-   |                                                       |
-   | SECTIE 3: 📅 Schema's (r.158-198)                   |
-   |   → Sorteerknoppen: Date ↑ / Date ↓                  |
-   |   → Tabel met spel, datum, tijd, vrienden, gedeeld    |
-   |   → Edit/Delete knoppen                               |
-   |                                                       |
-   | SECTIE 4: 🎯 Evenementen (r.203-249)                |
-   |   → Sorteerknoppen: Date ↑ / Date ↓                  |
-   |   → Tabel met titel, datum, tijd, beschrijving,       |
-   |     herinnering badge, externe link                   |
-   |   → Edit/Delete knoppen                               |
-   |                                                       |
-   | SECTIE 5: 📆 Kalender Overzicht (r.254-288)         |
-   |   → Cards met gecombineerde items                     |
-   |   → Gesorteerd op datum+tijd                          |
-   |   → Herinnering badges en externe links               |
+   | ALLE output via safeEcho() [V26] = XSS bescherming  |
    +=====================================================+
             |
             v
    +------------------+
    | index.php r.292  |  include 'footer.php'
-   | FOOTER           |  → Copyright © 2025 Harsha Kanaparthi
+   | FOOTER + SCRIPTS |  Bootstrap JS + script.js laden
    +------------------+
             |
             v
    +------------------+
-   | index.php r.294  |  Bootstrap JS laden
-   | SCRIPTS          |  script.js laden
-   +------------------+
-            |
-            v
-   +------------------+
-   | index.php r.298  |  const reminders = <?php echo json_encode($reminders); ?>;
-   | HERINNERINGEN    |  reminders.forEach(r => {
-   |                  |      alert(`🔔 Herinnering: ${r.title} om ${r.time}`);
-   |                  |  });
+   | index.php r.298  |  const reminders = <?php echo json_encode(); ?>;
+   | HERINNERINGEN    |  reminders.forEach(r => alert('🔔 ...'));
    +------------------+
 ```
 
-**Bestanden betrokken bij Home Pagina:**
-- `index.php` — Hoofd dashboard pagina (305 regels)
-- `functions.php` — Alle data-ophaal functies, sessie, validatie (672 regels)
-- `db.php` — Database verbinding via PDO Singleton (314 regels)
+**Bestanden betrokken:**
+- `index.php` — Dashboard pagina (305 regels)
+- `functions.php` — Alle data-ophaal, sessie, validatie functies (672 regels)
+- `db.php` — Database verbinding PDO Singleton (314 regels)
 - `header.php` — Navigatie met sessie-based rendering
 - `footer.php` — Copyright footer
 - `script.js` — Delete bevestiging, alert auto-dismiss (433 regels)
@@ -835,17 +837,53 @@ GEBRUIKER NAVIGEERT NAAR index.php
 
 ---
 
-## SAMENVATTING — ALLES OP ÉÉN PAGINA
+## 9. BEVEILIGINGSMAATREGELEN
 
-| Onderdeel | Validaties | Beveiliging |
-|-----------|-----------|-------------|
-| **Login** | Email verplicht, wachtwoord verplicht, email formaat (JS+PHP) | bcrypt verify, session regenerate, generieke foutmelding |
-| **Registratie** | Username (max 50), email formaat, wachtwoord (min 8), uniciteit | bcrypt hash, prepared statements |
-| **Schedule** | Speltitel (max 100), datum (JJJJ-MM-DD, toekomst), tijd (UU:MM), komma-gescheiden | Session check, ownership, prepared statements |
-| **Event** | Titel (max 100), datum, tijd, beschrijving (max 500), herinnering whitelist, URL | Session check, ownership, prepared statements |
-| **Vriend** | Naam (max 50), status (max 50), duplicaat check | Session check, prepared statements |
-| **Favoriet** | Speltitel (max 100), duplicaat check | Session check, ownership |
-| **Verwijderen** | Type whitelist, ownership check | Soft delete, session check |
-| **Alle pagina's** | Sessie timeout 30 min, inlog check | safeEcho (XSS), PDO (SQL-injectie) |
+| Bedreiging | Maatregel | Implementatie |
+|------------|-----------|---------------|
+| **SQL-injectie** | Prepared statements (PDO) | Alle queries gebruiken `:parameter` binding |
+| **XSS (Cross-Site Scripting)** | `safeEcho()` output escaping | `htmlspecialchars(ENT_QUOTES, 'UTF-8')` op alle output |
+| **Session Hijacking** | `session_regenerate_id(true)` | Bij elke login nieuw sessie-ID |
+| **Session Fixation** | `session_regenerate_id(true)` | Voorkomt hergebruik van oude sessie-ID |
+| **Brute Force** | Generieke foutmelding | "Ongeldige e-mail of wachtwoord" (onthult niet of email bestaat) |
+| **Wachtwoord lekken** | bcrypt hashing | `password_hash(PASSWORD_BCRYPT)` met automatische salt |
+| **IDOR (Insecure Direct Object Reference)** | `checkOwnership()` | Controleert of user_id overeenkomt bij edit/delete |
+| **Sessie timeout** | 30 minuten inactiviteit | `checkSessionTimeout()` op elke pagina |
+| **Data verlies** | Soft delete | `deleted_at` timestamp i.p.v. echte DELETE |
+| **Onbevoegde toegang** | `isLoggedIn()` check | Redirect naar login.php als niet ingelogd |
+| **SQL-injectie via sortering** | Whitelist | `in_array($sort, [...toegestaan...])` |
+| **Database fouten lekken** | `error_log()` + `die()` | Technische details alleen in server log, niet naar gebruiker |
 
-**Totaal: 32 validaties | 11 functionele flows | 2 code flow diagrammen**
+---
+
+## 10. SAMENVATTING
+
+| Onderdeel | Aantal | Details |
+|-----------|--------|---------|
+| **Validaties totaal** | 32 | 27 server-side (PHP) + 5 client-side (JS) |
+| **Functionele flows** | 13 | Login, register, CRUD, logout, DB, berichten, herinneringen |
+| **Code flow diagrammen** | 2 | Login pagina + Home pagina laden |
+| **Beveiligingslagen** | 3 | JavaScript → PHP → Database constraints |
+| **PHP bestanden** | 16 | Alle pagina's + functions.php + db.php |
+| **JavaScript bestanden** | 1 | script.js (433 regels) |
+| **Database tabellen** | 6 | Users, Games, UserGames, Friends, Schedules, Events |
+| **Bug fixes** | 2 | #1001 (spaces-only), #1004 (strict date) |
+
+**Techniek samenvatting per pagina:**
+
+| Pagina | Validaties | Beveiliging |
+|--------|-----------|-------------|
+| **Login** | V01-V04, V28-V29 | bcrypt verify, session regenerate, generieke foutmelding |
+| **Registratie** | V05-V09, V30 | bcrypt hash, email uniciteit, prepared statements |
+| **Schedule** | V10-V14, V31 | Session check, ownership, prepared statements |
+| **Event** | V15-V18, V32 | Session check, ownership, whitelist, prepared statements |
+| **Vriend** | V19-V21 | Session check, duplicaat check, prepared statements |
+| **Favoriet** | V10, V22 | Session check, duplicaat check, ownership |
+| **Verwijderen** | V23 | Soft delete, ownership, type whitelist |
+| **Alle pagina's** | V24-V27 | Sessie timeout, inlog check, safeEcho, sorteer whitelist |
+
+---
+
+*Dit document is geschreven op basis van de broncode van het GamePlan Scheduler project.*  
+*Alle regelnummers verwijzen naar de werkelijke code in de bestanden.*  
+*© 2025 Harsha Kanaparthi — MBO-4 Software Developer — Studentnummer 2195344*

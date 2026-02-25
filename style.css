@@ -1,12 +1,13 @@
 /* ============================================================================
    STYLE.CSS - GAMEPLAN SCHEDULER STYLING
    ============================================================================
-   Author: Harsha Kanaparthi | Student: 2195344 | Date: 30-09-2025
-   
-   ENGLISH: Custom dark gaming theme with Bootstrap 5 overrides.
-   DUTCH: Aangepast donker gaming thema met Bootstrap 5 aanpassingen.
-   
-   DESIGN: Dark theme (black/blue), responsive, 40px min buttons, glassmorphism.
+   Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
+
+   Aangepast donker gaming-thema met Bootstrap 5 aanpassingen.
+   Ontwerp: Donker thema (zwart/blauw), responsief, 40px min knoppen, glassmorphism.
+
+   BUGFIX:
+   - #1005: --glass-bg van 'orange' naar 'rgba(255, 255, 255, 0.05)'
    ============================================================================ */
 
 /* ============================================================================

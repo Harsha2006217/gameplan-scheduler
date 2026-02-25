@@ -31,9 +31,6 @@ require_once 'db.php';
  */
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
-    // Regenerate session ID for security against session hijacking
-    // Regenereer sessie ID voor beveiliging tegen sessie hijacking
-    session_regenerate_id(true);
 }
 
 // ============================================================================

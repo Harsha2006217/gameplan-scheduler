@@ -1274,6 +1274,347 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 
 ---
 
+## 12. Testen (K1-W4)
+
+### 12.1 Teststrategie
+
+De applicatie is getest op drie niveaus:
+
+1. **Handmatige functionele tests** - Elke functie stap voor stap doorlopen
+2. **Validatietests** - Alle invoervalidaties testen met geldige en ongeldige data
+3. **Beveiligingstests** - Controleren of beveiligingsmaatregelen werken
+
+### 12.2 Testcases: Registratie
+
+| Test | Invoer | Verwacht resultaat | Geslaagd |
+|---|---|---|---|
+| TC-R01 | Gebruikersnaam: "Harsha", E-mail: "harsha@test.nl", Wachtwoord: "Test1234" | Account aangemaakt, redirect naar login | Ja |
+| TC-R02 | Gebruikersnaam: leeg | Foutmelding: "Username mag niet leeg zijn" | Ja |
+| TC-R03 | Gebruikersnaam: "   " (alleen spaties) | Foutmelding: "Username kan niet alleen spaties zijn" (Bug #1001) | Ja |
+| TC-R04 | E-mail: "geengeldigemail" | Foutmelding: "Ongeldig e-mail formaat" | Ja |
+| TC-R05 | Wachtwoord: "kort" (minder dan 8 tekens) | Foutmelding: "Wachtwoord moet minimaal 8 tekens zijn" | Ja |
+| TC-R06 | E-mail die al bestaat | Foutmelding: "E-mail al geregistreerd" | Ja |
+| TC-R07 | Gebruikersnaam: meer dan 50 tekens | Foutmelding: maximale lengte overschreden | Ja |
+
+### 12.3 Testcases: Inloggen
+
+| Test | Invoer | Verwacht resultaat | Geslaagd |
+|---|---|---|---|
+| TC-L01 | Juiste e-mail en wachtwoord | Ingelogd, redirect naar dashboard | Ja |
+| TC-L02 | Juiste e-mail, fout wachtwoord | Foutmelding: "Ongeldige e-mail of wachtwoord" | Ja |
+| TC-L03 | Niet-bestaande e-mail | Foutmelding: "Ongeldige e-mail of wachtwoord" | Ja |
+| TC-L04 | Beide velden leeg | Foutmelding: "E-mail en wachtwoord zijn verplicht" | Ja |
+| TC-L05 | Al ingelogd, login.php openen | Redirect naar index.php (dashboard) | Ja |
+
+### 12.4 Testcases: Gaming-schema toevoegen
+
+| Test | Invoer | Verwacht resultaat | Geslaagd |
+|---|---|---|---|
+| TC-S01 | Speltitel: "Fortnite", Datum: morgen, Tijd: "20:00" | Schema toegevoegd, redirect naar dashboard | Ja |
+| TC-S02 | Speltitel: leeg | Foutmelding: "Game title mag niet leeg zijn" | Ja |
+| TC-S03 | Speltitel: "   " (alleen spaties) | Foutmelding (Bug #1001 fix) | Ja |
+| TC-S04 | Datum: gisteren | Foutmelding: "Datum moet vandaag of in de toekomst zijn" | Ja |
+| TC-S05 | Datum: "2025-13-45" (ongeldig) | Foutmelding: "Ongeldig datum formaat" (Bug #1004 fix) | Ja |
+| TC-S06 | Tijd: "25:99" (ongeldig) | Foutmelding: "Ongeldig tijd formaat" | Ja |
+| TC-S07 | Vrienden: "player1, player2" | Succesvol opgeslagen met vrienden | Ja |
+| TC-S08 | Vrienden: "player1,,player2" (lege items) | Foutmelding: lege items in lijst | Ja |
+
+### 12.5 Testcases: Evenement toevoegen
+
+| Test | Invoer | Verwacht resultaat | Geslaagd |
+|---|---|---|---|
+| TC-E01 | Titel: "Fortnite Toernooi", Datum: volgende week, Tijd: "15:00" | Evenement toegevoegd | Ja |
+| TC-E02 | Titel: leeg | Foutmelding: titel verplicht | Ja |
+| TC-E03 | Titel: meer dan 100 tekens | Foutmelding: titel te lang | Ja |
+| TC-E04 | Beschrijving: meer dan 500 tekens | Foutmelding: beschrijving te lang | Ja |
+| TC-E05 | Externe link: "geen-url" | Foutmelding: "Ongeldig URL formaat" | Ja |
+| TC-E06 | Externe link: "https://twitch.tv/stream" | Succesvol opgeslagen met link | Ja |
+| TC-E07 | Herinnering: "1_hour" | Succesvol, herinnering actief | Ja |
+
+### 12.6 Testcases: Vriend toevoegen
+
+| Test | Invoer | Verwacht resultaat | Geslaagd |
+|---|---|---|---|
+| TC-F01 | Gebruikersnaam: "GamerPro123" | Vriend toegevoegd | Ja |
+| TC-F02 | Gebruikersnaam: leeg | Foutmelding: verplicht veld | Ja |
+| TC-F03 | Gebruikersnaam: "   " (spaties) | Foutmelding (Bug #1001) | Ja |
+| TC-F04 | Dezelfde vriend opnieuw toevoegen | Foutmelding: "Al vrienden" | Ja |
+| TC-F05 | Status: "Online" selecteren | Vriend opgeslagen met Online status | Ja |
+
+### 12.7 Testcases: Favoriet spel toevoegen
+
+| Test | Invoer | Verwacht resultaat | Geslaagd |
+|---|---|---|---|
+| TC-G01 | Titel: "Minecraft", Beschrijving: "Bouwspel" | Spel toegevoegd aan favorieten | Ja |
+| TC-G02 | Titel: leeg | Foutmelding: titel verplicht | Ja |
+| TC-G03 | Zelfde spel opnieuw als favoriet | Foutmelding: "Spel al in favorieten" | Ja |
+| TC-G04 | Titel: "Nieuw Spel" (nog niet in database) | Nieuw spel aangemaakt en als favoriet toegevoegd | Ja |
+
+### 12.8 Testcases: Bewerken en verwijderen
+
+| Test | Actie | Verwacht resultaat | Geslaagd |
+|---|---|---|---|
+| TC-D01 | Schema bewerken (eigen item) | Formulier met huidige waarden, succesvol bijgewerkt | Ja |
+| TC-D02 | Evenement bewerken (eigen item) | Formulier met huidige waarden, succesvol bijgewerkt | Ja |
+| TC-D03 | Vriend bewerken (eigen item) | Succesvol bijgewerkt | Ja |
+| TC-D04 | Favoriet bewerken (eigen item) | Succesvol bijgewerkt | Ja |
+| TC-D05 | Item verwijderen met bevestiging | confirm() pop-up, daarna soft delete | Ja |
+| TC-D06 | Verwijderen annuleren in confirm() | Niets gebeurd, item nog aanwezig | Ja |
+| TC-D07 | URL manipulatie: ander gebruiker-ID meegeven | Foutmelding: geen toestemming (eigenaarschap controle) | Ja |
+
+### 12.9 Testcases: Beveiliging
+
+| Test | Actie | Verwacht resultaat | Geslaagd |
+|---|---|---|---|
+| TC-B01 | index.php openen zonder inloggen | Redirect naar login.php | Ja |
+| TC-B02 | 30+ minuten wachten na inloggen | Sessie verlopen, redirect naar login.php | Ja |
+| TC-B03 | SQL-injectie proberen in e-mail veld: `' OR 1=1 --` | Geen effect, prepared statements blokkeren dit | Ja |
+| TC-B04 | XSS proberen in naamveld: `<script>alert('hack')</script>` | Script wordt getoond als tekst, niet uitgevoerd | Ja |
+| TC-B05 | delete.php?type=schedule&id=999 (niet-bestaand item) | Foutmelding: geen toestemming | Ja |
+
+### 12.10 Testcases: Responsief ontwerp
+
+| Test | Schermgrootte | Verwacht resultaat | Geslaagd |
+|---|---|---|---|
+| TC-RD01 | Desktop (> 992px) | Volledige navigatie zichtbaar, tabellen breed | Ja |
+| TC-RD02 | Tablet (768px - 992px) | Hamburger menu, tabellen scrollbaar | Ja |
+| TC-RD03 | Mobiel (< 768px) | Hamburger menu, knoppen full-width, leesbare tekst | Ja |
+| TC-RD04 | Klein mobiel (< 480px) | Alles past op scherm, footer leesbaar | Ja |
+
+### 12.11 Testresultaten samenvatting
+
+| Categorie | Aantal tests | Geslaagd | Gezakt | Percentage |
+|---|---|---|---|---|
+| Registratie | 7 | 7 | 0 | 100% |
+| Inloggen | 5 | 5 | 0 | 100% |
+| Schema toevoegen | 8 | 8 | 0 | 100% |
+| Evenement toevoegen | 7 | 7 | 0 | 100% |
+| Vriend toevoegen | 5 | 5 | 0 | 100% |
+| Favoriet spel | 4 | 4 | 0 | 100% |
+| Bewerken/verwijderen | 7 | 7 | 0 | 100% |
+| Beveiliging | 5 | 5 | 0 | 100% |
+| Responsief ontwerp | 4 | 4 | 0 | 100% |
+| **TOTAAL** | **52** | **52** | **0** | **100%** |
+
+---
+
+## 13. Verbeteren (K1-W5)
+
+### 13.1 Gevonden fouten en verbeteringen
+
+Tijdens het testen en reviewen van de code zijn de volgende fouten gevonden en verbeterd:
+
+| Nr | Fout / Probleem | Hoe gevonden | Oplossing | Bestand |
+|---|---|---|---|---|
+| Bug #1001 | Velden accepteerden alleen spaties | Handmatig testen | Regex `^\s*$` controle toegevoegd | functions.php, script.js |
+| Bug #1004 | Ongeldige datums werden geaccepteerd | Handmatig testen met "2025-13-45" | `DateTime::createFromFormat()` met strikte controle | functions.php, script.js |
+| Bug #1005 | CSS kaarten hadden oranje achtergrond | Visuele inspectie | `--glass-bg` van `orange` naar `rgba(255,255,255,0.05)` | style.css |
+| Bug #1006 | Sessie-ID werd bij elk verzoek geregenereerd | Code review | `session_regenerate_id()` verplaatst naar alleen `loginUser()` | functions.php |
+
+### 13.2 Verbeterproces per bug
+
+#### Bug #1001: Alleen-spaties validatie
+
+```
+STAP 1: PROBLEEM ONTDEKT
+   -> Bij het testen van het registratieformulier bleek dat
+      een gebruikersnaam met alleen spaties " " werd geaccepteerd.
+
+STAP 2: OORZAAK GEVONDEN
+   -> De validateRequired() functie gebruikte alleen empty() controle.
+   -> empty(" ") retourneert false in PHP, waardoor spaties doorgelaten werden.
+
+STAP 3: OPLOSSING BEDACHT
+   -> Voeg trim() toe om witruimte te verwijderen.
+   -> Voeg regex /^\s*$/ toe als extra controle.
+
+STAP 4: OPLOSSING GEIMPLEMENTEERD
+   -> functions.php: validateRequired() aangepast met trim() en regex.
+   -> script.js: Alle validatiefuncties aangepast met /^\s*$/.test() controle.
+
+STAP 5: OPNIEUW GETEST
+   -> Test TC-R03: Gebruikersnaam "   " -> Foutmelding verschijnt. GESLAAGD.
+   -> Test TC-S03: Speltitel "   " -> Foutmelding verschijnt. GESLAAGD.
+```
+
+#### Bug #1004: Strenge datumvalidatie
+
+```
+STAP 1: PROBLEEM ONTDEKT
+   -> Bij het testen bleek dat datum "2025-13-45" werd geaccepteerd.
+   -> Er bestaan geen 13 maanden en niet 45 dagen.
+
+STAP 2: OORZAAK GEVONDEN
+   -> De datum werd alleen gecontroleerd met een regex patroon.
+   -> Het regex patroon controleerde alleen het formaat JJJJ-MM-DD.
+   -> Het controleerde NIET of de datum daadwerkelijk bestaat.
+
+STAP 3: OPLOSSING BEDACHT
+   -> Gebruik DateTime::createFromFormat() om de datum te ontleden.
+   -> Vergelijk de geformatteerde datum terug met de invoer.
+   -> Als ze niet exact overeenkomen, is de datum ongeldig.
+
+STAP 4: OPLOSSING GEIMPLEMENTEERD
+   -> functions.php: validateDate() herschreven met DateTime object.
+   -> script.js: Datum validatie versterkt met new Date() + isNaN() controle.
+
+STAP 5: OPNIEUW GETEST
+   -> Test TC-S05: Datum "2025-13-45" -> Foutmelding. GESLAAGD.
+   -> Test TC-S04: Datum gisteren -> Foutmelding. GESLAAGD.
+   -> Test TC-S01: Datum morgen -> Geaccepteerd. GESLAAGD.
+```
+
+#### Bug #1005: CSS glassmorphism-achtergrondkleur
+
+```
+STAP 1: PROBLEEM ONTDEKT
+   -> Bij visuele inspectie bleken alle kaarten en formulieren
+      een oranje achtergrondkleur te hebben.
+   -> Dit paste niet bij het donkere gaming-thema.
+
+STAP 2: OORZAAK GEVONDEN
+   -> In style.css stond de CSS-variabele --glass-bg ingesteld op "orange".
+   -> Dit had een semi-transparante waarde moeten zijn voor glassmorphism.
+
+STAP 3: OPLOSSING GEIMPLEMENTEERD
+   -> --glass-bg gewijzigd van "orange" naar "rgba(255, 255, 255, 0.05)".
+   -> Dit geeft een subtiel semi-transparant wit effect op de donkere achtergrond.
+
+STAP 4: OPNIEUW GETEST
+   -> Alle pagina's gecontroleerd: kaarten tonen nu correct glassmorphism-effect.
+   -> Login, register, dashboard, profiel -> GESLAAGD.
+```
+
+#### Bug #1006: Sessie-ID regeneratie op elke paginalaad
+
+```
+STAP 1: PROBLEEM ONTDEKT
+   -> Bij code review bleek session_regenerate_id(true) in het
+      sessie-startblok te staan, niet alleen bij login.
+
+STAP 2: OORZAAK GEVONDEN
+   -> De functie stond op regel 36 in functions.php.
+   -> functions.php wordt bij ELKE pagina geladen.
+   -> Dus bij elk verzoek kreeg de gebruiker een nieuw sessie-ID.
+   -> Dit kon problemen veroorzaken met meerdere gelijktijdige verzoeken.
+
+STAP 3: OPLOSSING GEIMPLEMENTEERD
+   -> session_regenerate_id(true) verwijderd uit het sessie-startblok.
+   -> Het wordt nu ALLEEN aangeroepen in loginUser() (regel 311).
+   -> Dit is de correcte plek: alleen na succesvolle authenticatie.
+
+STAP 4: OPNIEUW GETEST
+   -> Inloggen werkt correct. Sessie-ID wordt vernieuwd bij login.
+   -> Navigatie tussen pagina's werkt stabiel zonder sessie-verlies.
+   -> GESLAAGD.
+```
+
+### 13.3 Mogelijke toekomstige verbeteringen
+
+| Nr | Verbetering | Beschrijving | Prioriteit |
+|---|---|---|---|
+| V1 | Wachtwoord vergeten functie | E-mail met reset-link sturen | Hoog |
+| V2 | Profielfoto uploaden | Gebruikers kunnen een avatar uploaden | Gemiddeld |
+| V3 | Echte real-time vriendenlijst | WebSocket verbinding voor live status updates | Laag |
+| V4 | Zoekfunctie | Zoeken in schema's, evenementen en vrienden | Gemiddeld |
+| V5 | Meerdere talen | Volledig taalwisselaar (NL/EN) | Laag |
+| V6 | E-mail notificaties | Herinnering per e-mail versturen | Gemiddeld |
+| V7 | Exportfunctie | Schema's exporteren naar iCal/Google Calendar | Laag |
+
+---
+
+## 14. Examenpresentatie Hulp
+
+### 14.1 Kerntaak-dekking
+
+Dit overzicht toont hoe dit project alle kerntaken van het examen dekt:
+
+| Kerntaak | Onderdeel | Waar gedocumenteerd | Bewijsmateriaal |
+|---|---|---|---|
+| **K1-W1 Planning** | Projectplanning en aanpak | PvA document (PDF) | Tijdsplanning, user stories |
+| **K1-W2 Ontwerp** | Functioneel en technisch ontwerp | FO/TO documenten (PDF) | Database ontwerp, wireframes |
+| **K1-W3 Realisatie** | Code schrijven en implementeren | README sectie 1-11 | Alle PHP, JS, CSS, SQL bestanden |
+| **K1-W4 Testen** | Testcases uitvoeren en documenteren | README sectie 12 | 52 testcases, 100% geslaagd |
+| **K1-W5 Verbeteren** | Fouten vinden en oplossen | README sectie 13 | 4 bugs gevonden en gefixt |
+| **K2-W1 Overleggen** | Communicatie over het project | Overlegverslagen (PDF) | Bijeenkomsten, feedback |
+| **K2-W2 Presenteren** | Het project uitleggen | README + deze sectie | Demonstratie, uitleg |
+| **K2-W3 Reflectie** | Terugkijken op het proces | Reflectieverslag (PDF) | Wat ging goed/fout |
+
+### 14.2 Belangrijkste punten om uit te leggen aan de examinator
+
+#### Punt 1: Architectuur (hoe de code is opgebouwd)
+
+"Mijn applicatie gebruikt **Separation of Concerns**. Dat betekent dat elke laag een eigen verantwoordelijkheid heeft:
+- `db.php` handelt ALLEEN de databaseverbinding af
+- `functions.php` bevat ALLE logica (validatie, authenticatie, CRUD)
+- De PHP-pagina's (zoals `login.php`) handelen ALLEEN de formulieren en HTML af
+- `script.js` doet ALLEEN de client-side validatie
+- `style.css` doet ALLEEN de visuele styling"
+
+#### Punt 2: Dubbele validatie (client-side EN server-side)
+
+"Ik valideer invoer op TWEE plekken:
+1. **Client-side** (JavaScript): Snelle feedback aan de gebruiker voordat het formulier verzonden wordt
+2. **Server-side** (PHP): Echte validatie in `functions.php` die NIET omzeild kan worden
+
+De client-side validatie is voor gebruiksgemak. De server-side validatie is voor veiligheid. Een gebruiker kan JavaScript uitschakelen, maar kan de server-validatie NOOIT omzeilen."
+
+#### Punt 3: Beveiliging (hoe de applicatie beschermd is)
+
+"Mijn applicatie is beschermd tegen de belangrijkste aanvallen:
+- **SQL-injectie**: Ik gebruik PDO prepared statements. De database-engine scheidt de data van de query.
+- **XSS**: Ik gebruik `safeEcho()` die `htmlspecialchars()` aanroept. Dit converteert `<script>` naar `&lt;script&gt;`.
+- **Wachtwoord diefstal**: Ik gebruik `password_hash()` met bcrypt. Zelfs als de database gestolen wordt, zijn wachtwoorden onleesbaar.
+- **Sessie-hijacking**: Ik regenereer het sessie-ID na inloggen met `session_regenerate_id(true)`.
+- **Onbeheerde sessies**: Na 30 minuten inactiviteit wordt de sessie automatisch vernietigd."
+
+#### Punt 4: Database-ontwerp (hoe de data is gestructureerd)
+
+"De database heeft 6 tabellen:
+- `Users` is de hoofdtabel waar alle andere tabellen naar verwijzen
+- `UserGames` is een **koppeltabel** (veel-op-veel relatie) tussen Users en Games
+- Alle tabellen hebben `deleted_at` voor **soft delete**: data wordt nooit echt verwijderd
+- Ik gebruik **foreign keys met CASCADE**: als een gebruiker verwijderd wordt, worden automatisch al hun vrienden, schema's en evenementen ook verwijderd
+- Ik heb **indexen** toegevoegd op veelgebruikte kolommen voor snellere queries"
+
+#### Punt 5: Bugfixes (hoe ik fouten heb gevonden en opgelost)
+
+"Ik heb 4 bugs gevonden en opgelost:
+1. **Bug #1001**: Velden accepteerden alleen spaties. Opgelost met regex controle.
+2. **Bug #1004**: Ongeldige datums werden geaccepteerd. Opgelost met DateTime strikte validatie.
+3. **Bug #1005**: Kaarten hadden een oranje achtergrond. Opgelost door CSS-variabele te corrigeren.
+4. **Bug #1006**: Sessie-ID werd te vaak vernieuwd. Opgelost door het alleen bij login te doen.
+
+Voor elke bug heb ik het proces gevolgd: **ontdekken -> oorzaak vinden -> oplossen -> opnieuw testen**."
+
+### 14.3 Veelgestelde examenvragen en antwoorden
+
+**V: "Waarom heb je PHP gekozen en niet een ander framework?"**
+A: "PHP is de taal die we geleerd hebben in de opleiding. Het werkt goed met XAMPP als lokale omgeving en met MySQL als database. Voor een MBO-project is vanilla PHP geschikt omdat het de basis laat zien zonder afhankelijkheid van frameworks."
+
+**V: "Hoe voorkom je SQL-injectie in jouw applicatie?"**
+A: "Ik gebruik PDO prepared statements. In plaats van de gebruikersinvoer direct in de query te plaatsen, gebruik ik `:named` parameters. De database-engine verwerkt de invoer apart van de query, waardoor kwaadaardige SQL-code nooit uitgevoerd wordt. Voorbeeld: `$stmt->execute(['email' => $email]);`"
+
+**V: "Wat is het verschil tussen client-side en server-side validatie?"**
+A: "Client-side validatie draait in de browser met JavaScript. Het geeft snelle feedback, maar kan uitgeschakeld worden. Server-side validatie draait op de server met PHP. Dit kan NIET omzeild worden. Ik gebruik BEIDE: JavaScript voor gebruiksgemak, PHP voor veiligheid."
+
+**V: "Wat is soft delete en waarom gebruik je het?"**
+A: "Bij soft delete markeer ik een record als verwijderd door `deleted_at` op de huidige datum te zetten. De data blijft in de database staan. Alle queries filteren op `WHERE deleted_at IS NULL` om verwijderde items te verbergen. Het voordeel is dat data hersteld kan worden als iemand per ongeluk iets verwijdert."
+
+**V: "Hoe werkt de sessie timeout?"**
+A: "Na inloggen wordt `$_SESSION['last_activity']` opgeslagen met de huidige tijd. Bij elk paginaverzoek controleert `checkSessionTimeout()` of het verschil met de huidige tijd groter is dan 1800 seconden (30 minuten). Als dat zo is, wordt de sessie vernietigd en de gebruiker naar de loginpagina gestuurd."
+
+**V: "Wat is het Singleton-patroon in je database-verbinding?"**
+A: "Het Singleton-patroon zorgt ervoor dat er slechts een databaseverbinding wordt aangemaakt, ongeacht hoe vaak `getDBConnection()` wordt aangeroepen. De eerste keer maakt het een PDO-object aan en slaat het op in een statische variabele. Bij volgende aanroepen retourneert het dezelfde verbinding. Dit bespaart geheugen en voorkomt te veel open verbindingen."
+
+**V: "Hoe heb je de applicatie getest?"**
+A: "Ik heb 52 handmatige testcases uitgevoerd: 7 voor registratie, 5 voor login, 8 voor schema's, 7 voor evenementen, 5 voor vrienden, 4 voor favorieten, 7 voor bewerken/verwijderen, 5 voor beveiliging, en 4 voor responsief ontwerp. Alle 52 tests zijn geslaagd (100%)."
+
+**V: "Wat zou je anders doen als je opnieuw zou beginnen?"**
+A: "Ik zou eerder beginnen met testen en een gestructureerder testplan opzetten. Ook zou ik vanaf het begin een CSS-framework configureren voor het glassmorphism-thema, in plaats van achteraf variabelen te moeten corrigeren. Verder zou ik overwegen om een MVC-structuur te gebruiken voor betere scheiding van logica en presentatie."
+
+---
+
 ## Bugfixes
 
 ### Bug #1001: Alleen-spaties validatie

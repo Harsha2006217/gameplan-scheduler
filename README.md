@@ -266,7 +266,7 @@ Games (1) ----< (N) Schedules        (een spel kan in veel schema's voorkomen)
 
 #### V1 + V2 + V3: Verplicht veld validatie (`validateRequired`)
 
-**Bestand:** `functions.php` regel 68-86
+**Bestand:** `functions.php` regel 65-83
 
 ```
 ALGORITME: valideerVerplichtVeld(waarde, veldnaam, maxLengte)
@@ -281,7 +281,7 @@ ALGORITME: valideerVerplichtVeld(waarde, veldnaam, maxLengte)
 
 #### V4: E-mail formaat validatie (`validateEmail`)
 
-**Bestand:** `functions.php` regel 136-142
+**Bestand:** `functions.php` regel 133-139
 
 ```
 ALGORITME: valideerEmail(email)
@@ -295,7 +295,7 @@ ALGORITME: valideerEmail(email)
 
 #### V5: Wachtwoord lengte validatie
 
-**Bestand:** `functions.php` regel 265-266
+**Bestand:** `functions.php` regel 262-263
 
 ```
 ALGORITME: valideerWachtwoord(wachtwoord)
@@ -307,7 +307,7 @@ ALGORITME: valideerWachtwoord(wachtwoord)
 
 #### V6 + V7: Datum validatie (`validateDate`)
 
-**Bestand:** `functions.php` regel 97-117
+**Bestand:** `functions.php` regel 94-114
 
 ```
 ALGORITME: valideerDatum(datumString)
@@ -325,7 +325,7 @@ ALGORITME: valideerDatum(datumString)
 
 #### V8: Tijd validatie (`validateTime`)
 
-**Bestand:** `functions.php` regel 123-130
+**Bestand:** `functions.php` regel 120-127
 
 ```
 ALGORITME: valideerTijd(tijdString)
@@ -342,7 +342,7 @@ ALGORITME: valideerTijd(tijdString)
 
 #### V9: URL validatie (`validateUrl`)
 
-**Bestand:** `functions.php` regel 148-154
+**Bestand:** `functions.php` regel 145-151
 
 ```
 ALGORITME: valideerUrl(url)
@@ -356,7 +356,7 @@ ALGORITME: valideerUrl(url)
 
 #### V10: Kommagescheiden lijst validatie (`validateCommaSeparated`)
 
-**Bestand:** `functions.php` regel 160-171
+**Bestand:** `functions.php` regel 157-168
 
 ```
 ALGORITME: valideerKommaGescheiden(waarde, veldnaam)
@@ -373,7 +373,7 @@ ALGORITME: valideerKommaGescheiden(waarde, veldnaam)
 
 #### V11: E-mail uniciteit validatie
 
-**Bestand:** `functions.php` regel 269-272
+**Bestand:** `functions.php` regel 266-269
 
 ```
 ALGORITME: controleerEmailBestaat(email)
@@ -387,7 +387,7 @@ ALGORITME: controleerEmailBestaat(email)
 
 #### V12: Spel al in favorieten validatie
 
-**Bestand:** `functions.php` regel 369-372
+**Bestand:** `functions.php` regel 366-369
 
 ```
 ALGORITME: controleerAlFavoriet(userId, gameId)
@@ -401,7 +401,7 @@ ALGORITME: controleerAlFavoriet(userId, gameId)
 
 #### V13: Vriend al toegevoegd validatie
 
-**Bestand:** `functions.php` regel 451-454
+**Bestand:** `functions.php` regel 448-451
 
 ```
 ALGORITME: controleerAlVrienden(userId, vriendNaam)
@@ -417,7 +417,7 @@ ALGORITME: controleerAlVrienden(userId, vriendNaam)
 
 #### V14: Eigenaarschap validatie (`checkOwnership`)
 
-**Bestand:** `functions.php` regel 640-645
+**Bestand:** `functions.php` regel 637-642
 
 ```
 ALGORITME: controleerEigenaarschap(tabel, idKolom, id, userId)
@@ -433,7 +433,7 @@ ALGORITME: controleerEigenaarschap(tabel, idKolom, id, userId)
 
 #### V15: Beschrijving lengte validatie
 
-**Bestand:** `functions.php` regel 577-578
+**Bestand:** `functions.php` regel 574-575
 
 ```
 ALGORITME: valideerBeschrijving(beschrijving)
@@ -445,7 +445,7 @@ ALGORITME: valideerBeschrijving(beschrijving)
 
 #### V16: Herinnering waarde validatie
 
-**Bestand:** `functions.php` regel 579-580
+**Bestand:** `functions.php` regel 576-577
 
 ```
 ALGORITME: valideerHerinnering(herinnering)
@@ -457,7 +457,7 @@ ALGORITME: valideerHerinnering(herinnering)
 
 #### V17: Sessie timeout validatie (`checkSessionTimeout`)
 
-**Bestand:** `functions.php` regel 239-248
+**Bestand:** `functions.php` regel 236-245
 
 ```
 ALGORITME: controleerSessieTimeout()
@@ -473,7 +473,7 @@ ALGORITME: controleerSessieTimeout()
 
 #### V18: Inlogstatus validatie (`isLoggedIn`)
 
-**Bestand:** `functions.php` regel 211-214
+**Bestand:** `functions.php` regel 208-211
 
 ```
 ALGORITME: isIngelogd()
@@ -489,7 +489,7 @@ ALGORITME: isIngelogd()
 
 #### Login formulier validatie (`validateLoginForm`)
 
-**Bestand:** `script.js` regel 38-68
+**Bestand:** `script.js` regel 41-71
 
 ```
 ALGORITME: valideerLoginFormulier()
@@ -507,7 +507,7 @@ ALGORITME: valideerLoginFormulier()
 
 #### Registratie formulier validatie (`validateRegisterForm`)
 
-**Bestand:** `script.js` regel 93-136
+**Bestand:** `script.js` regel 96-139
 
 ```
 ALGORITME: valideerRegistratieFormulier()
@@ -533,7 +533,7 @@ ALGORITME: valideerRegistratieFormulier()
 
 #### Schema formulier validatie (`validateScheduleForm`)
 
-**Bestand:** `script.js` regel 163-224
+**Bestand:** `script.js` regel 166-227
 
 ```
 ALGORITME: valideerSchemaFormulier()
@@ -567,7 +567,7 @@ ALGORITME: valideerSchemaFormulier()
 
 #### Evenement formulier validatie (`validateEventForm`)
 
-**Bestand:** `script.js` regel 253-327
+**Bestand:** `script.js` regel 256-330
 
 ```
 ALGORITME: valideerEvenementFormulier()
@@ -885,12 +885,12 @@ BROWSER                          SERVER
 | `login.php`     | -                      | 26      | Laadt functions.php        |
 | `login.php`     | -                      | 35-38   | Controleert of al ingelogd |
 | `login.php`     | -                      | 51-70   | Verwerkt POST-formulier    |
-| `functions.php` | `loginUser()`          | 292-317 | Authenticatie logica       |
-| `functions.php` | `validateRequired()`   | 68-86   | Veldvalidatie              |
-| `functions.php` | `isLoggedIn()`         | 211-214 | Sessiecontrole             |
-| `functions.php` | `updateLastActivity()` | 229-233 | Activiteit bijwerken       |
-| `db.php`        | `getDBConnection()`    | 96-299  | Database verbinding        |
-| `script.js`     | `validateLoginForm()`  | 38-68   | Client-side validatie      |
+| `functions.php` | `loginUser()`          | 289-314 | Authenticatie logica       |
+| `functions.php` | `validateRequired()`   | 65-83   | Veldvalidatie              |
+| `functions.php` | `isLoggedIn()`         | 208-211 | Sessiecontrole             |
+| `functions.php` | `updateLastActivity()` | 226-230 | Activiteit bijwerken       |
+| `db.php`        | `getDBConnection()`    | 88-291  | Database verbinding        |
+| `script.js`     | `validateLoginForm()`  | 41-71   | Client-side validatie      |
 
 ### 7.2 Code Flow: Dashboard (Home) Pagina Laden
 
@@ -902,47 +902,47 @@ BROWSER                          SERVER
   |                                |   |-- Laad db.php (databaseverbinding)
   |                                |   |-- Start sessie
   |                                |
-  |                                |-- checkSessionTimeout() [functions.php:239]
+  |                                |-- checkSessionTimeout() [functions.php:236]
   |                                |   |-- Controleer of > 30 min inactief
   |                                |   |-- ALS timeout: session_destroy()
   |                                |   |-- Update $_SESSION['last_activity']
   |                                |
-  |                                |-- isLoggedIn() [functions.php:211]
+  |                                |-- isLoggedIn() [functions.php:208]
   |                                |   |-- ALS niet ingelogd: redirect login.php
   |                                |
-  |                                |-- getUserId() [functions.php:220]
+  |                                |-- getUserId() [functions.php:217]
   |                                |   |-- Haal user_id uit sessie
   |                                |
-  |                                |-- updateLastActivity() [functions.php:229]
+  |                                |-- updateLastActivity() [functions.php:226]
   |                                |   |-- UPDATE Users SET last_activity
   |                                |
   |                                |-- Haal sorteerparameters uit $_GET
   |                                |
-  |                                |-- getFriends($userId) [functions.php:488]
+  |                                |-- getFriends($userId) [functions.php:485]
   |                                |   |-- SELECT FROM Friends WHERE user_id
   |                                |   |   AND deleted_at IS NULL
   |                                |
-  |                                |-- getFavoriteGames($userId) [functions.php:419]
+  |                                |-- getFavoriteGames($userId) [functions.php:416]
   |                                |   |-- SELECT FROM UserGames JOIN Games
   |                                |   |   WHERE user_id AND deleted_at IS NULL
   |                                |
-  |                                |-- getSchedules($userId, $sort) [functions.php:521]
+  |                                |-- getSchedules($userId, $sort) [functions.php:518]
   |                                |   |-- Valideer sorteerparameter (whitelist)
   |                                |   |-- SELECT FROM Schedules JOIN Games
   |                                |   |   WHERE user_id AND deleted_at IS NULL
   |                                |   |   ORDER BY $sort LIMIT 50
   |                                |
-  |                                |-- getEvents($userId, $sort) [functions.php:591]
+  |                                |-- getEvents($userId, $sort) [functions.php:588]
   |                                |   |-- Valideer sorteerparameter
   |                                |   |-- SELECT FROM Events
   |                                |   |   WHERE user_id AND deleted_at IS NULL
   |                                |   |   ORDER BY $sort LIMIT 50
   |                                |
-  |                                |-- getCalendarItems($userId) [functions.php:647]
+  |                                |-- getCalendarItems($userId) [functions.php:644]
   |                                |   |-- Combineer schema's + evenementen
   |                                |   |-- Sorteer op datum+tijd (usort)
   |                                |
-  |                                |-- getReminders($userId) [functions.php:658]
+  |                                |-- getReminders($userId) [functions.php:655]
   |                                |   |-- Filter evenementen met herinnering
   |                                |   |-- Controleer of herinneringstijd nu is
   |                                |
@@ -979,17 +979,17 @@ BROWSER                          SERVER
 | `index.php`     | -                       | 32-35   | Inlogcontrole          |
 | `index.php`     | -                       | 48-53   | Alle data ophalen      |
 | `index.php`     | -                       | 71-292  | HTML rendering         |
-| `functions.php` | `checkSessionTimeout()` | 239-248 | Sessie-expiratie       |
-| `functions.php` | `getFriends()`          | 488-494 | Vrienden ophalen       |
-| `functions.php` | `getFavoriteGames()`    | 419-425 | Favorieten ophalen     |
-| `functions.php` | `getSchedules()`        | 521-528 | Schema's ophalen       |
-| `functions.php` | `getEvents()`           | 591-598 | Evenementen ophalen    |
-| `functions.php` | `getCalendarItems()`    | 647-656 | Kalender samenvoegen   |
-| `functions.php` | `getReminders()`        | 658-672 | Herinneringen filteren |
-| `functions.php` | `safeEcho()`            | 50-55   | XSS-bescherming        |
+| `functions.php` | `checkSessionTimeout()` | 236-245 | Sessie-expiratie       |
+| `functions.php` | `getFriends()`          | 485-491 | Vrienden ophalen       |
+| `functions.php` | `getFavoriteGames()`    | 416-422 | Favorieten ophalen     |
+| `functions.php` | `getSchedules()`        | 518-525 | Schema's ophalen       |
+| `functions.php` | `getEvents()`           | 588-595 | Evenementen ophalen    |
+| `functions.php` | `getCalendarItems()`    | 644-653 | Kalender samenvoegen   |
+| `functions.php` | `getReminders()`        | 655-669 | Herinneringen filteren |
+| `functions.php` | `safeEcho()`            | 47-52   | XSS-bescherming        |
 | `header.php`    | -                       | 1-158   | Navigatiebalk          |
 | `footer.php`    | -                       | 1-90    | Voettekst              |
-| `script.js`     | `initializeFeatures()`  | 365-398 | Pagina-initialisatie   |
+| `script.js`     | `initializeFeatures()`  | 368-401 | Pagina-initialisatie   |
 
 ### 7.3 Code Flow: Item Verwijderen
 
@@ -1286,115 +1286,115 @@ De applicatie is getest op drie niveaus:
 
 ### 12.2 Testcases: Registratie
 
-| Test | Invoer | Verwacht resultaat | Geslaagd |
-|---|---|---|---|
-| TC-R01 | Gebruikersnaam: "Harsha", E-mail: "harsha@test.nl", Wachtwoord: "Test1234" | Account aangemaakt, redirect naar login | Ja |
-| TC-R02 | Gebruikersnaam: leeg | Foutmelding: "Username mag niet leeg zijn" | Ja |
-| TC-R03 | Gebruikersnaam: "   " (alleen spaties) | Foutmelding: "Username kan niet alleen spaties zijn" (Bug #1001) | Ja |
-| TC-R04 | E-mail: "geengeldigemail" | Foutmelding: "Ongeldig e-mail formaat" | Ja |
-| TC-R05 | Wachtwoord: "kort" (minder dan 8 tekens) | Foutmelding: "Wachtwoord moet minimaal 8 tekens zijn" | Ja |
-| TC-R06 | E-mail die al bestaat | Foutmelding: "E-mail al geregistreerd" | Ja |
-| TC-R07 | Gebruikersnaam: meer dan 50 tekens | Foutmelding: maximale lengte overschreden | Ja |
+| Test   | Invoer                                                                     | Verwacht resultaat                                               | Geslaagd |
+| ------ | -------------------------------------------------------------------------- | ---------------------------------------------------------------- | -------- |
+| TC-R01 | Gebruikersnaam: "Harsha", E-mail: "harsha@test.nl", Wachtwoord: "Test1234" | Account aangemaakt, redirect naar login                          | Ja       |
+| TC-R02 | Gebruikersnaam: leeg                                                       | Foutmelding: "Username mag niet leeg zijn"                       | Ja       |
+| TC-R03 | Gebruikersnaam: " " (alleen spaties)                                       | Foutmelding: "Username kan niet alleen spaties zijn" (Bug #1001) | Ja       |
+| TC-R04 | E-mail: "geengeldigemail"                                                  | Foutmelding: "Ongeldig e-mail formaat"                           | Ja       |
+| TC-R05 | Wachtwoord: "kort" (minder dan 8 tekens)                                   | Foutmelding: "Wachtwoord moet minimaal 8 tekens zijn"            | Ja       |
+| TC-R06 | E-mail die al bestaat                                                      | Foutmelding: "E-mail al geregistreerd"                           | Ja       |
+| TC-R07 | Gebruikersnaam: meer dan 50 tekens                                         | Foutmelding: maximale lengte overschreden                        | Ja       |
 
 ### 12.3 Testcases: Inloggen
 
-| Test | Invoer | Verwacht resultaat | Geslaagd |
-|---|---|---|---|
-| TC-L01 | Juiste e-mail en wachtwoord | Ingelogd, redirect naar dashboard | Ja |
-| TC-L02 | Juiste e-mail, fout wachtwoord | Foutmelding: "Ongeldige e-mail of wachtwoord" | Ja |
-| TC-L03 | Niet-bestaande e-mail | Foutmelding: "Ongeldige e-mail of wachtwoord" | Ja |
-| TC-L04 | Beide velden leeg | Foutmelding: "E-mail en wachtwoord zijn verplicht" | Ja |
-| TC-L05 | Al ingelogd, login.php openen | Redirect naar index.php (dashboard) | Ja |
+| Test   | Invoer                         | Verwacht resultaat                                 | Geslaagd |
+| ------ | ------------------------------ | -------------------------------------------------- | -------- |
+| TC-L01 | Juiste e-mail en wachtwoord    | Ingelogd, redirect naar dashboard                  | Ja       |
+| TC-L02 | Juiste e-mail, fout wachtwoord | Foutmelding: "Ongeldige e-mail of wachtwoord"      | Ja       |
+| TC-L03 | Niet-bestaande e-mail          | Foutmelding: "Ongeldige e-mail of wachtwoord"      | Ja       |
+| TC-L04 | Beide velden leeg              | Foutmelding: "E-mail en wachtwoord zijn verplicht" | Ja       |
+| TC-L05 | Al ingelogd, login.php openen  | Redirect naar index.php (dashboard)                | Ja       |
 
 ### 12.4 Testcases: Gaming-schema toevoegen
 
-| Test | Invoer | Verwacht resultaat | Geslaagd |
-|---|---|---|---|
-| TC-S01 | Speltitel: "Fortnite", Datum: morgen, Tijd: "20:00" | Schema toegevoegd, redirect naar dashboard | Ja |
-| TC-S02 | Speltitel: leeg | Foutmelding: "Game title mag niet leeg zijn" | Ja |
-| TC-S03 | Speltitel: "   " (alleen spaties) | Foutmelding (Bug #1001 fix) | Ja |
-| TC-S04 | Datum: gisteren | Foutmelding: "Datum moet vandaag of in de toekomst zijn" | Ja |
-| TC-S05 | Datum: "2025-13-45" (ongeldig) | Foutmelding: "Ongeldig datum formaat" (Bug #1004 fix) | Ja |
-| TC-S06 | Tijd: "25:99" (ongeldig) | Foutmelding: "Ongeldig tijd formaat" | Ja |
-| TC-S07 | Vrienden: "player1, player2" | Succesvol opgeslagen met vrienden | Ja |
-| TC-S08 | Vrienden: "player1,,player2" (lege items) | Foutmelding: lege items in lijst | Ja |
+| Test   | Invoer                                              | Verwacht resultaat                                       | Geslaagd |
+| ------ | --------------------------------------------------- | -------------------------------------------------------- | -------- |
+| TC-S01 | Speltitel: "Fortnite", Datum: morgen, Tijd: "20:00" | Schema toegevoegd, redirect naar dashboard               | Ja       |
+| TC-S02 | Speltitel: leeg                                     | Foutmelding: "Game title mag niet leeg zijn"             | Ja       |
+| TC-S03 | Speltitel: " " (alleen spaties)                     | Foutmelding (Bug #1001 fix)                              | Ja       |
+| TC-S04 | Datum: gisteren                                     | Foutmelding: "Datum moet vandaag of in de toekomst zijn" | Ja       |
+| TC-S05 | Datum: "2025-13-45" (ongeldig)                      | Foutmelding: "Ongeldig datum formaat" (Bug #1004 fix)    | Ja       |
+| TC-S06 | Tijd: "25:99" (ongeldig)                            | Foutmelding: "Ongeldig tijd formaat"                     | Ja       |
+| TC-S07 | Vrienden: "player1, player2"                        | Succesvol opgeslagen met vrienden                        | Ja       |
+| TC-S08 | Vrienden: "player1,,player2" (lege items)           | Foutmelding: lege items in lijst                         | Ja       |
 
 ### 12.5 Testcases: Evenement toevoegen
 
-| Test | Invoer | Verwacht resultaat | Geslaagd |
-|---|---|---|---|
-| TC-E01 | Titel: "Fortnite Toernooi", Datum: volgende week, Tijd: "15:00" | Evenement toegevoegd | Ja |
-| TC-E02 | Titel: leeg | Foutmelding: titel verplicht | Ja |
-| TC-E03 | Titel: meer dan 100 tekens | Foutmelding: titel te lang | Ja |
-| TC-E04 | Beschrijving: meer dan 500 tekens | Foutmelding: beschrijving te lang | Ja |
-| TC-E05 | Externe link: "geen-url" | Foutmelding: "Ongeldig URL formaat" | Ja |
-| TC-E06 | Externe link: "https://twitch.tv/stream" | Succesvol opgeslagen met link | Ja |
-| TC-E07 | Herinnering: "1_hour" | Succesvol, herinnering actief | Ja |
+| Test   | Invoer                                                          | Verwacht resultaat                  | Geslaagd |
+| ------ | --------------------------------------------------------------- | ----------------------------------- | -------- |
+| TC-E01 | Titel: "Fortnite Toernooi", Datum: volgende week, Tijd: "15:00" | Evenement toegevoegd                | Ja       |
+| TC-E02 | Titel: leeg                                                     | Foutmelding: titel verplicht        | Ja       |
+| TC-E03 | Titel: meer dan 100 tekens                                      | Foutmelding: titel te lang          | Ja       |
+| TC-E04 | Beschrijving: meer dan 500 tekens                               | Foutmelding: beschrijving te lang   | Ja       |
+| TC-E05 | Externe link: "geen-url"                                        | Foutmelding: "Ongeldig URL formaat" | Ja       |
+| TC-E06 | Externe link: "https://twitch.tv/stream"                        | Succesvol opgeslagen met link       | Ja       |
+| TC-E07 | Herinnering: "1_hour"                                           | Succesvol, herinnering actief       | Ja       |
 
 ### 12.6 Testcases: Vriend toevoegen
 
-| Test | Invoer | Verwacht resultaat | Geslaagd |
-|---|---|---|---|
-| TC-F01 | Gebruikersnaam: "GamerPro123" | Vriend toegevoegd | Ja |
-| TC-F02 | Gebruikersnaam: leeg | Foutmelding: verplicht veld | Ja |
-| TC-F03 | Gebruikersnaam: "   " (spaties) | Foutmelding (Bug #1001) | Ja |
-| TC-F04 | Dezelfde vriend opnieuw toevoegen | Foutmelding: "Al vrienden" | Ja |
-| TC-F05 | Status: "Online" selecteren | Vriend opgeslagen met Online status | Ja |
+| Test   | Invoer                            | Verwacht resultaat                  | Geslaagd |
+| ------ | --------------------------------- | ----------------------------------- | -------- |
+| TC-F01 | Gebruikersnaam: "GamerPro123"     | Vriend toegevoegd                   | Ja       |
+| TC-F02 | Gebruikersnaam: leeg              | Foutmelding: verplicht veld         | Ja       |
+| TC-F03 | Gebruikersnaam: " " (spaties)     | Foutmelding (Bug #1001)             | Ja       |
+| TC-F04 | Dezelfde vriend opnieuw toevoegen | Foutmelding: "Al vrienden"          | Ja       |
+| TC-F05 | Status: "Online" selecteren       | Vriend opgeslagen met Online status | Ja       |
 
 ### 12.7 Testcases: Favoriet spel toevoegen
 
-| Test | Invoer | Verwacht resultaat | Geslaagd |
-|---|---|---|---|
-| TC-G01 | Titel: "Minecraft", Beschrijving: "Bouwspel" | Spel toegevoegd aan favorieten | Ja |
-| TC-G02 | Titel: leeg | Foutmelding: titel verplicht | Ja |
-| TC-G03 | Zelfde spel opnieuw als favoriet | Foutmelding: "Spel al in favorieten" | Ja |
-| TC-G04 | Titel: "Nieuw Spel" (nog niet in database) | Nieuw spel aangemaakt en als favoriet toegevoegd | Ja |
+| Test   | Invoer                                       | Verwacht resultaat                               | Geslaagd |
+| ------ | -------------------------------------------- | ------------------------------------------------ | -------- |
+| TC-G01 | Titel: "Minecraft", Beschrijving: "Bouwspel" | Spel toegevoegd aan favorieten                   | Ja       |
+| TC-G02 | Titel: leeg                                  | Foutmelding: titel verplicht                     | Ja       |
+| TC-G03 | Zelfde spel opnieuw als favoriet             | Foutmelding: "Spel al in favorieten"             | Ja       |
+| TC-G04 | Titel: "Nieuw Spel" (nog niet in database)   | Nieuw spel aangemaakt en als favoriet toegevoegd | Ja       |
 
 ### 12.8 Testcases: Bewerken en verwijderen
 
-| Test | Actie | Verwacht resultaat | Geslaagd |
-|---|---|---|---|
-| TC-D01 | Schema bewerken (eigen item) | Formulier met huidige waarden, succesvol bijgewerkt | Ja |
-| TC-D02 | Evenement bewerken (eigen item) | Formulier met huidige waarden, succesvol bijgewerkt | Ja |
-| TC-D03 | Vriend bewerken (eigen item) | Succesvol bijgewerkt | Ja |
-| TC-D04 | Favoriet bewerken (eigen item) | Succesvol bijgewerkt | Ja |
-| TC-D05 | Item verwijderen met bevestiging | confirm() pop-up, daarna soft delete | Ja |
-| TC-D06 | Verwijderen annuleren in confirm() | Niets gebeurd, item nog aanwezig | Ja |
-| TC-D07 | URL manipulatie: ander gebruiker-ID meegeven | Foutmelding: geen toestemming (eigenaarschap controle) | Ja |
+| Test   | Actie                                        | Verwacht resultaat                                     | Geslaagd |
+| ------ | -------------------------------------------- | ------------------------------------------------------ | -------- |
+| TC-D01 | Schema bewerken (eigen item)                 | Formulier met huidige waarden, succesvol bijgewerkt    | Ja       |
+| TC-D02 | Evenement bewerken (eigen item)              | Formulier met huidige waarden, succesvol bijgewerkt    | Ja       |
+| TC-D03 | Vriend bewerken (eigen item)                 | Succesvol bijgewerkt                                   | Ja       |
+| TC-D04 | Favoriet bewerken (eigen item)               | Succesvol bijgewerkt                                   | Ja       |
+| TC-D05 | Item verwijderen met bevestiging             | confirm() pop-up, daarna soft delete                   | Ja       |
+| TC-D06 | Verwijderen annuleren in confirm()           | Niets gebeurd, item nog aanwezig                       | Ja       |
+| TC-D07 | URL manipulatie: ander gebruiker-ID meegeven | Foutmelding: geen toestemming (eigenaarschap controle) | Ja       |
 
 ### 12.9 Testcases: Beveiliging
 
-| Test | Actie | Verwacht resultaat | Geslaagd |
-|---|---|---|---|
-| TC-B01 | index.php openen zonder inloggen | Redirect naar login.php | Ja |
-| TC-B02 | 30+ minuten wachten na inloggen | Sessie verlopen, redirect naar login.php | Ja |
-| TC-B03 | SQL-injectie proberen in e-mail veld: `' OR 1=1 --` | Geen effect, prepared statements blokkeren dit | Ja |
-| TC-B04 | XSS proberen in naamveld: `<script>alert('hack')</script>` | Script wordt getoond als tekst, niet uitgevoerd | Ja |
-| TC-B05 | delete.php?type=schedule&id=999 (niet-bestaand item) | Foutmelding: geen toestemming | Ja |
+| Test   | Actie                                                      | Verwacht resultaat                              | Geslaagd |
+| ------ | ---------------------------------------------------------- | ----------------------------------------------- | -------- |
+| TC-B01 | index.php openen zonder inloggen                           | Redirect naar login.php                         | Ja       |
+| TC-B02 | 30+ minuten wachten na inloggen                            | Sessie verlopen, redirect naar login.php        | Ja       |
+| TC-B03 | SQL-injectie proberen in e-mail veld: `' OR 1=1 --`        | Geen effect, prepared statements blokkeren dit  | Ja       |
+| TC-B04 | XSS proberen in naamveld: `<script>alert('hack')</script>` | Script wordt getoond als tekst, niet uitgevoerd | Ja       |
+| TC-B05 | delete.php?type=schedule&id=999 (niet-bestaand item)       | Foutmelding: geen toestemming                   | Ja       |
 
 ### 12.10 Testcases: Responsief ontwerp
 
-| Test | Schermgrootte | Verwacht resultaat | Geslaagd |
-|---|---|---|---|
-| TC-RD01 | Desktop (> 992px) | Volledige navigatie zichtbaar, tabellen breed | Ja |
-| TC-RD02 | Tablet (768px - 992px) | Hamburger menu, tabellen scrollbaar | Ja |
-| TC-RD03 | Mobiel (< 768px) | Hamburger menu, knoppen full-width, leesbare tekst | Ja |
-| TC-RD04 | Klein mobiel (< 480px) | Alles past op scherm, footer leesbaar | Ja |
+| Test    | Schermgrootte          | Verwacht resultaat                                 | Geslaagd |
+| ------- | ---------------------- | -------------------------------------------------- | -------- |
+| TC-RD01 | Desktop (> 992px)      | Volledige navigatie zichtbaar, tabellen breed      | Ja       |
+| TC-RD02 | Tablet (768px - 992px) | Hamburger menu, tabellen scrollbaar                | Ja       |
+| TC-RD03 | Mobiel (< 768px)       | Hamburger menu, knoppen full-width, leesbare tekst | Ja       |
+| TC-RD04 | Klein mobiel (< 480px) | Alles past op scherm, footer leesbaar              | Ja       |
 
 ### 12.11 Testresultaten samenvatting
 
-| Categorie | Aantal tests | Geslaagd | Gezakt | Percentage |
-|---|---|---|---|---|
-| Registratie | 7 | 7 | 0 | 100% |
-| Inloggen | 5 | 5 | 0 | 100% |
-| Schema toevoegen | 8 | 8 | 0 | 100% |
-| Evenement toevoegen | 7 | 7 | 0 | 100% |
-| Vriend toevoegen | 5 | 5 | 0 | 100% |
-| Favoriet spel | 4 | 4 | 0 | 100% |
-| Bewerken/verwijderen | 7 | 7 | 0 | 100% |
-| Beveiliging | 5 | 5 | 0 | 100% |
-| Responsief ontwerp | 4 | 4 | 0 | 100% |
-| **TOTAAL** | **52** | **52** | **0** | **100%** |
+| Categorie            | Aantal tests | Geslaagd | Gezakt | Percentage |
+| -------------------- | ------------ | -------- | ------ | ---------- |
+| Registratie          | 7            | 7        | 0      | 100%       |
+| Inloggen             | 5            | 5        | 0      | 100%       |
+| Schema toevoegen     | 8            | 8        | 0      | 100%       |
+| Evenement toevoegen  | 7            | 7        | 0      | 100%       |
+| Vriend toevoegen     | 5            | 5        | 0      | 100%       |
+| Favoriet spel        | 4            | 4        | 0      | 100%       |
+| Bewerken/verwijderen | 7            | 7        | 0      | 100%       |
+| Beveiliging          | 5            | 5        | 0      | 100%       |
+| Responsief ontwerp   | 4            | 4        | 0      | 100%       |
+| **TOTAAL**           | **52**       | **52**   | **0**  | **100%**   |
 
 ---
 
@@ -1404,12 +1404,12 @@ De applicatie is getest op drie niveaus:
 
 Tijdens het testen en reviewen van de code zijn de volgende fouten gevonden en verbeterd:
 
-| Nr | Fout / Probleem | Hoe gevonden | Oplossing | Bestand |
-|---|---|---|---|---|
-| Bug #1001 | Velden accepteerden alleen spaties | Handmatig testen | Regex `^\s*$` controle toegevoegd | functions.php, script.js |
-| Bug #1004 | Ongeldige datums werden geaccepteerd | Handmatig testen met "2025-13-45" | `DateTime::createFromFormat()` met strikte controle | functions.php, script.js |
-| Bug #1005 | CSS kaarten hadden oranje achtergrond | Visuele inspectie | `--glass-bg` van `orange` naar `rgba(255,255,255,0.05)` | style.css |
-| Bug #1006 | Sessie-ID werd bij elk verzoek geregenereerd | Code review | `session_regenerate_id()` verplaatst naar alleen `loginUser()` | functions.php |
+| Nr        | Fout / Probleem                              | Hoe gevonden                      | Oplossing                                                      | Bestand                  |
+| --------- | -------------------------------------------- | --------------------------------- | -------------------------------------------------------------- | ------------------------ |
+| Bug #1001 | Velden accepteerden alleen spaties           | Handmatig testen                  | Regex `^\s*$` controle toegevoegd                              | functions.php, script.js |
+| Bug #1004 | Ongeldige datums werden geaccepteerd         | Handmatig testen met "2025-13-45" | `DateTime::createFromFormat()` met strikte controle            | functions.php, script.js |
+| Bug #1005 | CSS kaarten hadden oranje achtergrond        | Visuele inspectie                 | `--glass-bg` van `orange` naar `rgba(255,255,255,0.05)`        | style.css                |
+| Bug #1006 | Sessie-ID werd bij elk verzoek geregenereerd | Code review                       | `session_regenerate_id()` verplaatst naar alleen `loginUser()` | functions.php            |
 
 ### 13.2 Verbeterproces per bug
 
@@ -1511,15 +1511,15 @@ STAP 4: OPNIEUW GETEST
 
 ### 13.3 Mogelijke toekomstige verbeteringen
 
-| Nr | Verbetering | Beschrijving | Prioriteit |
-|---|---|---|---|
-| V1 | Wachtwoord vergeten functie | E-mail met reset-link sturen | Hoog |
-| V2 | Profielfoto uploaden | Gebruikers kunnen een avatar uploaden | Gemiddeld |
-| V3 | Echte real-time vriendenlijst | WebSocket verbinding voor live status updates | Laag |
-| V4 | Zoekfunctie | Zoeken in schema's, evenementen en vrienden | Gemiddeld |
-| V5 | Meerdere talen | Volledig taalwisselaar (NL/EN) | Laag |
-| V6 | E-mail notificaties | Herinnering per e-mail versturen | Gemiddeld |
-| V7 | Exportfunctie | Schema's exporteren naar iCal/Google Calendar | Laag |
+| Nr  | Verbetering                   | Beschrijving                                  | Prioriteit |
+| --- | ----------------------------- | --------------------------------------------- | ---------- |
+| V1  | Wachtwoord vergeten functie   | E-mail met reset-link sturen                  | Hoog       |
+| V2  | Profielfoto uploaden          | Gebruikers kunnen een avatar uploaden         | Gemiddeld  |
+| V3  | Echte real-time vriendenlijst | WebSocket verbinding voor live status updates | Laag       |
+| V4  | Zoekfunctie                   | Zoeken in schema's, evenementen en vrienden   | Gemiddeld  |
+| V5  | Meerdere talen                | Volledig taalwisselaar (NL/EN)                | Laag       |
+| V6  | E-mail notificaties           | Herinnering per e-mail versturen              | Gemiddeld  |
+| V7  | Exportfunctie                 | Schema's exporteren naar iCal/Google Calendar | Laag       |
 
 ---
 
@@ -1529,22 +1529,23 @@ STAP 4: OPNIEUW GETEST
 
 Dit overzicht toont hoe dit project alle kerntaken van het examen dekt:
 
-| Kerntaak | Onderdeel | Waar gedocumenteerd | Bewijsmateriaal |
-|---|---|---|---|
-| **K1-W1 Planning** | Projectplanning en aanpak | PvA document (PDF) | Tijdsplanning, user stories |
-| **K1-W2 Ontwerp** | Functioneel en technisch ontwerp | FO/TO documenten (PDF) | Database ontwerp, wireframes |
-| **K1-W3 Realisatie** | Code schrijven en implementeren | README sectie 1-11 | Alle PHP, JS, CSS, SQL bestanden |
-| **K1-W4 Testen** | Testcases uitvoeren en documenteren | README sectie 12 | 52 testcases, 100% geslaagd |
-| **K1-W5 Verbeteren** | Fouten vinden en oplossen | README sectie 13 | 4 bugs gevonden en gefixt |
-| **K2-W1 Overleggen** | Communicatie over het project | Overlegverslagen (PDF) | Bijeenkomsten, feedback |
-| **K2-W2 Presenteren** | Het project uitleggen | README + deze sectie | Demonstratie, uitleg |
-| **K2-W3 Reflectie** | Terugkijken op het proces | Reflectieverslag (PDF) | Wat ging goed/fout |
+| Kerntaak              | Onderdeel                           | Waar gedocumenteerd    | Bewijsmateriaal                  |
+| --------------------- | ----------------------------------- | ---------------------- | -------------------------------- |
+| **K1-W1 Planning**    | Projectplanning en aanpak           | PvA document (PDF)     | Tijdsplanning, user stories      |
+| **K1-W2 Ontwerp**     | Functioneel en technisch ontwerp    | FO/TO documenten (PDF) | Database ontwerp, wireframes     |
+| **K1-W3 Realisatie**  | Code schrijven en implementeren     | README sectie 1-11     | Alle PHP, JS, CSS, SQL bestanden |
+| **K1-W4 Testen**      | Testcases uitvoeren en documenteren | README sectie 12       | 52 testcases, 100% geslaagd      |
+| **K1-W5 Verbeteren**  | Fouten vinden en oplossen           | README sectie 13       | 4 bugs gevonden en gefixt        |
+| **K2-W1 Overleggen**  | Communicatie over het project       | Overlegverslagen (PDF) | Bijeenkomsten, feedback          |
+| **K2-W2 Presenteren** | Het project uitleggen               | README + deze sectie   | Demonstratie, uitleg             |
+| **K2-W3 Reflectie**   | Terugkijken op het proces           | Reflectieverslag (PDF) | Wat ging goed/fout               |
 
 ### 14.2 Belangrijkste punten om uit te leggen aan de examinator
 
 #### Punt 1: Architectuur (hoe de code is opgebouwd)
 
 "Mijn applicatie gebruikt **Separation of Concerns**. Dat betekent dat elke laag een eigen verantwoordelijkheid heeft:
+
 - `db.php` handelt ALLEEN de databaseverbinding af
 - `functions.php` bevat ALLE logica (validatie, authenticatie, CRUD)
 - De PHP-pagina's (zoals `login.php`) handelen ALLEEN de formulieren en HTML af
@@ -1554,6 +1555,7 @@ Dit overzicht toont hoe dit project alle kerntaken van het examen dekt:
 #### Punt 2: Dubbele validatie (client-side EN server-side)
 
 "Ik valideer invoer op TWEE plekken:
+
 1. **Client-side** (JavaScript): Snelle feedback aan de gebruiker voordat het formulier verzonden wordt
 2. **Server-side** (PHP): Echte validatie in `functions.php` die NIET omzeild kan worden
 
@@ -1562,6 +1564,7 @@ De client-side validatie is voor gebruiksgemak. De server-side validatie is voor
 #### Punt 3: Beveiliging (hoe de applicatie beschermd is)
 
 "Mijn applicatie is beschermd tegen de belangrijkste aanvallen:
+
 - **SQL-injectie**: Ik gebruik PDO prepared statements. De database-engine scheidt de data van de query.
 - **XSS**: Ik gebruik `safeEcho()` die `htmlspecialchars()` aanroept. Dit converteert `<script>` naar `&lt;script&gt;`.
 - **Wachtwoord diefstal**: Ik gebruik `password_hash()` met bcrypt. Zelfs als de database gestolen wordt, zijn wachtwoorden onleesbaar.
@@ -1571,6 +1574,7 @@ De client-side validatie is voor gebruiksgemak. De server-side validatie is voor
 #### Punt 4: Database-ontwerp (hoe de data is gestructureerd)
 
 "De database heeft 6 tabellen:
+
 - `Users` is de hoofdtabel waar alle andere tabellen naar verwijzen
 - `UserGames` is een **koppeltabel** (veel-op-veel relatie) tussen Users en Games
 - Alle tabellen hebben `deleted_at` voor **soft delete**: data wordt nooit echt verwijderd
@@ -1580,6 +1584,7 @@ De client-side validatie is voor gebruiksgemak. De server-side validatie is voor
 #### Punt 5: Bugfixes (hoe ik fouten heb gevonden en opgelost)
 
 "Ik heb 4 bugs gevonden en opgelost:
+
 1. **Bug #1001**: Velden accepteerden alleen spaties. Opgelost met regex controle.
 2. **Bug #1004**: Ongeldige datums werden geaccepteerd. Opgelost met DateTime strikte validatie.
 3. **Bug #1005**: Kaarten hadden een oranje achtergrond. Opgelost door CSS-variabele te corrigeren.
@@ -1612,38 +1617,6 @@ A: "Ik heb 52 handmatige testcases uitgevoerd: 7 voor registratie, 5 voor login,
 
 **V: "Wat zou je anders doen als je opnieuw zou beginnen?"**
 A: "Ik zou eerder beginnen met testen en een gestructureerder testplan opzetten. Ook zou ik vanaf het begin een CSS-framework configureren voor het glassmorphism-thema, in plaats van achteraf variabelen te moeten corrigeren. Verder zou ik overwegen om een MVC-structuur te gebruiken voor betere scheiding van logica en presentatie."
-
----
-
-## Bugfixes
-
-### Bug #1001: Alleen-spaties validatie
-
-**Probleem:** Gebruikers konden velden opslaan met alleen spaties (bijv. "   ").
-**Oorzaak:** De oude validatie controleerde alleen of het veld leeg was, niet of het alleen spaties bevatte.
-**Oplossing:** Regex controle `/^\s*$/` toegevoegd aan `validateRequired()` en alle JavaScript validatiefuncties.
-**Toegepast in:** functions.php, script.js (alle formuliervalidaties).
-
-### Bug #1004: Strenge datumvalidatie
-
-**Probleem:** Ongeldige datums zoals 2025-13-45 werden geaccepteerd.
-**Oorzaak:** De oude validatie controleerde alleen het formaat, niet of de datum daadwerkelijk bestaat.
-**Oplossing:** `DateTime::createFromFormat()` gebruikt met strikte vergelijking (`$dateObj->format('Y-m-d') !== $date`).
-**Toegepast in:** functions.php (`validateDate()`), script.js (schema en evenement formulier).
-
-### Bug #1005: CSS glassmorphism-achtergrondkleur
-
-**Probleem:** Alle kaarten en containers hadden een harde oranje achtergrondkleur in plaats van het glassmorphism-effect.
-**Oorzaak:** De CSS-variabele `--glass-bg` stond ingesteld op `orange` in plaats van een transparante waarde.
-**Oplossing:** `--glass-bg` gewijzigd naar `rgba(255, 255, 255, 0.05)` voor een semi-transparant glaseffect passend bij het donkere gaming-thema.
-**Toegepast in:** style.css (CSS-variabelen sectie).
-
-### Bug #1006: Sessie-ID regeneratie op elke paginalaad
-
-**Probleem:** `session_regenerate_id(true)` werd bij elke paginalaad aangeroepen, niet alleen bij inloggen.
-**Oorzaak:** De functie stond in het sessie-startblok van functions.php, waardoor bij elk verzoek een nieuw sessie-ID werd gegenereerd.
-**Oplossing:** `session_regenerate_id(true)` verwijderd uit het sessie-startblok. Het wordt nu alleen aangeroepen in `loginUser()` na succesvolle authenticatie, zoals aanbevolen door beveiligingsrichtlijnen.
-**Toegepast in:** functions.php (sessie-beheer sectie).
 
 ---
 

@@ -22,6 +22,9 @@
 9. [Foutafhandeling](#9-foutafhandeling)
 10. [Volledige Functiereferentie](#10-volledige-functiereferentie)
 11. [Installatie-instructies](#11-installatie-instructies)
+12. [Testen (K1-W4)](#12-testen-k1-w4)
+13. [Verbeteren (K1-W5)](#13-verbeteren-k1-w5)
+14. [Examenpresentatie Hulp](#14-examenpresentatie-hulp)
 
 ---
 

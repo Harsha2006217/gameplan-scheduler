@@ -1,16 +1,16 @@
 <?php
 /**
  * ============================================================================
- * FUNCTIONS.PHP - CORE FUNCTIONS / KERNFUNCTIES
+ * FUNCTIONS.PHP - KERNFUNCTIES
  * ============================================================================
- * Author / Auteur: Harsha Kanaparthi | Student: 2195344 | Date: 30-09-2025
- * 
- * ENGLISH: Contains all database queries, validation, and helper functions.
- * DUTCH: Bevat alle database queries, validatie, en helperfuncties.
- * 
- * BUG FIXES IMPLEMENTED:
- * - #1001: Spaces-only validation with trim() and regex
- * - #1004: Strict date format validation with DateTime
+ * Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
+ *
+ * Bevat alle database queries, validatie, authenticatie en helperfuncties.
+ *
+ * BUGFIXES:
+ * - #1001: Alleen-spaties validatie met trim() en regex
+ * - #1004: Strenge datumvalidatie met DateTime::createFromFormat()
+ * - #1006: session_regenerate_id() verplaatst naar alleen loginUser()
  * ============================================================================
  */
 

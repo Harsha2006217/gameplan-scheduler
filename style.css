@@ -661,61 +661,176 @@ main {
 }
 
 /* ============================================================================
-   SECTION 15: CONTENT PAGE STYLES (Privacy & Contact)
+   SECTION 15: BOOTSTRAP OVERRIDES / BOOTSTRAP OVERSCHRIJVINGEN
    ============================================================================
-   ENGLISH: Styles for privacy.php and contact.php to ensure text visibility.
-   DUTCH: Stijlen voor privacy.php en contact.php voor zichtbare tekst.
-*/
+   ENGLISH: Override Bootstrap !important classes that break custom styling.
+   DUTCH: Overschrijf Bootstrap !important klassen die custom styling breken.
 
-/* Card background more visible for content pages */
+   PROBLEEM: Bootstrap .bg-dark gebruikt !important op background-color.
+   Dit overschrijft de custom gradient op body. Hierdoor is de achtergrond
+   een vlakke #212529 kleur. Onderstaande regels fixen dit.
+   ============================================================================ */
+
+/* Fix 1: body.bg-dark override - herstel custom gradient achtergrond */
+body.bg-dark {
+    background: linear-gradient(135deg, #0a0a0f 0%, #0d1421 50%, #0a0a0f 100%) !important;
+    background-attachment: fixed !important;
+}
+
+/* Fix 2: footer.bg-secondary override - herstel custom footer achtergrond */
+footer.bg-secondary {
+    background: linear-gradient(90deg, #12121a 0%, #1a1a25 100%) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ============================================================================
+   SECTION 16: CONTENT PAGE STYLES (Privacy & Contact)
+   ============================================================================
+   ENGLISH: Complete styling for privacy.php and contact.php.
+   DUTCH: Volledige styling voor privacy.php en contact.php.
+
+   Elk element is expliciet gestyled met !important zodat Bootstrap
+   klassen de tekst NOOIT onzichtbaar kunnen maken.
+   ============================================================================ */
+
+/* --- CARD CONTAINER --- */
+/* Solide donkerblauwe achtergrond zodat alle tekst erbinnen zichtbaar is */
 main.container .card {
-    background: rgba(18, 18, 26, 0.95);
-    border: 1px solid rgba(13, 110, 253, 0.3);
+    background: #16213e !important;
+    border: 1px solid rgba(0, 212, 255, 0.25) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
+    overflow: visible !important;
 }
 
-/* Headings inside card-body */
-main.container .card-body h3 {
-    color: var(--accent-cyan);
-    font-weight: 600;
-    margin-bottom: 12px;
+/* Extra padding in de card-body voor ademruimte */
+main.container .card .card-body {
+    padding: 35px !important;
 }
 
-/* Paragraphs and list items clearly white */
-main.container .card-body p,
-main.container .card-body li {
-    color: var(--text-primary);
-    font-size: 1rem;
-    line-height: 1.8;
+/* --- H1 PAGINA TITEL --- */
+/* Fix: main h1 gebruikt background-clip:text en -webkit-text-fill-color:transparent
+   waardoor de tekst ONZICHTBAAR wordt. Dit overschrijft dat volledig. */
+main.container .card .card-body h1 {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background: none !important;
+    background-clip: unset !important;
+    -webkit-background-clip: unset !important;
+    font-size: 2rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 25px !important;
+    text-align: left !important;
 }
 
-/* Bold/strong text highlighted */
-main.container .card-body strong {
-    color: var(--accent-cyan);
+/* --- H3 SECTIE KOPPEN --- */
+/* Cyaan (#00d4ff) kleur voor duidelijke zichtbaarheid op donkere achtergrond */
+main.container .card .card-body h3 {
+    color: #00d4ff !important;
+    -webkit-text-fill-color: #00d4ff !important;
+    font-weight: 600 !important;
+    font-size: 1.3rem !important;
+    margin-bottom: 12px !important;
+    margin-top: 20px !important;
 }
 
-/* List styling */
-main.container .card-body ul {
-    padding-left: 20px;
-    margin-bottom: 15px;
+/* --- PARAGRAFEN (p) --- */
+/* Witte tekst op donkerblauwe achtergrond = maximaal contrast */
+main.container .card .card-body p {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    font-size: 1rem !important;
+    line-height: 1.8 !important;
+    margin-bottom: 12px !important;
 }
 
-main.container .card-body ul li {
-    margin-bottom: 6px;
+/* --- LIJST ITEMS (li) --- */
+/* Witte tekst, goede regelafstand, ruimte tussen items */
+main.container .card .card-body li {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    font-size: 1rem !important;
+    line-height: 1.8 !important;
+    margin-bottom: 8px !important;
 }
 
-/* Links inside card visible */
-main.container .card-body a.text-info {
-    color: var(--accent-cyan) !important;
-    text-decoration: underline;
-}
-
-main.container .card-body a.text-info:hover {
+/* --- ONGEORDENDE LIJSTEN (ul) --- */
+/* Inspringing en opsommingstekens zichtbaar */
+main.container .card .card-body ul {
+    padding-left: 25px !important;
+    margin-bottom: 18px !important;
+    list-style-type: disc !important;
     color: #ffffff !important;
 }
 
-/* Secondary/small text readable */
-main.container .card-body .text-secondary {
-    color: var(--text-secondary) !important;
+/* --- VETGEDRUKTE TEKST (strong) --- */
+/* Cyaan voor opvallende nadruk */
+main.container .card .card-body strong {
+    color: #00d4ff !important;
+    -webkit-text-fill-color: #00d4ff !important;
+    font-weight: 700 !important;
+}
+
+/* --- LINKS (a) --- */
+/* Alle links in de card zichtbaar in cyaan met onderstreping */
+main.container .card .card-body a {
+    color: #00d4ff !important;
+    -webkit-text-fill-color: #00d4ff !important;
+    text-decoration: underline !important;
+}
+
+main.container .card .card-body a:hover {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Uitzondering: btn-primary link behoud knop-stijl */
+main.container .card .card-body a.btn-primary {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    text-decoration: none !important;
+    background: linear-gradient(45deg, #0d6efd, #9d4edd) !important;
+    padding: 10px 20px !important;
+    border-radius: 12px !important;
+    display: inline-flex !important;
+    margin-top: 15px !important;
+}
+
+main.container .card .card-body a.btn-primary:hover {
+    background: linear-gradient(45deg, #0b5ed7, #7c3aed) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.5);
+}
+
+/* --- H5 KLASSE (contact email paragraaf) --- */
+main.container .card .card-body .h5 {
+    color: #00d4ff !important;
+    -webkit-text-fill-color: #00d4ff !important;
+    font-size: 1.25rem !important;
+}
+
+/* --- KLEINE TEKST (small) --- */
+main.container .card .card-body small {
+    color: #b0b0b0 !important;
+    -webkit-text-fill-color: #b0b0b0 !important;
+    font-size: 0.9rem !important;
+}
+
+/* --- SECUNDAIRE TEKST (.text-secondary) --- */
+main.container .card .card-body .text-secondary {
+    color: #b0b0b0 !important;
+    -webkit-text-fill-color: #b0b0b0 !important;
+}
+
+main.container .card .card-body .text-secondary small {
+    color: #b0b0b0 !important;
+    -webkit-text-fill-color: #b0b0b0 !important;
+}
+
+/* --- SPAN ELEMENTEN --- */
+main.container .card .card-body span {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
 }
 
 /* ============================================================================

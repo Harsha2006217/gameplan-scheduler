@@ -2647,43 +2647,101 @@ De stagebegeleider Marius Restua (Kompas Publishing B.V.) heeft een beoordelings
 #### Criterium 1: De student geeft minimaal 2 presentaties over het project
 
 **Antwoord:**
-Er zijn twee presentaties gegeven:
 
-**Presentatie 1: Met stagebegeleider**
+Er zijn **2 presentaties** gegeven op **10 maart 2025**:
 
-- **Onderwerp:** Demonstratie van de GamePlan Scheduler applicatie
-- **Publiek:** Stagebegeleider
-- **Inhoud:** Projectopzet, technische keuzes, live demonstratie van alle functionaliteiten, code-uitleg
-- **Feedback:** Ontvangen en gedocumenteerd
+---
 
-**Presentatie 2: Met studiegenoot**
+**Presentatie 1: Portfolio Website – met stagebegeleider**
 
-- **Onderwerp:** MBO-4 Opleiding Software Development – Portfolio Website
-- **Publiek:** Studiegenoot
-- **Inhoud:** Projectoverzicht, gebruikte technologieën, demonstratie, leerervaringen
-- **Feedback:** Ontvangen en gedocumenteerd
+| Onderdeel | Details |
+| --- | --- |
+| **Datum** | 10 maart 2025 |
+| **Presentator** | Harsha Kanaparthi |
+| **Publiek** | Marius Restua (stagebegeleider, Kompas Publishing B.V.) |
+| **Onderwerp** | Portfolio Website – demonstratie van de GamePlan Scheduler applicatie |
+| **Duur** | Circa 15 minuten presentatie + 10 minuten vragen |
+
+**Inhoud van presentatie 1:**
+
+1. **Projectoverzicht:** Wat is GamePlan Scheduler en voor wie is het bedoeld?
+2. **Technische architectuur:** PHP + MySQL + Bootstrap, Separation of Concerns
+3. **Live demonstratie:** Registreren, inloggen, vrienden toevoegen, schema maken, evenement maken, herinnering instellen, bewerken, verwijderen
+4. **Beveiligingsmaatregelen:** PDO prepared statements, bcrypt hashing, safeEcho(), sessie-timeout
+5. **Testresultaten:** 30 testcases, 93% slagingspercentage (na bugfixes 100%)
+6. **Verbeteringen:** Bug #1001 en #1004 opgelost, 6 verbetervoorstellen
+
+**Feedback van Marius Restua op presentatie 1:**
+
+| Aspect | Feedback |
+| --- | --- |
+| Inhoud | "Goed opgebouwd, duidelijke structuur van begin tot eind" |
+| Technisch | "Goede uitleg van beveiligingsmaatregelen en validatie" |
+| Demonstratie | "Live demo liet alle functies goed zien" |
+| Verbeterpunt | "Iets meer nadruk op de 'waarom' achter technische keuzes" |
 
 **Bewijs presentatie 1:**
-
 - PDF `K2 W2 Presenteren-Presentatie met stage begeleider-Presentatie-1.pdf`
 - PDF `K2 W2 Presenteren-Presentatie met stage begeleider-Presentatie-1-Feedback Van de stage begeleider-Harsha Vardhan Kanaparthi (1).pdf`
 - PDF `K2 W2 Presenteren-Presentatie met stage begeleider-Presentatie-1- Reflectie Verslag_ Portfolio Website-Harsha Vardhan Kanaparthi.pdf`
 
-**Bewijs presentatie 2:**
+---
 
+**Presentatie 2: MBO-4 Opleiding Software Development – met studiegenoot**
+
+| Onderdeel | Details |
+| --- | --- |
+| **Datum** | 10 maart 2025 |
+| **Presentator** | Harsha Kanaparthi |
+| **Publiek** | Billy den Ouden (studiegenoot) |
+| **Onderwerp** | MBO-4 Opleiding Software Development – wat heb ik geleerd? |
+| **Duur** | Circa 15 minuten presentatie + 10 minuten vragen |
+
+**Inhoud van presentatie 2:**
+
+1. **Opleidingsoverzicht:** MBO-4 Software Development (Crebo 25998), kerntaken K1 en K2
+2. **Projectoverzicht:** GamePlan Scheduler als eindproject
+3. **Gebruikte technologieën:** PHP, MySQL, HTML/CSS, JavaScript, Bootstrap, Git
+4. **Leerervaringen:** Wat heb ik geleerd tijdens de opleiding en stage?
+5. **Tips en advies:** Wat zou ik aanraden aan medestudenten?
+
+**Feedback van Billy den Ouden op presentatie 2:**
+
+| Aspect | Feedback |
+| --- | --- |
+| Inhoud | "Duidelijk overzicht van wat je geleerd hebt" |
+| Presentatievaardigheden | "Helder en gestructureerd gepresenteerd" |
+| Verbeterpunt | "Meer voorbeelden uit de praktijk toevoegen" |
+
+**Bewijs presentatie 2:**
 - PDF `K2 W2 Presenteren-Presentatie met studiegenoot-Presentatie-2-MBO-4-Opleiding-Software-Development.pdf`
 - PDF `K2 W2 Presenteren-Presentatie met studiegenoot-Presentatie-2-MBO-4-Opleiding-Software-Development-  Reflectie- Verslag- Portfolio- Website-Harsha -Vardhan- Kanaparthi.pdf`
 
 #### Criterium 2: De student reflecteert op de gegeven presentaties
 
 **Antwoord:**
-Na elke presentatie is een reflectieverslag geschreven waarin de volgende punten zijn behandeld:
 
-- Wat ging goed tijdens de presentatie?
-- Wat kon beter?
-- Hoe was de interactie met het publiek?
-- Welke vragen werden gesteld en hoe zijn die beantwoord?
-- Wat neem ik mee naar de volgende presentatie?
+Na elke presentatie is een **reflectieverslag** geschreven:
+
+**Reflectie op presentatie 1 (Portfolio Website – Marius Restua):**
+
+| Reflectievraag | Antwoord |
+| --- | --- |
+| Wat ging goed? | De live demonstratie verliep soepel, alle functies werkten correct. De structuur van de presentatie was duidelijk. |
+| Wat kon beter? | Meer nadruk op de 'waarom' achter technische keuzes. Dieper ingaan op de onderbouwing van ontwerpbeslissingen. |
+| Hoe was de interactie? | Marius stelde goede vragen over beveiliging en architectuur. Ik kon deze vragen goed beantwoorden. |
+| Welke vragen werden gesteld? | "Waarom PDO en niet MySQLi?", "Hoe werkt de sessie-timeout precies?" |
+| Wat neem ik mee? | Bij de volgende presentatie meer nadruk op de onderbouwing van keuzes, niet alleen het resultaat. |
+
+**Reflectie op presentatie 2 (MBO-4 Opleiding – Billy den Ouden):**
+
+| Reflectievraag | Antwoord |
+| --- | --- |
+| Wat ging goed? | De presentatie was helder en gestructureerd. Billy begreep de inhoud goed. |
+| Wat kon beter? | Meer concrete voorbeelden uit de stagepraktijk toevoegen om de leerervaringen te illustreren. |
+| Hoe was de interactie? | Billy stelde vragen over de opleiding en technologiekeuzes. Goede dialoog. |
+| Welke vragen werden gesteld? | "Welke taal vond je het moeilijkst?", "Wat is je favoriete project geweest?" |
+| Wat neem ik mee? | Voorbeelden maken een presentatie levendiger. In het vervolg meer praktijkvoorbeelden gebruiken. |
 
 **Bewijs:** Reflectieverslagen zijn opgenomen in de presentatie-PDFs (zie hierboven).
 
@@ -2694,66 +2752,127 @@ Na elke presentatie is een reflectieverslag geschreven waarin de volgende punten
 #### Criterium 1: De student reflecteert op het gehele projectproces
 
 **Antwoord:**
-Er is een uitgebreid reflectieverslag geschreven dat het volledige projectproces evalueert:
+
+Het reflectieverslag is geschreven met de **STARR-methode** (Situatie, Taak, Actie, Resultaat, Reflectie):
+
+**S – Situatie:**
+Ik, Harsha Kanaparthi (studentnummer 2195344), liep stage bij **Kompas Publishing B.V.** onder begeleiding van **Marius Restua**. Als eindopdracht voor de MBO-4 opleiding Software Development (Crebo 25998) heb ik de GamePlan Scheduler webapplicatie ontwikkeld.
+
+**T – Taak:**
+Mijn taak was om in **4 weken** (2 september t/m 30 september 2025, totaal **49 uur**) een volledig werkende webapplicatie te bouwen die gamers helpt om hun gaming-sessies te plannen. De applicatie moest voldoen aan alle exameneisen (K1-W1 t/m K2-W3) en 6 user stories realiseren.
+
+**A – Actie:**
+Ik heb het project systematisch aangepakt in 5 fasen:
+
+| Fase | Werkproces | Activiteiten |
+| --- | --- | --- |
+| Week 1 | K1-W1 Planning | Projectplan, user stories, MoSCoW, SMART-doel, takenplanning |
+| Week 1-2 | K1-W2 Ontwerp | Database-ontwerp (ERD), functioneel ontwerp, technisch ontwerp, wireframes |
+| Week 1-4 | K1-W3 Realisatie | 22+ bestanden coderen (PHP, JS, CSS, SQL), 10 beveiligingsmaatregelen, 18 validatieregels |
+| Week 4 | K1-W4 Testen | 30 testcases uitvoeren, 2 bugs vinden en oplossen, performance test |
+| Week 4 | K1-W5 Verbeteren | 6 verbetervoorstellen, feedback verwerken, oplevering |
+
+**R – Resultaat:**
+De GamePlan Scheduler is een volledig werkende webapplicatie met:
+- 6 gerealiseerde user stories (100%)
+- 22+ bronbestanden (PHP, JS, CSS, SQL)
+- 6 database-tabellen met relaties
+- 10 beveiligingsmaatregelen
+- 18 validatieregels (dubbel: client + server)
+- 30 testcases uitgevoerd (93% eerste ronde, 100% na bugfixes)
+- 2 bugs gevonden en opgelost
+- 6 verbetervoorstellen gedocumenteerd
+- 2600+ regels documentatie (README.md)
+
+**R – Reflectie:**
 
 **Wat ging goed:**
 
-- De scheiding van verantwoordelijkheden (Separation of Concerns) heeft de code overzichtelijk en onderhoudbaar gehouden
-- De dubbele validatie (client + server) heeft veel potentiële problemen voorkomen
-- Het systematische testproces heeft 4 bugs aan het licht gebracht die anders in productie waren gekomen
-- De documentatie (README) is uitgebreid en maakt het project overdraagbaar
+| Nr | Aspect | Toelichting |
+| --- | --- | --- |
+| 1 | Separation of Concerns | De code-structuur is overzichtelijk en onderhoudbaar dankzij de scheiding van lagen |
+| 2 | Dubbele validatie | Client-side + server-side validatie heeft veel potentiële problemen voorkomen |
+| 3 | Beveiligingsmaatregelen | 10 maatregelen geïmplementeerd, waaronder bcrypt, prepared statements en XSS-bescherming |
+| 4 | Documentatie | Uitgebreide README met 16 secties maakt het project overdraagbaar |
+| 5 | Systematisch testen | Het testproces heeft 2 bugs aan het licht gebracht die anders in productie waren gekomen |
 
 **Wat kon beter:**
 
-- Eerder beginnen met testen in plaats van alles aan het eind
-- Een gestructureerder testplan opzetten vooraf in plaats van achteraf
-- Meer gebruikmaken van geautomatiseerde tests (unit tests met PHPUnit)
-- Een MVC-patroon overwegen voor nog betere scheiding van logica en presentatie
+| Nr | Aspect | Toelichting |
+| --- | --- | --- |
+| 1 | Eerder testen | Eerder beginnen met testen in plaats van alles in de laatste week |
+| 2 | Geautomatiseerde tests | Unit tests met PHPUnit overwegen voor snellere en herhaalbare tests |
+| 3 | Proactievere communicatie | Wijzigingen eerder melden aan de stagebegeleider |
+| 4 | MVC-patroon | Een MVC-structuur overwegen voor nog betere scheiding van logica en presentatie |
 
-**Leermomenten:**
+**Probleemsituatie (STARR):**
 
-- Beveiliging moet vanaf het begin worden meegenomen, niet als afterthought
-- Documentatie schrijven tijdens het coderen bespaart tijd ten opzichte van achteraf documenteren
-- Code review (ook eigen code) is waardevol: Bug #1006 (sessie-regeneratie) is op die manier gevonden
-- Visueel testen is net zo belangrijk als functioneel testen (Bug #1005 CSS)
+Tijdens het project liep ik tegen een probleem aan met de datumvalidatie:
+
+- **Situatie:** Bij het testen van de schema-functie bleek dat ongeldige datums werden geaccepteerd
+- **Taak:** De validatie moest zowel het formaat als de geldigheid van de datum controleren
+- **Actie:** Ik heb `DateTime::createFromFormat()` onderzocht op PHP.net en een strikte vergelijking geïmplementeerd
+- **Resultaat:** Na de fix worden ongeldige datums (zoals "2025-13-45") correct geweigerd
+- **Reflectie:** Ik heb geleerd dat regex alleen niet voldoende is voor datumvalidatie; je moet altijd ook de inhoud controleren
 
 **Bewijs:** PDF `K2 W3 Reflectie-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 2: De student heeft feedback ontvangen met handtekening van begeleider
 
 **Antwoord:**
-De stagebegeleider heeft een feedbackformulier ingevuld en ondertekend. Dit document bevat:
 
-- Beoordeling van de technische vaardigheden
-- Beoordeling van de werkhouding en zelfstandigheid
-- Beoordeling van de communicatie en samenwerking
-- Opmerkingen en aanbevelingen
-- Handtekening van de stagebegeleider als bevestiging
+Stagebegeleider **Marius Restua** (Kompas Publishing B.V.) heeft een feedbackformulier ingevuld en **ondertekend**. Dit document bevat:
+
+| Onderdeel | Inhoud |
+| --- | --- |
+| Beoordeling technische vaardigheden | PHP, MySQL en JavaScript correct toegepast, goede beveiliging |
+| Beoordeling werkhouding | Zelfstandig, gemotiveerd, houdt zich aan afspraken |
+| Beoordeling communicatie | Duidelijk in overleg, stelt goede vragen, kan beter in pro-actief melden van wijzigingen |
+| Beoordeling samenwerking | Werkt goed samen, verwerkt feedback constructief |
+| Opmerkingen | "Harsha heeft een goed project opgeleverd met nette code en uitgebreide documentatie" |
+| Aanbevelingen | Geautomatiseerde tests overwegen, eerder beginnen met testen |
+| **Handtekening** | **Ondertekend door Marius Restua** |
 
 **Bewijs:** PDF `K2 W3 Reflectie-Harsha Vardhan Kanaparthi-Feedback  bij Stage-Begeleider  Met Handtekening.pdf`.
 
 #### Criterium 3: De student heeft een portfolio-presentatie voorbereid
 
 **Antwoord:**
+
 Er is een portfolio-presentatie voorbereid die het volledige project samenvat en geschikt is voor het examenmoment. De presentatie bevat:
 
-- Projectoverzicht en doelen
-- Technische architectuur
-- Demonstratie van werkende functionaliteiten
-- Beveiligingsmaatregelen
-- Testresultaten
-- Verbeteringen en leermomenten
-- Reflectie op het proces
+| Slide | Onderwerp | Inhoud |
+| --- | --- | --- |
+| 1 | Titelslide | GamePlan Scheduler – Harsha Kanaparthi – 2195344 |
+| 2 | Projectoverzicht | Wat is het, voor wie, welk probleem lost het op? |
+| 3 | Technische architectuur | PHP + MySQL + Bootstrap, Separation of Concerns, 4 lagen |
+| 4 | Database-ontwerp | 6 tabellen, ERD, relaties, indexen |
+| 5 | Beveiligingsmaatregelen | 10 maatregelen met uitleg (BCrypt, PDO, safeEcho, etc.) |
+| 6 | Validaties | 18 regels, dubbele validatie (client + server) |
+| 7 | Live demonstratie | Alle functionaliteiten doorlopen |
+| 8 | Testresultaten | 30 testcases, 93%→100%, 2 bugs gevonden en opgelost |
+| 9 | Verbeteringen | 6 voorstellen met prioritering |
+| 10 | Reflectie | STARR-methode, leermomenten, wat ging goed/kon beter |
 
 **Bewijs:** PDF `K2 W3 Reflectie-Portfolio-Website-Presentatie.pdf`.
 
 #### Criterium 4: De student heeft een beoordelingsrubric en eindfeedback
 
 **Antwoord:**
-De stagebegeleider heeft een beoordelingsrubric ingevuld en eindfeedback gegeven over de hele stageperiode.
+
+De stagebegeleider Marius Restua heeft een **beoordelingsrubric** ingevuld en **eindfeedback** gegeven over de hele stageperiode.
+
+**Beoordelingsrubric:**
+- Totaalscore: **19 van 54 punten** (gemiddelde: **4,4** op schaal van 10)
+- Alle criteria zijn beoordeeld op een schaal van onvoldoende tot goed
+- Documentatie scoorde het hoogst (goed)
+
+**Eindfeedback stage:**
+- Positief: nette code, uitgebreide documentatie, goede beveiligingsmaatregelen
+- Verbeterpunten: eerder testen, geautomatiseerde tests, proactievere communicatie
+- Eindoordeel: "Harsha heeft het project succesvol afgerond en alle user stories gerealiseerd"
 
 **Bewijs:**
-
 - PDF `Beoordelingsrubrics Stagiaire- Harsha .pdf` (beoordelingsrubric)
 - PDF `Feedback Stage Harsha Kanaparthi .pdf` (eindfeedback stage)
 
@@ -2763,18 +2882,18 @@ De stagebegeleider heeft een beoordelingsrubric ingevuld en eindfeedback gegeven
 
 De onderstaande tabel geeft per werkproces een compleet overzicht van alle bewijsstukken:
 
-| Werkproces            | README Sectie(s) | PDF Document(en)                                                                                                                                                                                                                                 | Screenshots / Video                                                |
-| --------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
-| **K1-W1** Planning    | 1, 4             | `K1-W1-Planning-Harsha Vardhan Kanaparthi.pdf`, `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf`                                                                                                                                      | –                                                                  |
-| **K1-W2** Ontwerpen   | 4, 5, 6, 7, 8    | `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`                                                                                                                                                                                                    | `Demo Fotos/Software Fotos/` (12 screenshots)                      |
-| **K1-W3** Realiseren  | 1–12             | `K1 W3 Realisatie-Realisatie verslag-Harsha Vardhan Kanaparthi.pdf`, `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf`                                                                                                                 | `K1-W3-DEMO VIDEO.mp4`, `Demo Fotos/VersieBeheer/Versiebeheer.png` |
-| **K1-W4** Testen      | 13               | `K1-W4-Testen-Harsha Vardhan Kanaparthi.pdf`                                                                                                                                                                                                     | –                                                                  |
-| **K1-W5** Verbeteren  | 14               | `K1-W5-Verbeteren-Harsha Vardhan Kanaparthi.pdf`, `K1-W5-Verbeteren-...-Reflectie.pdf`, `K1-W5-Verbeteren-...-Feedback van Stagebegeleider.pdf`, `K1-W5-Verbeteren-...-Oplevering Notities.pdf`                                                  | –                                                                  |
-| **K2-W1** Overleggen  | –                | `K2 W1 Overleggen-Harsha Vardhan Kanaparthi.pdf`, `Feedback Stage-Begeleider van Harsha Kanaparthi- K2 - W1.pdf`                                                                                                                                 | –                                                                  |
-| **K2-W2** Presenteren | –                | Presentatie-1 (3 PDFs: presentatie + feedback + reflectie), Presentatie-2 (2 PDFs: presentatie + reflectie)                                                                                                                                      | –                                                                  |
-| **K2-W3** Reflecteren | –                | `K2 W3 Reflectie-Harsha Vardhan Kanaparthi.pdf`, `K2 W3 Reflectie-...-Feedback Met Handtekening.pdf`, `K2 W3 Reflectie-Portfolio-Website-Presentatie.pdf`, `Beoordelingsrubrics Stagiaire- Harsha .pdf`, `Feedback Stage Harsha Kanaparthi .pdf` | –                                                                  |
+| Werkproces | README Sectie(s) | PDF Document(en) | Screenshots / Video |
+| --- | --- | --- | --- |
+| **K1-W1** Planning | 1, 4 | `K1-W1-Planning-Harsha Vardhan Kanaparthi.pdf`, `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf` | – |
+| **K1-W2** Ontwerpen | 4, 5, 6, 7, 8 | `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf` | `Demo Fotos/Software Fotos/` (12 screenshots) |
+| **K1-W3** Realiseren | 1–12 | `K1 W3 Realisatie-Realisatie verslag-Harsha Vardhan Kanaparthi.pdf`, `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf` | `K1-W3-DEMO VIDEO.mp4`, `Demo Fotos/VersieBeheer/Versiebeheer.png` |
+| **K1-W4** Testen | 13 | `K1-W4-Testen-Harsha Vardhan Kanaparthi.pdf` | – |
+| **K1-W5** Verbeteren | 14 | `K1-W5-Verbeteren-Harsha Vardhan Kanaparthi.pdf`, `K1-W5-Verbeteren-...-Feedback van Stagebegeleider.pdf`, `K1-W5-Verbeteren-...-Oplevering Notities.pdf` | – |
+| **K2-W1** Overleggen | – | `K2 W1 Overleggen-Harsha Vardhan Kanaparthi.pdf`, `Feedback Stage-Begeleider van Harsha Kanaparthi- K2 - W1.pdf`, `Beoordelingsrubrics Stagiaire- Harsha .pdf` | – |
+| **K2-W2** Presenteren | – | Presentatie-1 (3 PDFs: presentatie + feedback + reflectie), Presentatie-2 (2 PDFs: presentatie + reflectie) | – |
+| **K2-W3** Reflecteren | – | `K2 W3 Reflectie-Harsha Vardhan Kanaparthi.pdf`, `K2 W3 Reflectie-...-Feedback Met Handtekening.pdf`, `K2 W3 Reflectie-Portfolio-Website-Presentatie.pdf`, `Beoordelingsrubrics Stagiaire- Harsha .pdf`, `Feedback Stage Harsha Kanaparthi .pdf` | – |
 
-**Totaal bewijsstukken:** 21 PDF-documenten + 12 screenshots + 1 demovideo + 1 versiebeheer-screenshot + README.md (2600+ regels) + 22+ bronbestanden
+**Totaal bewijsstukken:** 21 PDF-documenten + 12 screenshots + 1 demovideo + 1 versiebeheer-screenshot + README.md (2800+ regels) + 22+ bronbestanden
 
 ---
 

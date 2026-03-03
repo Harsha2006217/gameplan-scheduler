@@ -2103,7 +2103,7 @@ Totaal **49 uur** besteed (meer dan de vereiste 40 uur). Het projectlog toont **
 | style.css | 822 regels CSS | 10+ uur |
 | database.sql | 229 regels met commentaar | 5+ uur |
 | 15 PHP-pagina's | ±200 regels per pagina gemiddeld | 12+ uur |
-| README.md | 2600+ regels documentatie | 10+ uur |
+| README.md | 2900+ regels documentatie | 10+ uur |
 | Testen | 30 testcases uitvoeren (per user story) | 5+ uur |
 | Bugfixes | 2 bugs vinden en oplossen (#1001, #1004) | 3+ uur |
 | **Totaal** | **4000+ regels code + docs** | **49+ uur** |
@@ -2524,7 +2524,7 @@ Stagebegeleider **Marius Restua** heeft feedback gegeven op het verbeterproces e
 | Code-kwaliteit | "Goede scheiding van verantwoordelijkheden, nette structuur" | Ja – Separation of Concerns consequent toegepast |
 | Beveiliging | "Prepared statements en XSS-bescherming correct geïmplementeerd" | Ja – 10 beveiligingsmaatregelen |
 | Validatie | "Dubbele validatie (client + server) is een goede keuze" | Ja – 18 validatieregels op beide lagen |
-| Documentatie | "README is uitgebreid en duidelijk, goed als naslagwerk" | Ja – 2600+ regels documentatie |
+| Documentatie | "README is uitgebreid en duidelijk, goed als naslagwerk" | Ja – 2900+ regels documentatie |
 | Verbeterpunten | "Overweeg geautomatiseerde tests voor toekomstige projecten" | Opgenomen als leerpunt |
 
 **Bewijs:** PDF `K1-W5-Verbeteren-Harsha Vardhan Kanaparthi-Feedback van Stagebegeleider.pdf`.
@@ -2540,7 +2540,7 @@ Het project is opgeleverd met de volgende onderdelen:
 | 1 | Volledige broncode | 22+ bestanden (PHP, JS, CSS, SQL) in de GitHub-repository |
 | 2 | Database-script | `database.sql` voor eenvoudige installatie van de database |
 | 3 | Installatie-instructies | README sectie 12 met stap-voor-stap uitleg |
-| 4 | Documentatie | README.md met 2600+ regels technische documentatie |
+| 4 | Documentatie | README.md met 2900+ regels technische documentatie |
 | 5 | Demovideo | `K1-W3-DEMO VIDEO.mp4` met demonstratie van alle functionaliteiten |
 | 6 | Screenshots | `Demo Fotos/Software Fotos/` met 12 PNG-screenshots van alle pagina's |
 | 7 | Oplevernotities | Aandachtspunten voor overdracht aan eventuele opvolger |
@@ -2617,7 +2617,7 @@ De stagebegeleider Marius Restua (Kompas Publishing B.V.) heeft een beoordelings
 **Pluspunten (benoemd door begeleider):**
 
 - Nette code-structuur met Separation of Concerns
-- Uitgebreide documentatie (README met 2600+ regels)
+- Uitgebreide documentatie (README met 2900+ regels)
 - Goede beveiligingsmaatregelen (10 maatregelen geïmplementeerd)
 - Consequente dubbele validatie (client + server)
 
@@ -2633,7 +2633,7 @@ De stagebegeleider Marius Restua (Kompas Publishing B.V.) heeft een beoordelings
 | --- | --- |
 | "Voeg eigenaarschapscontrole toe" | `checkOwnership()` functie geïmplementeerd in functions.php |
 | "Dubbele validatie toepassen" | 18 validatieregels op zowel client (JS) als server (PHP) |
-| "Documentatie uitbreiden" | README uitgebreid naar 2600+ regels met alle 16 secties |
+| "Documentatie uitbreiden" | README uitgebreid naar 2900+ regels met alle 16 secties |
 | "Soft delete toevoegen" | `deleted_at` kolom in alle 6 tabellen, alle queries aangepast |
 
 **Bewijs:** PDF `Feedback Stage-Begeleider van Harsha Kanaparthi- K2 - W1.pdf`, PDF `Feedback Stage Harsha Kanaparthi .pdf` en PDF `Beoordelingsrubrics Stagiaire- Harsha .pdf`.
@@ -2780,7 +2780,7 @@ De GamePlan Scheduler is een volledig werkende webapplicatie met:
 - 30 testcases uitgevoerd (93% eerste ronde, 100% na bugfixes)
 - 2 bugs gevonden en opgelost
 - 6 verbetervoorstellen gedocumenteerd
-- 2600+ regels documentatie (README.md)
+- 2900+ regels documentatie (README.md)
 
 **R – Reflectie:**
 
@@ -2891,7 +2891,7 @@ De onderstaande tabel geeft per werkproces een compleet overzicht van alle bewij
 | **K2-W2** Presenteren | – | Presentatie-1 (3 PDFs: presentatie + feedback + reflectie), Presentatie-2 (2 PDFs: presentatie + reflectie) | – |
 | **K2-W3** Reflecteren | – | `K2 W3 Reflectie-Harsha Vardhan Kanaparthi.pdf`, `K2 W3 Reflectie-...-Feedback Met Handtekening.pdf`, `K2 W3 Reflectie-Portfolio-Website-Presentatie.pdf`, `Beoordelingsrubrics Stagiaire- Harsha .pdf`, `Feedback Stage Harsha Kanaparthi .pdf` | – |
 
-**Totaal bewijsstukken:** 21 PDF-documenten + 12 screenshots + 1 demovideo + 1 versiebeheer-screenshot + README.md (2800+ regels) + 22+ bronbestanden
+**Totaal bewijsstukken:** 21 PDF-documenten + 12 screenshots + 1 demovideo + 1 versiebeheer-screenshot + README.md (2900+ regels) + 22+ bronbestanden
 
 ---
 

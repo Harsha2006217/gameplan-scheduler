@@ -36,16 +36,16 @@ $userId = getUserId();
 updateLastActivity(getDBConnection(), $userId);
 
 // Haal sorteer parameters uit URL
-$sortSchedules = $_GET['sort_schedules'] ?? 'date ASC';
-$sortEvents = $_GET['sort_events'] ?? 'date ASC';
+$sorteerSchemas = $_GET['sort_schedules'] ?? 'date ASC';
+$sorteerEvenementen = $_GET['sort_events'] ?? 'date ASC';
 
 // Haal alle gebruikersdata op
-$friends = getFriends($userId);
-$favorites = getFavoriteGames($userId);
-$schedules = getSchedules($userId, $sortSchedules);
-$events = getEvents($userId, $sortEvents);
-$calendarItems = getCalendarItems($userId);
-$reminders = getReminders($userId);
+$vrienden = getFriends($userId);
+$favorieten = getFavoriteGames($userId);
+$schemas = getSchedules($userId, $sorteerSchemas);
+$evenementen = getEvents($userId, $sorteerEvenementen);
+$kalenderItems = getCalendarItems($userId);
+$herinneringen = getReminders($userId);
 
 // Afhandeling uitloggen
 if (isset($_GET['logout'])) {
@@ -83,21 +83,21 @@ if (isset($_GET['logout'])) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (empty($friends)): ?>
+                        <?php if (empty($vrienden)): ?>
                             <tr><td colspan="4" class="text-center text-secondary">Nog geen vrienden. Voeg er een toe!</td></tr>
                         <?php else: ?>
-                            <?php foreach ($friends as $friend): ?>
+                            <?php foreach ($vrienden as $vriend): ?>
                                 <tr>
-                                    <td><?php echo safeEcho($friend['username']); ?></td>
+                                    <td><?php echo safeEcho($vriend['username']); ?></td>
                                     <td>
-                                        <span class="badge <?php echo $friend['status'] === 'Online' ? 'bg-success' : 'bg-secondary'; ?>">
-                                            <?php echo safeEcho($friend['status']); ?>
+                                        <span class="badge <?php echo $vriend['status'] === 'Online' ? 'bg-success' : 'bg-secondary'; ?>">
+                                            <?php echo safeEcho($vriend['status']); ?>
                                         </span>
                                     </td>
-                                    <td><?php echo safeEcho($friend['note']); ?></td>
+                                    <td><?php echo safeEcho($vriend['note']); ?></td>
                                     <td>
-                                        <a href="edit_friend.php?id=<?php echo $friend['friend_id']; ?>" class="btn btn-sm btn-warning">✏️ Bewerken</a>
-                                        <a href="delete.php?type=friend&id=<?php echo $friend['friend_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Weet je zeker dat je deze vriend wilt verwijderen?');">🗑️ Verwijderen</a>
+                                        <a href="edit_friend.php?id=<?php echo $vriend['friend_id']; ?>" class="btn btn-sm btn-warning">✏️ Bewerken</a>
+                                        <a href="delete.php?type=friend&id=<?php echo $vriend['friend_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Weet je zeker dat je deze vriend wilt verwijderen?');">🗑️ Verwijderen</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -122,17 +122,17 @@ if (isset($_GET['logout'])) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (empty($favorites)): ?>
+                        <?php if (empty($favorieten)): ?>
                             <tr><td colspan="4" class="text-center text-secondary">Nog geen favorieten. Voeg er een toe!</td></tr>
                         <?php else: ?>
-                            <?php foreach ($favorites as $game): ?>
+                            <?php foreach ($favorieten as $spel): ?>
                                 <tr>
-                                    <td><?php echo safeEcho($game['titel']); ?></td>
-                                    <td><?php echo safeEcho($game['description']); ?></td>
-                                    <td><?php echo safeEcho($game['note']); ?></td>
+                                    <td><?php echo safeEcho($spel['titel']); ?></td>
+                                    <td><?php echo safeEcho($spel['description']); ?></td>
+                                    <td><?php echo safeEcho($spel['note']); ?></td>
                                     <td>
-                                        <a href="edit_favorite.php?id=<?php echo $game['game_id']; ?>" class="btn btn-sm btn-warning">✏️ Bewerken</a>
-                                        <a href="delete.php?type=favorite&id=<?php echo $game['game_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Uit favorieten verwijderen?');">🗑️ Verwijderen</a>
+                                        <a href="edit_favorite.php?id=<?php echo $spel['game_id']; ?>" class="btn btn-sm btn-warning">✏️ Bewerken</a>
+                                        <a href="delete.php?type=favorite&id=<?php echo $spel['game_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Uit favorieten verwijderen?');">🗑️ Verwijderen</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -163,19 +163,19 @@ if (isset($_GET['logout'])) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (empty($schedules)): ?>
+                        <?php if (empty($schemas)): ?>
                             <tr><td colspan="6" class="text-center text-secondary">Nog geen schema's.</td></tr>
                         <?php else: ?>
-                            <?php foreach ($schedules as $schedule): ?>
+                            <?php foreach ($schemas as $schema): ?>
                                 <tr>
-                                    <td><?php echo safeEcho($schedule['game_titel']); ?></td>
-                                    <td><?php echo safeEcho($schedule['date']); ?></td>
-                                    <td><?php echo safeEcho($schedule['time']); ?></td>
-                                    <td><?php echo safeEcho($schedule['friends']); ?></td>
-                                    <td><?php echo safeEcho($schedule['shared_with']); ?></td>
+                                    <td><?php echo safeEcho($schema['game_titel']); ?></td>
+                                    <td><?php echo safeEcho($schema['date']); ?></td>
+                                    <td><?php echo safeEcho($schema['time']); ?></td>
+                                    <td><?php echo safeEcho($schema['friends']); ?></td>
+                                    <td><?php echo safeEcho($schema['shared_with']); ?></td>
                                     <td>
-                                        <a href="edit_schedule.php?id=<?php echo $schedule['schedule_id']; ?>" class="btn btn-sm btn-warning">✏️</a>
-                                        <a href="delete.php?type=schedule&id=<?php echo $schedule['schedule_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Weet je zeker dat je dit wilt verwijderen?');">🗑️</a>
+                                        <a href="edit_schedule.php?id=<?php echo $schema['schedule_id']; ?>" class="btn btn-sm btn-warning">✏️</a>
+                                        <a href="delete.php?type=schedule&id=<?php echo $schema['schedule_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Weet je zeker dat je dit wilt verwijderen?');">🗑️</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -207,24 +207,24 @@ if (isset($_GET['logout'])) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (empty($events)): ?>
+                        <?php if (empty($evenementen)): ?>
                             <tr><td colspan="7" class="text-center text-secondary">Nog geen evenementen.</td></tr>
                         <?php else: ?>
-                            <?php foreach ($events as $event): ?>
+                            <?php foreach ($evenementen as $evenement): ?>
                                 <tr>
-                                    <td><?php echo safeEcho($event['title']); ?></td>
-                                    <td><?php echo safeEcho($event['date']); ?></td>
-                                    <td><?php echo safeEcho($event['time']); ?></td>
-                                    <td><?php echo safeEcho(substr($event['description'] ?? '', 0, 50)); ?>...</td>
-                                    <td><span class="badge bg-info"><?php echo safeEcho($event['reminder']); ?></span></td>
+                                    <td><?php echo safeEcho($evenement['title']); ?></td>
+                                    <td><?php echo safeEcho($evenement['date']); ?></td>
+                                    <td><?php echo safeEcho($evenement['time']); ?></td>
+                                    <td><?php echo safeEcho(substr($evenement['description'] ?? '', 0, 50)); ?>...</td>
+                                    <td><span class="badge bg-info"><?php echo safeEcho($evenement['reminder']); ?></span></td>
                                     <td>
-                                        <?php if (!empty($event['external_link'])): ?>
-                                            <a href="<?php echo safeEcho($event['external_link']); ?>" target="_blank" class="btn btn-sm btn-outline-info">🔗 Openen</a>
+                                        <?php if (!empty($evenement['external_link'])): ?>
+                                            <a href="<?php echo safeEcho($evenement['external_link']); ?>" target="_blank" class="btn btn-sm btn-outline-info">🔗 Openen</a>
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <a href="edit_event.php?id=<?php echo $event['event_id']; ?>" class="btn btn-sm btn-warning">✏️</a>
-                                        <a href="delete.php?type=event&id=<?php echo $event['event_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Weet je zeker dat je dit wilt verwijderen?');">🗑️</a>
+                                        <a href="edit_event.php?id=<?php echo $evenement['event_id']; ?>" class="btn btn-sm btn-warning">✏️</a>
+                                        <a href="delete.php?type=event&id=<?php echo $evenement['event_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Weet je zeker dat je dit wilt verwijderen?');">🗑️</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -239,30 +239,30 @@ if (isset($_GET['logout'])) {
         <section class="mb-5">
             <h2>📆 Kalender Overzicht</h2>
             <div class="row">
-                <?php if (empty($calendarItems)): ?>
+                <?php if (empty($kalenderItems)): ?>
                     <div class="col-12">
                         <p class="text-secondary text-center">Geen komende items. Voeg schema's of evenementen toe!</p>
                     </div>
                 <?php else: ?>
-                    <?php foreach ($calendarItems as $item): ?>
+                    <?php foreach ($kalenderItems as $onderdeel): ?>
                         <div class="col-md-4 col-sm-6 mb-3">
                             <div class="card h-100">
                                 <div class="card-body">
                                     <h5 class="card-title text-cyan">
-                                        <?php echo safeEcho($item['title'] ?? $item['game_titel']); ?>
+                                        <?php echo safeEcho($onderdeel['title'] ?? $onderdeel['game_titel']); ?>
                                     </h5>
                                     <p class="mb-1">
-                                        <strong>📅</strong> <?php echo safeEcho($item['date']); ?>
-                                        <strong>⏰</strong> <?php echo safeEcho($item['time']); ?>
+                                        <strong>📅</strong> <?php echo safeEcho($onderdeel['date']); ?>
+                                        <strong>⏰</strong> <?php echo safeEcho($onderdeel['time']); ?>
                                     </p>
-                                    <?php if (!empty($item['description'])): ?>
-                                        <p class="text-secondary small"><?php echo safeEcho(substr($item['description'], 0, 100)); ?></p>
+                                    <?php if (!empty($onderdeel['description'])): ?>
+                                        <p class="text-secondary small"><?php echo safeEcho(substr($onderdeel['description'], 0, 100)); ?></p>
                                     <?php endif; ?>
-                                    <?php if (!empty($item['reminder']) && $item['reminder'] !== 'none'): ?>
-                                        <span class="badge bg-warning text-dark">🔔 <?php echo safeEcho($item['reminder']); ?></span>
+                                    <?php if (!empty($onderdeel['reminder']) && $onderdeel['reminder'] !== 'none'): ?>
+                                        <span class="badge bg-warning text-dark">🔔 <?php echo safeEcho($onderdeel['reminder']); ?></span>
                                     <?php endif; ?>
-                                    <?php if (!empty($item['external_link'])): ?>
-                                        <a href="<?php echo safeEcho($item['external_link']); ?>" target="_blank" class="btn btn-sm btn-outline-info mt-2">🔗 Link</a>
+                                    <?php if (!empty($onderdeel['external_link'])): ?>
+                                        <a href="<?php echo safeEcho($onderdeel['external_link']); ?>" target="_blank" class="btn btn-sm btn-outline-info mt-2">🔗 Link</a>
                                     <?php endif; ?>
                                 </div>
                             </div>
@@ -281,7 +281,7 @@ if (isset($_GET['logout'])) {
 
     <!-- Herinnering pop-ups -->
     <script>
-        const herinneringen = <?php echo json_encode($reminders); ?>;
+        const herinneringen = <?php echo json_encode($herinneringen); ?>;
         herinneringen.forEach(herinnering => {
             alert(`🔔 Herinnering: ${herinnering['title']} om ${herinnering['time']}`);
         });

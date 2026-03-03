@@ -22,7 +22,7 @@ if (!isLoggedIn()) {
 }
 
 $userId = getUserId();
-$favorites = getFavoriteGames($userId);
+$favorieten = getFavoriteGames($userId);
 $fout = '';
 
 // Verwerk formulier voor het toevoegen van een favoriet
@@ -101,20 +101,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_favorite'])) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (empty($favorites)): ?>
+                        <?php if (empty($favorieten)): ?>
                             <tr>
                                 <td colspan="4" class="text-center text-secondary">Nog geen favorieten!</td>
                             </tr>
                         <?php else: ?>
-                            <?php foreach ($favorites as $game): ?>
+                            <?php foreach ($favorieten as $spel): ?>
                                 <tr>
-                                    <td><?php echo safeEcho($game['titel']); ?></td>
-                                    <td><?php echo safeEcho($game['description']); ?></td>
-                                    <td><?php echo safeEcho($game['note']); ?></td>
+                                    <td><?php echo safeEcho($spel['titel']); ?></td>
+                                    <td><?php echo safeEcho($spel['description']); ?></td>
+                                    <td><?php echo safeEcho($spel['note']); ?></td>
                                     <td>
-                                        <a href="edit_favorite.php?id=<?php echo $game['game_id']; ?>"
+                                        <a href="edit_favorite.php?id=<?php echo $spel['game_id']; ?>"
                                             class="btn btn-sm btn-warning">✏️ Bewerken</a>
-                                        <a href="delete.php?type=favorite&id=<?php echo $game['game_id']; ?>"
+                                        <a href="delete.php?type=favorite&id=<?php echo $spel['game_id']; ?>"
                                             class="btn btn-sm btn-danger"
                                             onclick="return confirm('Uit favorieten verwijderen?');">🗑️ Verwijderen</a>
                                     </td>

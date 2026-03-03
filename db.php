@@ -72,7 +72,7 @@ function getDBConnection()
             // Resultaten ophalen als array met kolomnamen (bijv. $rij['username'])
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 
-            // Gebruik echte prepared statements (veiliger dan geemuleerde)
+            // Gebruik echte prepared statements (veiliger dan geëmuleerde)
             PDO::ATTR_EMULATE_PREPARES => false,
 
             // Houd verbinding in leven voor hergebruik (sneller)
@@ -102,4 +102,4 @@ function getDBConnection()
 // ==========================================================================
 // EINDE VAN DB.PHP
 // ==========================================================================
-// Geen afsluitende tag - dit voorkomt onbedoelde witruimte fouten. ?>
+// Geen afsluitende PHP tag - dit voorkomt onbedoelde witruimte fouten.

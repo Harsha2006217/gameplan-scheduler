@@ -26,13 +26,13 @@ if (!is_numeric($id)) {
 }
 
 // Haal het favoriete spel op
-$favorites = getFavoriteGames($userId);
-$game = array_filter($favorites, function ($g) use ($id) {
+$favorieten = getFavoriteGames($userId);
+$spel = array_filter($favorieten, function ($g) use ($id) {
     return $g['game_id'] == $id;
 });
-$game = reset($game);
+$spel = reset($spel);
 
-if (!$game) {
+if (!$spel) {
     setMessage('danger', 'Spel niet gevonden.');
     header("Location: profile.php");
     exit;
@@ -83,17 +83,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <div class="mb-3">
                             <label for="title" class="form-label">🎮 Speltitel *</label>
                             <input type="text" id="title" name="title" class="form-control" required maxlength="100"
-                                value="<?php echo safeEcho($game['titel']); ?>">
+                                value="<?php echo safeEcho($spel['titel']); ?>">
                         </div>
                         <div class="mb-3">
                             <label for="description" class="form-label">📝 Beschrijving</label>
                             <textarea id="description" name="description" class="form-control" rows="2"
-                                maxlength="500"><?php echo safeEcho($game['description']); ?></textarea>
+                                maxlength="500"><?php echo safeEcho($spel['description']); ?></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="note" class="form-label">📌 Notitie</label>
                             <textarea id="note" name="note" class="form-control"
-                                rows="2"><?php echo safeEcho($game['note']); ?></textarea>
+                                rows="2"><?php echo safeEcho($spel['note']); ?></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">💾 Bijwerken</button>
                         <a href="profile.php" class="btn btn-secondary">↩️ Annuleren</a>

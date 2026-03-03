@@ -128,7 +128,7 @@ function validateTime($tijd)
 /**
  * validateEmail - Controleer of een e-mailadres geldig is
  *
- * @param string $email  E-mailadres om te controleren
+ * @param string $emailAdres  E-mailadres om te controleren
  * @return string|null   Foutmelding of null als alles goed is
  */
 function validateEmail($emailAdres)
@@ -263,7 +263,7 @@ function updateLastActivity($pdo, $userId)
 /**
  * checkSessionTimeout - Controleer of de sessie verlopen is
  *
- * Na 30 minuten zonder activiteit wordt de sessie automatisch beeindigd.
+ * Na 30 minuten zonder activiteit wordt de sessie automatisch beëindigd.
  * Dit is een beveiligingsmaatregel: als iemand vergeet uit te loggen,
  * wordt de sessie na 30 minuten automatisch afgesloten.
  */
@@ -315,7 +315,7 @@ function registerUser($gebruikersnaam, $emailAdres, $wachtwoord)
         return "Dit e-mailadres is al geregistreerd.";
 
     // Versleutel het wachtwoord met bcrypt (veilig en niet terug te draaien)
-    $hash = password_hash($wachtwoord, PASSWORD_BCRYPT);
+    $hashWachtwoord = password_hash($wachtwoord, PASSWORD_BCRYPT);
 
     // Sla de nieuwe gebruiker op in de database
     $stmt = $pdo->prepare(
@@ -323,7 +323,7 @@ function registerUser($gebruikersnaam, $emailAdres, $wachtwoord)
          VALUES (:username, :email, :hash)"
     );
     try {
-        $stmt->execute(['username' => $gebruikersnaam, 'email' => $emailAdres, 'hash' => $hash]);
+        $stmt->execute(['username' => $gebruikersnaam, 'email' => $emailAdres, 'hash' => $hashWachtwoord]);
         return null; // Succes
     } catch (PDOException $e) {
         error_log("Registratie mislukt: " . $e->getMessage());
@@ -936,14 +936,14 @@ function getCalendarItems($userId)
 {
     $schemas = getSchedules($userId);
     $evenementen = getEvents($userId);
-    $items = array_merge($schemas, $evenementen);
+    $onderdelen = array_merge($schemas, $evenementen);
 
     // Sorteer op datum en tijd
-    usort($items, function ($a, $b) {
+    usort($onderdelen, function ($a, $b) {
         return strtotime($a['date'] . ' ' . $a['time']) <=> strtotime($b['date'] . ' ' . $b['time']);
     });
 
-    return $items;
+    return $onderdelen;
 }
 
 /**
@@ -957,16 +957,16 @@ function getReminders($userId)
     $evenementen = getEvents($userId);
     $herinneringen = [];
 
-    foreach ($evenementen as $event) {
-        if ($event['reminder'] == 'none')
+    foreach ($evenementen as $evenement) {
+        if ($evenement['reminder'] == 'none')
             continue;
 
-        $eventTijd = strtotime($event['date'] . ' ' . $event['time']);
+        $evenementTijd = strtotime($evenement['date'] . ' ' . $evenement['time']);
         // 1 uur = 3600 seconden, 1 dag = 86400 seconden
-        $herinneringTijd = $eventTijd - ($event['reminder'] == '1_hour' ? 3600 : 86400);
+        $herinneringTijd = $evenementTijd - ($evenement['reminder'] == '1_hour' ? 3600 : 86400);
 
         if ($herinneringTijd <= time() && $herinneringTijd > time() - 60) {
-            $herinneringen[] = $event;
+            $herinneringen[] = $evenement;
         }
     }
 

@@ -22,7 +22,7 @@ if (!isLoggedIn()) {
 }
 
 $userId = getUserId();
-$friends = getFriends($userId);
+$vrienden = getFriends($userId);
 $fout = '';
 
 // Verwerk formulier verzending
@@ -105,25 +105,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (empty($friends)): ?>
+                        <?php if (empty($vrienden)): ?>
                             <tr>
                                 <td colspan="4" class="text-center text-secondary">Nog geen vrienden!</td>
                             </tr>
                         <?php else: ?>
-                            <?php foreach ($friends as $friend): ?>
+                            <?php foreach ($vrienden as $vriend): ?>
                                 <tr>
-                                    <td><?php echo safeEcho($friend['username']); ?></td>
+                                    <td><?php echo safeEcho($vriend['username']); ?></td>
                                     <td>
                                         <span
-                                            class="badge <?php echo $friend['status'] === 'Online' ? 'bg-success' : ($friend['status'] === 'Playing' ? 'bg-primary' : 'bg-secondary'); ?>">
-                                            <?php echo safeEcho($friend['status']); ?>
+                                            class="badge <?php echo $vriend['status'] === 'Online' ? 'bg-success' : ($vriend['status'] === 'Playing' ? 'bg-primary' : 'bg-secondary'); ?>">
+                                            <?php echo safeEcho($vriend['status']); ?>
                                         </span>
                                     </td>
-                                    <td><?php echo safeEcho($friend['note']); ?></td>
+                                    <td><?php echo safeEcho($vriend['note']); ?></td>
                                     <td>
-                                        <a href="edit_friend.php?id=<?php echo $friend['friend_id']; ?>"
+                                        <a href="edit_friend.php?id=<?php echo $vriend['friend_id']; ?>"
                                             class="btn btn-sm btn-warning">✏️ Bewerken</a>
-                                        <a href="delete.php?type=friend&id=<?php echo $friend['friend_id']; ?>"
+                                        <a href="delete.php?type=friend&id=<?php echo $vriend['friend_id']; ?>"
                                             class="btn btn-sm btn-danger" onclick="return confirm('Vriend verwijderen?');">🗑️
                                             Verwijderen</a>
                                     </td>

@@ -26,13 +26,13 @@ if (!is_numeric($id)) {
 }
 
 // Haal vriend gegevens op
-$friends = getFriends($userId);
-$friend = array_filter($friends, function ($f) use ($id) {
+$vrienden = getFriends($userId);
+$vriend = array_filter($vrienden, function ($f) use ($id) {
     return $f['friend_id'] == $id;
 });
-$friend = reset($friend);
+$vriend = reset($vriend);
 
-if (!$friend) {
+if (!$vriend) {
     setMessage('danger', 'Vriend niet gevonden.');
     header("Location: add_friend.php");
     exit;
@@ -83,26 +83,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <div class="mb-3">
                             <label for="friend_username" class="form-label">🎮 Gebruikersnaam *</label>
                             <input type="text" id="friend_username" name="friend_username" class="form-control" required
-                                maxlength="50" value="<?php echo safeEcho($friend['username']); ?>">
+                                maxlength="50" value="<?php echo safeEcho($vriend['username']); ?>">
                         </div>
                         <div class="mb-3">
                             <label for="note" class="form-label">📝 Notitie</label>
                             <textarea id="note" name="note" class="form-control"
-                                rows="2"><?php echo safeEcho($friend['note']); ?></textarea>
+                                rows="2"><?php echo safeEcho($vriend['note']); ?></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="status" class="form-label">🔘 Status</label>
                             <select id="status" name="status" class="form-select">
-                                <option value="Offline" <?php if ($friend['status'] === 'Offline')
+                                <option value="Offline" <?php if ($vriend['status'] === 'Offline')
                                     echo 'selected'; ?>>
                                     Offline</option>
-                                <option value="Online" <?php if ($friend['status'] === 'Online')
+                                <option value="Online" <?php if ($vriend['status'] === 'Online')
                                     echo 'selected'; ?>>
                                     Online</option>
-                                <option value="Playing" <?php if ($friend['status'] === 'Playing')
+                                <option value="Playing" <?php if ($vriend['status'] === 'Playing')
                                     echo 'selected'; ?>>Aan
                                     het spelen</option>
-                                <option value="Away" <?php if ($friend['status'] === 'Away')
+                                <option value="Away" <?php if ($vriend['status'] === 'Away')
                                     echo 'selected'; ?>>Afwezig
                                 </option>
                             </select>

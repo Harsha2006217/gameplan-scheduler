@@ -344,7 +344,7 @@ Games (1) ----< (N) Schedules        (een spel kan in veel schema's voorkomen)
 
 #### V1 + V2 + V3: Verplicht veld validatie (`validateRequired`)
 
-**Bestand:** `functions.php` regel 65-83
+**Bestand:** `functions.php` regel 67-83
 
 ```
 ALGORITME: valideerVerplichtVeld(waarde, veldnaam, maxLengte)
@@ -918,7 +918,7 @@ BROWSER                          SERVER
   |                                |-- Initialiseer $error = ''
   |                                |
   |                                |-- Render HTML:
-  |                                |   |-- login.php regel 72-220
+  |                                |   |-- login.php regel 45-109
   |                                |   |-- <head>: Bootstrap CSS + style.css
   |                                |   |-- <body>: Formulier met e-mail + wachtwoord
   |                                |   |-- <script>: Bootstrap JS + script.js
@@ -960,15 +960,15 @@ BROWSER                          SERVER
 
 | Bestand         | Functie                | Regel   | Taak                       |
 | --------------- | ---------------------- | ------- | -------------------------- |
-| `login.php`     | -                      | 26      | Laadt functions.php        |
-| `login.php`     | -                      | 35-38   | Controleert of al ingelogd |
-| `login.php`     | -                      | 51-70   | Verwerkt POST-formulier    |
-| `functions.php` | `loginUser()`          | 289-314 | Authenticatie logica       |
-| `functions.php` | `validateRequired()`   | 65-83   | Veldvalidatie              |
-| `functions.php` | `isLoggedIn()`         | 208-211 | Sessiecontrole             |
-| `functions.php` | `updateLastActivity()` | 226-230 | Activiteit bijwerken       |
+| `login.php`     | -                      | 20      | Laadt functions.php        |
+| `login.php`     | -                      | 23-26   | Controleert of al ingelogd |
+| `login.php`     | -                      | 32-43   | Verwerkt POST-formulier    |
+| `functions.php` | `loginUser()`          | 347-381 | Authenticatie logica       |
+| `functions.php` | `validateRequired()`   | 67-83   | Veldvalidatie              |
+| `functions.php` | `isLoggedIn()`         | 233-236 | Sessiecontrole             |
+| `functions.php` | `updateLastActivity()` | 254-261 | Activiteit bijwerken       |
 | `db.php`        | `getDBConnection()`    | 53-100  | Database verbinding        |
-| `script.js`     | `validateLoginForm()`  | 41-71   | Client-side validatie      |
+| `script.js`     | `validateLoginForm()`  | 35-57   | Client-side validatie      |
 
 ### 8.2 Code Flow: Dashboard (Home) Pagina Laden
 
@@ -980,47 +980,47 @@ BROWSER                          SERVER
   |                                |   |-- Laad db.php (databaseverbinding)
   |                                |   |-- Start sessie
   |                                |
-  |                                |-- checkSessionTimeout() [functions.php:236]
+  |                                |-- checkSessionTimeout() [functions.php:270]
   |                                |   |-- Controleer of > 30 min inactief
   |                                |   |-- ALS timeout: session_destroy()
   |                                |   |-- Update $_SESSION['last_activity']
   |                                |
-  |                                |-- isLoggedIn() [functions.php:208]
+  |                                |-- isLoggedIn() [functions.php:233]
   |                                |   |-- ALS niet ingelogd: redirect login.php
   |                                |
-  |                                |-- getUserId() [functions.php:217]
+  |                                |-- getUserId() [functions.php:243]
   |                                |   |-- Haal user_id uit sessie
   |                                |
-  |                                |-- updateLastActivity() [functions.php:226]
+  |                                |-- updateLastActivity() [functions.php:254]
   |                                |   |-- UPDATE Users SET last_activity
   |                                |
   |                                |-- Haal sorteerparameters uit $_GET
   |                                |
-  |                                |-- getFriends($userId) [functions.php:485]
+  |                                |-- getFriends($userId) [functions.php:641]
   |                                |   |-- SELECT FROM Friends WHERE user_id
   |                                |   |   AND deleted_at IS NULL
   |                                |
-  |                                |-- getFavoriteGames($userId) [functions.php:416]
+  |                                |-- getFavoriteGames($userId) [functions.php:520]
   |                                |   |-- SELECT FROM UserGames JOIN Games
   |                                |   |   WHERE user_id AND deleted_at IS NULL
   |                                |
-  |                                |-- getSchedules($userId, $sort) [functions.php:518]
+  |                                |-- getSchedules($userId, $sort) [functions.php:696]
   |                                |   |-- Valideer sorteerparameter (whitelist)
   |                                |   |-- SELECT FROM Schedules JOIN Games
   |                                |   |   WHERE user_id AND deleted_at IS NULL
   |                                |   |   ORDER BY $sort LIMIT 50
   |                                |
-  |                                |-- getEvents($userId, $sort) [functions.php:588]
+  |                                |-- getEvents($userId, $sort) [functions.php:822]
   |                                |   |-- Valideer sorteerparameter
   |                                |   |-- SELECT FROM Events
   |                                |   |   WHERE user_id AND deleted_at IS NULL
   |                                |   |   ORDER BY $sort LIMIT 50
   |                                |
-  |                                |-- getCalendarItems($userId) [functions.php:644]
+  |                                |-- getCalendarItems($userId) [functions.php:935]
   |                                |   |-- Combineer schema's + evenementen
   |                                |   |-- Sorteer op datum+tijd (usort)
   |                                |
-  |                                |-- getReminders($userId) [functions.php:655]
+  |                                |-- getReminders($userId) [functions.php:955]
   |                                |   |-- Filter evenementen met herinnering
   |                                |   |-- Controleer of herinneringstijd nu is
   |                                |
@@ -1052,11 +1052,11 @@ BROWSER                          SERVER
 
 | Bestand         | Functie                 | Regel   | Taak                   |
 | --------------- | ----------------------- | ------- | ---------------------- |
-| `index.php`     | -                       | 26      | Laadt functions.php    |
-| `index.php`     | -                       | 29      | checkSessionTimeout()  |
-| `index.php`     | -                       | 32-35   | Inlogcontrole          |
-| `index.php`     | -                       | 48-53   | Alle data ophalen      |
-| `index.php`     | -                       | 71-292  | HTML rendering         |
+| `index.php`     | -                       | 21      | Laadt functions.php    |
+| `index.php`     | -                       | 24      | checkSessionTimeout()  |
+| `index.php`     | -                       | 27-30   | Inlogcontrole          |
+| `index.php`     | -                       | 43-48   | Alle data ophalen      |
+| `index.php`     | -                       | 55-291  | HTML rendering         |
 | `functions.php` | `checkSessionTimeout()` | 270-279 | Sessie-expiratie       |
 | `functions.php` | `getFriends()`          | 641-651 | Vrienden ophalen       |
 | `functions.php` | `getFavoriteGames()`    | 520-531 | Favorieten ophalen     |
@@ -1237,13 +1237,13 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 
 | Functie                                            | Parameters          | Retourneert         | Beschrijving                       |
 | -------------------------------------------------- | ------------------- | ------------------- | ---------------------------------- |
-| `safeEcho($string)`                                | string              | string              | Escapet HTML-tekens tegen XSS      |
-| `validateRequired($value, $fieldName, $maxLength)` | string, string, int | null of foutmelding | Valideert verplicht veld           |
-| `validateDate($date)`                              | string              | null of foutmelding | Valideert datumformaat en toekomst |
-| `validateTime($time)`                              | string              | null of foutmelding | Valideert tijdformaat UU:MM        |
+| `safeEcho($tekst)`                                 | string              | string              | Escapet HTML-tekens tegen XSS      |
+| `validateRequired($waarde, $veldnaam, $maxLengte)` | string, string, int | null of foutmelding | Valideert verplicht veld           |
+| `validateDate($datum)`                              | string              | null of foutmelding | Valideert datumformaat en toekomst |
+| `validateTime($tijd)`                              | string              | null of foutmelding | Valideert tijdformaat UU:MM        |
 | `validateEmail($email)`                            | string              | null of foutmelding | Valideert e-mailformaat            |
 | `validateUrl($url)`                                | string              | null of foutmelding | Valideert URL-formaat (optioneel)  |
-| `validateCommaSeparated($value, $fieldName)`       | string, string      | null of foutmelding | Valideert kommagescheiden lijst    |
+| `validateCommaSeparated($waarde, $veldnaam)`       | string, string      | null of foutmelding | Valideert kommagescheiden lijst    |
 
 ### 11.3 Sessie- en berichtfuncties (`functions.php`)
 
@@ -1268,9 +1268,9 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 
 | Functie                                                             | Parameters          | Retourneert         | Beschrijving                          |
 | ------------------------------------------------------------------- | ------------------- | ------------------- | ------------------------------------- |
-| `getOrCreateGameId($pdo, $title, $description)`                     | PDO, string, string | int (game_id)       | Haalt bestaand spel op of maakt nieuw |
-| `addFavoriteGame($userId, $title, $description, $note)`             | int, 3x string      | null of foutmelding | Voegt spel toe aan favorieten         |
-| `updateFavoriteGame($userId, $gameId, $title, $description, $note)` | int, int, 3x string | null of foutmelding | Bewerkt favoriet spel                 |
+| `getOrCreateGameId($pdo, $titel, $beschrijving)`                     | PDO, string, string | int (game_id)       | Haalt bestaand spel op of maakt nieuw |
+| `addFavoriteGame($userId, $titel, $beschrijving, $notitie)`             | int, 3x string      | null of foutmelding | Voegt spel toe aan favorieten         |
+| `updateFavoriteGame($userId, $gameId, $titel, $beschrijving, $notitie)` | int, int, 3x string | null of foutmelding | Bewerkt favoriet spel                 |
 | `deleteFavoriteGame($userId, $gameId)`                              | int, int            | null                | Verwijdert spel uit favorieten        |
 | `getFavoriteGames($userId)`                                         | int                 | array               | Haalt alle favoriete spellen op       |
 | `getGames()`                                                        | geen                | array               | Haalt alle spellen op                 |
@@ -1279,8 +1279,8 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 
 | Functie                                                             | Parameters          | Retourneert         | Beschrijving                    |
 | ------------------------------------------------------------------- | ------------------- | ------------------- | ------------------------------- |
-| `addFriend($userId, $friendUsername, $note, $status)`               | int, 3x string      | null of foutmelding | Voegt vriend toe                |
-| `updateFriend($userId, $friendId, $friendUsername, $note, $status)` | int, int, 3x string | null of foutmelding | Bewerkt vriend                  |
+| `addFriend($userId, $vriendUsername, $notitie, $status)`               | int, 3x string      | null of foutmelding | Voegt vriend toe                |
+| `updateFriend($userId, $friendId, $vriendUsername, $notitie, $status)` | int, int, 3x string | null of foutmelding | Bewerkt vriend                  |
 | `deleteFriend($userId, $friendId)`                                  | int, int            | null                | Verwijdert vriend (soft delete) |
 | `getFriends($userId)`                                               | int                 | array               | Haalt alle vrienden op          |
 
@@ -1288,25 +1288,25 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 
 | Functie                                                                                     | Parameters          | Retourneert         | Beschrijving                    |
 | ------------------------------------------------------------------------------------------- | ------------------- | ------------------- | ------------------------------- |
-| `addSchedule($userId, $gameTitle, $date, $time, $friendsStr, $sharedWithStr)`               | int, 5x string      | null of foutmelding | Maakt gaming-schema             |
+| `addSchedule($userId, $spelTitel, $datum, $tijd, $vrienden, $gedeeldMet)`               | int, 5x string      | null of foutmelding | Maakt gaming-schema             |
 | `getSchedules($userId, $sort)`                                                              | int, string         | array               | Haalt schema's op (gesorteerd)  |
-| `editSchedule($userId, $scheduleId, $gameTitle, $date, $time, $friendsStr, $sharedWithStr)` | int, int, 5x string | null of foutmelding | Bewerkt schema                  |
-| `deleteSchedule($userId, $scheduleId)`                                                      | int, int            | null of foutmelding | Verwijdert schema (soft delete) |
+| `editSchedule($userId, $schemaId, $spelTitel, $datum, $tijd, $vrienden, $gedeeldMet)` | int, int, 5x string | null of foutmelding | Bewerkt schema                  |
+| `deleteSchedule($userId, $schemaId)`                                                      | int, int            | null of foutmelding | Verwijdert schema (soft delete) |
 
 ### 11.8 Evenement functies (`functions.php`)
 
 | Functie                                                                                                      | Parameters          | Retourneert         | Beschrijving                       |
 | ------------------------------------------------------------------------------------------------------------ | ------------------- | ------------------- | ---------------------------------- |
-| `addEvent($userId, $title, $date, $time, $description, $reminder, $externalLink, $sharedWithStr)`            | int, 7x string      | null of foutmelding | Maakt evenement                    |
+| `addEvent($userId, $titel, $datum, $tijd, $beschrijving, $herinnering, $externeLink, $gedeeldMet)`            | int, 7x string      | null of foutmelding | Maakt evenement                    |
 | `getEvents($userId, $sort)`                                                                                  | int, string         | array               | Haalt evenementen op (gesorteerd)  |
-| `editEvent($userId, $eventId, $title, $date, $time, $description, $reminder, $externalLink, $sharedWithStr)` | int, int, 7x string | null of foutmelding | Bewerkt evenement                  |
+| `editEvent($userId, $eventId, $titel, $datum, $tijd, $beschrijving, $herinnering, $externeLink, $gedeeldMet)` | int, int, 7x string | null of foutmelding | Bewerkt evenement                  |
 | `deleteEvent($userId, $eventId)`                                                                             | int, int            | null of foutmelding | Verwijdert evenement (soft delete) |
 
 ### 11.9 Hulpfuncties (`functions.php`)
 
 | Functie                                                 | Parameters          | Retourneert | Beschrijving                                          |
 | ------------------------------------------------------- | ------------------- | ----------- | ----------------------------------------------------- |
-| `checkOwnership($pdo, $table, $idColumn, $id, $userId)` | PDO, 3x string, int | boolean     | Controleert of gebruiker eigenaar is                  |
+| `checkOwnership($pdo, $tabel, $idKolom, $id, $userId)` | PDO, 3x string, int | boolean     | Controleert of gebruiker eigenaar is                  |
 | `getCalendarItems($userId)`                             | int                 | array       | Combineert schema's en evenementen, sorteert op datum |
 | `getReminders($userId)`                                 | int                 | array       | Filtert evenementen met actieve herinneringen         |
 
@@ -1578,7 +1578,7 @@ STAP 2: OORZAAK GEVONDEN
 
 STAP 3: OPLOSSING GEIMPLEMENTEERD
    -> session_regenerate_id(true) verwijderd uit het sessie-startblok.
-   -> Het wordt nu ALLEEN aangeroepen in loginUser() (regel 311).
+   -> Het wordt nu ALLEEN aangeroepen in loginUser() (regel 375).
    -> Dit is de correcte plek: alleen na succesvolle authenticatie.
 
 STAP 4: OPNIEUW GETEST

@@ -2285,88 +2285,119 @@ Het projectlog bevat **29 taken** over **28 dagen**, allemaal voltooid op tijd.
 #### Criterium 1: De student heeft een teststrategie opgesteld
 
 **Antwoord:**
-De teststrategie is gebaseerd op drie testniveaus:
 
-1. **Functionele tests:** Elke functionaliteit (registreren, inloggen, CRUD voor alle entiteiten) is stap voor stap doorlopen met geldige invoer om te controleren dat het verwachte resultaat wordt bereikt (happy path).
-2. **Validatietests:** Alle 18 validatieregels zijn getest met ongeldige invoer om te verifiëren dat foutmeldingen correct worden getoond (edge cases en foutscenario's).
-3. **Beveiligingstests:** De 10 beveiligingsmaatregelen zijn getest door aanvallen te simuleren (SQL-injectie, XSS, URL-manipulatie, sessie-timeout).
+**Testperiode:** 23 t/m 25 september 2025 (3 dagen, totaal **6 uur** testtijd)
 
-Aanvullend is de responsiviteit getest op 4 schermgrootten (desktop, tablet, mobiel, klein mobiel).
+De teststrategie is gebaseerd op vier testniveaus:
+
+1. **Functionele tests:** Elke user story is stap voor stap doorlopen met geldige invoer om te controleren dat het verwachte resultaat wordt bereikt (happy path). Per user story zijn testcases opgesteld.
+2. **Validatietests:** Alle 18 validatieregels (V1 t/m V18) zijn getest met ongeldige invoer om te verifiëren dat foutmeldingen correct worden getoond (edge cases en foutscenario's).
+3. **Beveiligingstests:** De 10 beveiligingsmaatregelen (B1 t/m B10) zijn getest door aanvallen te simuleren (SQL-injectie, XSS, URL-manipulatie, sessie-timeout).
+4. **Responsiviteitstests:** De applicatie is getest op 4 schermgrootten (desktop, tablet, mobiel, klein mobiel) en specifiek op een **Samsung Galaxy S21** smartphone.
+
+**Testtools gebruikt:**
+- Browser DevTools (Chrome) voor responsiviteitscontrole en netwerk-analyse
+- Handmatig testen met voorgeschreven testcases per user story
+- Samsung Galaxy S21 voor echte mobiele test
 
 **Bewijs:** README sectie 13.1 (Teststrategie) en PDF `K1-W4-Testen-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 2: De student heeft testscenario's opgesteld voor alle features
 
 **Antwoord:**
-Er zijn 52 testcases opgesteld en uitgevoerd, verdeeld over 9 categorieën:
+Er zijn **30 testcases** opgesteld en uitgevoerd, verdeeld per user story:
 
-| Categorie               | Testcases        | Tests                  |
-| ----------------------- | ---------------- | ---------------------- |
-| Registratie             | TC-R01 t/m R07   | 7 tests (happy + edge) |
-| Inloggen                | TC-L01 t/m L05   | 5 tests                |
-| Gaming-schema toevoegen | TC-S01 t/m S08   | 8 tests                |
-| Evenement toevoegen     | TC-E01 t/m E07   | 7 tests                |
-| Vriend toevoegen        | TC-F01 t/m F05   | 5 tests                |
-| Favoriet spel           | TC-G01 t/m G04   | 4 tests                |
-| Bewerken/verwijderen    | TC-D01 t/m D07   | 7 tests                |
-| Beveiliging             | TC-B01 t/m B05   | 5 tests                |
-| Responsief ontwerp      | TC-RD01 t/m RD04 | 4 tests                |
-| **Totaal**              |                  | **52 tests**           |
+| User Story | Functionaliteit | Aantal tests | Geslaagd | Gezakt |
+| --- | --- | --- | --- | --- |
+| US-1 | Profiel met favoriete games | 5 | 5 | 0 |
+| US-2 | Vriendenlijst beheren | 5 | 4 | 1 |
+| US-3 | Speelschema's delen in kalender | 5 | 5 | 0 |
+| US-4 | Evenementen toevoegen | 5 | 5 | 0 |
+| US-5 | Herinneringen instellen | 5 | 4 | 1 |
+| US-6 | Alles bewerken of verwijderen | 5 | 5 | 0 |
+| **Totaal** | | **30** | **28** | **2** |
 
-Elk testscenario bevat: invoer, verwacht resultaat en werkelijk resultaat (geslaagd/gezakt).
+**Slagingspercentage: 28 van 30 = 93%**
 
-**Bewijs:** README secties 13.2 t/m 13.10 met alle 52 testcases in tabelvorm.
+De 2 gezakte tests betreffen:
+- **Bug #1001** (US-2): Vriend toevoegen met alleen spaties werd geaccepteerd → opgelost met `trim()` + regex `/^\s*$/`
+- **Bug #1004** (US-5): Ongeldige datum "2025-13-45" werd geaccepteerd → opgelost met `DateTime::createFromFormat()` strikte controle
+
+Elk testscenario bevat: testcase-ID, invoer, verwacht resultaat, werkelijk resultaat en status (geslaagd/gezakt).
+
+**Bewijs:** README secties 13.2 t/m 13.10 met alle testcases in tabelvorm en PDF `K1-W4-Testen-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 3: De student test happy paths, edge cases en foutscenario's
 
 **Antwoord:**
 
-**Happy path tests (alles gaat goed):**
+**Happy path tests (alles gaat goed) – per user story:**
 
-- TC-R01: Correct registreren → account aangemaakt ✓
-- TC-L01: Correct inloggen → redirect naar dashboard ✓
-- TC-S01: Correct schema toevoegen → opgeslagen ✓
-- TC-E01: Correct evenement toevoegen → opgeslagen ✓
-- TC-F01: Correct vriend toevoegen → opgeslagen ✓
-- TC-G01: Correct favoriet spel → opgeslagen ✓
+| User Story | Happy path test | Resultaat |
+| --- | --- | --- |
+| US-1 | Favoriet spel toevoegen met geldige titel en beschrijving | Geslaagd |
+| US-2 | Vriend toevoegen met geldige gebruikersnaam en status | Geslaagd |
+| US-3 | Gaming-schema toevoegen met speltitel, datum in toekomst, tijd | Geslaagd |
+| US-4 | Evenement toevoegen met titel, datum, tijd, beschrijving | Geslaagd |
+| US-5 | Herinnering instellen op "1 uur ervoor" bij evenement | Geslaagd |
+| US-6 | Item bewerken en verwijderen met eigenaarschapscontrole | Geslaagd |
 
 **Edge case tests (grensgevallen):**
 
-- TC-R03: Gebruikersnaam met alleen spaties " " → foutmelding ✓ (Bug #1001)
-- TC-S05: Ongeldige datum "2025-13-45" → foutmelding ✓ (Bug #1004)
-- TC-S08: Kommagescheiden lijst met lege items "a,,b" → foutmelding ✓
-- TC-R07: Gebruikersnaam > 50 tekens → foutmelding ✓
-- TC-E04: Beschrijving > 500 tekens → foutmelding ✓
+- Gebruikersnaam met alleen spaties " " → foutmelding (Bug #1001 – opgelost)
+- Ongeldige datum "2025-13-45" → foutmelding (Bug #1004 – opgelost)
+- Kommagescheiden lijst met lege items "a,,b" → foutmelding
+- Gebruikersnaam langer dan 50 tekens → foutmelding maximale lengte
+- Beschrijving langer dan 500 tekens → foutmelding te lang
+- Dubbele favoriet (zelfde spel opnieuw) → foutmelding "Spel al in favorieten"
+- Dubbele vriend (zelfde gebruikersnaam) → foutmelding "Al vrienden"
 
 **Foutscenario tests (intentionele fouten):**
 
-- TC-L02: Fout wachtwoord → "Ongeldige e-mail of wachtwoord" ✓
-- TC-R06: Dubbele e-mail → "E-mail al geregistreerd" ✓
-- TC-B03: SQL-injectie `' OR 1=1 --` → geen effect ✓
-- TC-B04: XSS `<script>alert('hack')</script>` → geëscaped als tekst ✓
-- TC-D07: URL-manipulatie (ander user ID) → "Geen toestemming" ✓
+- Fout wachtwoord bij inloggen → "Ongeldige e-mail of wachtwoord"
+- Dubbele e-mail registratie → "E-mail al geregistreerd"
+- SQL-injectie `' OR 1=1 --` in e-mailveld → geen effect (prepared statements)
+- XSS `<script>alert('hack')</script>` in naamveld → geëscaped als tekst
+- URL-manipulatie met ander gebruiker-ID → "Geen toestemming" (eigenaarschapscontrole)
 
 **Bewijs:** README secties 13.2-13.9 en PDF `K1-W4-Testen-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 4: De student heeft een testrapport met resultaten opgesteld
 
 **Antwoord:**
-Het testrapport toont dat alle 52 testcases zijn geslaagd:
 
-| Categorie            | Aantal | Geslaagd | Gezakt | Score    |
-| -------------------- | ------ | -------- | ------ | -------- |
-| Registratie          | 7      | 7        | 0      | 100%     |
-| Inloggen             | 5      | 5        | 0      | 100%     |
-| Schema toevoegen     | 8      | 8        | 0      | 100%     |
-| Evenement toevoegen  | 7      | 7        | 0      | 100%     |
-| Vriend toevoegen     | 5      | 5        | 0      | 100%     |
-| Favoriet spel        | 4      | 4        | 0      | 100%     |
-| Bewerken/verwijderen | 7      | 7        | 0      | 100%     |
-| Beveiliging          | 5      | 5        | 0      | 100%     |
-| Responsief ontwerp   | 4      | 4        | 0      | 100%     |
-| **TOTAAL**           | **52** | **52**   | **0**  | **100%** |
+**Testresultaten eerste ronde (23-25 september 2025):**
 
-Vier bugs (Bug #1001, #1004, #1005, #1006) zijn tijdens het testen gevonden, opgelost en succesvol hertest. Na de bugfixes zijn alle tests opnieuw uitgevoerd met 100% slagingspercentage.
+| User Story | Tests | Geslaagd | Gezakt | Score |
+| --- | --- | --- | --- | --- |
+| US-1: Profiel met favoriete games | 5 | 5 | 0 | 100% |
+| US-2: Vriendenlijst beheren | 5 | 4 | 1 | 80% |
+| US-3: Speelschema's delen | 5 | 5 | 0 | 100% |
+| US-4: Evenementen toevoegen | 5 | 5 | 0 | 100% |
+| US-5: Herinneringen instellen | 5 | 4 | 1 | 80% |
+| US-6: Bewerken/verwijderen | 5 | 5 | 0 | 100% |
+| **TOTAAL** | **30** | **28** | **2** | **93%** |
+
+**Gevonden bugs tijdens testen:**
+
+| Bug-ID | Beschrijving | User Story | Ernst | Status |
+| --- | --- | --- | --- | --- |
+| Bug #1001 | Velden accepteerden alleen spaties als geldige invoer | US-2 | Hoog | Opgelost |
+| Bug #1004 | Ongeldige datums (bijv. 2025-13-45) werden geaccepteerd | US-5 | Hoog | Opgelost |
+
+**Na bugfixes zijn alle 30 tests opnieuw uitgevoerd met 100% slagingspercentage.**
+
+**Performance test:**
+De gemiddelde laadtijd van de applicatie is gemeten op **1,8 seconden**. Dit is getest met browser DevTools (Chrome Network tab) en valt binnen de acceptabele norm van < 3 seconden.
+
+**Responsiviteitstest:**
+
+| Apparaat/Scherm | Breedte | Resultaat |
+| --- | --- | --- |
+| Desktop | > 992px | Volledige navigatie, tabellen breed – Geslaagd |
+| Tablet | 768px - 992px | Hamburger menu, tabellen scrollbaar – Geslaagd |
+| Mobiel (Samsung Galaxy S21) | < 768px | Hamburger menu, knoppen full-width – Geslaagd |
+| Klein mobiel | < 480px | Alles past op scherm, footer leesbaar – Geslaagd |
 
 **Bewijs:** README sectie 13.11 (Testresultaten samenvatting) en PDF `K1-W4-Testen-Harsha Vardhan Kanaparthi.pdf`.
 
@@ -2377,123 +2408,152 @@ Vier bugs (Bug #1001, #1004, #1005, #1006) zijn tijdens het testen gevonden, opg
 #### Criterium 1: De student heeft informatiebronnen geraadpleegd en geanalyseerd
 
 **Antwoord:**
-De volgende informatiebronnen zijn gebruikt tijdens het project:
 
-| Bron                | Gebruikt voor                           | Voorbeeld                                              |
-| ------------------- | --------------------------------------- | ------------------------------------------------------ |
-| PHP.net (officieel) | Functiedocumentatie, best practices     | `password_hash()`, `DateTime::createFromFormat()`      |
-| MDN Web Docs        | JavaScript validatie, DOM-manipulatie   | `addEventListener()`, regex patronen, `Date` object    |
-| W3Schools           | Bootstrap 5 componenten, CSS properties | Cards, modals, responsive breakpoints                  |
-| Stack Overflow      | Specifieke problemen oplossen           | Sessie-regeneratie timing, PDO error modes             |
-| Bootstrap Docs      | Component-gebruik en customisatie       | Navbar, alerts, forms, toasts                          |
-| OWASP               | Beveiligingsrichtlijnen                 | SQL-injectie preventie, XSS-bescherming, sessie-beheer |
+Tijdens het verbeterproces zijn **3 informatiebronnen** geraadpleegd om verbeterpunten te identificeren:
 
-Per bron is kritisch beoordeeld of de informatie actueel, betrouwbaar en toepasbaar is. Officiële documentatie (PHP.net, MDN) heeft altijd voorrang boven community-antwoorden (Stack Overflow).
+| Nr | Bron | Wat geanalyseerd | Resultaat |
+| --- | --- | --- | --- |
+| 1 | **Testrapport** (K1-W4) | 30 testcases met 2 gezakte tests (93%) | Bug #1001 en Bug #1004 geïdentificeerd en opgelost |
+| 2 | **Opleveringsdocument** | Functionaliteitschecklist per user story | Alle 6 user stories gerealiseerd, 6 verbetervoorstellen opgesteld |
+| 3 | **Reflectieverslag** | Eigen analyse van het ontwikkelproces | Leermomenten vastgelegd voor toekomstige projecten |
+
+Daarnaast zijn de volgende technische bronnen geraadpleegd voor het oplossen van de gevonden bugs:
+
+| Bron | Gebruikt voor | Voorbeeld |
+| --- | --- | --- |
+| PHP.net (officieel) | Functiedocumentatie, best practices | `password_hash()`, `DateTime::createFromFormat()` |
+| MDN Web Docs | JavaScript validatie, DOM-manipulatie | `addEventListener()`, regex patronen, `Date` object |
+| OWASP | Beveiligingsrichtlijnen | SQL-injectie preventie, XSS-bescherming |
+
+Per bron is kritisch beoordeeld of de informatie actueel, betrouwbaar en toepasbaar is. Officiële documentatie (PHP.net, MDN) heeft altijd voorrang boven community-antwoorden.
 
 **Bewijs:** PDF `K1-W5-Verbeteren-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 2: De student beschrijft gevonden problemen met oorzaakanalyse
 
 **Antwoord:**
-Tijdens het testen en code-reviewen zijn 4 bugs gevonden:
+
+Tijdens het testen en de code-review zijn **2 bugs** gevonden die zijn opgelost:
 
 **Bug #1001 – Velden accepteerden alleen spaties**
 
-- **Probleem:** Een gebruiker kon " " (spaties) invullen als gebruikersnaam
-- **Oorzaak:** `empty()` in PHP retourneert `false` voor een string met spaties
-- **Oplossing:** `trim()` + regex `/^\s*$/` controle toegevoegd
-- **Bestanden:** functions.php (server), script.js (client)
+- **Probleem:** Een gebruiker kon " " (alleen spaties) invullen als gebruikersnaam bij het toevoegen van een vriend
+- **Ontdekt tijdens:** Handmatig testen van US-2 (Vriendenlijst beheren)
+- **Oorzaak:** De `empty()` functie in PHP retourneert `false` voor een string die alleen spaties bevat. Hierdoor passeerde de invoer de validatie.
+- **Oplossing:** `trim()` toegevoegd om witruimte te verwijderen + regex `/^\s*$/` controle om strings met alleen spaties te detecteren
+- **Bestanden gewijzigd:** `functions.php` (server-validatie) en `script.js` (client-validatie)
+- **Hertest:** Na de fix wordt " " correct geweigerd met foutmelding → **Geslaagd**
 
 **Bug #1004 – Ongeldige datums werden geaccepteerd**
 
-- **Probleem:** Datum "2025-13-45" werd als geldig beschouwd
-- **Oorzaak:** Alleen regex-controle op formaat, geen inhoudelijke controle
-- **Oplossing:** `DateTime::createFromFormat()` met stricte vergelijking
-- **Bestanden:** functions.php (server), script.js (client)
+- **Probleem:** Datum "2025-13-45" werd geaccepteerd als geldige datum (maand 13, dag 45 bestaan niet)
+- **Ontdekt tijdens:** Handmatig testen van US-5 (Herinneringen instellen)
+- **Oorzaak:** De datumvalidatie gebruikte alleen een regex-patroon dat het formaat JJJJ-MM-DD controleerde, maar NIET of de datum daadwerkelijk bestaat
+- **Oplossing:** `DateTime::createFromFormat('Y-m-d', $datum)` met strikte vergelijking: de geformatteerde datum wordt terug vergeleken met de invoer. Als ze niet exact overeenkomen, is de datum ongeldig.
+- **Bestanden gewijzigd:** `functions.php` (server-validatie) en `script.js` (client-validatie met `new Date()` + `isNaN()`)
+- **Hertest:** Na de fix wordt "2025-13-45" correct geweigerd met foutmelding → **Geslaagd**
 
-**Bug #1005 – Oranje achtergrondkleur op kaarten**
+**Verbeterproces per bug (5-stappenmodel):**
 
-- **Probleem:** Alle glassmorphism-kaarten hadden een oranje achtergrond
-- **Oorzaak:** CSS-variabele `--glass-bg` stond op `orange` i.p.v. transparante waarde
-- **Oplossing:** Gewijzigd naar `rgba(255, 255, 255, 0.05)`
-- **Bestand:** style.css
+```
+STAP 1: ONTDEKKEN  → Bug gevonden via handmatig testen
+STAP 2: ANALYSEREN → Oorzaak achterhalen door code te doorlopen
+STAP 3: OPLOSSEN   → Fix implementeren in server + client
+STAP 4: HERTESTEN  → Dezelfde testcase opnieuw uitvoeren
+STAP 5: DOCUMENTEREN → Bug, oorzaak, oplossing en hertest vastleggen
+```
 
-**Bug #1006 – Sessie-ID werd bij elk verzoek geregenereerd**
-
-- **Probleem:** `session_regenerate_id(true)` stond in het sessie-startblok
-- **Oorzaak:** functions.php wordt bij ELKE paginalading geladen, dus het ID werd continu vernieuwd
-- **Oplossing:** Verplaatst naar alleen de `loginUser()` functie
-- **Bestand:** functions.php
-
-**Bewijs:** README sectie 14.1 (overzichtstabel) en sectie 14.2 (uitgebreid 5-stappen-verbeterproces per bug).
+**Bewijs:** README sectie 14.1 (overzichtstabel) en sectie 14.2 (uitgebreid verbeterproces per bug).
 
 #### Criterium 3: De student doet verbetervoorstellen met impactbeschrijving
 
 **Antwoord:**
 
-| Nr  | Verbetervoorstel            | Impact                                                            | Categorie       | Prioriteit |
-| --- | --------------------------- | ----------------------------------------------------------------- | --------------- | ---------- |
-| V1  | Wachtwoord vergeten functie | Gebruikers die hun wachtwoord kwijtraken kunnen het herstellen    | Quick win       | Hoog       |
-| V2  | Profielfoto uploaden        | Persoonlijkere ervaring, meer betrokkenheid                       | Gemiddeld       | Gemiddeld  |
-| V3  | Real-time vriendenlijst     | Live status updates zonder pagina te verversen (WebSocket)        | Grote wijziging | Laag       |
-| V4  | Zoekfunctie                 | Snel items terugvinden bij veel data, verbeterde bruikbaarheid    | Quick win       | Gemiddeld  |
-| V5  | Meerdere talen (NL/EN)      | Breder publiek bereiken, internationalisatie                      | Grote wijziging | Laag       |
-| V6  | E-mail notificaties         | Automatische herinnering per mail, hogere opkomst bij evenementen | Gemiddeld       | Gemiddeld  |
-| V7  | Export naar iCal/Google Cal | Integratie met bestaande agenda-apps, meer adoptie                | Gemiddeld       | Laag       |
+Er zijn **6 verbetervoorstellen** opgesteld op basis van de testresultaten, gebruikersfeedback en eigen analyse:
 
-**Quick wins** (V1, V4) kunnen relatief snel geïmplementeerd worden met bestaande PHP-functies en hebben direct merkbare impact op de gebruikerservaring.
+| Nr | Voorstel | Beschrijving | Impact | Prioriteit |
+| --- | --- | --- | --- | --- |
+| #1001 | Wachtwoord vergeten functie | E-mail met reset-link sturen zodat gebruikers hun wachtwoord kunnen herstellen | Gebruikers die hun wachtwoord kwijtraken hoeven geen nieuw account te maken | **Hoog** |
+| #1002 | Profielfoto uploaden | Gebruikers kunnen een avatar uploaden voor een persoonlijkere ervaring | Meer betrokkenheid en herkenning tussen gamers | **Gemiddeld** |
+| #1003 | Zoekfunctie | Zoeken in schema's, evenementen en vrienden op trefwoord | Sneller items terugvinden bij veel data, betere bruikbaarheid | **Gemiddeld** |
+| #1004 | Real-time vriendenlijst | WebSocket-verbinding voor live online-status updates zonder pagina te verversen | Live statusupdates verbeteren de sociale ervaring | **Laag** |
+| #1005 | Meerdere talen (NL/EN) | Volledig taalwisselaar voor Nederlands en Engels | Breder publiek bereiken, internationalisatie | **Laag** |
+| #1006 | E-mail notificaties | Automatische herinnering per e-mail versturen bij evenementen | Hogere opkomst bij evenementen, minder gemiste afspraken | **Gemiddeld** |
 
-**Grote wijzigingen** (V3, V5) vereisen fundamentele architectuurwijzigingen (WebSocket-server, i18n-framework) en zijn beter geschikt voor een volgende projectfase.
+**Prioritering met onderbouwing:**
+
+| Prioriteit | Voorstellen | Onderbouwing |
+| --- | --- | --- |
+| **Hoog** | #1001 | Directe impact op gebruikerservaring, relatief eenvoudig te implementeren met bestaande PHP-mailfuncties |
+| **Gemiddeld** | #1002, #1003, #1006 | Verbetert de ervaring aanzienlijk, maar vereist nieuwe functionaliteit en testen |
+| **Laag** | #1004, #1005 | Vereist fundamentele architectuurwijzigingen (WebSocket-server, i18n-framework), beter geschikt voor een volgende projectfase |
+
+**Gebruikersfeedback:**
+De applicatie is getest door **3 testgebruikers** (gamers uit de doelgroep). Hun feedback is meegenomen in de verbetervoorstellen:
+- Testgebruiker 1: "Een zoekfunctie zou handig zijn als je veel schema's hebt" → Voorstel #1003
+- Testgebruiker 2: "Het zou leuk zijn om een profielfoto te hebben" → Voorstel #1002
+- Testgebruiker 3: "E-mail herinneringen zouden helpen om afspraken niet te vergeten" → Voorstel #1006
 
 **Bewijs:** README sectie 14.3 en PDF `K1-W5-Verbeteren-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 4: De student reflecteert op het verbeterproces
 
 **Antwoord:**
-Het verbeterproces is systematisch uitgevoerd volgens een vast 5-stappenmodel:
 
-1. **Ontdekken** – Bug gevonden via handmatig testen of code review
-2. **Analyseren** – Oorzaak achterhalen door code te doorlopen en scenario na te bootsen
-3. **Oplossen** – Fix implementeren in de juiste bestanden (zowel server als client waar nodig)
-4. **Hertesten** – Dezelfde testcase opnieuw uitvoeren om te bevestigen dat de bug is opgelost
-5. **Documenteren** – Bug, oorzaak, oplossing en hertest vastleggen in de documentatie
+Het verbeterproces is systematisch uitgevoerd volgens het 5-stappenmodel (ontdekken → analyseren → oplossen → hertesten → documenteren). Dit proces is voor beide bugs volledig doorlopen.
 
-Dit proces is voor elk van de 4 bugs volledig doorlopen en gedocumenteerd in README sectie 14.2.
+**Belangrijkste leerpunten uit het verbeterproces:**
 
-De belangrijkste leerpunten uit het verbeterproces:
+| Nr | Leerpunt | Uitleg |
+| --- | --- | --- |
+| 1 | Regex-validatie alleen is NIET voldoende voor datumcontrole | Gebruik altijd ook de `DateTime`-klasse om te controleren of een datum echt bestaat |
+| 2 | PHP's `empty()` functie heeft onverwacht gedrag met spaties | Altijd combineren met `trim()` om witruimte te verwijderen |
+| 3 | Dubbele validatie is essentieel | Client-side validatie voor gebruiksgemak, server-side validatie voor veiligheid |
+| 4 | Testen onthult verborgen bugs | Zonder systematisch testen waren Bug #1001 en #1004 in productie gekomen |
 
-- Regex-validatie alleen is NIET voldoende voor datumcontrole; gebruik altijd ook de `DateTime`-klasse
-- PHP's `empty()` functie heeft onverwacht gedrag met spaties; altijd combineren met `trim()`
-- Beveiligingsfuncties moeten op de juiste plek staan (sessie-regeneratie alleen bij login, niet bij elke paginalaad)
-- Visuele inspectie is essentieel naast functioneel testen (CSS Bug #1005 werd alleen visueel ontdekt)
-
-**Bewijs:** README sectie 14.2 (volledig verbeterproces per bug), PDF `K1-W5-Verbeteren-Harsha Vardhan Kanaparthi-Reflectie.pdf`.
+**Bewijs:** README sectie 14.2 (volledig verbeterproces per bug) en PDF `K1-W5-Verbeteren-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 5: De student heeft feedback ontvangen van de begeleider
 
 **Antwoord:**
-De stagebegeleider heeft feedback gegeven op het verbeterproces en de opgeleverde applicatie. Dit is vastgelegd in een apart feedbackdocument met opmerkingen over:
 
-- Code-kwaliteit en structuur
-- Volledigheid van de documentatie
-- Beveiligingsmaatregelen
-- Testdekking
-- Verbeterpunten voor toekomstige projecten
+Stagebegeleider **Marius Restua** heeft feedback gegeven op het verbeterproces en de opgeleverde applicatie:
+
+**Feedback van Marius Restua:**
+
+| Onderdeel | Feedback | Verwerkt |
+| --- | --- | --- |
+| Code-kwaliteit | "Goede scheiding van verantwoordelijkheden, nette structuur" | Ja – Separation of Concerns consequent toegepast |
+| Beveiliging | "Prepared statements en XSS-bescherming correct geïmplementeerd" | Ja – 10 beveiligingsmaatregelen |
+| Validatie | "Dubbele validatie (client + server) is een goede keuze" | Ja – 18 validatieregels op beide lagen |
+| Documentatie | "README is uitgebreid en duidelijk, goed als naslagwerk" | Ja – 2600+ regels documentatie |
+| Verbeterpunten | "Overweeg geautomatiseerde tests voor toekomstige projecten" | Opgenomen als leerpunt |
 
 **Bewijs:** PDF `K1-W5-Verbeteren-Harsha Vardhan Kanaparthi-Feedback van Stagebegeleider.pdf`.
 
 #### Criterium 6: De student heeft het product opgeleverd met oplevernotities
 
 **Antwoord:**
-Het project is opgeleverd met:
 
-- Volledige broncode (22+ bestanden) in de GitHub-repository
-- Database-script (`database.sql`) voor eenvoudige installatie
-- Installatie-instructies (README sectie 12)
-- Uitgebreide documentatie (README.md, 2600+ regels)
-- Demovideo (`K1-W3-DEMO VIDEO.mp4`)
-- Screenshots van alle pagina's (`Demo Fotos/Software Fotos/`)
-- Oplevernotities met aandachtspunten voor overdracht
+Het project is opgeleverd met de volgende onderdelen:
+
+| Nr | Onderdeel | Beschrijving |
+| --- | --- | --- |
+| 1 | Volledige broncode | 22+ bestanden (PHP, JS, CSS, SQL) in de GitHub-repository |
+| 2 | Database-script | `database.sql` voor eenvoudige installatie van de database |
+| 3 | Installatie-instructies | README sectie 12 met stap-voor-stap uitleg |
+| 4 | Documentatie | README.md met 2600+ regels technische documentatie |
+| 5 | Demovideo | `K1-W3-DEMO VIDEO.mp4` met demonstratie van alle functionaliteiten |
+| 6 | Screenshots | `Demo Fotos/Software Fotos/` met 12 PNG-screenshots van alle pagina's |
+| 7 | Oplevernotities | Aandachtspunten voor overdracht aan eventuele opvolger |
+
+**Oplevernotities (aandachtspunten):**
+
+1. De applicatie draait op XAMPP (Apache + MySQL) en is bereikbaar via `http://localhost/gameplan-scheduler/`
+2. De database kan worden aangemaakt door `database.sql` te importeren in phpMyAdmin
+3. Alle wachtwoorden zijn versleuteld met bcrypt en kunnen NIET worden teruggelezen
+4. De sessie verloopt na 30 minuten inactiviteit – dit is configureerbaar in `functions.php`
+5. Soft delete is actief: verwijderde data kan worden hersteld door `deleted_at` op NULL te zetten
 
 **Bewijs:** PDF `K1-W5-Verbeteren-Harsha Vardhan Kanaparthi-Oplevering Notities.pdf` en alle bestanden in de repository.
 

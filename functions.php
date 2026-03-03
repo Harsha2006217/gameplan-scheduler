@@ -1,194 +1,217 @@
 <?php
 /**
- * ============================================================================
- * FUNCTIONS.PHP - KERNFUNCTIES
- * ============================================================================
+ * ==========================================================================
+ * FUNCTIONS.PHP - ALLE FUNCTIES VAN DE APPLICATIE
+ * ==========================================================================
  * Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
  *
- * Bevat alle database queries, validatie, authenticatie en helperfuncties.
+ * Dit bestand bevat alle functies die de applicatie nodig heeft:
+ * - Sessie beheer (inloggen, uitloggen, timeout)
+ * - Validatie (invoer controleren op fouten)
+ * - Database bewerkingen (toevoegen, ophalen, bewerken, verwijderen)
+ * - Hulpfuncties (veilige uitvoer, berichten tonen)
  *
- * BUGFIXES:
- * - #1001: Alleen-spaties validatie met trim() en regex
- * - #1004: Strenge datumvalidatie met DateTime::createFromFormat()
- * - #1006: session_regenerate_id() verplaatst naar alleen loginUser()
- * ============================================================================
+ * Alle database queries gebruiken prepared statements tegen SQL-injectie.
+ * Alle uitvoer wordt beveiligd met htmlspecialchars tegen XSS-aanvallen.
+ * ==========================================================================
  */
 
-// Start output buffering to prevent "headers already sent" errors
 // Start output buffering om "headers already sent" fouten te voorkomen
 ob_start();
 
-// Include database connection / Include database verbinding
+// Laad de database verbinding uit db.php
 require_once 'db.php';
 
-// ============================================================================
-// SESSION MANAGEMENT / SESSIE BEHEER
-// ============================================================================
-
-/**
- * Start session if not already started
- * Start sessie als nog niet gestart
- */
+// --------------------------------------------------------------------------
+// SESSIE STARTEN
+// --------------------------------------------------------------------------
+// Controleer of er al een sessie actief is, zo niet: start er een.
+// Een sessie onthoudt wie er ingelogd is tussen pagina-verzoeken.
+// --------------------------------------------------------------------------
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// ============================================================================
-// HELPER FUNCTIONS / HELPERFUNCTIES
-// ============================================================================
+
+// ==========================================================================
+// SECTIE 1: HULPFUNCTIES
+// ==========================================================================
 
 /**
- * safeEcho - Secure output escaping against XSS attacks
- * safeEcho - Veilige output escaping tegen XSS aanvallen
- * 
- * @param string $string Text to escape / Tekst om te escapen
- * @return string Safe HTML escaped text / Veilige HTML escaped tekst
+ * safeEcho - Maakt tekst veilig om te tonen in HTML (beschermt tegen XSS)
+ *
+ * XSS (Cross-Site Scripting) is een aanval waarbij iemand kwaadaardige
+ * code invoert in een formulier. htmlspecialchars zet gevaarlijke tekens
+ * om naar veilige HTML-codes. Voorbeeld: <script> wordt &lt;script&gt;
+ *
+ * @param string $tekst  De tekst om veilig te maken
+ * @return string        Veilige tekst die getoond kan worden
  */
-function safeEcho($string)
+function safeEcho($tekst)
 {
-    // htmlspecialchars converts special characters to HTML entities
-    // Example: <script> becomes &lt;script&gt; (safe to display)
-    return htmlspecialchars($string ?? '', ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars($tekst ?? '', ENT_QUOTES, 'UTF-8');
 }
 
 /**
- * validateRequired - Validate required fields (BUG FIX #1001)
- * validateRequired - Valideer verplichte velden (BUG FIX #1001)
- * 
- * FIXES: Prevents saving fields with only spaces
- * 
- * @param string $value Value to validate / Waarde om te valideren
- * @param string $fieldName Name for error message / Naam voor foutmelding
- * @param int $maxLength Maximum allowed length / Maximum toegestane lengte
- * @return string|null Error message or null if valid / Foutmelding of null als geldig
+ * validateRequired - Controleer of een verplicht veld correct is ingevuld
+ *
+ * Deze functie controleert twee dingen:
+ * 1. Is het veld niet leeg?
+ * 2. Bevat het veld niet alleen spaties? (Bug fix #1001)
+ *
+ * @param string $waarde     De ingevulde waarde
+ * @param string $veldnaam   Naam van het veld (voor de foutmelding)
+ * @param int    $maxLengte  Maximum aantal tekens (0 = geen limiet)
+ * @return string|null       Foutmelding of null als alles goed is
  */
-function validateRequired($value, $fieldName, $maxLength = 0)
+function validateRequired($waarde, $veldnaam, $maxLengte = 0)
 {
-    // Trim removes whitespace from beginning and end
-    // Trim verwijdert witruimte van begin en einde
-    $value = trim($value);
+    // Verwijder spaties aan het begin en einde
+    $waarde = trim($waarde);
 
-    // BUG FIX #1001: Check for empty OR spaces-only using regex
-    // BUG FIX #1001: Controleer op leeg OF alleen spaties met regex
-    if (empty($value) || preg_match('/^\s*$/', $value)) {
-        return "$fieldName may not be empty or contain only spaces. / $fieldName mag niet leeg zijn of alleen spaties bevatten.";
+    // Controleer of het veld leeg is of alleen spaties bevat
+    if (empty($waarde) || preg_match('/^\s*$/', $waarde)) {
+        return "$veldnaam mag niet leeg zijn of alleen spaties bevatten.";
     }
 
-    // Check maximum length if specified
-    if ($maxLength > 0 && strlen($value) > $maxLength) {
-        return "$fieldName exceeds maximum length of $maxLength characters. / $fieldName overschrijdt maximale lengte van $maxLength tekens.";
+    // Controleer of de tekst niet te lang is
+    if ($maxLengte > 0 && strlen($waarde) > $maxLengte) {
+        return "$veldnaam is te lang (maximaal $maxLengte tekens).";
     }
 
-    return null; // Valid / Geldig
+    return null; // Geen fout gevonden
 }
 
 /**
- * validateDate - Validate date format and future date (BUG FIX #1004)
- * validateDate - Valideer datum formaat en toekomstige datum (BUG FIX #1004)
- * 
- * FIXES: Prevents invalid dates like 2025-13-45
- * 
- * @param string $date Date string to validate / Datum string om te valideren
- * @return string|null Error message or null if valid
+ * validateDate - Controleer of een datum geldig is en in de toekomst ligt
+ *
+ * Deze functie beschermt tegen ongeldige datums zoals "2025-13-45".
+ * Het gebruikt DateTime::createFromFormat voor strikte controle. (Bug fix #1004)
+ *
+ * @param string $datum  Datum in formaat JJJJ-MM-DD
+ * @return string|null   Foutmelding of null als alles goed is
  */
-function validateDate($date)
+function validateDate($datum)
 {
-    // BUG FIX #1004: Use DateTime for STRICT date validation
-    // BUG FIX #1004: Gebruik DateTime voor STRIKTE datum validatie
-    $dateObj = DateTime::createFromFormat('Y-m-d', $date);
+    // Maak een DateTime object van de ingevoerde datum
+    $datumObject = DateTime::createFromFormat('Y-m-d', $datum);
 
-    // Check if date was parsed correctly AND matches input exactly
-    // Controleer of datum correct geparsed is EN exact overeenkomt met input
-    if (!$dateObj || $dateObj->format('Y-m-d') !== $date) {
-        return "Invalid date format. Use YYYY-MM-DD. / Ongeldig datum formaat. Gebruik JJJJ-MM-DD.";
+    // Controleer of de datum geldig is (bijv. geen 31 februari)
+    if (!$datumObject || $datumObject->format('Y-m-d') !== $datum) {
+        return "Ongeldig datum formaat. Gebruik JJJJ-MM-DD.";
     }
 
-    // Check if date is in the future
-    // Controleer of datum in de toekomst is
-    $today = new DateTime('today');
-    if ($dateObj < $today) {
-        return "Date must be today or in the future. / Datum moet vandaag of in de toekomst zijn.";
+    // Controleer of de datum vandaag of in de toekomst is
+    $vandaag = new DateTime('today');
+    if ($datumObject < $vandaag) {
+        return "Datum moet vandaag of in de toekomst zijn.";
     }
 
     return null;
 }
 
 /**
- * validateTime - Validate time format HH:MM
- * validateTime - Valideer tijd formaat UU:MM
+ * validateTime - Controleer of een tijd geldig is (formaat UU:MM)
+ *
+ * @param string $tijd  Tijd om te controleren
+ * @return string|null  Foutmelding of null als alles goed is
  */
-function validateTime($time)
+function validateTime($tijd)
 {
-    // Regex: 00-23 hours, 00-59 minutes
-    if (!preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/', $time)) {
-        return "Invalid time format (HH:MM). / Ongeldig tijd formaat (UU:MM).";
+    // Controleer met regex: uren 00-23, minuten 00-59
+    if (!preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/', $tijd)) {
+        return "Ongeldig tijd formaat. Gebruik UU:MM (bijv. 15:00).";
     }
     return null;
 }
 
 /**
- * validateEmail - Validate email format
- * validateEmail - Valideer e-mail formaat
+ * validateEmail - Controleer of een e-mailadres geldig is
+ *
+ * @param string $email  E-mailadres om te controleren
+ * @return string|null   Foutmelding of null als alles goed is
  */
 function validateEmail($email)
 {
+    // PHP filter_var controleert het e-mail formaat automatisch
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        return "Invalid email format. / Ongeldig e-mail formaat.";
+        return "Ongeldig e-mail formaat.";
     }
     return null;
 }
 
 /**
- * validateUrl - Validate URL format (optional field)
- * validateUrl - Valideer URL formaat (optioneel veld)
+ * validateUrl - Controleer of een URL geldig is (optioneel veld)
+ *
+ * @param string $url  URL om te controleren
+ * @return string|null Foutmelding of null als alles goed is
  */
 function validateUrl($url)
 {
     if (!empty($url) && !filter_var($url, FILTER_VALIDATE_URL)) {
-        return "Invalid URL format. / Ongeldig URL formaat.";
+        return "Ongeldig URL formaat.";
     }
     return null;
 }
 
 /**
- * validateCommaSeparated - Validate comma-separated values
- * validateCommaSeparated - Valideer komma-gescheiden waarden
+ * validateCommaSeparated - Controleer komma-gescheiden waarden
+ *
+ * Controleert of er geen lege items tussen de komma's staan.
+ * Voorbeeld goed: "speler1, speler2"
+ * Voorbeeld fout: "speler1, , speler2"
+ *
+ * @param string $waarde    De komma-gescheiden tekst
+ * @param string $veldnaam  Naam voor de foutmelding
+ * @return string|null      Foutmelding of null als alles goed is
  */
-function validateCommaSeparated($value, $fieldName)
+function validateCommaSeparated($waarde, $veldnaam)
 {
-    if (empty($value))
+    if (empty($waarde))
         return null;
-    $items = explode(',', $value);
+
+    // Splits op komma en controleer elk item
+    $items = explode(',', $waarde);
     foreach ($items as $item) {
         if (empty(trim($item))) {
-            return "$fieldName contains empty items. / $fieldName bevat lege items.";
+            return "$veldnaam bevat lege items.";
         }
     }
     return null;
 }
 
-// ============================================================================
-// SESSION MESSAGE FUNCTIONS / SESSIE BERICHT FUNCTIES
-// ============================================================================
+
+// ==========================================================================
+// SECTIE 2: SESSIE BERICHTEN
+// ==========================================================================
 
 /**
- * setMessage - Store message in session for display
- * setMessage - Bewaar bericht in sessie voor weergave
+ * setMessage - Sla een bericht op in de sessie om op de volgende pagina te tonen
+ *
+ * Wordt gebruikt na een actie (bijv. "Vriend toegevoegd!") om de gebruiker
+ * een bevestiging te tonen na een redirect.
+ *
+ * @param string $type  Type bericht: 'success' (groen) of 'danger' (rood)
+ * @param string $tekst De tekst van het bericht
  */
-function setMessage($type, $msg)
+function setMessage($type, $tekst)
 {
-    $_SESSION['message'] = ['type' => $type, 'msg' => $msg];
+    $_SESSION['message'] = ['type' => $type, 'msg' => $tekst];
 }
 
 /**
- * getMessage - Get and clear session message
- * getMessage - Haal sessie bericht op en wis het
+ * getMessage - Haal het sessie bericht op en toon het als HTML
+ *
+ * Het bericht wordt na het ophalen verwijderd uit de sessie,
+ * zodat het maar een keer getoond wordt.
+ *
+ * @return string HTML code van het bericht, of lege string
  */
 function getMessage()
 {
     if (isset($_SESSION['message'])) {
         $msg = $_SESSION['message'];
-        unset($_SESSION['message']);
+        unset($_SESSION['message']); // Verwijder na ophalen
         return "<div class='alert alert-{$msg['type']} alert-dismissible fade show' role='alert'>
                     {$msg['msg']}
                     <button type='button' class='btn-close' data-bs-dismiss='alert'></button>
@@ -197,13 +220,15 @@ function getMessage()
     return '';
 }
 
-// ============================================================================
-// AUTHENTICATION FUNCTIONS / AUTHENTICATIE FUNCTIES
-// ============================================================================
+
+// ==========================================================================
+// SECTIE 3: AUTHENTICATIE FUNCTIES (INLOGGEN / REGISTREREN)
+// ==========================================================================
 
 /**
- * isLoggedIn - Check if user is logged in
- * isLoggedIn - Controleer of gebruiker ingelogd is
+ * isLoggedIn - Controleer of de gebruiker ingelogd is
+ *
+ * @return bool true als ingelogd, false als niet
  */
 function isLoggedIn()
 {
@@ -211,8 +236,9 @@ function isLoggedIn()
 }
 
 /**
- * getUserId - Get current user's ID
- * getUserId - Haal huidige gebruiker's ID op
+ * getUserId - Haal het ID van de ingelogde gebruiker op
+ *
+ * @return int Het gebruiker ID, of 0 als niet ingelogd
  */
 function getUserId()
 {
@@ -220,102 +246,142 @@ function getUserId()
 }
 
 /**
- * updateLastActivity - Update user's last activity timestamp
- * updateLastActivity - Update gebruiker's laatste activiteit timestamp
+ * updateLastActivity - Werk de laatste activiteit bij in de database
+ *
+ * @param PDO $pdo      Database verbinding
+ * @param int $userId   ID van de gebruiker
  */
 function updateLastActivity($pdo, $userId)
 {
-    $stmt = $pdo->prepare("UPDATE Users SET last_activity = CURRENT_TIMESTAMP WHERE user_id = :user_id AND deleted_at IS NULL");
+    $stmt = $pdo->prepare(
+        "UPDATE Users SET last_activity = CURRENT_TIMESTAMP
+         WHERE user_id = :user_id AND deleted_at IS NULL"
+    );
     $stmt->execute(['user_id' => $userId]);
 }
 
 /**
- * checkSessionTimeout - Check if session has expired (30 minutes)
- * checkSessionTimeout - Controleer of sessie verlopen is (30 minuten)
+ * checkSessionTimeout - Controleer of de sessie verlopen is
+ *
+ * Na 30 minuten zonder activiteit wordt de sessie automatisch beeindigd.
+ * Dit is een beveiligingsmaatregel: als iemand vergeet uit te loggen,
+ * wordt de sessie na 30 minuten automatisch afgesloten.
  */
 function checkSessionTimeout()
 {
-    // 1800 seconds = 30 minutes
+    // 1800 seconden = 30 minuten
     if (isLoggedIn() && isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {
         session_destroy();
-        header("Location: login.php?msg=session_timeout");
+        header("Location: login.php?msg=sessie_verlopen");
         exit;
     }
     $_SESSION['last_activity'] = time();
 }
 
 /**
- * registerUser - Register a new user account
  * registerUser - Registreer een nieuw gebruikersaccount
+ *
+ * Stappen:
+ * 1. Controleer of alle velden correct zijn ingevuld
+ * 2. Controleer of het e-mailadres nog niet bestaat
+ * 3. Versleutel het wachtwoord met bcrypt
+ * 4. Sla de nieuwe gebruiker op in de database
+ *
+ * @param string $username   Gekozen gebruikersnaam
+ * @param string $email      E-mailadres
+ * @param string $password   Gekozen wachtwoord
+ * @return string|null       Foutmelding of null bij succes
  */
 function registerUser($username, $email, $password)
 {
     $pdo = getDBConnection();
 
-    // Validate all inputs
-    if ($err = validateRequired($username, "Username", 50))
+    // Controleer alle invoer
+    if ($err = validateRequired($username, "Gebruikersnaam", 50))
         return $err;
     if ($err = validateEmail($email))
         return $err;
-    if ($err = validateRequired($password, "Password"))
+    if ($err = validateRequired($password, "Wachtwoord"))
         return $err;
     if (strlen($password) < 8)
-        return "Password must be at least 8 characters. / Wachtwoord moet minimaal 8 tekens zijn.";
+        return "Wachtwoord moet minimaal 8 tekens zijn.";
 
-    // Check if email already exists
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM Users WHERE email = :email AND deleted_at IS NULL");
+    // Controleer of e-mail al bestaat in de database
+    $stmt = $pdo->prepare(
+        "SELECT COUNT(*) FROM Users WHERE email = :email AND deleted_at IS NULL"
+    );
     $stmt->execute(['email' => $email]);
     if ($stmt->fetchColumn() > 0)
-        return "Email already registered. / E-mail al geregistreerd.";
+        return "Dit e-mailadres is al geregistreerd.";
 
-    // Hash password with bcrypt (secure!)
+    // Versleutel het wachtwoord met bcrypt (veilig en niet terug te draaien)
     $hash = password_hash($password, PASSWORD_BCRYPT);
 
-    // Insert new user
-    $stmt = $pdo->prepare("INSERT INTO Users (username, email, password_hash) VALUES (:username, :email, :hash)");
+    // Sla de nieuwe gebruiker op in de database
+    $stmt = $pdo->prepare(
+        "INSERT INTO Users (username, email, password_hash)
+         VALUES (:username, :email, :hash)"
+    );
     try {
         $stmt->execute(['username' => $username, 'email' => $email, 'hash' => $hash]);
-        return null;
+        return null; // Succes
     } catch (PDOException $e) {
-        error_log("Registration failed: " . $e->getMessage());
-        return "Registration failed. Please try again. / Registratie mislukt. Probeer opnieuw.";
+        error_log("Registratie mislukt: " . $e->getMessage());
+        return "Registratie mislukt. Probeer het opnieuw.";
     }
 }
 
 /**
- * loginUser - Authenticate and login user
- * loginUser - Authenticeer en login gebruiker
+ * loginUser - Log een gebruiker in met e-mail en wachtwoord
+ *
+ * Stappen:
+ * 1. Controleer of de velden ingevuld zijn
+ * 2. Zoek de gebruiker op basis van e-mailadres
+ * 3. Controleer het wachtwoord met password_verify
+ * 4. Start een sessie voor de gebruiker
+ *
+ * @param string $email     E-mailadres
+ * @param string $password  Wachtwoord
+ * @return string|null      Foutmelding of null bij succes
  */
 function loginUser($email, $password)
 {
     $pdo = getDBConnection();
 
-    if ($err = validateRequired($email, "Email"))
+    // Controleer invoer
+    if ($err = validateRequired($email, "E-mail"))
         return $err;
-    if ($err = validateRequired($password, "Password"))
+    if ($err = validateRequired($password, "Wachtwoord"))
         return $err;
 
-    // Fetch user by email
-    $stmt = $pdo->prepare("SELECT user_id, username, password_hash FROM Users WHERE email = :email AND deleted_at IS NULL");
+    // Zoek gebruiker op e-mailadres
+    $stmt = $pdo->prepare(
+        "SELECT user_id, username, password_hash
+         FROM Users WHERE email = :email AND deleted_at IS NULL"
+    );
     $stmt->execute(['email' => $email]);
-    $user = $stmt->fetch();
+    $gebruiker = $stmt->fetch();
 
-    // Verify password with bcrypt
-    if (!$user || !password_verify($password, $user['password_hash'])) {
-        return "Invalid email or password. / Ongeldige e-mail of wachtwoord.";
+    // Controleer wachtwoord (password_verify vergelijkt met de hash)
+    if (!$gebruiker || !password_verify($password, $gebruiker['password_hash'])) {
+        return "Ongeldige e-mail of wachtwoord.";
     }
 
-    // Set session variables
-    $_SESSION['user_id'] = $user['user_id'];
-    $_SESSION['username'] = $user['username'];
+    // Sla gebruiker gegevens op in de sessie
+    $_SESSION['user_id'] = $gebruiker['user_id'];
+    $_SESSION['username'] = $gebruiker['username'];
+
+    // Genereer een nieuw sessie-ID (beschermt tegen session hijacking)
     session_regenerate_id(true);
-    updateLastActivity($pdo, $user['user_id']);
-    return null;
+
+    // Werk de laatste activiteit bij
+    updateLastActivity($pdo, $gebruiker['user_id']);
+
+    return null; // Succes
 }
 
 /**
- * logout - Destroy session and redirect
- * logout - Vernietig sessie en redirect
+ * logout - Log de gebruiker uit door de sessie te vernietigen
  */
 function logout()
 {
@@ -324,346 +390,589 @@ function logout()
     exit;
 }
 
-// ============================================================================
-// GAME FUNCTIONS / SPEL FUNCTIES
-// ============================================================================
+
+// ==========================================================================
+// SECTIE 4: SPEL FUNCTIES (FAVORIETE GAMES)
+// ==========================================================================
 
 /**
- * getOrCreateGameId - Get existing game or create new one
- * getOrCreateGameId - Haal bestaand spel op of maak nieuw
+ * getOrCreateGameId - Zoek een spel op titel, of maak het aan als het niet bestaat
+ *
+ * @param PDO    $pdo          Database verbinding
+ * @param string $titel        Naam van het spel
+ * @param string $beschrijving Optionele beschrijving
+ * @return int                 Het game_id van het spel
  */
-function getOrCreateGameId($pdo, $title, $description = '')
+function getOrCreateGameId($pdo, $titel, $beschrijving = '')
 {
-    $title = trim($title);
-    if (empty($title))
+    $titel = trim($titel);
+    if (empty($titel))
         return 0;
 
-    // Check if game exists (case-insensitive)
-    $stmt = $pdo->prepare("SELECT game_id FROM Games WHERE LOWER(titel) = LOWER(:title) AND deleted_at IS NULL");
-    $stmt->execute(['title' => $title]);
-    $row = $stmt->fetch();
-    if ($row)
-        return $row['game_id'];
+    // Zoek het spel (niet hoofdlettergevoelig)
+    $stmt = $pdo->prepare(
+        "SELECT game_id FROM Games
+         WHERE LOWER(titel) = LOWER(:titel) AND deleted_at IS NULL"
+    );
+    $stmt->execute(['titel' => $titel]);
+    $rij = $stmt->fetch();
 
-    // Create new game
-    $stmt = $pdo->prepare("INSERT INTO Games (titel, description) VALUES (:titel, :description)");
-    $stmt->execute(['titel' => $title, 'description' => $description]);
+    // Als het spel al bestaat, geef het ID terug
+    if ($rij)
+        return $rij['game_id'];
+
+    // Anders: maak een nieuw spel aan
+    $stmt = $pdo->prepare(
+        "INSERT INTO Games (titel, description) VALUES (:titel, :beschrijving)"
+    );
+    $stmt->execute(['titel' => $titel, 'beschrijving' => $beschrijving]);
+
     return $pdo->lastInsertId();
 }
 
 /**
- * addFavoriteGame - Add game to user's favorites
+ * addFavoriteGame - Voeg een spel toe aan de favorieten
+ *
+ * @param int    $userId       Gebruiker ID
+ * @param string $titel        Naam van het spel
+ * @param string $beschrijving Beschrijving
+ * @param string $notitie      Persoonlijke notitie
+ * @return string|null         Foutmelding of null bij succes
  */
-function addFavoriteGame($userId, $title, $description = '', $note = '')
+function addFavoriteGame($userId, $titel, $beschrijving = '', $notitie = '')
 {
     $pdo = getDBConnection();
 
-    if ($err = validateRequired($title, "Game title", 100))
+    if ($err = validateRequired($titel, "Speltitel", 100))
         return $err;
-    $gameId = getOrCreateGameId($pdo, $title, $description);
 
-    // Check if already favorited
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM UserGames WHERE user_id = :user_id AND game_id = :game_id");
+    $gameId = getOrCreateGameId($pdo, $titel, $beschrijving);
+
+    // Controleer of het spel al in de favorieten staat
+    $stmt = $pdo->prepare(
+        "SELECT COUNT(*) FROM UserGames
+         WHERE user_id = :user_id AND game_id = :game_id"
+    );
     $stmt->execute(['user_id' => $userId, 'game_id' => $gameId]);
     if ($stmt->fetchColumn() > 0)
-        return "Game already in favorites. / Spel al in favorieten.";
+        return "Dit spel staat al in je favorieten.";
 
-    $stmt = $pdo->prepare("INSERT INTO UserGames (user_id, game_id, note) VALUES (:user_id, :game_id, :note)");
-    $stmt->execute(['user_id' => $userId, 'game_id' => $gameId, 'note' => $note]);
+    // Voeg toe
+    $stmt = $pdo->prepare(
+        "INSERT INTO UserGames (user_id, game_id, note)
+         VALUES (:user_id, :game_id, :notitie)"
+    );
+    $stmt->execute(['user_id' => $userId, 'game_id' => $gameId, 'notitie' => $notitie]);
     return null;
 }
 
 /**
- * updateFavoriteGame - Update favorite game details
+ * updateFavoriteGame - Werk een favoriet spel bij
  */
-function updateFavoriteGame($userId, $gameId, $title, $description, $note)
+function updateFavoriteGame($userId, $gameId, $titel, $beschrijving, $notitie)
 {
     $pdo = getDBConnection();
 
-    if ($err = validateRequired($title, "Game title", 100))
+    if ($err = validateRequired($titel, "Speltitel", 100))
         return $err;
 
-    // Verify ownership
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM UserGames WHERE user_id = :user_id AND game_id = :game_id");
+    // Controleer eigenaarschap
+    $stmt = $pdo->prepare(
+        "SELECT COUNT(*) FROM UserGames
+         WHERE user_id = :user_id AND game_id = :game_id"
+    );
     $stmt->execute(['user_id' => $userId, 'game_id' => $gameId]);
     if ($stmt->fetchColumn() == 0)
-        return "No permission to edit. / Geen toestemming om te bewerken.";
+        return "Geen toestemming om te bewerken.";
 
-    // Update game info
-    $stmt = $pdo->prepare("UPDATE Games SET titel = :titel, description = :description WHERE game_id = :game_id AND deleted_at IS NULL");
-    $stmt->execute(['titel' => $title, 'description' => $description, 'game_id' => $gameId]);
+    // Werk spelgegevens bij
+    $stmt = $pdo->prepare(
+        "UPDATE Games SET titel = :titel, description = :beschrijving
+         WHERE game_id = :game_id AND deleted_at IS NULL"
+    );
+    $stmt->execute(['titel' => $titel, 'beschrijving' => $beschrijving, 'game_id' => $gameId]);
 
-    // Update note
-    $stmt = $pdo->prepare("UPDATE UserGames SET note = :note WHERE user_id = :user_id AND game_id = :game_id");
-    $stmt->execute(['note' => $note, 'user_id' => $userId, 'game_id' => $gameId]);
+    // Werk notitie bij
+    $stmt = $pdo->prepare(
+        "UPDATE UserGames SET note = :notitie
+         WHERE user_id = :user_id AND game_id = :game_id"
+    );
+    $stmt->execute(['notitie' => $notitie, 'user_id' => $userId, 'game_id' => $gameId]);
     return null;
 }
 
 /**
- * deleteFavoriteGame - Remove game from favorites
+ * deleteFavoriteGame - Verwijder een spel uit de favorieten
  */
 function deleteFavoriteGame($userId, $gameId)
 {
     $pdo = getDBConnection();
-    $stmt = $pdo->prepare("DELETE FROM UserGames WHERE user_id = :user_id AND game_id = :game_id");
+    $stmt = $pdo->prepare(
+        "DELETE FROM UserGames WHERE user_id = :user_id AND game_id = :game_id"
+    );
     $stmt->execute(['user_id' => $userId, 'game_id' => $gameId]);
     return null;
 }
 
 /**
- * getFavoriteGames - Get user's favorite games
+ * getFavoriteGames - Haal alle favoriete spellen van een gebruiker op
  */
 function getFavoriteGames($userId)
 {
     $pdo = getDBConnection();
-    $stmt = $pdo->prepare("SELECT g.game_id, g.titel, g.description, ug.note FROM UserGames ug JOIN Games g ON ug.game_id = g.game_id WHERE ug.user_id = :user_id AND g.deleted_at IS NULL");
+    $stmt = $pdo->prepare(
+        "SELECT g.game_id, g.titel, g.description, ug.note
+         FROM UserGames ug
+         JOIN Games g ON ug.game_id = g.game_id
+         WHERE ug.user_id = :user_id AND g.deleted_at IS NULL"
+    );
     $stmt->execute(['user_id' => $userId]);
     return $stmt->fetchAll();
 }
 
 /**
- * getGames - Get all games
+ * getGames - Haal alle beschikbare spellen op
  */
 function getGames()
 {
     $pdo = getDBConnection();
-    $stmt = $pdo->query("SELECT game_id, titel, description FROM Games WHERE deleted_at IS NULL ORDER BY titel");
+    $stmt = $pdo->query(
+        "SELECT game_id, titel, description
+         FROM Games WHERE deleted_at IS NULL ORDER BY titel"
+    );
     return $stmt->fetchAll();
 }
 
-// ============================================================================
-// FRIENDS FUNCTIONS / VRIENDEN FUNCTIES
-// ============================================================================
 
-function addFriend($userId, $friendUsername, $note = '', $status = 'Offline')
+// ==========================================================================
+// SECTIE 5: VRIENDEN FUNCTIES
+// ==========================================================================
+
+/**
+ * addFriend - Voeg een gaming vriend toe
+ */
+function addFriend($userId, $vriendUsername, $notitie = '', $status = 'Offline')
 {
     $pdo = getDBConnection();
 
-    if ($err = validateRequired($friendUsername, "Friend username", 50))
+    if ($err = validateRequired($vriendUsername, "Gebruikersnaam vriend", 50))
         return $err;
     if ($err = validateRequired($status, "Status", 50))
         return $err;
 
-    // Check if already friends
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM Friends WHERE user_id = :user_id AND LOWER(friend_username) = LOWER(:friend_username) AND deleted_at IS NULL");
-    $stmt->execute(['user_id' => $userId, 'friend_username' => $friendUsername]);
+    // Controleer of deze vriend al toegevoegd is
+    $stmt = $pdo->prepare(
+        "SELECT COUNT(*) FROM Friends
+         WHERE user_id = :user_id
+         AND LOWER(friend_username) = LOWER(:vriend)
+         AND deleted_at IS NULL"
+    );
+    $stmt->execute(['user_id' => $userId, 'vriend' => $vriendUsername]);
     if ($stmt->fetchColumn() > 0)
-        return "Already friends. / Al vrienden.";
+        return "Deze vriend is al toegevoegd.";
 
-    $stmt = $pdo->prepare("INSERT INTO Friends (user_id, friend_username, note, status) VALUES (:user_id, :friend_username, :note, :status)");
-    $stmt->execute(['user_id' => $userId, 'friend_username' => $friendUsername, 'note' => $note, 'status' => $status]);
+    // Voeg de vriend toe
+    $stmt = $pdo->prepare(
+        "INSERT INTO Friends (user_id, friend_username, note, status)
+         VALUES (:user_id, :vriend, :notitie, :status)"
+    );
+    $stmt->execute([
+        'user_id' => $userId,
+        'vriend' => $vriendUsername,
+        'notitie' => $notitie,
+        'status' => $status,
+    ]);
     return null;
 }
 
-function updateFriend($userId, $friendId, $friendUsername, $note, $status)
+/**
+ * updateFriend - Werk de gegevens van een vriend bij
+ */
+function updateFriend($userId, $friendId, $vriendUsername, $notitie, $status)
 {
     $pdo = getDBConnection();
 
-    if ($err = validateRequired($friendUsername, "Friend username", 50))
+    if ($err = validateRequired($vriendUsername, "Gebruikersnaam vriend", 50))
         return $err;
     if ($err = validateRequired($status, "Status", 50))
         return $err;
 
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM Friends WHERE user_id = :user_id AND friend_id = :friend_id AND deleted_at IS NULL");
+    // Controleer eigenaarschap
+    $stmt = $pdo->prepare(
+        "SELECT COUNT(*) FROM Friends
+         WHERE user_id = :user_id AND friend_id = :friend_id AND deleted_at IS NULL"
+    );
     $stmt->execute(['user_id' => $userId, 'friend_id' => $friendId]);
     if ($stmt->fetchColumn() == 0)
-        return "Not friends or no permission. / Geen vrienden of geen toestemming.";
+        return "Geen toestemming om te bewerken.";
 
-    $stmt = $pdo->prepare("UPDATE Friends SET friend_username = :friend_username, note = :note, status = :status WHERE user_id = :user_id AND friend_id = :friend_id AND deleted_at IS NULL");
-    $stmt->execute(['friend_username' => $friendUsername, 'note' => $note, 'status' => $status, 'user_id' => $userId, 'friend_id' => $friendId]);
+    // Werk bij
+    $stmt = $pdo->prepare(
+        "UPDATE Friends SET friend_username = :vriend, note = :notitie, status = :status
+         WHERE user_id = :user_id AND friend_id = :friend_id AND deleted_at IS NULL"
+    );
+    $stmt->execute([
+        'vriend' => $vriendUsername,
+        'notitie' => $notitie,
+        'status' => $status,
+        'user_id' => $userId,
+        'friend_id' => $friendId,
+    ]);
     return null;
 }
 
+/**
+ * deleteFriend - Verwijder een vriend (soft delete)
+ */
 function deleteFriend($userId, $friendId)
 {
     $pdo = getDBConnection();
-    $stmt = $pdo->prepare("UPDATE Friends SET deleted_at = NOW() WHERE user_id = :user_id AND friend_id = :friend_id");
+    $stmt = $pdo->prepare(
+        "UPDATE Friends SET deleted_at = NOW()
+         WHERE user_id = :user_id AND friend_id = :friend_id"
+    );
     $stmt->execute(['user_id' => $userId, 'friend_id' => $friendId]);
     return null;
 }
 
+/**
+ * getFriends - Haal alle vrienden van een gebruiker op
+ */
 function getFriends($userId)
 {
     $pdo = getDBConnection();
-    $stmt = $pdo->prepare("SELECT friend_id, friend_username as username, status, note FROM Friends WHERE user_id = :user_id AND deleted_at IS NULL");
+    $stmt = $pdo->prepare(
+        "SELECT friend_id, friend_username AS username, status, note
+         FROM Friends
+         WHERE user_id = :user_id AND deleted_at IS NULL"
+    );
     $stmt->execute(['user_id' => $userId]);
     return $stmt->fetchAll();
 }
 
-// ============================================================================
-// SCHEDULE FUNCTIONS / SCHEMA FUNCTIES
-// ============================================================================
 
-function addSchedule($userId, $gameTitle, $date, $time, $friendsStr = '', $sharedWithStr = '')
+// ==========================================================================
+// SECTIE 6: SPEELSCHEMA FUNCTIES
+// ==========================================================================
+
+/**
+ * addSchedule - Voeg een nieuw speelschema toe
+ */
+function addSchedule($userId, $spelTitel, $datum, $tijd, $vrienden = '', $gedeeldMet = '')
 {
     $pdo = getDBConnection();
 
-    if ($err = validateRequired($gameTitle, "Game title", 100))
+    if ($err = validateRequired($spelTitel, "Speltitel", 100))
         return $err;
-    if ($err = validateDate($date))
+    if ($err = validateDate($datum))
         return $err;
-    if ($err = validateTime($time))
+    if ($err = validateTime($tijd))
         return $err;
-    if ($err = validateCommaSeparated($friendsStr, "Friends"))
+    if ($err = validateCommaSeparated($vrienden, "Vrienden"))
         return $err;
-    if ($err = validateCommaSeparated($sharedWithStr, "Shared With"))
+    if ($err = validateCommaSeparated($gedeeldMet, "Gedeeld met"))
         return $err;
 
-    $gameId = getOrCreateGameId($pdo, $gameTitle);
-    $stmt = $pdo->prepare("INSERT INTO Schedules (user_id, game_id, date, time, friends, shared_with) VALUES (:user_id, :game_id, :date, :time, :friends, :shared_with)");
-    $stmt->execute(['user_id' => $userId, 'game_id' => $gameId, 'date' => $date, 'time' => $time, 'friends' => $friendsStr, 'shared_with' => $sharedWithStr]);
+    $gameId = getOrCreateGameId($pdo, $spelTitel);
+
+    $stmt = $pdo->prepare(
+        "INSERT INTO Schedules (user_id, game_id, date, time, friends, shared_with)
+         VALUES (:user_id, :game_id, :datum, :tijd, :vrienden, :gedeeld)"
+    );
+    $stmt->execute([
+        'user_id' => $userId,
+        'game_id' => $gameId,
+        'datum' => $datum,
+        'tijd' => $tijd,
+        'vrienden' => $vrienden,
+        'gedeeld' => $gedeeldMet,
+    ]);
     return null;
 }
 
+/**
+ * getSchedules - Haal alle speelschema's van een gebruiker op
+ */
 function getSchedules($userId, $sort = 'date ASC')
 {
     $pdo = getDBConnection();
-    $sort = in_array($sort, ['date ASC', 'date DESC', 'time ASC', 'time DESC']) ? $sort : 'date ASC';
-    $stmt = $pdo->prepare("SELECT s.schedule_id, g.titel AS game_titel, s.date, s.time, s.friends, s.shared_with FROM Schedules s JOIN Games g ON s.game_id = g.game_id WHERE s.user_id = :user_id AND s.deleted_at IS NULL ORDER BY $sort LIMIT 50");
+
+    // Sta alleen veilige sorteer opties toe (beschermt tegen SQL-injectie)
+    $toegestaan = ['date ASC', 'date DESC', 'time ASC', 'time DESC'];
+    $sort = in_array($sort, $toegestaan) ? $sort : 'date ASC';
+
+    $stmt = $pdo->prepare(
+        "SELECT s.schedule_id, g.titel AS game_titel, s.date, s.time, s.friends, s.shared_with
+         FROM Schedules s
+         JOIN Games g ON s.game_id = g.game_id
+         WHERE s.user_id = :user_id AND s.deleted_at IS NULL
+         ORDER BY $sort LIMIT 50"
+    );
     $stmt->execute(['user_id' => $userId]);
     return $stmt->fetchAll();
 }
 
-function editSchedule($userId, $scheduleId, $gameTitle, $date, $time, $friendsStr = '', $sharedWithStr = '')
+/**
+ * editSchedule - Werk een bestaand speelschema bij
+ */
+function editSchedule($userId, $schemaId, $spelTitel, $datum, $tijd, $vrienden = '', $gedeeldMet = '')
 {
     $pdo = getDBConnection();
 
-    if (!checkOwnership($pdo, 'Schedules', 'schedule_id', $scheduleId, $userId))
-        return "No permission. / Geen toestemming.";
-    if ($err = validateRequired($gameTitle, "Game title", 100))
+    if (!checkOwnership($pdo, 'Schedules', 'schedule_id', $schemaId, $userId)) {
+        return "Geen toestemming om te bewerken.";
+    }
+    if ($err = validateRequired($spelTitel, "Speltitel", 100))
         return $err;
-    if ($err = validateDate($date))
+    if ($err = validateDate($datum))
         return $err;
-    if ($err = validateTime($time))
+    if ($err = validateTime($tijd))
         return $err;
-    if ($err = validateCommaSeparated($friendsStr, "Friends"))
+    if ($err = validateCommaSeparated($vrienden, "Vrienden"))
         return $err;
-    if ($err = validateCommaSeparated($sharedWithStr, "Shared With"))
+    if ($err = validateCommaSeparated($gedeeldMet, "Gedeeld met"))
         return $err;
 
-    $gameId = getOrCreateGameId($pdo, $gameTitle);
-    $stmt = $pdo->prepare("UPDATE Schedules SET game_id = :game_id, date = :date, time = :time, friends = :friends, shared_with = :shared_with WHERE schedule_id = :id AND user_id = :user_id AND deleted_at IS NULL");
-    $stmt->execute(['game_id' => $gameId, 'date' => $date, 'time' => $time, 'friends' => $friendsStr, 'shared_with' => $sharedWithStr, 'id' => $scheduleId, 'user_id' => $userId]);
+    $gameId = getOrCreateGameId($pdo, $spelTitel);
+
+    $stmt = $pdo->prepare(
+        "UPDATE Schedules
+         SET game_id = :game_id, date = :datum, time = :tijd,
+             friends = :vrienden, shared_with = :gedeeld
+         WHERE schedule_id = :id AND user_id = :user_id AND deleted_at IS NULL"
+    );
+    $stmt->execute([
+        'game_id' => $gameId,
+        'datum' => $datum,
+        'tijd' => $tijd,
+        'vrienden' => $vrienden,
+        'gedeeld' => $gedeeldMet,
+        'id' => $schemaId,
+        'user_id' => $userId,
+    ]);
     return null;
 }
 
-function deleteSchedule($userId, $scheduleId)
+/**
+ * deleteSchedule - Verwijder een speelschema (soft delete)
+ */
+function deleteSchedule($userId, $schemaId)
 {
     $pdo = getDBConnection();
-    if (!checkOwnership($pdo, 'Schedules', 'schedule_id', $scheduleId, $userId))
-        return "No permission. / Geen toestemming.";
-    $stmt = $pdo->prepare("UPDATE Schedules SET deleted_at = NOW() WHERE schedule_id = :id AND user_id = :user_id");
-    $stmt->execute(['id' => $scheduleId, 'user_id' => $userId]);
+    if (!checkOwnership($pdo, 'Schedules', 'schedule_id', $schemaId, $userId)) {
+        return "Geen toestemming om te verwijderen.";
+    }
+    $stmt = $pdo->prepare(
+        "UPDATE Schedules SET deleted_at = NOW()
+         WHERE schedule_id = :id AND user_id = :user_id"
+    );
+    $stmt->execute(['id' => $schemaId, 'user_id' => $userId]);
     return null;
 }
 
-// ============================================================================
-// EVENT FUNCTIONS / EVENEMENT FUNCTIES
-// ============================================================================
 
-function addEvent($userId, $title, $date, $time, $description, $reminder, $externalLink = '', $sharedWithStr = '')
+// ==========================================================================
+// SECTIE 7: EVENEMENT FUNCTIES
+// ==========================================================================
+
+/**
+ * addEvent - Voeg een nieuw evenement toe (toernooi, stream, etc.)
+ */
+function addEvent($userId, $titel, $datum, $tijd, $beschrijving, $herinnering, $externeLink = '', $gedeeldMet = '')
 {
     $pdo = getDBConnection();
 
-    if ($err = validateRequired($title, "Title", 100))
+    if ($err = validateRequired($titel, "Titel", 100))
         return $err;
-    if ($err = validateDate($date))
+    if ($err = validateDate($datum))
         return $err;
-    if ($err = validateTime($time))
+    if ($err = validateTime($tijd))
         return $err;
-    if (!empty($description) && strlen($description) > 500)
-        return "Description too long (max 500). / Beschrijving te lang (max 500).";
-    if (!in_array($reminder, ['none', '1_hour', '1_day']))
-        return "Invalid reminder. / Ongeldige herinnering.";
-    if ($err = validateUrl($externalLink))
+    if (!empty($beschrijving) && strlen($beschrijving) > 500) {
+        return "Beschrijving is te lang (maximaal 500 tekens).";
+    }
+    if (!in_array($herinnering, ['none', '1_hour', '1_day'])) {
+        return "Ongeldige herinnering keuze.";
+    }
+    if ($err = validateUrl($externeLink))
         return $err;
-    if ($err = validateCommaSeparated($sharedWithStr, "Shared With"))
+    if ($err = validateCommaSeparated($gedeeldMet, "Gedeeld met"))
         return $err;
 
-    $stmt = $pdo->prepare("INSERT INTO Events (user_id, title, date, time, description, reminder, external_link, shared_with) VALUES (:user_id, :title, :date, :time, :description, :reminder, :external_link, :shared_with)");
-    $stmt->execute(['user_id' => $userId, 'title' => $title, 'date' => $date, 'time' => $time, 'description' => $description, 'reminder' => $reminder, 'external_link' => $externalLink, 'shared_with' => $sharedWithStr]);
+    $stmt = $pdo->prepare(
+        "INSERT INTO Events (user_id, title, date, time, description, reminder, external_link, shared_with)
+         VALUES (:user_id, :titel, :datum, :tijd, :beschrijving, :herinnering, :link, :gedeeld)"
+    );
+    $stmt->execute([
+        'user_id' => $userId,
+        'titel' => $titel,
+        'datum' => $datum,
+        'tijd' => $tijd,
+        'beschrijving' => $beschrijving,
+        'herinnering' => $herinnering,
+        'link' => $externeLink,
+        'gedeeld' => $gedeeldMet,
+    ]);
     return null;
 }
 
+/**
+ * getEvents - Haal alle evenementen van een gebruiker op
+ */
 function getEvents($userId, $sort = 'date ASC')
 {
     $pdo = getDBConnection();
-    $sort = in_array($sort, ['date ASC', 'date DESC', 'time ASC', 'time DESC']) ? $sort : 'date ASC';
-    $stmt = $pdo->prepare("SELECT event_id, title, date, time, description, reminder, external_link, shared_with FROM Events WHERE user_id = :user_id AND deleted_at IS NULL ORDER BY $sort LIMIT 50");
+
+    $toegestaan = ['date ASC', 'date DESC', 'time ASC', 'time DESC'];
+    $sort = in_array($sort, $toegestaan) ? $sort : 'date ASC';
+
+    $stmt = $pdo->prepare(
+        "SELECT event_id, title, date, time, description, reminder, external_link, shared_with
+         FROM Events
+         WHERE user_id = :user_id AND deleted_at IS NULL
+         ORDER BY $sort LIMIT 50"
+    );
     $stmt->execute(['user_id' => $userId]);
     return $stmt->fetchAll();
 }
 
-function editEvent($userId, $eventId, $title, $date, $time, $description, $reminder, $externalLink = '', $sharedWithStr = '')
+/**
+ * editEvent - Werk een bestaand evenement bij
+ */
+function editEvent($userId, $eventId, $titel, $datum, $tijd, $beschrijving, $herinnering, $externeLink = '', $gedeeldMet = '')
 {
     $pdo = getDBConnection();
 
-    if (!checkOwnership($pdo, 'Events', 'event_id', $eventId, $userId))
-        return "No permission. / Geen toestemming.";
-    if ($err = validateRequired($title, "Title", 100))
+    if (!checkOwnership($pdo, 'Events', 'event_id', $eventId, $userId)) {
+        return "Geen toestemming om te bewerken.";
+    }
+    if ($err = validateRequired($titel, "Titel", 100))
         return $err;
-    if ($err = validateDate($date))
+    if ($err = validateDate($datum))
         return $err;
-    if ($err = validateTime($time))
+    if ($err = validateTime($tijd))
         return $err;
-    if (!empty($description) && strlen($description) > 500)
-        return "Description too long (max 500). / Beschrijving te lang (max 500).";
-    if (!in_array($reminder, ['none', '1_hour', '1_day']))
-        return "Invalid reminder. / Ongeldige herinnering.";
-    if ($err = validateUrl($externalLink))
+    if (!empty($beschrijving) && strlen($beschrijving) > 500) {
+        return "Beschrijving is te lang (maximaal 500 tekens).";
+    }
+    if (!in_array($herinnering, ['none', '1_hour', '1_day'])) {
+        return "Ongeldige herinnering keuze.";
+    }
+    if ($err = validateUrl($externeLink))
         return $err;
-    if ($err = validateCommaSeparated($sharedWithStr, "Shared With"))
+    if ($err = validateCommaSeparated($gedeeldMet, "Gedeeld met"))
         return $err;
 
-    $stmt = $pdo->prepare("UPDATE Events SET title = :title, date = :date, time = :time, description = :description, reminder = :reminder, external_link = :external_link, shared_with = :shared_with WHERE event_id = :id AND user_id = :user_id AND deleted_at IS NULL");
-    $stmt->execute(['title' => $title, 'date' => $date, 'time' => $time, 'description' => $description, 'reminder' => $reminder, 'external_link' => $externalLink, 'shared_with' => $sharedWithStr, 'id' => $eventId, 'user_id' => $userId]);
+    $stmt = $pdo->prepare(
+        "UPDATE Events
+         SET title = :titel, date = :datum, time = :tijd, description = :beschrijving,
+             reminder = :herinnering, external_link = :link, shared_with = :gedeeld
+         WHERE event_id = :id AND user_id = :user_id AND deleted_at IS NULL"
+    );
+    $stmt->execute([
+        'titel' => $titel,
+        'datum' => $datum,
+        'tijd' => $tijd,
+        'beschrijving' => $beschrijving,
+        'herinnering' => $herinnering,
+        'link' => $externeLink,
+        'gedeeld' => $gedeeldMet,
+        'id' => $eventId,
+        'user_id' => $userId,
+    ]);
     return null;
 }
 
+/**
+ * deleteEvent - Verwijder een evenement (soft delete)
+ */
 function deleteEvent($userId, $eventId)
 {
     $pdo = getDBConnection();
-    if (!checkOwnership($pdo, 'Events', 'event_id', $eventId, $userId))
-        return "No permission. / Geen toestemming.";
-    $stmt = $pdo->prepare("UPDATE Events SET deleted_at = NOW() WHERE event_id = :id AND user_id = :user_id");
+    if (!checkOwnership($pdo, 'Events', 'event_id', $eventId, $userId)) {
+        return "Geen toestemming om te verwijderen.";
+    }
+    $stmt = $pdo->prepare(
+        "UPDATE Events SET deleted_at = NOW()
+         WHERE event_id = :id AND user_id = :user_id"
+    );
     $stmt->execute(['id' => $eventId, 'user_id' => $userId]);
     return null;
 }
 
-// ============================================================================
-// UTILITY FUNCTIONS / HULP FUNCTIES
-// ============================================================================
 
-function checkOwnership($pdo, $table, $idColumn, $id, $userId)
+// ==========================================================================
+// SECTIE 8: HULPFUNCTIES
+// ==========================================================================
+
+/**
+ * checkOwnership - Controleer of een item van de ingelogde gebruiker is
+ *
+ * Dit is een beveiliging: gebruikers mogen alleen hun eigen data bewerken.
+ *
+ * @param PDO    $pdo      Database verbinding
+ * @param string $tabel    Naam van de tabel
+ * @param string $idKolom  Naam van de ID kolom
+ * @param int    $id       ID van het item
+ * @param int    $userId   ID van de gebruiker
+ * @return bool            true als eigenaar, false als niet
+ */
+function checkOwnership($pdo, $tabel, $idKolom, $id, $userId)
 {
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM $table WHERE $idColumn = :id AND user_id = :user_id AND deleted_at IS NULL");
+    $stmt = $pdo->prepare(
+        "SELECT COUNT(*) FROM $tabel
+         WHERE $idKolom = :id AND user_id = :user_id AND deleted_at IS NULL"
+    );
     $stmt->execute(['id' => $id, 'user_id' => $userId]);
     return $stmt->fetchColumn() > 0;
 }
 
+/**
+ * getCalendarItems - Haal alle items op voor de kalender
+ *
+ * Combineert speelschema's en evenementen, gesorteerd op datum en tijd.
+ */
 function getCalendarItems($userId)
 {
-    $schedules = getSchedules($userId);
-    $events = getEvents($userId);
-    $items = array_merge($schedules, $events);
+    $schemas = getSchedules($userId);
+    $evenementen = getEvents($userId);
+    $items = array_merge($schemas, $evenementen);
+
+    // Sorteer op datum en tijd
     usort($items, function ($a, $b) {
         return strtotime($a['date'] . ' ' . $a['time']) <=> strtotime($b['date'] . ' ' . $b['time']);
     });
+
     return $items;
 }
 
+/**
+ * getReminders - Haal actieve herinneringen op
+ *
+ * Controleert welke evenementen een herinnering hebben die nu
+ * getoond moet worden (binnen 1 minuut van het herinneringsmoment).
+ */
 function getReminders($userId)
 {
-    $events = getEvents($userId);
-    $reminders = [];
-    foreach ($events as $event) {
-        if ($event['reminder'] != 'none') {
-            $eventTime = strtotime($event['date'] . ' ' . $event['time']);
-            $reminderTime = $eventTime - ($event['reminder'] == '1_hour' ? 3600 : 86400);
-            if ($reminderTime <= time() && $reminderTime > time() - 60) {
-                $reminders[] = $event;
-            }
+    $evenementen = getEvents($userId);
+    $herinneringen = [];
+
+    foreach ($evenementen as $event) {
+        if ($event['reminder'] == 'none')
+            continue;
+
+        $eventTijd = strtotime($event['date'] . ' ' . $event['time']);
+        // 1 uur = 3600 seconden, 1 dag = 86400 seconden
+        $herinneringTijd = $eventTijd - ($event['reminder'] == '1_hour' ? 3600 : 86400);
+
+        if ($herinneringTijd <= time() && $herinneringTijd > time() - 60) {
+            $herinneringen[] = $event;
         }
     }
-    return $reminders;
+
+    return $herinneringen;
 }
+
+// ==========================================================================
+// EINDE VAN FUNCTIONS.PHP
+// ==========================================================================

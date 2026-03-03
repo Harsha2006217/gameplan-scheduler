@@ -1,65 +1,55 @@
-/* ============================================================================
+/* ==========================================================================
    STYLE.CSS - GAMEPLAN SCHEDULER STYLING
-   ============================================================================
+   ==========================================================================
    Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
 
-   Aangepast donker gaming-thema met Bootstrap 5 aanpassingen.
+   Donker gaming-thema met Bootstrap 5 aanpassingen.
    Ontwerp: Donker thema (zwart/blauw), responsief, 40px min knoppen, glassmorphism.
 
    BUGFIX:
    - #1005: --glass-bg van 'orange' naar 'rgba(255, 255, 255, 0.05)'
-   ============================================================================ */
+   ========================================================================== */
 
-/* ============================================================================
-   SECTION 1: CSS VARIABLES / CSS VARIABELEN
-   ============================================================================
-   ENGLISH: Define reusable colors and values for consistent styling.
-   DUTCH: Definieer herbruikbare kleuren en waarden voor consistente styling.
-*/
+
+/* ==========================================================================
+   SECTIE 1: CSS VARIABELEN
+   ==========================================================================
+   Herbruikbare kleuren en waarden voor consistente styling.
+   ========================================================================== */
+
 :root {
-    /* Primary colors - Gaming dark theme */
-    --bg-dark: #0a0a0f;
-    /* Very dark background / Zeer donkere achtergrond */
-    --bg-secondary: #12121a;
-    /* Card backgrounds / Kaart achtergronden */
-    --bg-card: #1a1a25;
-    /* Elevated surfaces / Verhoogde oppervlakken */
-    --accent-blue: #0d6efd;
-    /* Primary blue accent / Primaire blauwe accent */
-    --accent-cyan: #00d4ff;
-    /* Neon cyan for highlights / Neon cyaan voor highlights */
-    --accent-purple: #9d4edd;
-    /* Purple accent / Paarse accent */
-    --text-primary: #ffffff;
-    /* Main text color / Hoofd tekstkleur */
-    --text-secondary: #b0b0b0;
-    /* Secondary text / Secundaire tekst */
-    --success: #28a745;
-    /* Success green / Succes groen */
-    --danger: #dc3545;
-    /* Danger red / Gevaar rood */
-    --warning: #ffc107;
-    /* Warning yellow / Waarschuwing geel */
+    /* Primaire kleuren - Gaming donker thema */
+    --bg-dark: #0a0a0f;              /* Zeer donkere achtergrond */
+    --bg-secondary: #12121a;          /* Kaart achtergronden */
+    --bg-card: #1a1a25;              /* Verhoogde oppervlakken */
+    --accent-blue: #0d6efd;          /* Primaire blauwe accent */
+    --accent-cyan: #00d4ff;          /* Neon cyaan voor highlights */
+    --accent-purple: #9d4edd;        /* Paarse accent */
+    --text-primary: #ffffff;          /* Hoofd tekstkleur */
+    --text-secondary: #b0b0b0;        /* Secundaire tekst */
+    --success: #28a745;              /* Succes groen */
+    --danger: #dc3545;               /* Gevaar rood */
+    --warning: #ffc107;              /* Waarschuwing geel */
 
-    /* Glassmorphism effect values */
+    /* Glassmorphism effect waarden */
     --glass-bg: rgba(255, 255, 255, 0.05);
     --glass-border: rgba(255, 255, 255, 0.1);
     --glass-blur: 10px;
 
-    /* Spacing and sizing */
+    /* Afmetingen en tussenruimte */
     --header-height: 80px;
     --footer-height: 50px;
-    --button-min-height: 40px;
-    /* Minimum 40px for mobile / Minimum 40px voor mobiel */
+    --button-min-height: 40px;        /* Minimaal 40px voor mobiel */
     --border-radius: 12px;
     --border-radius-lg: 20px;
 }
 
-/* ============================================================================
-   SECTION 2: BASE STYLES / BASIS STIJLEN
-   ============================================================================ */
 
-/* Reset and base body styling */
+/* ==========================================================================
+   SECTIE 2: BASIS STIJLEN
+   ========================================================================== */
+
+/* Reset en basis body styling */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -72,21 +62,20 @@ body {
     color: var(--text-primary);
     font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
     min-height: 100vh;
-    padding-top: calc(var(--header-height) + 20px);
-    /* Space for fixed header */
-    padding-bottom: calc(var(--footer-height) + 30px);
-    /* Space for fixed footer */
+    padding-top: calc(var(--header-height) + 20px);    /* Ruimte voor vaste header */
+    padding-bottom: calc(var(--footer-height) + 30px);  /* Ruimte voor vaste footer */
     line-height: 1.6;
 }
 
-/* Smooth scrolling for page navigation */
+/* Vloeiend scrollen voor pagina navigatie */
 html {
     scroll-behavior: smooth;
 }
 
-/* ============================================================================
-   SECTION 3: HEADER STYLES / HEADER STIJLEN
-   ============================================================================ */
+
+/* ==========================================================================
+   SECTIE 3: HEADER STIJLEN
+   ========================================================================== */
 
 header {
     background: linear-gradient(90deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
@@ -121,7 +110,7 @@ header h1:hover {
     transition: text-shadow 0.3s ease;
 }
 
-/* Navigation links */
+/* Navigatie links */
 .navbar-nav .nav-link {
     color: white !important;
     font-weight: 500;
@@ -138,7 +127,7 @@ header h1:hover {
     transform: translateY(-2px);
 }
 
-/* Add Event button special styling */
+/* Evenement toevoegen knop - speciale styling */
 .navbar-nav .btn-success {
     background: linear-gradient(45deg, var(--success), #20c997);
     border: none;
@@ -150,7 +139,7 @@ header h1:hover {
     box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5);
 }
 
-/* Hamburger menu for mobile */
+/* Hamburger menu voor mobiel */
 .navbar-toggler {
     border: 2px solid rgba(255, 255, 255, 0.5);
     padding: 8px 12px;
@@ -160,9 +149,10 @@ header h1:hover {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
-/* ============================================================================
-   SECTION 4: FOOTER STYLES / FOOTER STIJLEN
-   ============================================================================ */
+
+/* ==========================================================================
+   SECTIE 4: FOOTER STIJLEN
+   ========================================================================== */
 
 footer {
     background: linear-gradient(90deg, var(--bg-secondary) 0%, #1a1a25 100%);
@@ -190,9 +180,10 @@ footer a:hover {
     text-decoration: underline;
 }
 
-/* ============================================================================
-   SECTION 5: MAIN CONTAINER STYLES / HOOFD CONTAINER STIJLEN
-   ============================================================================ */
+
+/* ==========================================================================
+   SECTIE 5: HOOFD CONTAINER STIJLEN
+   ========================================================================== */
 
 main.container {
     max-width: 1200px;
@@ -201,7 +192,7 @@ main.container {
     padding: 20px;
 }
 
-/* Section headers */
+/* Sectie koppen */
 main h2 {
     color: var(--text-primary);
     font-weight: 600;
@@ -215,11 +206,10 @@ main h2 {
 
 main h2::before {
     content: '🎮';
-    /* Gaming emoji for sections */
     font-size: 1.2em;
 }
 
-/* Page titles */
+/* Pagina titels */
 main h1 {
     text-align: center;
     font-size: 2.5rem;
@@ -230,12 +220,12 @@ main h1 {
     background-clip: text;
 }
 
-/* ============================================================================
-   SECTION 6: CARD AND TABLE STYLES / KAART EN TABEL STIJLEN
-   ============================================================================
-   ENGLISH: Glassmorphism effect for modern look.
-   DUTCH: Glassmorfisme effect voor moderne look.
-*/
+
+/* ==========================================================================
+   SECTIE 6: KAART EN TABEL STIJLEN
+   ==========================================================================
+   Glassmorfisme effect voor een moderne uitstraling.
+   ========================================================================== */
 
 .card {
     background: var(--glass-bg);
@@ -263,7 +253,7 @@ main h1 {
     margin-bottom: 15px;
 }
 
-/* Table styling with dark theme */
+/* Tabel styling met donker thema */
 .table-dark {
     background: var(--bg-card);
     border-radius: var(--border-radius);
@@ -299,9 +289,10 @@ main h1 {
     vertical-align: middle;
 }
 
-/* ============================================================================
-   SECTION 7: FORM STYLES / FORMULIER STIJLEN
-   ============================================================================ */
+
+/* ==========================================================================
+   SECTIE 7: FORMULIER STIJLEN
+   ========================================================================== */
 
 .form-control,
 .form-select {
@@ -334,18 +325,18 @@ main h1 {
     display: block;
 }
 
-/* Textarea styling */
+/* Tekstvak styling */
 textarea.form-control {
     min-height: 100px;
     resize: vertical;
 }
 
-/* ============================================================================
-   SECTION 8: BUTTON STYLES / KNOP STIJLEN
-   ============================================================================
-   ENGLISH: Minimum 40px height for mobile usability as per design spec.
-   DUTCH: Minimaal 40px hoogte voor mobiele bruikbaarheid volgens design spec.
-*/
+
+/* ==========================================================================
+   SECTIE 8: KNOP STIJLEN
+   ==========================================================================
+   Minimaal 40px hoogte voor mobiele bruikbaarheid volgens ontwerp.
+   ========================================================================== */
 
 .btn {
     min-height: var(--button-min-height);
@@ -406,9 +397,10 @@ textarea.form-control {
     font-size: 1.1rem;
 }
 
-/* ============================================================================
-   SECTION 9: ALERT STYLES / ALERT STIJLEN
-   ============================================================================ */
+
+/* ==========================================================================
+   SECTIE 9: MELDING STIJLEN (ALERTS)
+   ========================================================================== */
 
 .alert {
     border-radius: var(--border-radius);
@@ -442,9 +434,10 @@ textarea.form-control {
     filter: invert(1);
 }
 
-/* ============================================================================
-   SECTION 10: CALENDAR CARDS / KALENDER KAARTEN
-   ============================================================================ */
+
+/* ==========================================================================
+   SECTIE 10: KALENDER KAARTEN
+   ========================================================================== */
 
 .calendar-card {
     background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
@@ -460,9 +453,10 @@ textarea.form-control {
     transform: translateX(5px);
 }
 
-/* ============================================================================
-   SECTION 11: LOGIN/REGISTER PAGE STYLES
-   ============================================================================ */
+
+/* ==========================================================================
+   SECTIE 11: INLOG/REGISTRATIE PAGINA STIJLEN
+   ========================================================================== */
 
 .auth-container {
     max-width: 450px;
@@ -480,14 +474,14 @@ textarea.form-control {
     margin-bottom: 30px;
 }
 
-/* ============================================================================
-   SECTION 12: RESPONSIVE DESIGN / RESPONSIEF ONTWERP
-   ============================================================================
-   ENGLISH: Adapts layout for tablets and mobile phones.
-   DUTCH: Past layout aan voor tablets en mobiele telefoons.
-*/
 
-/* Tablet view (max 992px) */
+/* ==========================================================================
+   SECTIE 12: RESPONSIEF ONTWERP
+   ==========================================================================
+   Past de layout aan voor tablets en mobiele telefoons.
+   ========================================================================== */
+
+/* Tablet weergave (max 992px) */
 @media (max-width: 992px) {
     main.container {
         width: 95%;
@@ -499,7 +493,7 @@ textarea.form-control {
     }
 }
 
-/* Mobile view (max 768px) */
+/* Mobiel weergave (max 768px) */
 @media (max-width: 768px) {
     :root {
         --header-height: 70px;
@@ -540,7 +534,7 @@ textarea.form-control {
         width: auto;
     }
 
-    /* Stack navigation on mobile */
+    /* Stapel navigatie op mobiel */
     .navbar-collapse {
         background: var(--bg-secondary);
         padding: 15px;
@@ -557,7 +551,7 @@ textarea.form-control {
     }
 }
 
-/* Small mobile (max 480px) */
+/* Klein mobiel (max 480px) */
 @media (max-width: 480px) {
     main.container {
         width: 100%;
@@ -575,11 +569,12 @@ textarea.form-control {
     }
 }
 
-/* ============================================================================
-   SECTION 13: ANIMATIONS / ANIMATIES
-   ============================================================================ */
 
-/* Fade in animation for page load */
+/* ==========================================================================
+   SECTIE 13: ANIMATIES
+   ========================================================================== */
+
+/* Fade-in animatie bij het laden van de pagina */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -596,7 +591,7 @@ main {
     animation: fadeIn 0.5s ease-out;
 }
 
-/* Pulse animation for important elements */
+/* Puls animatie voor belangrijke elementen */
 @keyframes pulse {
 
     0%,
@@ -613,9 +608,10 @@ main {
     animation: pulse 1.5s infinite;
 }
 
-/* ============================================================================
-   SECTION 14: UTILITY CLASSES / HULP KLASSEN
-   ============================================================================ */
+
+/* ==========================================================================
+   SECTIE 14: HULP KLASSEN
+   ========================================================================== */
 
 .text-cyan {
     color: var(--accent-cyan);
@@ -642,7 +638,7 @@ main {
     padding-top: 3rem;
 }
 
-/* Hide scrollbar but keep functionality */
+/* Scrollbalk styling */
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -660,16 +656,13 @@ main {
     background: var(--accent-cyan);
 }
 
-/* ============================================================================
-   SECTION 15: BOOTSTRAP OVERRIDES / BOOTSTRAP OVERSCHRIJVINGEN
-   ============================================================================
-   ENGLISH: Override Bootstrap !important classes that break custom styling.
-   DUTCH: Overschrijf Bootstrap !important klassen die custom styling breken.
 
-   PROBLEEM: Bootstrap .bg-dark gebruikt !important op background-color.
-   Dit overschrijft de custom gradient op body. Hierdoor is de achtergrond
-   een vlakke #212529 kleur. Onderstaande regels fixen dit.
-   ============================================================================ */
+/* ==========================================================================
+   SECTIE 15: BOOTSTRAP OVERSCHRIJVINGEN
+   ==========================================================================
+   Bootstrap .bg-dark gebruikt !important op background-color.
+   Dit overschrijft de custom gradient op body. Onderstaande regels fixen dit.
+   ========================================================================== */
 
 /* Fix 1: body.bg-dark override - herstel custom gradient achtergrond */
 body.bg-dark {
@@ -683,18 +676,16 @@ footer.bg-secondary {
     border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
-/* ============================================================================
-   SECTION 16: CONTENT PAGE STYLES (Privacy & Contact)
-   ============================================================================
-   ENGLISH: Complete styling for privacy.php and contact.php.
-   DUTCH: Volledige styling voor privacy.php en contact.php.
 
+/* ==========================================================================
+   SECTIE 16: INHOUD PAGINA STIJLEN (Privacy & Contact)
+   ==========================================================================
+   Volledige styling voor privacy.php en contact.php.
    Elk element is expliciet gestyled met !important zodat Bootstrap
    klassen de tekst NOOIT onzichtbaar kunnen maken.
-   ============================================================================ */
+   ========================================================================== */
 
-/* --- CARD CONTAINER --- */
-/* Solide donkerblauwe achtergrond zodat alle tekst erbinnen zichtbaar is */
+/* Kaart container - solide donkerblauwe achtergrond */
 main.container .card {
     background: #16213e !important;
     border: 1px solid rgba(0, 212, 255, 0.25) !important;
@@ -703,14 +694,12 @@ main.container .card {
     overflow: visible !important;
 }
 
-/* Extra padding in de card-body voor ademruimte */
+/* Extra opvulling in de kaart voor ademruimte */
 main.container .card .card-body {
     padding: 35px !important;
 }
 
-/* --- H1 PAGINA TITEL --- */
-/* Fix: main h1 gebruikt background-clip:text en -webkit-text-fill-color:transparent
-   waardoor de tekst ONZICHTBAAR wordt. Dit overschrijft dat volledig. */
+/* H1 pagina titel - fix voor onzichtbare tekst door background-clip */
 main.container .card .card-body h1 {
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
@@ -723,8 +712,7 @@ main.container .card .card-body h1 {
     text-align: left !important;
 }
 
-/* --- H3 SECTIE KOPPEN --- */
-/* Cyaan (#00d4ff) kleur voor duidelijke zichtbaarheid op donkere achtergrond */
+/* H3 sectie koppen - cyaan kleur voor zichtbaarheid */
 main.container .card .card-body h3 {
     color: #00d4ff !important;
     -webkit-text-fill-color: #00d4ff !important;
@@ -734,8 +722,7 @@ main.container .card .card-body h3 {
     margin-top: 20px !important;
 }
 
-/* --- PARAGRAFEN (p) --- */
-/* Witte tekst op donkerblauwe achtergrond = maximaal contrast */
+/* Paragrafen - witte tekst op donkerblauwe achtergrond */
 main.container .card .card-body p {
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
@@ -744,8 +731,7 @@ main.container .card .card-body p {
     margin-bottom: 12px !important;
 }
 
-/* --- LIJST ITEMS (li) --- */
-/* Witte tekst, goede regelafstand, ruimte tussen items */
+/* Lijst items - witte tekst met goede regelafstand */
 main.container .card .card-body li {
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
@@ -754,8 +740,7 @@ main.container .card .card-body li {
     margin-bottom: 8px !important;
 }
 
-/* --- ONGEORDENDE LIJSTEN (ul) --- */
-/* Inspringing en opsommingstekens zichtbaar */
+/* Ongeordende lijsten - inspringing en opsommingstekens */
 main.container .card .card-body ul {
     padding-left: 25px !important;
     margin-bottom: 18px !important;
@@ -763,16 +748,14 @@ main.container .card .card-body ul {
     color: #ffffff !important;
 }
 
-/* --- VETGEDRUKTE TEKST (strong) --- */
-/* Cyaan voor opvallende nadruk */
+/* Vetgedrukte tekst - cyaan voor nadruk */
 main.container .card .card-body strong {
     color: #00d4ff !important;
     -webkit-text-fill-color: #00d4ff !important;
     font-weight: 700 !important;
 }
 
-/* --- LINKS (a) --- */
-/* Alle links in de card zichtbaar in cyaan met onderstreping */
+/* Links in kaarten - cyaan met onderstreping */
 main.container .card .card-body a {
     color: #00d4ff !important;
     -webkit-text-fill-color: #00d4ff !important;
@@ -784,7 +767,7 @@ main.container .card .card-body a:hover {
     -webkit-text-fill-color: #ffffff !important;
 }
 
-/* Uitzondering: btn-primary link behoud knop-stijl */
+/* Uitzondering: btn-primary link behoudt knop-stijl */
 main.container .card .card-body a.btn-primary {
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
@@ -802,21 +785,21 @@ main.container .card .card-body a.btn-primary:hover {
     box-shadow: 0 6px 20px rgba(13, 110, 253, 0.5);
 }
 
-/* --- H5 KLASSE (contact email paragraaf) --- */
+/* H5 klasse styling */
 main.container .card .card-body .h5 {
     color: #00d4ff !important;
     -webkit-text-fill-color: #00d4ff !important;
     font-size: 1.25rem !important;
 }
 
-/* --- KLEINE TEKST (small) --- */
+/* Kleine tekst */
 main.container .card .card-body small {
     color: #b0b0b0 !important;
     -webkit-text-fill-color: #b0b0b0 !important;
     font-size: 0.9rem !important;
 }
 
-/* --- SECUNDAIRE TEKST (.text-secondary) --- */
+/* Secundaire tekst */
 main.container .card .card-body .text-secondary {
     color: #b0b0b0 !important;
     -webkit-text-fill-color: #b0b0b0 !important;
@@ -827,12 +810,13 @@ main.container .card .card-body .text-secondary small {
     -webkit-text-fill-color: #b0b0b0 !important;
 }
 
-/* --- SPAN ELEMENTEN --- */
+/* Span elementen */
 main.container .card .card-body span {
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
 }
 
-/* ============================================================================
-   END OF STYLESHEET / EINDE VAN STYLESHEET
-   ============================================================================ */
+
+/* ==========================================================================
+   EINDE VAN STYLESHEET
+   ========================================================================== */

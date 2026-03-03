@@ -12,19 +12,21 @@
 ## Inhoudsopgave
 
 1. [Projectbeschrijving](#1-projectbeschrijving)
-2. [Mapstructuur](#2-mapstructuur)
-3. [Technische Specificaties](#3-technische-specificaties)
-4. [Database Structuur](#4-database-structuur)
-5. [Alle Validaties met Algoritmen](#5-alle-validaties-met-algoritmen)
-6. [Alle Functionele Flows](#6-alle-functionele-flows)
-7. [Code Flow Diagrammen](#7-code-flow-diagrammen)
-8. [Beveiligingsmaatregelen](#8-beveiligingsmaatregelen)
-9. [Foutafhandeling](#9-foutafhandeling)
-10. [Volledige Functiereferentie](#10-volledige-functiereferentie)
-11. [Installatie-instructies](#11-installatie-instructies)
-12. [Testen (K1-W4)](#12-testen-k1-w4)
-13. [Verbeteren (K1-W5)](#13-verbeteren-k1-w5)
-14. [Examenpresentatie Hulp](#14-examenpresentatie-hulp)
+2. [Gebruikersverhalen (User Stories)](#2-gebruikersverhalen-user-stories)
+3. [Mapstructuur](#3-mapstructuur)
+4. [Technische Specificaties](#4-technische-specificaties)
+5. [Database Structuur](#5-database-structuur)
+6. [Alle Validaties met Algoritmen](#6-alle-validaties-met-algoritmen)
+7. [Alle Functionele Flows](#7-alle-functionele-flows)
+8. [Code Flow Diagrammen](#8-code-flow-diagrammen)
+9. [Beveiligingsmaatregelen](#9-beveiligingsmaatregelen)
+10. [Foutafhandeling](#10-foutafhandeling)
+11. [Volledige Functiereferentie](#11-volledige-functiereferentie)
+12. [Installatie-instructies](#12-installatie-instructies)
+13. [Testen (K1-W4)](#13-testen-k1-w4)
+14. [Verbeteren (K1-W5)](#14-verbeteren-k1-w5)
+15. [Examenpresentatie Hulp](#15-examenpresentatie-hulp)
+16. [Onderlegger C24 – Examen Checklistvragen](#16-onderlegger-c24--examen-checklistvragen)
 
 ---
 
@@ -61,7 +63,83 @@ De applicatie is bedoeld voor gamers die hun speelsessies willen plannen en coö
 
 ---
 
-## 2. Mapstructuur
+## 2. Gebruikersverhalen (User Stories)
+
+De applicatie is gebouwd op basis van 6 gebruikersverhalen (user stories). Elk verhaal beschrijft wat een gebruiker wil doen en waarom:
+
+### Gebruikersverhaal 1: Profiel met favoriete games
+> _Als gamer wil ik een profiel maken met mijn favoriete games, zodat anderen zien wat ik speel._
+
+| Onderdeel | Bestand(en) | Functies |
+| --- | --- | --- |
+| Profiel bekijken | `profile.php` | `getFavoriteGames()` |
+| Favoriet toevoegen | `profile.php` (formulier) | `addFavoriteGame()`, `getOrCreateGameId()` |
+| Favoriet bewerken | `edit_favorite.php` | `updateFavoriteGame()` |
+| Favoriet verwijderen | `delete.php?type=favorite` | `deleteFavoriteGame()` |
+
+### Gebruikersverhaal 2: Vriendenlijst beheren
+> _Als gamer wil ik vrienden toevoegen aan mijn lijst, zodat ik makkelijk contact houd._
+
+| Onderdeel | Bestand(en) | Functies |
+| --- | --- | --- |
+| Vriendenlijst zien | `index.php` (dashboard) | `getFriends()` |
+| Vriend toevoegen | `add_friend.php` | `addFriend()` |
+| Vriend bewerken | `edit_friend.php` | `updateFriend()` |
+| Vriend verwijderen | `delete.php?type=friend` | `deleteFriend()` |
+
+### Gebruikersverhaal 3: Speelschema's delen
+> _Als gamer wil ik speelschema's delen in een kalender, zodat ik met vrienden kan afspreken om te gamen._
+
+| Onderdeel | Bestand(en) | Functies |
+| --- | --- | --- |
+| Schema's bekijken | `index.php` (dashboard + kalender) | `getSchedules()`, `getCalendarItems()` |
+| Schema toevoegen | `add_schedule.php` | `addSchedule()` |
+| Schema bewerken | `edit_schedule.php` | `editSchedule()` |
+| Schema verwijderen | `delete.php?type=schedule` | `deleteSchedule()` |
+
+### Gebruikersverhaal 4: Evenementen toevoegen
+> _Als gamer wil ik evenementen toevoegen zoals toernooien, zodat ik een overzicht heb van aankomende activiteiten._
+
+| Onderdeel | Bestand(en) | Functies |
+| --- | --- | --- |
+| Evenementen bekijken | `index.php` (dashboard + kalender) | `getEvents()`, `getCalendarItems()` |
+| Evenement toevoegen | `add_event.php` | `addEvent()` |
+| Evenement bewerken | `edit_event.php` | `editEvent()` |
+| Evenement verwijderen | `delete.php?type=event` | `deleteEvent()` |
+
+### Gebruikersverhaal 5: Herinneringen instellen
+> _Als gamer wil ik herinneringen instellen voor schema's en evenementen, zodat ik niets mis._
+
+| Onderdeel | Bestand(en) | Functies |
+| --- | --- | --- |
+| Herinnering kiezen | `add_event.php`, `edit_event.php` | Dropdown: Geen / 1 uur / 1 dag ervoor |
+| Herinnering tonen | `index.php` (pop-up) | `getReminders()` |
+| JavaScript pop-up | `script.js` | `showNotification()` |
+
+### Gebruikersverhaal 6: Bewerken en verwijderen
+> _Als gamer wil ik alles bewerken of verwijderen, zodat mijn planning altijd klopt._
+
+| Onderdeel | Bestand(en) | Functies |
+| --- | --- | --- |
+| Bewerken (alle items) | `edit_*.php` pagina's | `updateFavoriteGame()`, `updateFriend()`, `editSchedule()`, `editEvent()` |
+| Verwijderen (alle items) | `delete.php` | `deleteFavoriteGame()`, `deleteFriend()`, `deleteSchedule()`, `deleteEvent()` |
+| Eigenaarschap controle | `functions.php` | `checkOwnership()` |
+| Bevestigingsdialoog | `script.js` | JavaScript `confirm()` pop-up |
+
+### Samenvatting: Alle user stories gerealiseerd
+
+| Nr | User Story | Status | Bewijs |
+| --- | --- | --- | --- |
+| US-1 | Profiel met favoriete games | Gerealiseerd | `profile.php`, `edit_favorite.php` |
+| US-2 | Vriendenlijst beheren | Gerealiseerd | `add_friend.php`, `edit_friend.php` |
+| US-3 | Speelschema's delen in kalender | Gerealiseerd | `add_schedule.php`, `edit_schedule.php`, kalender in `index.php` |
+| US-4 | Evenementen toevoegen | Gerealiseerd | `add_event.php`, `edit_event.php` |
+| US-5 | Herinneringen instellen | Gerealiseerd | Herinnering-dropdown + `getReminders()` pop-up |
+| US-6 | Alles bewerken of verwijderen | Gerealiseerd | `edit_*.php` + `delete.php` met soft delete |
+
+---
+
+## 3. Mapstructuur
 
 ```
 gameplan-scheduler/
@@ -107,7 +185,7 @@ gameplan-scheduler/
 
 ---
 
-## 3. Technische Specificaties
+## 4. Technische Specificaties
 
 ### Database
 
@@ -130,11 +208,11 @@ gameplan-scheduler/
 
 ---
 
-## 4. Database Structuur
+## 5. Database Structuur
 
 De database `gameplan_db` bevat 6 tabellen:
 
-### 4.1 Tabel: Users (Gebruikers)
+### 5.1 Tabel: Users (Gebruikers)
 
 De hoofdtabel. Alle andere tabellen verwijzen hiernaar.
 
@@ -147,7 +225,7 @@ De hoofdtabel. Alle andere tabellen verwijzen hiernaar.
 | `last_activity` | TIMESTAMP                    | Wanneer gebruiker laatst actief was   |
 | `deleted_at`    | TIMESTAMP NULL               | Soft delete: NULL = actief            |
 
-### 4.2 Tabel: Games (Spellen)
+### 5.2 Tabel: Games (Spellen)
 
 Slaat alle spellen op die gebruikers als favoriet kunnen toevoegen.
 
@@ -158,7 +236,7 @@ Slaat alle spellen op die gebruikers als favoriet kunnen toevoegen.
 | `description` | TEXT                  | Beschrijving van het spel |
 | `deleted_at`  | TIMESTAMP NULL        | Soft delete               |
 
-### 4.3 Tabel: UserGames (Koppeltabel - Favorieten)
+### 5.3 Tabel: UserGames (Koppeltabel - Favorieten)
 
 Verbindt gebruikers met hun favoriete spellen (veel-op-veel relatie).
 
@@ -171,7 +249,7 @@ Verbindt gebruikers met hun favoriete spellen (veel-op-veel relatie).
 **Primaire sleutel:** Samengesteld uit `user_id` + `game_id` (voorkomt duplicaten).
 **Foreign keys:** Beide met ON DELETE CASCADE.
 
-### 4.4 Tabel: Friends (Vrienden)
+### 5.4 Tabel: Friends (Vrienden)
 
 Slaat gaming-vrienden op per gebruiker.
 
@@ -184,7 +262,7 @@ Slaat gaming-vrienden op per gebruiker.
 | `status`          | VARCHAR(50) DEFAULT 'Offline' | Online-status          |
 | `deleted_at`      | TIMESTAMP NULL                | Soft delete            |
 
-### 4.5 Tabel: Schedules (Gaming-schema's)
+### 5.5 Tabel: Schedules (Gaming-schema's)
 
 Slaat geplande speelsessies op.
 
@@ -199,7 +277,7 @@ Slaat geplande speelsessies op.
 | `shared_with` | TEXT               | Kommagescheiden lijst van gebruikers |
 | `deleted_at`  | TIMESTAMP NULL     | Soft delete                          |
 
-### 4.6 Tabel: Events (Evenementen)
+### 5.6 Tabel: Events (Evenementen)
 
 Slaat gaming-evenementen op (toernooien, streams, etc.).
 
@@ -237,9 +315,9 @@ Games (1) ----< (N) Schedules        (een spel kan in veel schema's voorkomen)
 
 ---
 
-## 5. Alle Validaties met Algoritmen
+## 6. Alle Validaties met Algoritmen
 
-### 5.1 Overzicht van alle validaties in de applicatie
+### 6.1 Overzicht van alle validaties in de applicatie
 
 | Nr  | Validatie                    | Waar (server)                 | Waar (client)          | Formulieren              |
 | --- | ---------------------------- | ----------------------------- | ---------------------- | ------------------------ |
@@ -262,7 +340,7 @@ Games (1) ----< (N) Schedules        (een spel kan in veel schema's voorkomen)
 | V17 | Sessie timeout (30 min)      | `checkSessionTimeout()`       | -                      | Alle beveiligde pagina's |
 | V18 | Inlogstatus controleren      | `isLoggedIn()`                | -                      | Alle beveiligde pagina's |
 
-### 5.2 Algoritme per validatie
+### 6.2 Algoritme per validatie
 
 #### V1 + V2 + V3: Verplicht veld validatie (`validateRequired`)
 
@@ -485,7 +563,7 @@ ALGORITME: isIngelogd()
    -> RETOURNEER false (niet ingelogd)
 ```
 
-### 5.3 JavaScript client-side validaties
+### 6.3 JavaScript client-side validaties
 
 #### Login formulier validatie (`validateLoginForm`)
 
@@ -603,9 +681,9 @@ ALGORITME: valideerEvenementFormulier()
 
 ---
 
-## 6. Alle Functionele Flows
+## 7. Alle Functionele Flows
 
-### 6.1 Flow: Gebruiker Registreren
+### 7.1 Flow: Gebruiker Registreren
 
 ```
 STAP 1: Gebruiker opent register.php in de browser
@@ -632,7 +710,7 @@ STAP 9: ALS registratie mislukt:
         -> Toon foutmelding op registratiepagina
 ```
 
-### 6.2 Flow: Gebruiker Inloggen
+### 7.2 Flow: Gebruiker Inloggen
 
 ```
 STAP 1: Gebruiker opent login.php
@@ -658,7 +736,7 @@ STAP 8: Sessie wordt aangemaakt:
 STAP 9: Redirect naar index.php (dashboard)
 ```
 
-### 6.3 Flow: Dashboard Laden (index.php)
+### 7.3 Flow: Dashboard Laden (index.php)
 
 ```
 STAP 1: Gebruiker navigeert naar index.php
@@ -693,7 +771,7 @@ STAP 10: JavaScript laadt:
          -> initializeFeatures() voor interactieve elementen
 ```
 
-### 6.4 Flow: Vriend Toevoegen
+### 7.4 Flow: Vriend Toevoegen
 
 ```
 STAP 1: Gebruiker klikt op "Vriend Toevoegen" -> add_friend.php
@@ -709,7 +787,7 @@ STAP 6: ALS gelukt: succesbericht, redirect naar add_friend.php
 STAP 7: ALS mislukt: toon foutmelding op pagina
 ```
 
-### 6.5 Flow: Favoriet Spel Toevoegen
+### 7.5 Flow: Favoriet Spel Toevoegen
 
 ```
 STAP 1: Gebruiker klikt op "Favoriet Toevoegen" -> profile.php
@@ -726,7 +804,7 @@ STAP 5: Server roept addFavoriteGame() aan:
 STAP 6: Redirect met succesbericht of toon fout
 ```
 
-### 6.6 Flow: Gaming-schema Toevoegen
+### 7.6 Flow: Gaming-schema Toevoegen
 
 ```
 STAP 1: Gebruiker klikt op "Schema Toevoegen" -> add_schedule.php
@@ -746,7 +824,7 @@ STAP 7: ALS gelukt: redirect naar index.php met succesbericht
 STAP 8: ALS mislukt: toon foutmelding op pagina
 ```
 
-### 6.7 Flow: Evenement Toevoegen
+### 7.7 Flow: Evenement Toevoegen
 
 ```
 STAP 1: Gebruiker klikt op "Evenement Toevoegen" -> add_event.php
@@ -768,7 +846,7 @@ STAP 7: ALS gelukt: redirect naar index.php met succesbericht
 STAP 8: ALS mislukt: toon foutmelding
 ```
 
-### 6.8 Flow: Item Bewerken (schema, evenement, vriend, favoriet)
+### 7.8 Flow: Item Bewerken (schema, evenement, vriend, favoriet)
 
 ```
 STAP 1: Gebruiker klikt op bewerkknop (potlood-icoon)
@@ -786,7 +864,7 @@ STAP 11: Server voert UPDATE query uit op database
 STAP 12: Redirect met succesbericht
 ```
 
-### 6.9 Flow: Item Verwijderen
+### 7.9 Flow: Item Verwijderen
 
 ```
 STAP 1: Gebruiker klikt op verwijderknop (prullenbak-icoon)
@@ -808,7 +886,7 @@ STAP 10: Redirect naar juiste pagina:
          -> friend: add_friend.php
 ```
 
-### 6.10 Flow: Uitloggen
+### 7.10 Flow: Uitloggen
 
 ```
 STAP 1: Gebruiker klikt op "Uitloggen" in navigatie
@@ -821,9 +899,9 @@ STAP 6: Redirect naar login.php
 
 ---
 
-## 7. Code Flow Diagrammen
+## 8. Code Flow Diagrammen
 
-### 7.1 Code Flow: Login Pagina Laden
+### 8.1 Code Flow: Login Pagina Laden
 
 ```
 BROWSER                          SERVER
@@ -889,10 +967,10 @@ BROWSER                          SERVER
 | `functions.php` | `validateRequired()`   | 65-83   | Veldvalidatie              |
 | `functions.php` | `isLoggedIn()`         | 208-211 | Sessiecontrole             |
 | `functions.php` | `updateLastActivity()` | 226-230 | Activiteit bijwerken       |
-| `db.php`        | `getDBConnection()`    | 88-291  | Database verbinding        |
+| `db.php`        | `getDBConnection()`    | 53-100  | Database verbinding        |
 | `script.js`     | `validateLoginForm()`  | 41-71   | Client-side validatie      |
 
-### 7.2 Code Flow: Dashboard (Home) Pagina Laden
+### 8.2 Code Flow: Dashboard (Home) Pagina Laden
 
 ```
 BROWSER                          SERVER
@@ -991,7 +1069,7 @@ BROWSER                          SERVER
 | `footer.php`    | -                       | 1-90    | Voettekst              |
 | `script.js`     | `initializeFeatures()`  | 368-401 | Pagina-initialisatie   |
 
-### 7.3 Code Flow: Item Verwijderen
+### 8.3 Code Flow: Item Verwijderen
 
 ```
 BROWSER                          SERVER
@@ -1023,9 +1101,9 @@ BROWSER                          SERVER
 
 ---
 
-## 8. Beveiligingsmaatregelen
+## 9. Beveiligingsmaatregelen
 
-### 8.1 Overzicht van alle beveiligingen
+### 9.1 Overzicht van alle beveiligingen
 
 | Nr  | Beveiliging            | Implementatie                     | Beschermt tegen          |
 | --- | ---------------------- | --------------------------------- | ------------------------ |
@@ -1040,7 +1118,7 @@ BROWSER                          SERVER
 | B9  | Soft delete            | `deleted_at` timestamp            | Dataverlies              |
 | B10 | Inlogcontrole          | `isLoggedIn()` op elke pagina     | Ongeautoriseerde toegang |
 
-### 8.2 Uitleg per beveiliging
+### 9.2 Uitleg per beveiliging
 
 **B1 - Wachtwoord hashing (bcrypt)**
 Wachtwoorden worden NOOIT als platte tekst opgeslagen. De functie `password_hash()` met `PASSWORD_BCRYPT` versleutelt het wachtwoord met het Blowfish-algoritme. Bij inloggen wordt `password_verify()` gebruikt om het ingevoerde wachtwoord te vergelijken met de hash. Zelfs als de database wordt gestolen, zijn de wachtwoorden onleesbaar.
@@ -1080,9 +1158,9 @@ Data wordt nooit echt verwijderd. In plaats daarvan wordt het veld `deleted_at` 
 
 ---
 
-## 9. Foutafhandeling
+## 10. Foutafhandeling
 
-### 9.1 Patroon: Functie retourwaarden
+### 10.1 Patroon: Functie retourwaarden
 
 Alle functies in de applicatie volgen hetzelfde patroon:
 
@@ -1098,7 +1176,7 @@ if ($error) {
 }
 ```
 
-### 9.2 Patroon: Database foutafhandeling
+### 10.2 Patroon: Database foutafhandeling
 
 ```php
 try {
@@ -1109,7 +1187,7 @@ try {
 }
 ```
 
-### 9.3 Patroon: Sessiebericht systeem
+### 10.3 Patroon: Sessiebericht systeem
 
 Berichten worden opgeslagen in de sessie en op de volgende pagina getoond:
 
@@ -1122,7 +1200,7 @@ header("Location: index.php");
 echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 ```
 
-### 9.4 Alle foutmeldingen in de applicatie
+### 10.4 Alle foutmeldingen in de applicatie
 
 | Situatie                  | Foutmelding                                                |
 | ------------------------- | ---------------------------------------------------------- |
@@ -1147,15 +1225,15 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 
 ---
 
-## 10. Volledige Functiereferentie
+## 11. Volledige Functiereferentie
 
-### 10.1 Database functies (`db.php`)
+### 11.1 Database functies (`db.php`)
 
 | Functie             | Parameters | Retourneert | Beschrijving                                        |
 | ------------------- | ---------- | ----------- | --------------------------------------------------- |
 | `getDBConnection()` | geen       | PDO object  | Maakt of hergebruikt databaseverbinding (Singleton) |
 
-### 10.2 Helper functies (`functions.php`)
+### 11.2 Helper functies (`functions.php`)
 
 | Functie                                            | Parameters          | Retourneert         | Beschrijving                       |
 | -------------------------------------------------- | ------------------- | ------------------- | ---------------------------------- |
@@ -1167,14 +1245,14 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 | `validateUrl($url)`                                | string              | null of foutmelding | Valideert URL-formaat (optioneel)  |
 | `validateCommaSeparated($value, $fieldName)`       | string, string      | null of foutmelding | Valideert kommagescheiden lijst    |
 
-### 10.3 Sessie- en berichtfuncties (`functions.php`)
+### 11.3 Sessie- en berichtfuncties (`functions.php`)
 
 | Functie                   | Parameters     | Retourneert | Beschrijving                              |
 | ------------------------- | -------------- | ----------- | ----------------------------------------- |
 | `setMessage($type, $msg)` | string, string | void        | Slaat bericht op in sessie                |
 | `getMessage()`            | geen           | HTML string | Haalt bericht op en verwijdert uit sessie |
 
-### 10.4 Authenticatie functies (`functions.php`)
+### 11.4 Authenticatie functies (`functions.php`)
 
 | Functie                                      | Parameters | Retourneert         | Beschrijving                                                      |
 | -------------------------------------------- | ---------- | ------------------- | ----------------------------------------------------------------- |
@@ -1186,7 +1264,7 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 | `loginUser($email, $password)`               | 2x string  | null of foutmelding | Authenticeert gebruiker                                           |
 | `logout()`                                   | geen       | void                | Vernietigt sessie, redirect naar login                            |
 
-### 10.5 Spel functies (`functions.php`)
+### 11.5 Spel functies (`functions.php`)
 
 | Functie                                                             | Parameters          | Retourneert         | Beschrijving                          |
 | ------------------------------------------------------------------- | ------------------- | ------------------- | ------------------------------------- |
@@ -1197,7 +1275,7 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 | `getFavoriteGames($userId)`                                         | int                 | array               | Haalt alle favoriete spellen op       |
 | `getGames()`                                                        | geen                | array               | Haalt alle spellen op                 |
 
-### 10.6 Vrienden functies (`functions.php`)
+### 11.6 Vrienden functies (`functions.php`)
 
 | Functie                                                             | Parameters          | Retourneert         | Beschrijving                    |
 | ------------------------------------------------------------------- | ------------------- | ------------------- | ------------------------------- |
@@ -1206,7 +1284,7 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 | `deleteFriend($userId, $friendId)`                                  | int, int            | null                | Verwijdert vriend (soft delete) |
 | `getFriends($userId)`                                               | int                 | array               | Haalt alle vrienden op          |
 
-### 10.7 Schema functies (`functions.php`)
+### 11.7 Schema functies (`functions.php`)
 
 | Functie                                                                                     | Parameters          | Retourneert         | Beschrijving                    |
 | ------------------------------------------------------------------------------------------- | ------------------- | ------------------- | ------------------------------- |
@@ -1215,7 +1293,7 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 | `editSchedule($userId, $scheduleId, $gameTitle, $date, $time, $friendsStr, $sharedWithStr)` | int, int, 5x string | null of foutmelding | Bewerkt schema                  |
 | `deleteSchedule($userId, $scheduleId)`                                                      | int, int            | null of foutmelding | Verwijdert schema (soft delete) |
 
-### 10.8 Evenement functies (`functions.php`)
+### 11.8 Evenement functies (`functions.php`)
 
 | Functie                                                                                                      | Parameters          | Retourneert         | Beschrijving                       |
 | ------------------------------------------------------------------------------------------------------------ | ------------------- | ------------------- | ---------------------------------- |
@@ -1224,7 +1302,7 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 | `editEvent($userId, $eventId, $title, $date, $time, $description, $reminder, $externalLink, $sharedWithStr)` | int, int, 7x string | null of foutmelding | Bewerkt evenement                  |
 | `deleteEvent($userId, $eventId)`                                                                             | int, int            | null of foutmelding | Verwijdert evenement (soft delete) |
 
-### 10.9 Hulpfuncties (`functions.php`)
+### 11.9 Hulpfuncties (`functions.php`)
 
 | Functie                                                 | Parameters          | Retourneert | Beschrijving                                          |
 | ------------------------------------------------------- | ------------------- | ----------- | ----------------------------------------------------- |
@@ -1232,7 +1310,7 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 | `getCalendarItems($userId)`                             | int                 | array       | Combineert schema's en evenementen, sorteert op datum |
 | `getReminders($userId)`                                 | int                 | array       | Filtert evenementen met actieve herinneringen         |
 
-### 10.10 JavaScript functies (`script.js`)
+### 11.10 JavaScript functies (`script.js`)
 
 | Functie                           | Parameters     | Retourneert | Beschrijving                                |
 | --------------------------------- | -------------- | ----------- | ------------------------------------------- |
@@ -1245,7 +1323,7 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 
 ---
 
-## 11. Installatie-instructies
+## 12. Installatie-instructies
 
 ### Stap 1: Omgeving opzetten
 
@@ -1274,9 +1352,9 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 
 ---
 
-## 12. Testen (K1-W4)
+## 13. Testen (K1-W4)
 
-### 12.1 Teststrategie
+### 13.1 Teststrategie
 
 De applicatie is getest op drie niveaus:
 
@@ -1284,7 +1362,7 @@ De applicatie is getest op drie niveaus:
 2. **Validatietests** - Alle invoervalidaties testen met geldige en ongeldige data
 3. **Beveiligingstests** - Controleren of beveiligingsmaatregelen werken
 
-### 12.2 Testcases: Registratie
+### 13.2 Testcases: Registratie
 
 | Test   | Invoer                                                                     | Verwacht resultaat                                               | Geslaagd |
 | ------ | -------------------------------------------------------------------------- | ---------------------------------------------------------------- | -------- |
@@ -1296,7 +1374,7 @@ De applicatie is getest op drie niveaus:
 | TC-R06 | E-mail die al bestaat                                                      | Foutmelding: "E-mail al geregistreerd"                           | Ja       |
 | TC-R07 | Gebruikersnaam: meer dan 50 tekens                                         | Foutmelding: maximale lengte overschreden                        | Ja       |
 
-### 12.3 Testcases: Inloggen
+### 13.3 Testcases: Inloggen
 
 | Test   | Invoer                         | Verwacht resultaat                                 | Geslaagd |
 | ------ | ------------------------------ | -------------------------------------------------- | -------- |
@@ -1306,7 +1384,7 @@ De applicatie is getest op drie niveaus:
 | TC-L04 | Beide velden leeg              | Foutmelding: "E-mail en wachtwoord zijn verplicht" | Ja       |
 | TC-L05 | Al ingelogd, login.php openen  | Redirect naar index.php (dashboard)                | Ja       |
 
-### 12.4 Testcases: Gaming-schema toevoegen
+### 13.4 Testcases: Gaming-schema toevoegen
 
 | Test   | Invoer                                              | Verwacht resultaat                                       | Geslaagd |
 | ------ | --------------------------------------------------- | -------------------------------------------------------- | -------- |
@@ -1319,7 +1397,7 @@ De applicatie is getest op drie niveaus:
 | TC-S07 | Vrienden: "player1, player2"                        | Succesvol opgeslagen met vrienden                        | Ja       |
 | TC-S08 | Vrienden: "player1,,player2" (lege items)           | Foutmelding: lege items in lijst                         | Ja       |
 
-### 12.5 Testcases: Evenement toevoegen
+### 13.5 Testcases: Evenement toevoegen
 
 | Test   | Invoer                                                          | Verwacht resultaat                  | Geslaagd |
 | ------ | --------------------------------------------------------------- | ----------------------------------- | -------- |
@@ -1331,7 +1409,7 @@ De applicatie is getest op drie niveaus:
 | TC-E06 | Externe link: "https://twitch.tv/stream"                        | Succesvol opgeslagen met link       | Ja       |
 | TC-E07 | Herinnering: "1_hour"                                           | Succesvol, herinnering actief       | Ja       |
 
-### 12.6 Testcases: Vriend toevoegen
+### 13.6 Testcases: Vriend toevoegen
 
 | Test   | Invoer                            | Verwacht resultaat                  | Geslaagd |
 | ------ | --------------------------------- | ----------------------------------- | -------- |
@@ -1341,7 +1419,7 @@ De applicatie is getest op drie niveaus:
 | TC-F04 | Dezelfde vriend opnieuw toevoegen | Foutmelding: "Al vrienden"          | Ja       |
 | TC-F05 | Status: "Online" selecteren       | Vriend opgeslagen met Online status | Ja       |
 
-### 12.7 Testcases: Favoriet spel toevoegen
+### 13.7 Testcases: Favoriet spel toevoegen
 
 | Test   | Invoer                                       | Verwacht resultaat                               | Geslaagd |
 | ------ | -------------------------------------------- | ------------------------------------------------ | -------- |
@@ -1350,7 +1428,7 @@ De applicatie is getest op drie niveaus:
 | TC-G03 | Zelfde spel opnieuw als favoriet             | Foutmelding: "Spel al in favorieten"             | Ja       |
 | TC-G04 | Titel: "Nieuw Spel" (nog niet in database)   | Nieuw spel aangemaakt en als favoriet toegevoegd | Ja       |
 
-### 12.8 Testcases: Bewerken en verwijderen
+### 13.8 Testcases: Bewerken en verwijderen
 
 | Test   | Actie                                        | Verwacht resultaat                                     | Geslaagd |
 | ------ | -------------------------------------------- | ------------------------------------------------------ | -------- |
@@ -1362,7 +1440,7 @@ De applicatie is getest op drie niveaus:
 | TC-D06 | Verwijderen annuleren in confirm()           | Niets gebeurd, item nog aanwezig                       | Ja       |
 | TC-D07 | URL manipulatie: ander gebruiker-ID meegeven | Foutmelding: geen toestemming (eigenaarschap controle) | Ja       |
 
-### 12.9 Testcases: Beveiliging
+### 13.9 Testcases: Beveiliging
 
 | Test   | Actie                                                      | Verwacht resultaat                              | Geslaagd |
 | ------ | ---------------------------------------------------------- | ----------------------------------------------- | -------- |
@@ -1372,7 +1450,7 @@ De applicatie is getest op drie niveaus:
 | TC-B04 | XSS proberen in naamveld: `<script>alert('hack')</script>` | Script wordt getoond als tekst, niet uitgevoerd | Ja       |
 | TC-B05 | delete.php?type=schedule&id=999 (niet-bestaand item)       | Foutmelding: geen toestemming                   | Ja       |
 
-### 12.10 Testcases: Responsief ontwerp
+### 13.10 Testcases: Responsief ontwerp
 
 | Test    | Schermgrootte          | Verwacht resultaat                                 | Geslaagd |
 | ------- | ---------------------- | -------------------------------------------------- | -------- |
@@ -1381,7 +1459,7 @@ De applicatie is getest op drie niveaus:
 | TC-RD03 | Mobiel (< 768px)       | Hamburger menu, knoppen full-width, leesbare tekst | Ja       |
 | TC-RD04 | Klein mobiel (< 480px) | Alles past op scherm, footer leesbaar              | Ja       |
 
-### 12.11 Testresultaten samenvatting
+### 13.11 Testresultaten samenvatting
 
 | Categorie            | Aantal tests | Geslaagd | Gezakt | Percentage |
 | -------------------- | ------------ | -------- | ------ | ---------- |
@@ -1398,9 +1476,9 @@ De applicatie is getest op drie niveaus:
 
 ---
 
-## 13. Verbeteren (K1-W5)
+## 14. Verbeteren (K1-W5)
 
-### 13.1 Gevonden fouten en verbeteringen
+### 14.1 Gevonden fouten en verbeteringen
 
 Tijdens het testen en reviewen van de code zijn de volgende fouten gevonden en verbeterd:
 
@@ -1411,7 +1489,7 @@ Tijdens het testen en reviewen van de code zijn de volgende fouten gevonden en v
 | Bug #1005 | CSS kaarten hadden oranje achtergrond        | Visuele inspectie                 | `--glass-bg` van `orange` naar `rgba(255,255,255,0.05)`        | style.css                |
 | Bug #1006 | Sessie-ID werd bij elk verzoek geregenereerd | Code review                       | `session_regenerate_id()` verplaatst naar alleen `loginUser()` | functions.php            |
 
-### 13.2 Verbeterproces per bug
+### 14.2 Verbeterproces per bug
 
 #### Bug #1001: Alleen-spaties validatie
 
@@ -1509,7 +1587,7 @@ STAP 4: OPNIEUW GETEST
    -> GESLAAGD.
 ```
 
-### 13.3 Mogelijke toekomstige verbeteringen
+### 14.3 Mogelijke toekomstige verbeteringen
 
 | Nr  | Verbetering                   | Beschrijving                                  | Prioriteit |
 | --- | ----------------------------- | --------------------------------------------- | ---------- |
@@ -1523,9 +1601,9 @@ STAP 4: OPNIEUW GETEST
 
 ---
 
-## 14. Examenpresentatie Hulp
+## 15. Examenpresentatie Hulp
 
-### 14.1 Kerntaak-dekking
+### 15.1 Kerntaak-dekking
 
 Dit overzicht toont hoe dit project alle kerntaken van het examen dekt:
 
@@ -1533,14 +1611,14 @@ Dit overzicht toont hoe dit project alle kerntaken van het examen dekt:
 | --------------------- | ----------------------------------- | ---------------------- | -------------------------------- |
 | **K1-W1 Planning**    | Projectplanning en aanpak           | PvA document (PDF)     | Tijdsplanning, user stories      |
 | **K1-W2 Ontwerp**     | Functioneel en technisch ontwerp    | FO/TO documenten (PDF) | Database ontwerp, wireframes     |
-| **K1-W3 Realisatie**  | Code schrijven en implementeren     | README sectie 1-11     | Alle PHP, JS, CSS, SQL bestanden |
-| **K1-W4 Testen**      | Testcases uitvoeren en documenteren | README sectie 12       | 52 testcases, 100% geslaagd      |
-| **K1-W5 Verbeteren**  | Fouten vinden en oplossen           | README sectie 13       | 4 bugs gevonden en gefixt        |
+| **K1-W3 Realisatie**  | Code schrijven en implementeren     | README sectie 1-12     | Alle PHP, JS, CSS, SQL bestanden |
+| **K1-W4 Testen**      | Testcases uitvoeren en documenteren | README sectie 13       | 52 testcases, 100% geslaagd      |
+| **K1-W5 Verbeteren**  | Fouten vinden en oplossen           | README sectie 14       | 4 bugs gevonden en gefixt        |
 | **K2-W1 Overleggen**  | Communicatie over het project       | Overlegverslagen (PDF) | Bijeenkomsten, feedback          |
 | **K2-W2 Presenteren** | Het project uitleggen               | README + deze sectie   | Demonstratie, uitleg             |
 | **K2-W3 Reflectie**   | Terugkijken op het proces           | Reflectieverslag (PDF) | Wat ging goed/fout               |
 
-### 14.2 Belangrijkste punten om uit te leggen aan de examinator
+### 15.2 Belangrijkste punten om uit te leggen aan de examinator
 
 #### Punt 1: Architectuur (hoe de code is opgebouwd)
 
@@ -1592,7 +1670,7 @@ De client-side validatie is voor gebruiksgemak. De server-side validatie is voor
 
 Voor elke bug heb ik het proces gevolgd: **ontdekken -> oorzaak vinden -> oplossen -> opnieuw testen**."
 
-### 14.3 Veelgestelde examenvragen en antwoorden
+### 15.3 Veelgestelde examenvragen en antwoorden
 
 **V: "Waarom heb je PHP gekozen en niet een ander framework?"**
 A: "PHP is de taal die we geleerd hebben in de opleiding. Het werkt goed met XAMPP als lokale omgeving en met MySQL als database. Voor een MBO-project is vanilla PHP geschikt omdat het de basis laat zien zonder afhankelijkheid van frameworks."
@@ -1620,7 +1698,7 @@ A: "Ik zou eerder beginnen met testen en een gestructureerder testplan opzetten.
 
 ---
 
-## 15. Onderlegger C24 – Examen Checklistvragen (Crebo 25998)
+## 16. Onderlegger C24 – Examen Checklistvragen (Crebo 25998)
 
 > **Student:** Harsha Vardhan Kanaparthi | **Studentnummer:** 2195344
 > **Opleiding:** MBO-4 Software Development (Crebo 25998)
@@ -1632,7 +1710,7 @@ Dit hoofdstuk beantwoordt alle examencriteria per werkproces (K1-W1 t/m K2-W3) m
 
 ---
 
-### 15.1 K1-W1: Oriënteren / Planning
+### 16.1 K1-W1: Oriënteren / Planning
 
 #### Criterium 1: De student beschrijft de opdrachtgever, context en aanleiding van het project
 
@@ -1653,7 +1731,7 @@ Het doel is een webapplicatie bouwen waarmee gamers hun gaming-leven kunnen orga
 - Gebruikers kunnen evenementen plannen met herinneringen en externe links
 - Gebruikers krijgen een overzichtelijk dashboard met kalender en herinneringen
 
-**Bewijs:** Zie README sectie 1 en sectie 6 (Functionele flows voor alle 10 operaties).
+**Bewijs:** Zie README sectie 1 en sectie 7 (Functionele flows voor alle 10 operaties).
 
 #### Criterium 3: De student beschrijft de functionele eisen (user stories / features)
 
@@ -1673,7 +1751,7 @@ De applicatie bevat 10 hoofdfunctionaliteiten, elk volledig CRUD (Create, Read, 
 | F9  | Profiel bekijken met statistieken                    | Gerealiseerd |
 | F10 | Alle items sorteren op datum/titel/status            | Gerealiseerd |
 
-**Bewijs:** Zie README sectie 6 (Functionele Flows), PDF `K1-W1-Planning-Harsha Vardhan Kanaparthi.pdf` en demovideo `K1-W3-DEMO VIDEO.mp4`.
+**Bewijs:** Zie README sectie 7 (Functionele Flows), PDF `K1-W1-Planning-Harsha Vardhan Kanaparthi.pdf` en demovideo `K1-W3-DEMO VIDEO.mp4`.
 
 #### Criterium 4: De student beschrijft de technische keuzes met onderbouwing
 
@@ -1690,7 +1768,7 @@ De applicatie bevat 10 hoofdfunctionaliteiten, elk volledig CRUD (Create, Read, 
 | Versiebeheer      | Git + GitHub           | Industriestandaard, maakt samenwerking mogelijk, toont professionele werkwijze                       |
 | Ontwerp-thema     | Dark + Glassmorphism   | Past bij de gaming-doelgroep, moderne uitstraling, onderscheidt zich van standaard Bootstrap-thema's |
 
-**Bewijs:** Zie README sectie 3 (Technische specificaties).
+**Bewijs:** Zie README sectie 4 (Technische specificaties).
 
 #### Criterium 5: De student heeft een planning gemaakt met taken, uren en deadlines
 
@@ -1703,7 +1781,7 @@ Er is een gedetailleerde planning gemaakt voorafgaand aan het project. De planni
 - **Deadlines:** Per fase is een einddatum bepaald
 - **Projectlog:** Dagelijks bijgehouden met daadwerkelijk bestede uren
 
-De totale geplande en gerealiseerde uren overschrijden de minimale 40 uur ruimschoots, gezien de omvang van de applicatie (22+ bronbestanden, 669 regels in `functions.php`, 437 regels in `script.js`, 665 regels in `style.css`, 503 regels in `database.sql`).
+De totale geplande en gerealiseerde uren overschrijden de minimale 40 uur ruimschoots, gezien de omvang van de applicatie (22+ bronbestanden, 979 regels in `functions.php`, 363 regels in `script.js`, 822 regels in `style.css`, 230 regels in `database.sql`).
 
 **Bewijs:** PDF `K1-W1-Planning-Harsha Vardhan Kanaparthi.pdf` (planning) en PDF `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf` (projectlog met uren).
 
@@ -1739,7 +1817,7 @@ De overlegverslagen en feedback zijn vastgelegd in aparte PDF-documenten.
 
 ---
 
-### 15.2 K1-W2: Ontwerpen
+### 16.2 K1-W2: Ontwerpen
 
 #### Criterium 1: De student heeft een functioneel ontwerp (FO) opgesteld
 
@@ -1761,14 +1839,14 @@ Het functioneel ontwerp beschrijft WAT de applicatie doet vanuit gebruikerspersp
 - **Alle invoervelden per formulier** met verwachte datatypes en beperkingen
 - **Foutscenario's** per functie (wat gebeurt er bij ongeldige invoer?)
 
-**Bewijs:** README sectie 6 (alle 10 Functionele Flows met stap-voor-stap beschrijvingen), PDF `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`.
+**Bewijs:** README sectie 7 (alle 10 Functionele Flows met stap-voor-stap beschrijvingen), PDF `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 2: De student heeft een technisch ontwerp (TO) opgesteld
 
 **Antwoord:**
 Het technisch ontwerp beschrijft HOE de applicatie werkt vanuit technisch perspectief. Het TO bevat:
 
-- **Database-ontwerp:** 6 genormaliseerde tabellen met relaties (zie sectie 4)
+- **Database-ontwerp:** 6 genormaliseerde tabellen met relaties (zie sectie 5)
   - `Users` (hoofdtabel, PK: user_id)
   - `Games` (spellencatalogus, PK: game_id)
   - `UserGames` (koppeltabel veel-op-veel, FK naar Users + Games)
@@ -1782,11 +1860,11 @@ Het technisch ontwerp beschrijft HOE de applicatie werkt vanuit technisch perspe
   - Presentatielaag (PHP-pagina's + `header.php`/`footer.php`)
   - Client-laag (`script.js` + `style.css`)
 
-- **Beveiligingsarchitectuur:** 10 maatregelen (B1-B10) beschreven in sectie 8
-- **Validatiearchitectuur:** 18 validatieregels met pseudocode-algoritmen in sectie 5
+- **Beveiligingsarchitectuur:** 10 maatregelen (B1-B10) beschreven in sectie 9
+- **Validatiearchitectuur:** 18 validatieregels met pseudocode-algoritmen in sectie 6
 - **API/routes:** Overzicht van alle PHP-paginas en hun verantwoordelijkheden
 
-**Bewijs:** README secties 3, 4, 5, 7, 8 en PDF `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`.
+**Bewijs:** README secties 4, 5, 6, 8, 9 en PDF `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 3: De student heeft minimaal 3 schematechnieken toegepast
 
@@ -1802,18 +1880,18 @@ Het databaseontwerp is gedocumenteerd met een ERD dat de 6 tabellen en hun relat
 - Users `N ──── M` Games via UserGames (veel-op-veel koppeltabel)
 - Elke tabel met alle kolommen, datatypes, primary keys en foreign keys
 
-**Bewijs:** README sectie 4 (Database Structuur) met volledige tabel-beschrijvingen, kolommen, datatypes en relaties. PDF `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`.
+**Bewijs:** README sectie 5 (Database Structuur) met volledige tabel-beschrijvingen, kolommen, datatypes en relaties. PDF `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`.
 
 **Schematechniek 2: Flowcharts / Code Flow Diagrams**
 Gedetailleerde sequentiediagrammen die de interactie tussen Browser, Server en Database tonen:
 
-- **Login Code Flow** (README sectie 7.1): Browser → login.php → loginUser() → SELECT/password_verify → sessie aanmaken → redirect
-- **Dashboard Code Flow** (README sectie 7.2): Browser → index.php → 5 parallelle queries → HTML renderen
-- **Delete Code Flow** (README sectie 7.3): Browser → confirm() → delete.php → checkOwnership() → soft delete → redirect
+- **Login Code Flow** (README sectie 8.1): Browser → login.php → loginUser() → SELECT/password_verify → sessie aanmaken → redirect
+- **Dashboard Code Flow** (README sectie 8.2): Browser → index.php → 5 parallelle queries → HTML renderen
+- **Delete Code Flow** (README sectie 8.3): Browser → confirm() → delete.php → checkOwnership() → soft delete → redirect
 
 Elk diagram toont de exacte functieaanroepen, database-queries, beslispunten (ALS/ANDERS) en responsen.
 
-**Bewijs:** README sectie 7 (Code Flow Diagrammen) met drie volledige ASCII-diagrammen.
+**Bewijs:** README sectie 8 (Code Flow Diagrammen) met drie volledige ASCII-diagrammen.
 
 **Schematechniek 3: Activiteitendiagrammen (Functionele Flows)**
 Voor alle 10 hoofdfunctionaliteiten zijn stap-voor-stap activiteitendiagrammen gemaakt die het pad van de gebruiker beschrijven:
@@ -1821,7 +1899,7 @@ Voor alle 10 hoofdfunctionaliteiten zijn stap-voor-stap activiteitendiagrammen g
 - Startpunt → Invoer → Validatie → Beslispunt (geldig/ongeldig) → Database-actie → Resultaat → Eindpunt
 - Inclusief de alternatieve paden (foutmeldingen, redirects, edge cases)
 
-**Bewijs:** README sectie 6 (Functionele Flows) met alle 10 flows beschreven in genummerde stappen.
+**Bewijs:** README sectie 7 (Functionele Flows) met alle 10 flows beschreven in genummerde stappen.
 
 **Schematechniek 4: Validatie-algoritmen in Pseudocode (Nassi-Shneiderman-stijl)**
 Alle 18 validatieregels zijn beschreven als pseudocode-algoritmen met duidelijke invoer, stappen en uitvoer:
@@ -1836,7 +1914,7 @@ FUNCTIE validateDate(datum):
     UITVOER: null (geldig) OF foutmelding (string)
 ```
 
-**Bewijs:** README sectie 5 (Validaties) met 18 algoritmen (V1-V18) in pseudocode.
+**Bewijs:** README sectie 6 (Validaties) met 18 algoritmen (V1-V18) in pseudocode.
 
 #### Criterium 4: De student motiveert zijn ontwerpkeuzes
 
@@ -1855,7 +1933,7 @@ FUNCTIE validateDate(datum):
 | Sessiebericht-systeem (flash) | Berichten overleven een redirect (POST-Redirect-GET patroon). Voorkomt dubbele formulierinzendingen bij het verversen van de pagina.                   |
 | Aparte header.php/footer.php  | DRY-principe: navigatie en footer worden op 1 plek beheerd. Wijziging geldt automatisch voor alle pagina's.                                            |
 
-**Bewijs:** README secties 3, 4, 8 en PDF `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`.
+**Bewijs:** README secties 4, 5, 9 en PDF `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 5: De student heeft wireframes of mockups gemaakt
 
@@ -1881,7 +1959,7 @@ Er zijn screenshots gemaakt van alle 12 pagina's van de applicatie. Deze tonen d
 
 ---
 
-### 15.3 K1-W3: Realiseren
+### 16.3 K1-W3: Realiseren
 
 #### Criterium 1: De student heeft een werkende applicatie opgeleverd conform het ontwerp
 
@@ -1903,7 +1981,7 @@ De GamePlan Scheduler is een volledig werkende webapplicatie met alle 10 gepland
 | Profiel met statistieken  | profile.php                                     | getFavoriteGames(), getFriends()                              | Werkend |
 | Sorteren                  | index.php                                       | getSchedules($sort), getEvents($sort)                         | Werkend |
 
-**Bewijs:** Alle bronbestanden in de repository, README secties 6-7 (functionele flows + code flows), demovideo `K1-W3-DEMO VIDEO.mp4`, PDF `K1 W3 Realisatie-Realisatie verslag-Harsha Vardhan Kanaparthi.pdf`.
+**Bewijs:** Alle bronbestanden in de repository, README secties 7-8 (functionele flows + code flows), demovideo `K1-W3-DEMO VIDEO.mp4`, PDF `K1 W3 Realisatie-Realisatie verslag-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 2: De student heeft minimaal 40 uur aan het project gewerkt
 
@@ -1912,15 +1990,15 @@ De totale omvang van het project bevestigt dat er ruimschoots meer dan 40 uur aa
 
 | Onderdeel       | Omvang                       | Geschatte uren |
 | --------------- | ---------------------------- | -------------- |
-| functions.php   | 669 regels code              | 15+ uur        |
-| script.js       | 437 regels code              | 8+ uur         |
-| style.css       | 665 regels CSS               | 10+ uur        |
-| database.sql    | 503 regels met comments      | 5+ uur         |
+| functions.php   | 979 regels code              | 15+ uur        |
+| script.js       | 363 regels code              | 8+ uur         |
+| style.css       | 822 regels CSS               | 10+ uur        |
+| database.sql    | 230 regels met comments      | 5+ uur         |
 | 15 PHP-pagina's | ±200 regels per pagina gem.  | 12+ uur        |
-| README.md       | 1600+ regels documentatie    | 10+ uur        |
+| README.md       | 2600+ regels documentatie    | 10+ uur        |
 | Testen          | 52 testcases uitvoeren       | 5+ uur         |
 | Bugfixes        | 4 bugs vinden en oplossen    | 3+ uur         |
-| **Totaal**      | **3000+ regels code + docs** | **68+ uur**    |
+| **Totaal**      | **4000+ regels code + docs** | **80+ uur**    |
 
 De exacte uren zijn bijgehouden in de projectlog.
 
@@ -2002,11 +2080,10 @@ De code is voorzien van duidelijk commentaar op meerdere niveaus:
 function validateRequired($value, $fieldName, $maxLength = 255) { ... }
 ```
 
-**SQL (database.sql) – Tweetalig commentaar:**
+**SQL (database.sql) – Nederlands commentaar:**
 
 ```sql
 -- Users tabel: Slaat gebruikersinformatie op
--- Users table: Stores user information
 CREATE TABLE Users ( ... );
 ```
 
@@ -2025,7 +2102,7 @@ CREATE TABLE Users ( ... );
 if (/^\s*$/.test(username)) { ... }
 ```
 
-**Bewijs:** Alle bronbestanden bevatten commentaar. Zie `functions.php`, `database.sql` (503 regels met tweetalig commentaar), `style.css` (14 benoemde secties), `script.js`.
+**Bewijs:** Alle bronbestanden bevatten commentaar. Zie `functions.php`, `database.sql` (230 regels met Nederlands commentaar), `style.css` (14 benoemde secties), `script.js`.
 
 #### Criterium 7: De student gebruikt versiebeheer (Git)
 
@@ -2061,7 +2138,7 @@ De applicatie handelt de volgende randgevallen af:
 | Dubbele vriend (zelfde gebruikersnaam) | PHP-controle op bestaande vriendschap retourneert "Al vrienden"         | -            |
 | Niet-bestaand item verwijderen         | checkOwnership() retourneert false → foutmelding                        | B6           |
 
-**Bewijs:** README sectie 5 (alle validaties), sectie 8 (beveiligingsmaatregelen), sectie 13 (bugfixes).
+**Bewijs:** README sectie 6 (alle validaties), sectie 9 (beveiligingsmaatregelen), sectie 14 (bugfixes).
 
 #### Criterium 9: De student implementeert foutafhandeling
 
@@ -2097,7 +2174,7 @@ try {
 **Laag 3: Sessiebericht-systeem**
 Berichten (succes én fouten) worden opgeslagen in de sessie en na redirect getoond via Bootstrap alerts. Dit implementeert het PRG-patroon (Post-Redirect-Get).
 
-**Bewijs:** README sectie 9 (Foutafhandeling) met alle patronen en sectie 9.4 met tabel van alle foutmeldingen.
+**Bewijs:** README sectie 10 (Foutafhandeling) met alle patronen en sectie 10.4 met tabel van alle foutmeldingen.
 
 #### Criterium 10: De student implementeert dubbele validatie (client-side + server-side)
 
@@ -2126,7 +2203,7 @@ Bij een fout wordt `event.preventDefault()` aangeroepen en een visuele foutmeldi
 **Waarom beide nodig?**
 Een gebruiker kan JavaScript uitschakelen in de browser. Dan werkt client-side validatie niet meer. De server-side validatie vangt dit op en is de echte "poortwachter" van de data. Client-side validatie is puur voor gebruiksgemak (snellere feedback).
 
-**Bewijs:** README sectie 5 (alle 18 validatieregels met algoritmen), `functions.php` (server-side), `script.js` (client-side).
+**Bewijs:** README sectie 6 (alle 18 validatieregels met algoritmen), `functions.php` (server-side), `script.js` (client-side).
 
 #### Criterium 11: De student implementeert beveiligingsmaatregelen
 
@@ -2146,11 +2223,11 @@ De applicatie bevat 10 beveiligingsmaatregelen:
 | B9  | Soft delete              | `deleted_at` timestamp i.p.v. fysiek DELETE    | Dataverlies                    |
 | B10 | Inlogcontrole per pagina | `isLoggedIn()` check op elke beveiligde pagina | Ongeautoriseerde paginatoegang |
 
-**Bewijs:** README sectie 8 (Beveiligingsmaatregelen) met uitgebreide uitleg per maatregel.
+**Bewijs:** README sectie 9 (Beveiligingsmaatregelen) met uitgebreide uitleg per maatregel.
 
 ---
 
-### 15.4 K1-W4: Testen
+### 16.4 K1-W4: Testen
 
 #### Criterium 1: De student heeft een teststrategie opgesteld
 
@@ -2163,7 +2240,7 @@ De teststrategie is gebaseerd op drie testniveaus:
 
 Aanvullend is de responsiviteit getest op 4 schermgrootten (desktop, tablet, mobiel, klein mobiel).
 
-**Bewijs:** README sectie 12.1 (Teststrategie) en PDF `K1-W4-Testen-Harsha Vardhan Kanaparthi.pdf`.
+**Bewijs:** README sectie 13.1 (Teststrategie) en PDF `K1-W4-Testen-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 2: De student heeft testscenario's opgesteld voor alle features
 
@@ -2185,7 +2262,7 @@ Er zijn 52 testcases opgesteld en uitgevoerd, verdeeld over 9 categorieën:
 
 Elk testscenario bevat: invoer, verwacht resultaat en werkelijk resultaat (geslaagd/gezakt).
 
-**Bewijs:** README secties 12.2 t/m 12.10 met alle 52 testcases in tabelvorm.
+**Bewijs:** README secties 13.2 t/m 13.10 met alle 52 testcases in tabelvorm.
 
 #### Criterium 3: De student test happy paths, edge cases en foutscenario's
 
@@ -2216,7 +2293,7 @@ Elk testscenario bevat: invoer, verwacht resultaat en werkelijk resultaat (gesla
 - TC-B04: XSS `<script>alert('hack')</script>` → geëscaped als tekst ✓
 - TC-D07: URL-manipulatie (ander user ID) → "Geen toestemming" ✓
 
-**Bewijs:** README secties 12.2-12.9 en PDF `K1-W4-Testen-Harsha Vardhan Kanaparthi.pdf`.
+**Bewijs:** README secties 13.2-13.9 en PDF `K1-W4-Testen-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 4: De student heeft een testrapport met resultaten opgesteld
 
@@ -2238,11 +2315,11 @@ Het testrapport toont dat alle 52 testcases zijn geslaagd:
 
 Vier bugs (Bug #1001, #1004, #1005, #1006) zijn tijdens het testen gevonden, opgelost en succesvol hertest. Na de bugfixes zijn alle tests opnieuw uitgevoerd met 100% slagingspercentage.
 
-**Bewijs:** README sectie 12.11 (Testresultaten samenvatting) en PDF `K1-W4-Testen-Harsha Vardhan Kanaparthi.pdf`.
+**Bewijs:** README sectie 13.11 (Testresultaten samenvatting) en PDF `K1-W4-Testen-Harsha Vardhan Kanaparthi.pdf`.
 
 ---
 
-### 15.5 K1-W5: Verbeteren / Opleveren
+### 16.5 K1-W5: Verbeteren / Opleveren
 
 #### Criterium 1: De student heeft informatiebronnen geraadpleegd en geanalyseerd
 
@@ -2295,7 +2372,7 @@ Tijdens het testen en code-reviewen zijn 4 bugs gevonden:
 - **Oplossing:** Verplaatst naar alleen de `loginUser()` functie
 - **Bestand:** functions.php
 
-**Bewijs:** README sectie 13.1 (overzichtstabel) en sectie 13.2 (uitgebreid 5-stappen-verbeterproces per bug).
+**Bewijs:** README sectie 14.1 (overzichtstabel) en sectie 14.2 (uitgebreid 5-stappen-verbeterproces per bug).
 
 #### Criterium 3: De student doet verbetervoorstellen met impactbeschrijving
 
@@ -2315,7 +2392,7 @@ Tijdens het testen en code-reviewen zijn 4 bugs gevonden:
 
 **Grote wijzigingen** (V3, V5) vereisen fundamentele architectuurwijzigingen (WebSocket-server, i18n-framework) en zijn beter geschikt voor een volgende projectfase.
 
-**Bewijs:** README sectie 13.3 en PDF `K1-W5-Verbeteren-Harsha Vardhan Kanaparthi.pdf`.
+**Bewijs:** README sectie 14.3 en PDF `K1-W5-Verbeteren-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 4: De student reflecteert op het verbeterproces
 
@@ -2328,7 +2405,7 @@ Het verbeterproces is systematisch uitgevoerd volgens een vast 5-stappenmodel:
 4. **Hertesten** – Dezelfde testcase opnieuw uitvoeren om te bevestigen dat de bug is opgelost
 5. **Documenteren** – Bug, oorzaak, oplossing en hertest vastleggen in de documentatie
 
-Dit proces is voor elk van de 4 bugs volledig doorlopen en gedocumenteerd in README sectie 13.2.
+Dit proces is voor elk van de 4 bugs volledig doorlopen en gedocumenteerd in README sectie 14.2.
 
 De belangrijkste leerpunten uit het verbeterproces:
 
@@ -2337,7 +2414,7 @@ De belangrijkste leerpunten uit het verbeterproces:
 - Beveiligingsfuncties moeten op de juiste plek staan (sessie-regeneratie alleen bij login, niet bij elke paginalaad)
 - Visuele inspectie is essentieel naast functioneel testen (CSS Bug #1005 werd alleen visueel ontdekt)
 
-**Bewijs:** README sectie 13.2 (volledig verbeterproces per bug), PDF `K1-W5-Verbeteren-Harsha Vardhan Kanaparthi-Reflectie.pdf`.
+**Bewijs:** README sectie 14.2 (volledig verbeterproces per bug), PDF `K1-W5-Verbeteren-Harsha Vardhan Kanaparthi-Reflectie.pdf`.
 
 #### Criterium 5: De student heeft feedback ontvangen van de begeleider
 
@@ -2359,8 +2436,8 @@ Het project is opgeleverd met:
 
 - Volledige broncode (22+ bestanden) in de GitHub-repository
 - Database-script (`database.sql`) voor eenvoudige installatie
-- Installatie-instructies (README sectie 11)
-- Uitgebreide documentatie (README.md, 1600+ regels)
+- Installatie-instructies (README sectie 12)
+- Uitgebreide documentatie (README.md, 2600+ regels)
 - Demovideo (`K1-W3-DEMO VIDEO.mp4`)
 - Screenshots van alle pagina's (`Demo Fotos/Software Fotos/`)
 - Oplevernotities met aandachtspunten voor overdracht
@@ -2369,7 +2446,7 @@ Het project is opgeleverd met:
 
 ---
 
-### 15.6 K2-W1: Overleggen
+### 16.6 K2-W1: Overleggen
 
 #### Criterium 1: De student voert overleg over het project
 
@@ -2406,13 +2483,13 @@ De feedback is concreet verwerkt in het project. Voorbeelden:
 
 - Na feedback op beveiliging is `checkOwnership()` toegevoegd
 - Na feedback op validatie is de dubbele (client + server) validatie geïmplementeerd
-- Na feedback op documentatie is de README uitgebreid naar 1600+ regels
+- Na feedback op documentatie is de README uitgebreid naar 2600+ regels
 
 **Bewijs:** PDF `Feedback Stage-Begeleider van Harsha Kanaparthi- K2 - W1.pdf` en PDF `Feedback Stage Harsha Kanaparthi .pdf`.
 
 ---
 
-### 15.7 K2-W2: Presenteren
+### 16.7 K2-W2: Presenteren
 
 #### Criterium 1: De student geeft minimaal 2 presentaties over het project
 
@@ -2459,7 +2536,7 @@ Na elke presentatie is een reflectieverslag geschreven waarin de volgende punten
 
 ---
 
-### 15.8 K2-W3: Reflecteren
+### 16.8 K2-W3: Reflecteren
 
 #### Criterium 1: De student reflecteert op het gehele projectproces
 
@@ -2529,22 +2606,22 @@ De stagebegeleider heeft een beoordelingsrubric ingevuld en eindfeedback gegeven
 
 ---
 
-### 15.9 Bewijs-index: Overzicht van alle bewijsstukken per werkproces
+### 16.9 Bewijs-index: Overzicht van alle bewijsstukken per werkproces
 
 De onderstaande tabel geeft per werkproces een compleet overzicht van alle bewijsstukken:
 
 | Werkproces            | README Sectie(s) | PDF Document(en)                                                                                                                                                                                                                                 | Screenshots / Video                                                |
 | --------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
-| **K1-W1** Planning    | 1, 3             | `K1-W1-Planning-Harsha Vardhan Kanaparthi.pdf`, `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf`                                                                                                                                      | –                                                                  |
-| **K1-W2** Ontwerpen   | 3, 4, 5, 6, 7    | `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`                                                                                                                                                                                                    | `Demo Fotos/Software Fotos/` (12 screenshots)                      |
-| **K1-W3** Realiseren  | 1–11             | `K1 W3 Realisatie-Realisatie verslag-Harsha Vardhan Kanaparthi.pdf`, `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf`                                                                                                                 | `K1-W3-DEMO VIDEO.mp4`, `Demo Fotos/VersieBeheer/Versiebeheer.png` |
-| **K1-W4** Testen      | 12               | `K1-W4-Testen-Harsha Vardhan Kanaparthi.pdf`                                                                                                                                                                                                     | –                                                                  |
-| **K1-W5** Verbeteren  | 13               | `K1-W5-Verbeteren-Harsha Vardhan Kanaparthi.pdf`, `K1-W5-Verbeteren-...-Reflectie.pdf`, `K1-W5-Verbeteren-...-Feedback van Stagebegeleider.pdf`, `K1-W5-Verbeteren-...-Oplevering Notities.pdf`                                                  | –                                                                  |
+| **K1-W1** Planning    | 1, 4             | `K1-W1-Planning-Harsha Vardhan Kanaparthi.pdf`, `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf`                                                                                                                                      | –                                                                  |
+| **K1-W2** Ontwerpen   | 4, 5, 6, 7, 8    | `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`                                                                                                                                                                                                    | `Demo Fotos/Software Fotos/` (12 screenshots)                      |
+| **K1-W3** Realiseren  | 1–12             | `K1 W3 Realisatie-Realisatie verslag-Harsha Vardhan Kanaparthi.pdf`, `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf`                                                                                                                 | `K1-W3-DEMO VIDEO.mp4`, `Demo Fotos/VersieBeheer/Versiebeheer.png` |
+| **K1-W4** Testen      | 13               | `K1-W4-Testen-Harsha Vardhan Kanaparthi.pdf`                                                                                                                                                                                                     | –                                                                  |
+| **K1-W5** Verbeteren  | 14               | `K1-W5-Verbeteren-Harsha Vardhan Kanaparthi.pdf`, `K1-W5-Verbeteren-...-Reflectie.pdf`, `K1-W5-Verbeteren-...-Feedback van Stagebegeleider.pdf`, `K1-W5-Verbeteren-...-Oplevering Notities.pdf`                                                  | –                                                                  |
 | **K2-W1** Overleggen  | –                | `K2 W1 Overleggen-Harsha Vardhan Kanaparthi.pdf`, `Feedback Stage-Begeleider van Harsha Kanaparthi- K2 - W1.pdf`                                                                                                                                 | –                                                                  |
 | **K2-W2** Presenteren | –                | Presentatie-1 (3 PDFs: presentatie + feedback + reflectie), Presentatie-2 (2 PDFs: presentatie + reflectie)                                                                                                                                      | –                                                                  |
 | **K2-W3** Reflecteren | –                | `K2 W3 Reflectie-Harsha Vardhan Kanaparthi.pdf`, `K2 W3 Reflectie-...-Feedback Met Handtekening.pdf`, `K2 W3 Reflectie-Portfolio-Website-Presentatie.pdf`, `Beoordelingsrubrics Stagiaire- Harsha .pdf`, `Feedback Stage Harsha Kanaparthi .pdf` | –                                                                  |
 
-**Totaal bewijsstukken:** 21 PDF-documenten + 12 screenshots + 1 demovideo + 1 versiebeheer-screenshot + README.md (1600+ regels) + 22+ bronbestanden
+**Totaal bewijsstukken:** 21 PDF-documenten + 12 screenshots + 1 demovideo + 1 versiebeheer-screenshot + README.md (2600+ regels) + 22+ bronbestanden
 
 ---
 

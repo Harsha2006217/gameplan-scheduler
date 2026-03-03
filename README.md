@@ -1168,7 +1168,7 @@ Alle functies in de applicatie volgen hetzelfde patroon:
 - **Fout:** retourneer een foutmelding als string
 
 ```php
-$error = addSchedule($userId, $title, $date, $time, $friends, $shared);
+$error = addSchedule($userId, $spelTitel, $datum, $tijd, $vrienden, $gedeeldMet);
 if ($error) {
     // Toon foutmelding
 } else {
@@ -1763,7 +1763,7 @@ De applicatie bevat 10 hoofdfunctionaliteiten, elk volledig CRUD (Create, Read, 
 | Database          | MySQL 8.0 met InnoDB   | Relationele database geschikt voor gestructureerde data, InnoDB voor foreign keys en transacties     |
 | Database-toegang  | PDO met prepared stmts | Veiligste methode tegen SQL-injectie, ondersteunt named parameters, database-onafhankelijk           |
 | Frontend CSS      | Bootstrap 5.3.3        | Snel responsive design, grote componentenbibliotheek, goed gedocumenteerd                            |
-| Frontend JS       | Vanilla JavaScript     | Geen externe afhankelijkheden nodig, toont basisvaardighed in DOM-manipulatie                        |
+| Frontend JS       | Vanilla JavaScript     | Geen externe afhankelijkheden nodig, toont basisvaardigheid in DOM-manipulatie                        |
 | Ontwikkelomgeving | XAMPP                  | Alles-in-één pakket (Apache + MySQL + PHP), eenvoudig op te zetten, industrie-standaard voor leren   |
 | Versiebeheer      | Git + GitHub           | Industriestandaard, maakt samenwerking mogelijk, toont professionele werkwijze                       |
 | Ontwerp-thema     | Dark + Glassmorphism   | Past bij de gaming-doelgroep, moderne uitstraling, onderscheidt zich van standaard Bootstrap-thema's |
@@ -1973,7 +1973,7 @@ De GamePlan Scheduler is een volledig werkende webapplicatie met alle 10 gepland
 | Registreren               | register.php                                    | registerUser()                                                | Werkend |
 | Inloggen                  | login.php                                       | loginUser()                                                   | Werkend |
 | Uitloggen                 | logout.php                                      | logout()                                                      | Werkend |
-| Favoriete spellen beheren | edit_favorite.php, delete.php                   | addFavoriteGame(), updateFavoriteGame(), deleteFavoriteGame() | Werkend |
+| Favoriete spellen beheren | profile.php, edit_favorite.php, delete.php      | addFavoriteGame(), updateFavoriteGame(), deleteFavoriteGame() | Werkend |
 | Vriendenlijst beheren     | add_friend.php, edit_friend.php, delete.php     | addFriend(), updateFriend(), deleteFriend()                   | Werkend |
 | Gaming-schema's beheren   | add_schedule.php, edit_schedule.php, delete.php | addSchedule(), editSchedule(), deleteSchedule()               | Werkend |
 | Evenementen beheren       | add_event.php, edit_event.php, delete.php       | addEvent(), editEvent(), deleteEvent()                        | Werkend |
@@ -2077,7 +2077,7 @@ De code is voorzien van duidelijk commentaar op meerdere niveaus:
  * Valideert een verplicht veld
  * Controleert op lege waarde, alleen spaties, en maximale lengte
  */
-function validateRequired($value, $fieldName, $maxLength = 255) { ... }
+function validateRequired($waarde, $veldnaam, $maxLengte = 255) { ... }
 ```
 
 **SQL (database.sql) – Nederlands commentaar:**
@@ -2126,16 +2126,16 @@ De applicatie handelt de volgende randgevallen af:
 | Randgeval                              | Afhandeling                                                             | Validatie-ID |
 | -------------------------------------- | ----------------------------------------------------------------------- | ------------ |
 | Invoer met alleen spaties " "          | Regex `/^\s*$/` detecteert en weigert (Bug #1001 fix)                   | V1           |
-| Onmogelijke datum "2025-13-45"         | `DateTime::createFromFormat()` met stricte vergelijking (Bug #1004 fix) | V3           |
-| Datum in het verleden                  | Vergelijking met `date('Y-m-d')` blokkeert verlopen datums              | V3           |
-| Kommagescheiden lijst met lege items   | Explode + trim + filter op lege strings                                 | V7           |
+| Onmogelijke datum "2025-13-45"         | `DateTime::createFromFormat()` met stricte vergelijking (Bug #1004 fix) | V6           |
+| Datum in het verleden                  | Vergelijking met `date('Y-m-d')` blokkeert verlopen datums              | V7           |
+| Kommagescheiden lijst met lege items   | Explode + trim + filter op lege strings                                 | V10          |
 | SQL-injectie via invoervelden          | PDO prepared statements met named parameters                            | B2           |
 | XSS via invoervelden                   | `safeEcho()` met htmlspecialchars op alle uitvoer                       | B3           |
 | Verwijderen van andermans data via URL | `checkOwnership()` controle bij elke bewerk/verwijder-actie             | B6           |
 | Sessie-verlopen na inactiviteit        | 30-minuten timeout met automatische redirect naar login                 | B5           |
-| Dubbele registratie met zelfde e-mail  | UNIQUE constraint + PHP-controle retourneert foutmelding                | V10          |
-| Dubbele favoriet (zelfde spel)         | PHP-controle op bestaande koppeling retourneert "Spel al in favorieten" | -            |
-| Dubbele vriend (zelfde gebruikersnaam) | PHP-controle op bestaande vriendschap retourneert "Al vrienden"         | -            |
+| Dubbele registratie met zelfde e-mail  | UNIQUE constraint + PHP-controle retourneert foutmelding                | V11          |
+| Dubbele favoriet (zelfde spel)         | PHP-controle op bestaande koppeling retourneert "Spel al in favorieten" | V12          |
+| Dubbele vriend (zelfde gebruikersnaam) | PHP-controle op bestaande vriendschap retourneert "Al vrienden"         | V13          |
 | Niet-bestaand item verwijderen         | checkOwnership() retourneert false → foutmelding                        | B6           |
 
 **Bewijs:** README sectie 6 (alle validaties), sectie 9 (beveiligingsmaatregelen), sectie 14 (bugfixes).
@@ -2149,7 +2149,7 @@ Er zijn drie lagen van foutafhandeling:
 Alle functies retourneren `null` bij succes of een foutmelding-string bij een fout. De aanroepende code controleert dit:
 
 ```php
-$error = addSchedule($userId, $title, $date, $time, $friends, $shared);
+$error = addSchedule($userId, $spelTitel, $datum, $tijd, $vrienden, $gedeeldMet);
 if ($error) {
     setMessage('danger', $error);  // Toon foutmelding
 } else {

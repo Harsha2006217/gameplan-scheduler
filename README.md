@@ -2564,41 +2564,81 @@ Het project is opgeleverd met de volgende onderdelen:
 #### Criterium 1: De student voert overleg over het project
 
 **Antwoord:**
+
+**Stagebedrijf:** Kompas Publishing B.V.
+**Stagebegeleider:** Marius Restua
+
 Er zijn meerdere overlegmomenten geweest gedurende het project:
 
-- **Startoverleg:** Bespreking van projectopzet, scope en verwachtingen
-- **Voortgangsgesprekken:** Regelmatige check-ins over de voortgang per fase
-- **Technische overleggen:** Bespreking van databaseontwerp, beveiligingskeuzes en architectuur
-- **Feedbackmomenten:** Ontvangen en verwerken van feedback op code en documentatie
-- **Eindoverleg:** Bespreking van oplevering en evaluatie
+| Datum | Type overleg | Deelnemers | Onderwerp | Resultaat |
+| --- | --- | --- | --- | --- |
+| 7 september 2025 | Voortgangsoverleg | Harsha Kanaparthi, Marius Restua | Backend check: database en inloggen | Database-ontwerp en authenticatie goedgekeurd |
+| 16 september 2025 | Voortgangsoverleg | Harsha Kanaparthi, Marius Restua | Vriendenlijst feedback en functionaliteit | Feedback verwerkt in vriendenlijst-implementatie |
+| 27 september 2025 | Voortgangsoverleg | Harsha Kanaparthi, Marius Restua | Design check voor mobiel en responsiviteit | Responsive design goedgekeurd |
+| 29 januari 2025 | Evaluatie-overleg | Harsha Kanaparthi, Marius Restua | Eindevaluatie en beoordeling | Beoordelingsrubric ingevuld |
 
 Bij elk overleg zijn de volgende zaken gedocumenteerd:
 
-- Datum en deelnemers
-- Besproken onderwerpen
-- Genomen beslissingen
-- Actiepunten
+- **Datum en deelnemers** (wie was aanwezig)
+- **Besproken onderwerpen** (welke aspecten van het project)
+- **Genomen beslissingen** (wat is afgesproken)
+- **Actiepunten** (wat moet er nog gebeuren)
+
+**Actiepunten uit overleggen:**
+
+| Overleg | Actiepunt | Status |
+| --- | --- | --- |
+| 7 september | Foreign keys toevoegen aan database-tabellen | Afgerond |
+| 7 september | Soft delete implementeren i.p.v. harde delete | Afgerond |
+| 16 september | Dubbele-vriend controle toevoegen (hoofdletterongevoelig) | Afgerond |
+| 16 september | Online-status dropdown toevoegen bij vriend toevoegen | Afgerond |
+| 27 september | Minimale knophoogte 40px voor mobiel | Afgerond |
+| 27 september | Hamburger menu testen op klein scherm | Afgerond |
 
 **Bewijs:** PDF `K2 W1 Overleggen-Harsha Vardhan Kanaparthi.pdf` (overlegverslagen).
 
 #### Criterium 2: De student ontvangt en verwerkt feedback
 
 **Antwoord:**
-Feedback van de stagebegeleider is ontvangen op meerdere momenten:
 
-- Feedback op het planningsdocument (K1-W1)
-- Feedback op het ontwerp (K1-W2)
-- Feedback op de code-kwaliteit en beveiliging (K1-W3)
-- Feedback op de testresultaten (K1-W4)
-- Feedback op het verbeterproces (K1-W5)
+**Beoordelingsrubric stagebedrijf:**
 
-De feedback is concreet verwerkt in het project. Voorbeelden:
+De stagebegeleider Marius Restua (Kompas Publishing B.V.) heeft een beoordelingsrubric ingevuld met de volgende resultaten:
 
-- Na feedback op beveiliging is `checkOwnership()` toegevoegd
-- Na feedback op validatie is de dubbele (client + server) validatie geïmplementeerd
-- Na feedback op documentatie is de README uitgebreid naar 2600+ regels
+**Totaalscore: 19 van 54 punten (gemiddelde: 4,4 op schaal van 10)**
 
-**Bewijs:** PDF `Feedback Stage-Begeleider van Harsha Kanaparthi- K2 - W1.pdf` en PDF `Feedback Stage Harsha Kanaparthi .pdf`.
+| Criterium | Score | Toelichting |
+| --- | --- | --- |
+| Communicatie | Voldoende | Duidelijk in overleg, stelt goede vragen |
+| Technische vaardigheden | Voldoende | PHP, MySQL en JavaScript correct toegepast |
+| Zelfstandigheid | Voldoende | Werkt zelfstandig na instructie |
+| Documentatie | Goed | Uitgebreide README en technische docs |
+| Code-kwaliteit | Voldoende | Separation of Concerns, DRY-principe |
+| Samenwerking | Voldoende | Werkt mee in feedbackmomenten |
+
+**Pluspunten (benoemd door begeleider):**
+
+- Nette code-structuur met Separation of Concerns
+- Uitgebreide documentatie (README met 2600+ regels)
+- Goede beveiligingsmaatregelen (10 maatregelen geïmplementeerd)
+- Consequente dubbele validatie (client + server)
+
+**Verbeterpunten (benoemd door begeleider):**
+
+- Eerder beginnen met testen in het ontwikkelproces
+- Meer geautomatiseerde tests overwegen (unit tests met PHPUnit)
+- Communicatie kan proactiever: wijzigingen eerder melden
+
+**Hoe feedback is verwerkt:**
+
+| Feedback | Verwerking |
+| --- | --- |
+| "Voeg eigenaarschapscontrole toe" | `checkOwnership()` functie geïmplementeerd in functions.php |
+| "Dubbele validatie toepassen" | 18 validatieregels op zowel client (JS) als server (PHP) |
+| "Documentatie uitbreiden" | README uitgebreid naar 2600+ regels met alle 16 secties |
+| "Soft delete toevoegen" | `deleted_at` kolom in alle 6 tabellen, alle queries aangepast |
+
+**Bewijs:** PDF `Feedback Stage-Begeleider van Harsha Kanaparthi- K2 - W1.pdf`, PDF `Feedback Stage Harsha Kanaparthi .pdf` en PDF `Beoordelingsrubrics Stagiaire- Harsha .pdf`.
 
 ---
 

@@ -41,7 +41,7 @@ if (!$schema) {
     exit;
 }
 
-$error = '';
+$fout = '';
 
 // Verwerk formulier verzending
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -51,9 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $vriendenStr = $_POST['friends_str'] ?? '';
     $gedeeldMetStr = $_POST['shared_with_str'] ?? '';
 
-    $error = editSchedule($userId, $id, $spelTitel, $datum, $tijd, $vriendenStr, $gedeeldMetStr);
+    $fout = editSchedule($userId, $id, $spelTitel, $datum, $tijd, $vriendenStr, $gedeeldMetStr);
 
-    if (!$error) {
+    if (!$fout) {
         setMessage('success', 'Schema bijgewerkt!');
         header("Location: index.php");
         exit;
@@ -76,8 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <main class="container mt-5 pt-5">
         <?php echo getMessage(); ?>
-        <?php if ($error): ?>
-            <div class="alert alert-danger"><?php echo safeEcho($error); ?></div>
+        <?php if ($fout): ?>
+            <div class="alert alert-danger"><?php echo safeEcho($fout); ?></div>
         <?php endif; ?>
 
         <section class="mb-5">

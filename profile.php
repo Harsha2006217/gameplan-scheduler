@@ -23,7 +23,7 @@ if (!isLoggedIn()) {
 
 $userId = getUserId();
 $favorites = getFavoriteGames($userId);
-$error = '';
+$fout = '';
 
 // Verwerk formulier voor het toevoegen van een favoriet
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_favorite'])) {
@@ -31,9 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_favorite'])) {
     $beschrijving = $_POST['description'] ?? '';
     $notitie = $_POST['note'] ?? '';
 
-    $error = addFavoriteGame($userId, $titel, $beschrijving, $notitie);
+    $fout = addFavoriteGame($userId, $titel, $beschrijving, $notitie);
 
-    if (!$error) {
+    if (!$fout) {
         setMessage('success', 'Favoriet spel toegevoegd!');
         header("Location: profile.php");
         exit;
@@ -56,8 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_favorite'])) {
 
     <main class="container mt-5 pt-5">
         <?php echo getMessage(); ?>
-        <?php if ($error): ?>
-            <div class="alert alert-danger"><?php echo safeEcho($error); ?></div>
+        <?php if ($fout): ?>
+            <div class="alert alert-danger"><?php echo safeEcho($fout); ?></div>
         <?php endif; ?>
 
         <!-- FAVORIET SPEL TOEVOEGEN FORMULIER -->

@@ -38,7 +38,7 @@ if (!$game) {
     exit;
 }
 
-$error = '';
+$fout = '';
 
 // Verwerk formulier verzending
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -46,9 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $beschrijving = $_POST['description'] ?? '';
     $notitie = $_POST['note'] ?? '';
 
-    $error = updateFavoriteGame($userId, $id, $titel, $beschrijving, $notitie);
+    $fout = updateFavoriteGame($userId, $id, $titel, $beschrijving, $notitie);
 
-    if (!$error) {
+    if (!$fout) {
         setMessage('success', 'Spel bijgewerkt!');
         header("Location: profile.php");
         exit;
@@ -71,8 +71,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <main class="container mt-5 pt-5">
         <?php echo getMessage(); ?>
-        <?php if ($error): ?>
-            <div class="alert alert-danger"><?php echo safeEcho($error); ?></div>
+        <?php if ($fout): ?>
+            <div class="alert alert-danger"><?php echo safeEcho($fout); ?></div>
         <?php endif; ?>
 
         <section class="mb-5">

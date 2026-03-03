@@ -26,7 +26,7 @@ if (isLoggedIn()) {
 }
 
 // Initialiseer fout variabele
-$error = '';
+$fout = '';
 
 // Verwerk het formulier als het verzonden is (POST verzoek)
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -34,9 +34,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $wachtwoord = $_POST['password'] ?? '';
 
     // Probeer in te loggen - retourneert foutmelding of null bij succes
-    $error = loginUser($emailAdres, $wachtwoord);
+    $fout = loginUser($emailAdres, $wachtwoord);
 
-    if (!$error) {
+    if (!$fout) {
         header("Location: index.php");
         exit;
     }
@@ -62,9 +62,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <h1 class="text-center mb-4">🎮 Inloggen</h1>
 
             <!-- Toon foutmelding als inloggen mislukt -->
-            <?php if ($error): ?>
+            <?php if ($fout): ?>
                 <div class="alert alert-danger" role="alert">
-                    <?php echo safeEcho($error); ?>
+                    <?php echo safeEcho($fout); ?>
                 </div>
             <?php endif; ?>
 

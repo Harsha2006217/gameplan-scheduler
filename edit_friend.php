@@ -38,7 +38,7 @@ if (!$friend) {
     exit;
 }
 
-$error = '';
+$fout = '';
 
 // Verwerk formulier verzending
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -46,9 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $notitie = $_POST['note'] ?? '';
     $status = $_POST['status'] ?? 'Offline';
 
-    $error = updateFriend($userId, $id, $vriendUsername, $notitie, $status);
+    $fout = updateFriend($userId, $id, $vriendUsername, $notitie, $status);
 
-    if (!$error) {
+    if (!$fout) {
         setMessage('success', 'Vriend bijgewerkt!');
         header("Location: add_friend.php");
         exit;
@@ -71,8 +71,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <main class="container mt-5 pt-5">
         <?php echo getMessage(); ?>
-        <?php if ($error): ?>
-            <div class="alert alert-danger"><?php echo safeEcho($error); ?></div>
+        <?php if ($fout): ?>
+            <div class="alert alert-danger"><?php echo safeEcho($fout); ?></div>
         <?php endif; ?>
 
         <section class="mb-5">

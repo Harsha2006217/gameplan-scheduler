@@ -40,7 +40,7 @@ if (!$evenement) {
     exit;
 }
 
-$error = '';
+$fout = '';
 
 // Verwerk formulier verzending
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -52,9 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $externeLink = $_POST['external_link'] ?? '';
     $gedeeldMetStr = $_POST['shared_with_str'] ?? '';
 
-    $error = editEvent($userId, $id, $titel, $datum, $tijd, $beschrijving, $herinnering, $externeLink, $gedeeldMetStr);
+    $fout = editEvent($userId, $id, $titel, $datum, $tijd, $beschrijving, $herinnering, $externeLink, $gedeeldMetStr);
 
-    if (!$error) {
+    if (!$fout) {
         setMessage('success', 'Evenement bijgewerkt!');
         header("Location: index.php");
         exit;
@@ -77,8 +77,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <main class="container mt-5 pt-5">
         <?php echo getMessage(); ?>
-        <?php if ($error): ?>
-            <div class="alert alert-danger"><?php echo safeEcho($error); ?></div>
+        <?php if ($fout): ?>
+            <div class="alert alert-danger"><?php echo safeEcho($fout); ?></div>
         <?php endif; ?>
 
         <section class="mb-5">

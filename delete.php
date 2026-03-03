@@ -38,7 +38,7 @@ if (!isLoggedIn()) {
 $type = $_GET['type'] ?? '';
 $id = $_GET['id'] ?? 0;
 $userId = getUserId();
-$error = '';
+$fout = '';
 
 /**
  * VERWIJDER LOGICA
@@ -48,28 +48,28 @@ $error = '';
  */
 if ($type == 'schedule') {
     // Verwijder speelschema
-    $error = deleteSchedule($userId, $id);
-    $redirect = 'index.php';
+    $fout = deleteSchedule($userId, $id);
+    $doorstuurPagina = 'index.php';
 
 } elseif ($type == 'event') {
     // Verwijder evenement
-    $error = deleteEvent($userId, $id);
-    $redirect = 'index.php';
+    $fout = deleteEvent($userId, $id);
+    $doorstuurPagina = 'index.php';
 
 } elseif ($type == 'favorite') {
     // Verwijder spel uit favorieten
-    $error = deleteFavoriteGame($userId, $id);
-    $redirect = 'profile.php';
+    $fout = deleteFavoriteGame($userId, $id);
+    $doorstuurPagina = 'profile.php';
 
 } elseif ($type == 'friend') {
     // Verwijder vriend uit lijst
-    $error = deleteFriend($userId, $id);
-    $redirect = 'add_friend.php';
+    $fout = deleteFriend($userId, $id);
+    $doorstuurPagina = 'add_friend.php';
 
 } else {
     // Ongeldig type opgegeven
-    $error = 'Ongeldig type opgegeven.';
-    $redirect = 'index.php';
+    $fout = 'Ongeldig type opgegeven.';
+    $doorstuurPagina = 'index.php';
 }
 
 /**
@@ -86,14 +86,14 @@ $typeNamen = [
     'friend' => 'Vriend',
 ];
 
-if ($error) {
-    setMessage('danger', $error);
+if ($fout) {
+    setMessage('danger', $fout);
 } else {
     $naam = $typeNamen[$type] ?? $type;
     setMessage('success', $naam . ' succesvol verwijderd!');
 }
 
 // Stuur door naar de juiste pagina
-header("Location: " . $redirect);
+header("Location: " . $doorstuurPagina);
 exit;
 ?>

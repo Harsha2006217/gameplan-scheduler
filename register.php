@@ -24,7 +24,7 @@ if (isLoggedIn()) {
     exit;
 }
 
-$error = '';
+$fout = '';
 
 // Verwerk formulier verzending
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -33,9 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $wachtwoord = $_POST['password'] ?? '';
 
     // Probeer te registreren - retourneert foutmelding of null bij succes
-    $error = registerUser($gebruikersnaam, $emailAdres, $wachtwoord);
+    $fout = registerUser($gebruikersnaam, $emailAdres, $wachtwoord);
 
-    if (!$error) {
+    if (!$fout) {
         setMessage('success', 'Registratie succesvol! Log nu in.');
         header("Location: login.php");
         exit;
@@ -62,8 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <h1 class="text-center mb-4">🎮 Registreren</h1>
 
             <!-- Toon foutmelding -->
-            <?php if ($error): ?>
-                <div class="alert alert-danger"><?php echo safeEcho($error); ?></div>
+            <?php if ($fout): ?>
+                <div class="alert alert-danger"><?php echo safeEcho($fout); ?></div>
             <?php endif; ?>
 
             <!-- Registratie formulier -->

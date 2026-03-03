@@ -1862,140 +1862,188 @@ Er zijn **3 geplande overlegmomenten** geweest met stagebegeleider Marius Restua
 #### Criterium 1: De student heeft een functioneel ontwerp (FO) opgesteld
 
 **Antwoord:**
-Het functioneel ontwerp beschrijft WAT de applicatie doet vanuit gebruikersperspectief. Het FO bevat:
+Het functioneel ontwerp beschrijft WAT de applicatie doet vanuit gebruikersperspectief. Het ontwerp volgt op het planningsdocument uit week 1 en beschrijft alle schermen per user story.
 
-- **10 functionele flows** (stap-voor-stap beschrijvingen van elke gebruikersactie):
-  1. Registratie → validatie → account aanmaken → redirect naar login
-  2. Inloggen → verificatie → sessie aanmaken → redirect naar dashboard
-  3. Favoriete spellen beheren → toevoegen/bewerken/verwijderen
-  4. Vriendenlijst beheren → toevoegen/bewerken/verwijderen met status
-  5. Gaming-schema's beheren → datum/tijd/vrienden selecteren
-  6. Evenementen beheren → met herinneringen en externe links
-  7. Dashboard → kalenderoverzicht + herinneringen
-  8. Profiel → statistieken en accountinformatie
-  9. Sorteren → schema's en evenementen op datum/titel
-  10. Verwijderen → bevestigingsdialoog + soft delete
+**Schermen per user story (6 stuks, 13 schermen totaal):**
 
-- **Alle invoervelden per formulier** met verwachte datatypes en beperkingen
-- **Foutscenario's** per functie (wat gebeurt er bij ongeldige invoer?)
+| User Story | Scherm | Beschrijving |
+| --- | --- | --- |
+| US-1: Profiel maken | Scherm 1 | Formulier met naam, games, e-mail, wachtwoord |
+| US-1: Profiel maken | Scherm 2 | Bevestiging "Profiel gemaakt!" met knop naar home |
+| US-2: Vrienden toevoegen | Scherm 1 | Lijst met huidige vrienden en online status |
+| US-2: Vrienden toevoegen | Scherm 2 | Zoekveld om nieuwe vriend toe te voegen |
+| US-3: Speelschema's delen | Scherm 1 | Kalender met gekleurde blokjes per dag |
+| US-3: Speelschema's delen | Scherm 2 | Formulier met game, tijd, datum, vrienden selecteren |
+| US-4: Evenementen toevoegen | Scherm 1 | Lijst met aankomende evenementen als kaarten |
+| US-4: Evenementen toevoegen | Scherm 2 | Formulier met titel, datum, tijd, beschrijving |
+| US-5: Herinneringen instellen | Scherm 1 | Dropdown in formulier (1 uur ervoor, 1 dag ervoor) |
+| US-5: Herinneringen instellen | Scherm 2 | Pop-up melding als herinnering komt |
+| US-6: Bewerken/verwijderen | Scherm 1 | Details pagina met knoppen Bewerken en Verwijderen |
+| US-6: Bewerken/verwijderen | Scherm 2 | Bewerken formulier met ingevulde velden |
+| US-6: Bewerken/verwijderen | Scherm 3 | Bevestiging "Zeker weten?" met Ja/Nee |
 
-**Bewijs:** README sectie 7 (alle 10 Functionele Flows met stap-voor-stap beschrijvingen), PDF `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`.
+**Alle invoervelden per formulier** zijn beschreven met verwachte datatypes en beperkingen.
+**Foutscenario's** per functie zijn beschreven (wat gebeurt er bij ongeldige invoer?).
+
+**Bewijs:** README sectie 7 (alle 10 Functionele Flows), PDF `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 2: De student heeft een technisch ontwerp (TO) opgesteld
 
 **Antwoord:**
-Het technisch ontwerp beschrijft HOE de applicatie werkt vanuit technisch perspectief. Het TO bevat:
+Het technisch ontwerp beschrijft HOE de applicatie werkt vanuit technisch perspectief.
 
-- **Database-ontwerp:** 6 genormaliseerde tabellen met relaties (zie sectie 5)
-  - `Users` (hoofdtabel, PK: user_id)
-  - `Games` (spellencatalogus, PK: game_id)
-  - `UserGames` (koppeltabel veel-op-veel, FK naar Users + Games)
-  - `Friends` (vriendenlijst, FK naar Users)
-  - `Schedules` (gaming-schema's, FK naar Users)
-  - `Events` (evenementen, FK naar Users)
+**Lay-out en visueel ontwerp:**
 
-- **Architectuur:** Separation of Concerns met 4 lagen:
-  - Datalaag (`db.php` – PDO Singleton verbinding)
-  - Logicalaag (`functions.php` – alle validatie, authenticatie, CRUD)
-  - Presentatielaag (PHP-pagina's + `header.php`/`footer.php`)
-  - Client-laag (`script.js` + `style.css`)
+| Onderdeel | Specificatie |
+| --- | --- |
+| Header | Bovenaan, logo links, menu in midden, profiel rechts, **hoogte 80 pixels**, blijft altijd zichtbaar |
+| Kleuren | Donker (zwart en blauw) voor game-gevoel, witte tekst voor leesbaarheid |
+| Hoofdgedeelte | 80% van breedte, daar staat de inhoud |
+| Footer | Onderaan, **50 pixels**, met copyright en privacy links |
+| Knoppen | **40 pixels hoog**, groot genoeg voor mobiel |
 
-- **Beveiligingsarchitectuur:** 10 maatregelen (B1-B10) beschreven in sectie 9
-- **Validatiearchitectuur:** 18 validatieregels met pseudocode-algoritmen in sectie 6
-- **API/routes:** Overzicht van alle PHP-paginas en hun verantwoordelijkheden
+**Navigatie (6 knoppen in header):**
+
+| Knop | Functie |
+| --- | --- |
+| Home | Dashboard met overzicht |
+| Profiel | Favoriete spellen beheren |
+| Vrienden | Vriendenlijst beheren |
+| Schema's | Gaming-schema's beheren |
+| Evenementen | Evenementen beheren |
+| Uitloggen | Sessie vernietigen |
+
+**Navigatiestructuur:** Lineair - van home naar andere pagina's en terug. Op mobiel klapt het menu in tot een hamburger-lijst. Icoontjes bij knoppen voor sneller herkennen.
+
+**Architectuur:** Separation of Concerns met 4 lagen:
+- Datalaag (`db.php` - PDO Singleton verbinding)
+- Logicalaag (`functions.php` - alle validatie, authenticatie, CRUD)
+- Presentatielaag (PHP-pagina's + `header.php`/`footer.php`)
+- Client-laag (`script.js` + `style.css`)
+
+**Techniek:**
+- PHP voor backend logica (inloggen, data verwerken)
+- MySQL voor database (alle data opslaan)
+- HTML en CSS voor lay-out en ontwerp
+- JavaScript voor interacties (dropdowns, validatie, pop-ups)
+- Responsive: werkt op computer en mobiele telefoon
 
 **Bewijs:** README secties 4, 5, 6, 8, 9 en PDF `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 3: De student heeft minimaal 3 schematechnieken toegepast
 
 **Antwoord:**
-De volgende schematechnieken zijn toegepast:
 
 **Schematechniek 1: Entity-Relationship Diagram (ERD)**
-Het databaseontwerp is gedocumenteerd met een ERD dat de 6 tabellen en hun relaties toont:
-
-- Users `1 ──── N` Friends (een gebruiker heeft meerdere vrienden)
-- Users `1 ──── N` Schedules (een gebruiker heeft meerdere schema's)
-- Users `1 ──── N` Events (een gebruiker heeft meerdere evenementen)
+Het databaseontwerp bevat 6 tabellen met relaties:
+- Users (hoofdtabel) `1 ──── N` Friends
+- Users `1 ──── N` Schedules
+- Users `1 ──── N` Events
 - Users `N ──── M` Games via UserGames (veel-op-veel koppeltabel)
 - Elke tabel met alle kolommen, datatypes, primary keys en foreign keys
 
-**Bewijs:** README sectie 5 (Database Structuur) met volledige tabel-beschrijvingen, kolommen, datatypes en relaties. PDF `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`.
+**Bewijs:** README sectie 5 (Database Structuur), PDF `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`.
 
-**Schematechniek 2: Flowcharts / Code Flow Diagrams**
+**Schematechniek 2: Flowcharts / Code Flow Diagrammen**
 Gedetailleerde sequentiediagrammen die de interactie tussen Browser, Server en Database tonen:
-
 - **Login Code Flow** (README sectie 8.1): Browser → login.php → loginUser() → SELECT/password_verify → sessie aanmaken → redirect
 - **Dashboard Code Flow** (README sectie 8.2): Browser → index.php → 5 parallelle queries → HTML renderen
 - **Delete Code Flow** (README sectie 8.3): Browser → confirm() → delete.php → checkOwnership() → soft delete → redirect
 
-Elk diagram toont de exacte functieaanroepen, database-queries, beslispunten (ALS/ANDERS) en responsen.
-
 **Bewijs:** README sectie 8 (Code Flow Diagrammen) met drie volledige ASCII-diagrammen.
 
 **Schematechniek 3: Activiteitendiagrammen (Functionele Flows)**
-Voor alle 10 hoofdfunctionaliteiten zijn stap-voor-stap activiteitendiagrammen gemaakt die het pad van de gebruiker beschrijven:
-
+Voor alle 10 hoofdfunctionaliteiten zijn stap-voor-stap activiteitendiagrammen gemaakt:
 - Startpunt → Invoer → Validatie → Beslispunt (geldig/ongeldig) → Database-actie → Resultaat → Eindpunt
-- Inclusief de alternatieve paden (foutmeldingen, redirects, edge cases)
 
-**Bewijs:** README sectie 7 (Functionele Flows) met alle 10 flows beschreven in genummerde stappen.
+**Bewijs:** README sectie 7 (Functionele Flows) met alle 10 flows.
 
-**Schematechniek 4: Validatie-algoritmen in Pseudocode (Nassi-Shneiderman-stijl)**
-Alle 18 validatieregels zijn beschreven als pseudocode-algoritmen met duidelijke invoer, stappen en uitvoer:
+**Schematechniek 4: Use Case Diagram**
+- **Acteur:** Gamer
+- **Use Cases:** Inloggen, Profiel maken, Vriend toevoegen, Schema delen, Evenement toevoegen, Herinnering instellen, Bewerken/verwijderen
+- **Inloggen is verplicht** voor alle andere acties
 
-```
-FUNCTIE validateDate(datum):
-    INVOER: datum (string)
-    STAP 1: Controleer formaat JJJJ-MM-DD met regex
-    STAP 2: Ontleed met DateTime::createFromFormat('Y-m-d')
-    STAP 3: Vergelijk geformatteerde output met invoer
-    STAP 4: Vergelijk met vandaag (moet >= vandaag zijn)
-    UITVOER: null (geldig) OF foutmelding (string)
-```
-
-**Bewijs:** README sectie 6 (Validaties) met 18 algoritmen (V1-V18) in pseudocode.
+**Bewijs:** PDF `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 4: De student motiveert zijn ontwerpkeuzes
 
 **Antwoord:**
 
-| Ontwerpkeuze                  | Motivatie                                                                                                                                              |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| PDO Singleton patroon         | Voorkomt meerdere databaseverbindingen per pagina-verzoek. Bespaart geheugen en voorkomt connection-pool uitputting. Één verbinding wordt hergebruikt. |
-| Soft delete (deleted_at)      | Data wordt nooit fysiek verwijderd. Dit biedt herstelmogelijkheid bij ongelukken en is compliant met data-retentie best practices.                     |
-| Geen PHP-framework            | Voor een MBO-4 project is vanilla PHP geschikter: het toont dat de student de basismechanismen begrijpt zonder framework-"magie" te verbergen.         |
-| Dubbele validatie (JS + PHP)  | Client-side voor snelle gebruikerservaring; server-side voor veiligheid. JavaScript kan worden uitgeschakeld, PHP-validatie is onomzeilbaar.           |
-| Bootstrap 5.3.3               | Snelle responsive ontwikkeling met uitgebreide componentenbibliotheek. Geen jQuery-afhankelijkheid meer (Bootstrap 5 is jQuery-vrij).                  |
-| Glassmorphism CSS-thema       | Past bij de gaming-doelgroep: modern, donker, visueel aantrekkelijk. Onderscheidt het project van standaard portfoliowerk.                             |
-| bcrypt wachtwoord-hashing     | Industriestandaard voor wachtwoordopslag. Traag algoritme dat brute-force aanvallen moeilijk maakt. Ingebouwd in PHP via `password_hash()`.            |
-| Foreign keys met CASCADE      | Referentiële integriteit op databaseniveau. Bij verwijdering van een gebruiker worden automatisch alle gerelateerde records opgeruimd.                 |
-| Sessiebericht-systeem (flash) | Berichten overleven een redirect (POST-Redirect-GET patroon). Voorkomt dubbele formulierinzendingen bij het verversen van de pagina.                   |
-| Aparte header.php/footer.php  | DRY-principe: navigatie en footer worden op 1 plek beheerd. Wijziging geldt automatisch voor alle pagina's.                                            |
+| Ontwerpkeuze | Motivatie |
+| --- | --- |
+| Donkere kleuren | Gamers spelen vaak 's avonds, donker is minder vermoeiend voor de ogen |
+| Ronde hoeken | Vriendelijk oogt, past bij jonge gebruikers |
+| Icoontjes bij knoppen | Sneller herkennen voor gamers die haast hebben |
+| Checkboxes bij vrienden | Makkelijk delen met groepen |
+| Dropdown voor herinneringen | Bespaart stappen, voorkomt typefouten |
+| Bevestiging bij verwijderen | Voorkomt ongelukken |
+| PDO Singleton patroon | Voorkomt meerdere databaseverbindingen per pagina, bespaart geheugen |
+| Soft delete (deleted_at) | Data wordt nooit fysiek verwijderd, biedt herstelmogelijkheid bij ongelukken |
+| Dubbele validatie (JS + PHP) | Client-side voor snelle feedback, server-side voor veiligheid |
+| Bootstrap 5.3.3 | Snel responsive design, jQuery-vrij |
+| Aparte header.php/footer.php | DRY-principe: navigatie en footer op 1 plek beheerd |
 
 **Bewijs:** README secties 4, 5, 9 en PDF `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 5: De student heeft wireframes of mockups gemaakt
 
 **Antwoord:**
-Er zijn screenshots gemaakt van alle 12 pagina's van de applicatie. Deze tonen de uiteindelijke visuele uitwerking van het ontwerp:
+Er zijn screenshots gemaakt van alle pagina's van de applicatie:
 
-| Screenshot                 | Pagina                         | Locatie                      |
-| -------------------------- | ------------------------------ | ---------------------------- |
-| InlogPagina.png            | Inlogformulier                 | `Demo Fotos/Software Fotos/` |
-| Account Aanmaak Pagina.png | Registratieformulier           | `Demo Fotos/Software Fotos/` |
-| HomePagina.png             | Dashboard/overzicht            | `Demo Fotos/Software Fotos/` |
-| Profile Add Pagina.png     | Profiel met favoriet toevoegen | `Demo Fotos/Software Fotos/` |
-| Profile Edit Pagina.png    | Profiel bewerken               | `Demo Fotos/Software Fotos/` |
-| Add Friend Pagina.png      | Vriend toevoegen formulier     | `Demo Fotos/Software Fotos/` |
-| Edit Friend Pagina.png     | Vriend bewerken formulier      | `Demo Fotos/Software Fotos/` |
-| Schedule Add Pagina.png    | Schema toevoegen formulier     | `Demo Fotos/Software Fotos/` |
-| Edit Schedule Pagina.png   | Schema bewerken formulier      | `Demo Fotos/Software Fotos/` |
-| Events Add Pagina.png      | Evenement toevoegen formulier  | `Demo Fotos/Software Fotos/` |
-| Events Edit Pagina.png     | Evenement bewerken formulier   | `Demo Fotos/Software Fotos/` |
-| Delete Button.png          | Verwijderbevestiging           | `Demo Fotos/Software Fotos/` |
+| Screenshot | Pagina | Locatie |
+| --- | --- | --- |
+| InlogPagina.png | Inlogformulier | `Demo Fotos/Software Fotos/` |
+| Account Aanmaak Pagina.png | Registratieformulier | `Demo Fotos/Software Fotos/` |
+| HomePagina.png | Dashboard/overzicht | `Demo Fotos/Software Fotos/` |
+| Profile Add Pagina.png | Profiel met favoriet toevoegen | `Demo Fotos/Software Fotos/` |
+| Profile Edit Pagina.png | Profiel bewerken | `Demo Fotos/Software Fotos/` |
+| Add Friend Pagina.png | Vriend toevoegen formulier | `Demo Fotos/Software Fotos/` |
+| Edit Friend Pagina.png | Vriend bewerken formulier | `Demo Fotos/Software Fotos/` |
+| Schedule Add Pagina.png | Schema toevoegen formulier | `Demo Fotos/Software Fotos/` |
+| Edit Schedule Pagina.png | Schema bewerken formulier | `Demo Fotos/Software Fotos/` |
+| Events Add Pagina.png | Evenement toevoegen formulier | `Demo Fotos/Software Fotos/` |
+| Events Edit Pagina.png | Evenement bewerken formulier | `Demo Fotos/Software Fotos/` |
+| Delete Button.png | Verwijderbevestiging | `Demo Fotos/Software Fotos/` |
 
 **Bewijs:** Map `Demo Fotos/Software Fotos/` (12 PNG-screenshots).
+
+#### Criterium 6: Privacy, security, ethiek en usability
+
+**Privacy (AVG-compliant):**
+- Data opslaan in MySQL met wachtwoordbeveiliging
+- Wachtwoorden gehasht met bcrypt (niet leesbaar opgeslagen)
+- Gamers kunnen eigen data verwijderen (soft delete)
+- Geen onnodige data opslaan, alleen wat nodig is
+- Link in footer naar privacy tekst (`privacy.php`)
+- Volgt AVG-regels
+
+**Security (beveiliging, 10 maatregelen):**
+- Inloggen met e-mail en wachtwoord (bcrypt hashing)
+- Sessies voor toegang (je blijft ingelogd)
+- Sessies verlopen na 30 minuten stilzitten
+- PDO prepared statements tegen SQL-injecties
+- `safeEcho()` met htmlspecialchars tegen XSS-aanvallen
+- `checkOwnership()` eigenaarschap controle
+- `session_regenerate_id(true)` alleen bij login
+- Soft delete (`deleted_at` timestamp)
+- Foutmasking (generieke berichten aan gebruiker)
+- Inlogcontrole per pagina (`isLoggedIn()`)
+
+**Ethiek (eerlijk gebruik):**
+- Iedereen kan de app gebruiken, geen uitsluiting
+- Geen reclame die aanzet tot te veel spelen
+- Data niet delen met anderen zonder toestemming
+- Eerlijk in privacytekst waar data voor gebruikt wordt
+- Positief voor jonge gebruikers
+
+**Usability (gemakkelijk te gebruiken):**
+- Grote knoppen (minstens 40 pixels) voor mobiel
+- Duidelijke labels bij velden
+- Kleuren: blauw voor knoppen, rood voor waarschuwingen
+- Feedback na actie: melding "Gelukt!" na toevoegen
+- Getest op mobiel: alles schaalt mee (responsive)
+
+**Bewijs:** README sectie 9 (Beveiligingsmaatregelen), `privacy.php`, PDF `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`.
 
 ---
 

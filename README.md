@@ -1056,7 +1056,7 @@ BROWSER                          SERVER
 | `index.php`     | -                       | 24      | checkSessionTimeout()  |
 | `index.php`     | -                       | 27-30   | Inlogcontrole          |
 | `index.php`     | -                       | 43-48   | Alle data ophalen      |
-| `index.php`     | -                       | 55-291  | HTML rendering         |
+| `index.php`     | -                       | 55-290  | HTML rendering         |
 | `functions.php` | `checkSessionTimeout()` | 270-279 | Sessie-expiratie       |
 | `functions.php` | `getFriends()`          | 641-651 | Vrienden ophalen       |
 | `functions.php` | `getFavoriteGames()`    | 520-531 | Favorieten ophalen     |
@@ -1065,8 +1065,8 @@ BROWSER                          SERVER
 | `functions.php` | `getCalendarItems()`    | 935-947 | Kalender samenvoegen   |
 | `functions.php` | `getReminders()`        | 955-974 | Herinneringen filteren |
 | `functions.php` | `safeEcho()`            | 50-53   | XSS-bescherming        |
-| `header.php`    | -                       | 1-95    | Navigatiebalk          |
-| `footer.php`    | -                       | 1-43    | Voettekst              |
+| `header.php`    | -                       | 1-94    | Navigatiebalk          |
+| `footer.php`    | -                       | 1-42    | Voettekst              |
 | `script.js`     | `initialiseerFuncties()`  | 300-330 | Pagina-initialisatie   |
 
 ### 8.3 Code Flow: Item Verwijderen
@@ -2125,7 +2125,7 @@ Totaal **49 uur** besteed (meer dan de vereiste 40 uur). Het projectlog toont **
 
 | Onderdeel | Omvang | Geschatte uren |
 | --- | --- | --- |
-| functions.php | 979 regels code | 15+ uur |
+| functions.php | 978 regels code | 15+ uur |
 | script.js | 363 regels code | 8+ uur |
 | style.css | 822 regels CSS | 10+ uur |
 | database.sql | 229 regels met commentaar | 5+ uur |
@@ -2458,7 +2458,7 @@ Per bron is kritisch beoordeeld of de informatie actueel, betrouwbaar en toepasb
 
 **Antwoord:**
 
-Tijdens het testen en de code-review zijn **2 bugs** gevonden die zijn opgelost:
+Tijdens het formele testproces (K1-W4) zijn **2 bugs** gevonden die zijn opgelost:
 
 **Bug #1001 – Velden accepteerden alleen spaties**
 
@@ -2805,7 +2805,7 @@ De GamePlan Scheduler is een volledig werkende webapplicatie met:
 - 10 beveiligingsmaatregelen
 - 18 validatieregels (dubbel: client + server)
 - 30 testcases uitgevoerd (93% eerste ronde, 100% na bugfixes)
-- 2 bugs gevonden en opgelost
+- 4 bugs gevonden en opgelost (2 via testen, 2 via code review)
 - 6 verbetervoorstellen gedocumenteerd
 - 2900+ regels documentatie (README.md)
 

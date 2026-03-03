@@ -297,12 +297,12 @@ function registerUser($gebruikersnaam, $emailAdres, $wachtwoord)
     $pdo = getDBConnection();
 
     // Controleer alle invoer
-    if ($err = validateRequired($gebruikersnaam, "Gebruikersnaam", 50))
-        return $err;
-    if ($err = validateEmail($emailAdres))
-        return $err;
-    if ($err = validateRequired($wachtwoord, "Wachtwoord"))
-        return $err;
+    if ($fout = validateRequired($gebruikersnaam, "Gebruikersnaam", 50))
+        return $fout;
+    if ($fout = validateEmail($emailAdres))
+        return $fout;
+    if ($fout = validateRequired($wachtwoord, "Wachtwoord"))
+        return $fout;
     if (strlen($wachtwoord) < 8)
         return "Wachtwoord moet minimaal 8 tekens zijn.";
 
@@ -349,10 +349,10 @@ function loginUser($emailAdres, $wachtwoord)
     $pdo = getDBConnection();
 
     // Controleer invoer
-    if ($err = validateRequired($emailAdres, "E-mail"))
-        return $err;
-    if ($err = validateRequired($wachtwoord, "Wachtwoord"))
-        return $err;
+    if ($fout = validateRequired($emailAdres, "E-mail"))
+        return $fout;
+    if ($fout = validateRequired($wachtwoord, "Wachtwoord"))
+        return $fout;
 
     // Zoek gebruiker op e-mailadres
     $stmt = $pdo->prepare(
@@ -443,8 +443,8 @@ function addFavoriteGame($userId, $titel, $beschrijving = '', $notitie = '')
 {
     $pdo = getDBConnection();
 
-    if ($err = validateRequired($titel, "Speltitel", 100))
-        return $err;
+    if ($fout = validateRequired($titel, "Speltitel", 100))
+        return $fout;
 
     $gameId = getOrCreateGameId($pdo, $titel, $beschrijving);
 
@@ -473,8 +473,8 @@ function updateFavoriteGame($userId, $gameId, $titel, $beschrijving, $notitie)
 {
     $pdo = getDBConnection();
 
-    if ($err = validateRequired($titel, "Speltitel", 100))
-        return $err;
+    if ($fout = validateRequired($titel, "Speltitel", 100))
+        return $fout;
 
     // Controleer eigenaarschap
     $stmt = $pdo->prepare(
@@ -551,14 +551,14 @@ function getGames()
 /**
  * addFriend - Voeg een gaming vriend toe
  */
-function addFriend($userId, $vriendUsername, $notitie = '', $status = 'Offline')
+function addFriend($userId, $vriendGebruikersnaam, $notitie = '', $status = 'Offline')
 {
     $pdo = getDBConnection();
 
-    if ($err = validateRequired($vriendUsername, "Gebruikersnaam vriend", 50))
-        return $err;
-    if ($err = validateRequired($status, "Status", 50))
-        return $err;
+    if ($fout = validateRequired($vriendGebruikersnaam, "Gebruikersnaam vriend", 50))
+        return $fout;
+    if ($fout = validateRequired($status, "Status", 50))
+        return $fout;
 
     // Controleer of deze vriend al toegevoegd is
     $stmt = $pdo->prepare(
@@ -567,7 +567,7 @@ function addFriend($userId, $vriendUsername, $notitie = '', $status = 'Offline')
          AND LOWER(friend_username) = LOWER(:vriend)
          AND deleted_at IS NULL"
     );
-    $stmt->execute(['user_id' => $userId, 'vriend' => $vriendUsername]);
+    $stmt->execute(['user_id' => $userId, 'vriend' => $vriendGebruikersnaam]);
     if ($stmt->fetchColumn() > 0)
         return "Deze vriend is al toegevoegd.";
 
@@ -578,7 +578,7 @@ function addFriend($userId, $vriendUsername, $notitie = '', $status = 'Offline')
     );
     $stmt->execute([
         'user_id' => $userId,
-        'vriend' => $vriendUsername,
+        'vriend' => $vriendGebruikersnaam,
         'notitie' => $notitie,
         'status' => $status,
     ]);
@@ -588,14 +588,14 @@ function addFriend($userId, $vriendUsername, $notitie = '', $status = 'Offline')
 /**
  * updateFriend - Werk de gegevens van een vriend bij
  */
-function updateFriend($userId, $friendId, $vriendUsername, $notitie, $status)
+function updateFriend($userId, $friendId, $vriendGebruikersnaam, $notitie, $status)
 {
     $pdo = getDBConnection();
 
-    if ($err = validateRequired($vriendUsername, "Gebruikersnaam vriend", 50))
-        return $err;
-    if ($err = validateRequired($status, "Status", 50))
-        return $err;
+    if ($fout = validateRequired($vriendGebruikersnaam, "Gebruikersnaam vriend", 50))
+        return $fout;
+    if ($fout = validateRequired($status, "Status", 50))
+        return $fout;
 
     // Controleer eigenaarschap
     $stmt = $pdo->prepare(
@@ -612,7 +612,7 @@ function updateFriend($userId, $friendId, $vriendUsername, $notitie, $status)
          WHERE user_id = :user_id AND friend_id = :friend_id AND deleted_at IS NULL"
     );
     $stmt->execute([
-        'vriend' => $vriendUsername,
+        'vriend' => $vriendGebruikersnaam,
         'notitie' => $notitie,
         'status' => $status,
         'user_id' => $userId,
@@ -662,16 +662,16 @@ function addSchedule($userId, $spelTitel, $datum, $tijd, $vrienden = '', $gedeel
 {
     $pdo = getDBConnection();
 
-    if ($err = validateRequired($spelTitel, "Speltitel", 100))
-        return $err;
-    if ($err = validateDate($datum))
-        return $err;
-    if ($err = validateTime($tijd))
-        return $err;
-    if ($err = validateCommaSeparated($vrienden, "Vrienden"))
-        return $err;
-    if ($err = validateCommaSeparated($gedeeldMet, "Gedeeld met"))
-        return $err;
+    if ($fout = validateRequired($spelTitel, "Speltitel", 100))
+        return $fout;
+    if ($fout = validateDate($datum))
+        return $fout;
+    if ($fout = validateTime($tijd))
+        return $fout;
+    if ($fout = validateCommaSeparated($vrienden, "Vrienden"))
+        return $fout;
+    if ($fout = validateCommaSeparated($gedeeldMet, "Gedeeld met"))
+        return $fout;
 
     $gameId = getOrCreateGameId($pdo, $spelTitel);
 
@@ -722,16 +722,16 @@ function editSchedule($userId, $schemaId, $spelTitel, $datum, $tijd, $vrienden =
     if (!checkOwnership($pdo, 'Schedules', 'schedule_id', $schemaId, $userId)) {
         return "Geen toestemming om te bewerken.";
     }
-    if ($err = validateRequired($spelTitel, "Speltitel", 100))
-        return $err;
-    if ($err = validateDate($datum))
-        return $err;
-    if ($err = validateTime($tijd))
-        return $err;
-    if ($err = validateCommaSeparated($vrienden, "Vrienden"))
-        return $err;
-    if ($err = validateCommaSeparated($gedeeldMet, "Gedeeld met"))
-        return $err;
+    if ($fout = validateRequired($spelTitel, "Speltitel", 100))
+        return $fout;
+    if ($fout = validateDate($datum))
+        return $fout;
+    if ($fout = validateTime($tijd))
+        return $fout;
+    if ($fout = validateCommaSeparated($vrienden, "Vrienden"))
+        return $fout;
+    if ($fout = validateCommaSeparated($gedeeldMet, "Gedeeld met"))
+        return $fout;
 
     $gameId = getOrCreateGameId($pdo, $spelTitel);
 
@@ -782,22 +782,22 @@ function addEvent($userId, $titel, $datum, $tijd, $beschrijving, $herinnering, $
 {
     $pdo = getDBConnection();
 
-    if ($err = validateRequired($titel, "Titel", 100))
-        return $err;
-    if ($err = validateDate($datum))
-        return $err;
-    if ($err = validateTime($tijd))
-        return $err;
+    if ($fout = validateRequired($titel, "Titel", 100))
+        return $fout;
+    if ($fout = validateDate($datum))
+        return $fout;
+    if ($fout = validateTime($tijd))
+        return $fout;
     if (!empty($beschrijving) && strlen($beschrijving) > 500) {
         return "Beschrijving is te lang (maximaal 500 tekens).";
     }
     if (!in_array($herinnering, ['none', '1_hour', '1_day'])) {
         return "Ongeldige herinnering keuze.";
     }
-    if ($err = validateUrl($externeLink))
-        return $err;
-    if ($err = validateCommaSeparated($gedeeldMet, "Gedeeld met"))
-        return $err;
+    if ($fout = validateUrl($externeLink))
+        return $fout;
+    if ($fout = validateCommaSeparated($gedeeldMet, "Gedeeld met"))
+        return $fout;
 
     $stmt = $pdo->prepare(
         "INSERT INTO Events (user_id, title, date, time, description, reminder, external_link, shared_with)
@@ -846,22 +846,22 @@ function editEvent($userId, $eventId, $titel, $datum, $tijd, $beschrijving, $her
     if (!checkOwnership($pdo, 'Events', 'event_id', $eventId, $userId)) {
         return "Geen toestemming om te bewerken.";
     }
-    if ($err = validateRequired($titel, "Titel", 100))
-        return $err;
-    if ($err = validateDate($datum))
-        return $err;
-    if ($err = validateTime($tijd))
-        return $err;
+    if ($fout = validateRequired($titel, "Titel", 100))
+        return $fout;
+    if ($fout = validateDate($datum))
+        return $fout;
+    if ($fout = validateTime($tijd))
+        return $fout;
     if (!empty($beschrijving) && strlen($beschrijving) > 500) {
         return "Beschrijving is te lang (maximaal 500 tekens).";
     }
     if (!in_array($herinnering, ['none', '1_hour', '1_day'])) {
         return "Ongeldige herinnering keuze.";
     }
-    if ($err = validateUrl($externeLink))
-        return $err;
-    if ($err = validateCommaSeparated($gedeeldMet, "Gedeeld met"))
-        return $err;
+    if ($fout = validateUrl($externeLink))
+        return $fout;
+    if ($fout = validateCommaSeparated($gedeeldMet, "Gedeeld met"))
+        return $fout;
 
     $stmt = $pdo->prepare(
         "UPDATE Events

@@ -915,7 +915,7 @@ BROWSER                          SERVER
   |                                |   |-- Controleer $_SESSION['user_id']
   |                                |   |-- ALS ingelogd: header("Location: index.php")
   |                                |
-  |                                |-- Initialiseer $error = ''
+  |                                |-- Initialiseer $fout = ''
   |                                |
   |                                |-- Render HTML:
   |                                |   |-- login.php regel 45-109
@@ -943,7 +943,7 @@ BROWSER                          SERVER
   |                                |   |-- validateRequired($emailAdres)
   |                                |   |-- validateRequired($wachtwoord)
   |                                |   |-- SELECT user WHERE email = :email
-  |                                |   |-- password_verify($wachtwoord, $hash)
+  |                                |   |-- password_verify($wachtwoord, $hashWachtwoord)
   |                                |   |-- ALS onjuist: return foutmelding
   |                                |   |-- ALS correct:
   |                                |   |   |-- $_SESSION['user_id'] = user_id
@@ -1092,7 +1092,7 @@ BROWSER                          SERVER
   |                                |   |   |-- checkOwnership() controle
   |                                |   |   |-- UPDATE Schedules
   |                                |   |   |   SET deleted_at = NOW()
-  |                                |   |-- $redirect = 'index.php'
+  |                                |   |-- $doorstuurPagina = 'index.php'
   |                                |
   |                                |-- setMessage('success', 'Verwijderd!')
   |                                |-- header("Location: index.php")
@@ -1168,8 +1168,8 @@ Alle functies in de applicatie volgen hetzelfde patroon:
 - **Fout:** retourneer een foutmelding als string
 
 ```php
-$error = addSchedule($userId, $spelTitel, $datum, $tijd, $vrienden, $gedeeldMet);
-if ($error) {
+$fout = addSchedule($userId, $spelTitel, $datum, $tijd, $vrienden, $gedeeldMet);
+if ($fout) {
     // Toon foutmelding
 } else {
     // Actie gelukt, redirect
@@ -1249,7 +1249,7 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 
 | Functie                   | Parameters     | Retourneert | Beschrijving                              |
 | ------------------------- | -------------- | ----------- | ----------------------------------------- |
-| `setMessage($type, $msg)` | string, string | void        | Slaat bericht op in sessie                |
+| `setMessage($type, $tekst)` | string, string | void        | Slaat bericht op in sessie                |
 | `getMessage()`            | geen           | HTML string | Haalt bericht op en verwijdert uit sessie |
 
 ### 11.4 Authenticatie functies (`functions.php`)
@@ -1279,8 +1279,8 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 
 | Functie                                                             | Parameters          | Retourneert         | Beschrijving                    |
 | ------------------------------------------------------------------- | ------------------- | ------------------- | ------------------------------- |
-| `addFriend($userId, $vriendUsername, $notitie, $status)`               | int, 3x string      | null of foutmelding | Voegt vriend toe                |
-| `updateFriend($userId, $friendId, $vriendUsername, $notitie, $status)` | int, int, 3x string | null of foutmelding | Bewerkt vriend                  |
+| `addFriend($userId, $vriendGebruikersnaam, $notitie, $status)`               | int, 3x string      | null of foutmelding | Voegt vriend toe                |
+| `updateFriend($userId, $friendId, $vriendGebruikersnaam, $notitie, $status)` | int, int, 3x string | null of foutmelding | Bewerkt vriend                  |
 | `deleteFriend($userId, $friendId)`                                  | int, int            | null                | Verwijdert vriend (soft delete) |
 | `getFriends($userId)`                                               | int                 | array               | Haalt alle vrienden op          |
 
@@ -2180,7 +2180,7 @@ Totaal **49 uur** besteed (meer dan de vereiste 40 uur). Het projectlog toont **
 | Type | Conventie | Voorbeelden |
 | --- | --- | --- |
 | PHP-functies | camelCase | `addFriend()`, `getFavoriteGames()`, `checkSessionTimeout()` |
-| PHP-variabelen | camelCase | `$vriendUsername`, `$gedeeldMetStr`, `$spelTitel`, `$userId` |
+| PHP-variabelen | camelCase | `$vriendGebruikersnaam`, `$gedeeldMetStr`, `$spelTitel`, `$userId` |
 | Database-tabellen | PascalCase | `Users`, `Games`, `UserGames`, `Friends`, `Schedules`, `Events` |
 | Database-kolommen | snake_case | `user_id`, `deleted_at`, `friend_username` |
 | CSS-klassen | kebab-case | `.glass-card`, `.btn-gaming`, `.nav-link` |

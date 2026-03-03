@@ -1612,8 +1612,8 @@ Dit overzicht toont hoe dit project alle kerntaken van het examen dekt:
 | **K1-W1 Planning**    | Projectplanning en aanpak           | PvA document (PDF)     | Tijdsplanning, user stories      |
 | **K1-W2 Ontwerp**     | Functioneel en technisch ontwerp    | FO/TO documenten (PDF) | Database ontwerp, wireframes     |
 | **K1-W3 Realisatie**  | Code schrijven en implementeren     | README sectie 1-12     | Alle PHP, JS, CSS, SQL bestanden |
-| **K1-W4 Testen**      | Testcases uitvoeren en documenteren | README sectie 13       | 52 testcases, 100% geslaagd      |
-| **K1-W5 Verbeteren**  | Fouten vinden en oplossen           | README sectie 14       | 4 bugs gevonden en gefixt        |
+| **K1-W4 Testen**      | Testcases uitvoeren en documenteren | README sectie 13       | 30 testcases (per user story), 93% → 100% na bugfixes |
+| **K1-W5 Verbeteren**  | Fouten vinden en oplossen           | README sectie 14       | 2 bugs gevonden en gefixt (#1001, #1004) |
 | **K2-W1 Overleggen**  | Communicatie over het project       | Overlegverslagen (PDF) | Bijeenkomsten, feedback          |
 | **K2-W2 Presenteren** | Het project uitleggen               | README + deze sectie   | Demonstratie, uitleg             |
 | **K2-W3 Reflectie**   | Terugkijken op het proces           | Reflectieverslag (PDF) | Wat ging goed/fout               |
@@ -1661,14 +1661,12 @@ De client-side validatie is voor gebruiksgemak. De server-side validatie is voor
 
 #### Punt 5: Bugfixes (hoe ik fouten heb gevonden en opgelost)
 
-"Ik heb 4 bugs gevonden en opgelost:
+"Ik heb 2 bugs gevonden en opgelost tijdens het testproces (K1-W4):
 
-1. **Bug #1001**: Velden accepteerden alleen spaties. Opgelost met regex controle.
-2. **Bug #1004**: Ongeldige datums werden geaccepteerd. Opgelost met DateTime strikte validatie.
-3. **Bug #1005**: Kaarten hadden een oranje achtergrond. Opgelost door CSS-variabele te corrigeren.
-4. **Bug #1006**: Sessie-ID werd te vaak vernieuwd. Opgelost door het alleen bij login te doen.
+1. **Bug #1001**: Velden accepteerden alleen spaties. Opgelost met `trim()` + regex `/^\s*$/` controle.
+2. **Bug #1004**: Ongeldige datums werden geaccepteerd. Opgelost met `DateTime::createFromFormat()` strikte vergelijking.
 
-Voor elke bug heb ik het proces gevolgd: **ontdekken -> oorzaak vinden -> oplossen -> opnieuw testen**."
+Voor elke bug heb ik het 5-stappenproces gevolgd: **ontdekken → oorzaak analyseren → oplossen → hertesten → documenteren**."
 
 ### 15.3 Veelgestelde examenvragen en antwoorden
 
@@ -1691,7 +1689,7 @@ A: "Na inloggen wordt `$_SESSION['last_activity']` opgeslagen met de huidige tij
 A: "Het Singleton-patroon zorgt ervoor dat er slechts een databaseverbinding wordt aangemaakt, ongeacht hoe vaak `getDBConnection()` wordt aangeroepen. De eerste keer maakt het een PDO-object aan en slaat het op in een statische variabele. Bij volgende aanroepen retourneert het dezelfde verbinding. Dit bespaart geheugen en voorkomt te veel open verbindingen."
 
 **V: "Hoe heb je de applicatie getest?"**
-A: "Ik heb 52 handmatige testcases uitgevoerd: 7 voor registratie, 5 voor login, 8 voor schema's, 7 voor evenementen, 5 voor vrienden, 4 voor favorieten, 7 voor bewerken/verwijderen, 5 voor beveiliging, en 4 voor responsief ontwerp. Alle 52 tests zijn geslaagd (100%)."
+A: "Ik heb 30 handmatige testcases uitgevoerd, verdeeld per user story: 5 tests voor profiel met favoriete games, 5 voor vriendenlijst beheren, 5 voor speelschema's delen, 5 voor evenementen toevoegen, 5 voor herinneringen instellen, en 5 voor bewerken/verwijderen. In de eerste ronde waren 28 van de 30 tests geslaagd (93%). Na het oplossen van Bug #1001 en Bug #1004 zijn alle 30 tests opnieuw uitgevoerd met 100% slagingspercentage. Daarnaast heb ik de performance getest (laadtijd 1,8 seconden) en de responsiviteit op een Samsung Galaxy S21."
 
 **V: "Wat zou je anders doen als je opnieuw zou beginnen?"**
 A: "Ik zou eerder beginnen met testen en een gestructureerder testplan opzetten. Ook zou ik vanaf het begin een CSS-framework configureren voor het glassmorphism-thema, in plaats van achteraf variabelen te moeten corrigeren. Verder zou ik overwegen om een MVC-structuur te gebruiken voor betere scheiding van logica en presentatie."
@@ -2106,8 +2104,8 @@ Totaal **49 uur** besteed (meer dan de vereiste 40 uur). Het projectlog toont **
 | database.sql | 229 regels met commentaar | 5+ uur |
 | 15 PHP-pagina's | ±200 regels per pagina gemiddeld | 12+ uur |
 | README.md | 2600+ regels documentatie | 10+ uur |
-| Testen | 52 testcases uitvoeren | 5+ uur |
-| Bugfixes | 4 bugs vinden en oplossen | 3+ uur |
+| Testen | 30 testcases uitvoeren (per user story) | 5+ uur |
+| Bugfixes | 2 bugs vinden en oplossen (#1001, #1004) | 3+ uur |
 | **Totaal** | **4000+ regels code + docs** | **49+ uur** |
 
 **Week voor week voortgang:**

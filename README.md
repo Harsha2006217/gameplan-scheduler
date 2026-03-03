@@ -1715,75 +1715,113 @@ Dit hoofdstuk beantwoordt alle examencriteria per werkproces (K1-W1 t/m K2-W3) m
 #### Criterium 1: De student beschrijft de opdrachtgever, context en aanleiding van het project
 
 **Antwoord:**
-GamePlan Scheduler is ontwikkeld als individueel stageproject voor de MBO-4 opleiding Software Development. De aanleiding is dat gamers vaak moeite hebben om gaming-sessies te coördineren met vrienden. Er bestaan wel agenda-apps, maar geen specifieke tool gericht op het plannen van gaming-sessies met functies als vriendenlijsten, favoriete spellen en gedeelde schema's. Het project lost dit probleem op met een webapplicatie speciaal ontworpen voor de gaming-community.
+GamePlan Scheduler is ontwikkeld als individueel project voor de MBO-4 opleiding Software Development (Crebo 25998) door Harsha Kanaparthi (studentnummer 2195344). De projectperiode liep van **2 september 2025 tot 30 september 2025** (1 maand). De aanleiding is dat jonge gamers vaak moeite hebben om gaming-sessies te coördineren met vrienden. Er bestaan wel agenda-apps, maar geen specifieke tool gericht op het plannen van gaming-sessies met functies als vriendenlijsten, favoriete spellen en gedeelde schema's.
+
+**Betrokkenen:**
+
+| Rol | Persoon | Verantwoordelijkheid |
+| --- | --- | --- |
+| Ontwikkelaar | Harsha Kanaparthi | Plant, codeert en test alles |
+| Begeleider | Marius Restua | Geeft advies en feedback |
+| Gebruikers | Jonge gamers | Testen de app en geven feedback |
 
 **Bewijs:** Zie README sectie 1 (Projectbeschrijving) en PDF `K1-W1-Planning-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 2: De student beschrijft het doel van het project en de doelgroep
 
 **Antwoord:**
-Het doel is een webapplicatie bouwen waarmee gamers hun gaming-leven kunnen organiseren. De doelgroep bestaat uit gamers van alle leeftijden die regelmatig online spelen en hun sessies willen plannen. Specifieke doelen:
 
-- Gebruikers kunnen een account aanmaken en inloggen (authenticatie)
-- Gebruikers kunnen een vriendenlijst beheren met status (Online/Offline/In-game)
-- Gebruikers kunnen favoriete spellen bijhouden met notities
-- Gebruikers kunnen gaming-schema's aanmaken met datum, tijd en vrienden
-- Gebruikers kunnen evenementen plannen met herinneringen en externe links
-- Gebruikers krijgen een overzichtelijk dashboard met kalender en herinneringen
+**Doelgroep:** Jonge gamers die regelmatig online spelen en hun sessies willen plannen.
 
-**Bewijs:** Zie README sectie 1 en sectie 7 (Functionele flows voor alle 10 operaties).
+**Probleem:** Jonge gamers vinden het lastig om samen te plannen. Ze missen belangrijke game-momenten en beheren hun tijd niet goed.
+
+**Doel (SMART-methode):**
+
+| SMART | Beschrijving |
+| --- | --- |
+| **Specifiek** | Een webapp voor gamers om profielen, vrienden en evenementen te beheren |
+| **Meetbaar** | Gamers gebruiken de app minimaal 3 keer per week |
+| **Acceptabel** | Past bij jonge gamers en is haalbaar om te bouwen |
+| **Realistisch** | Met mijn PHP-kennis kan dit in 1 maand worden gebouwd |
+| **Tijdsgebonden** | Klaar op 30 september 2025 |
+
+**Succescriteria:** De app is succesvol als gamers hem gebruiken en het hen helpt om beter samen te gamen, hun tijd beter te beheren en geen belangrijke game-momenten te missen.
+
+**Bewijs:** Zie README sectie 1 en sectie 7 (Functionele flows), PDF `K1-W1-Planning-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 3: De student beschrijft de functionele eisen (user stories / features)
 
 **Antwoord:**
-De applicatie bevat 10 hoofdfunctionaliteiten, elk volledig CRUD (Create, Read, Update, Delete):
+De applicatie is gebouwd op basis van 6 gebruikersverhalen (user stories):
 
-| Nr  | Functionele eis                                      | Status       |
-| --- | ---------------------------------------------------- | ------------ |
-| F1  | Registreren met gebruikersnaam, e-mail en wachtwoord | Gerealiseerd |
-| F2  | Inloggen met e-mail en wachtwoord                    | Gerealiseerd |
-| F3  | Uitloggen met sessie-vernietiging                    | Gerealiseerd |
-| F4  | Favoriete spellen toevoegen/bewerken/verwijderen     | Gerealiseerd |
-| F5  | Vriendenlijst beheren met status                     | Gerealiseerd |
-| F6  | Gaming-schema's aanmaken met datum/tijd/vrienden     | Gerealiseerd |
-| F7  | Evenementen plannen met herinneringen                | Gerealiseerd |
-| F8  | Dashboard met kalenderoverzicht                      | Gerealiseerd |
-| F9  | Profiel bekijken met statistieken                    | Gerealiseerd |
-| F10 | Alle items sorteren op datum/titel/status            | Gerealiseerd |
+| Nr | User Story | Functionaliteit | Status |
+| --- | --- | --- | --- |
+| US-1 | Profiel met favoriete games | Gamers kunnen een profiel aanmaken met hun favoriete games | Gerealiseerd |
+| US-2 | Vriendenlijst beheren | Vrienden toevoegen om contact te houden | Gerealiseerd |
+| US-3 | Speelschema's delen | Speelschema's delen in een kalender | Gerealiseerd |
+| US-4 | Evenementen toevoegen | Evenementen plannen zoals toernooien of meetups | Gerealiseerd |
+| US-5 | Herinneringen instellen | Herinneringen instellen zodat je niets vergeet | Gerealiseerd |
+| US-6 | Bewerken en verwijderen | Alles bewerken of verwijderen wanneer nodig | Gerealiseerd |
 
-**Bewijs:** Zie README sectie 7 (Functionele Flows), PDF `K1-W1-Planning-Harsha Vardhan Kanaparthi.pdf` en demovideo `K1-W3-DEMO VIDEO.mp4`.
+**Bewijs:** Zie README sectie 7 (Functionele Flows), demovideo `K1-W3-DEMO VIDEO.mp4`.
 
 #### Criterium 4: De student beschrijft de technische keuzes met onderbouwing
 
 **Antwoord:**
 
-| Technologie       | Keuze                  | Onderbouwing                                                                                         |
-| ----------------- | ---------------------- | ---------------------------------------------------------------------------------------------------- |
-| Backend           | PHP 7.4+ (vanilla)     | Geleerd in de opleiding, geen framework nodig voor dit projectniveau, toont basisvaardigheden        |
-| Database          | MySQL 8.0 met InnoDB   | Relationele database geschikt voor gestructureerde data, InnoDB voor foreign keys en transacties     |
-| Database-toegang  | PDO met prepared stmts | Veiligste methode tegen SQL-injectie, ondersteunt named parameters, database-onafhankelijk           |
-| Frontend CSS      | Bootstrap 5.3.3        | Snel responsive design, grote componentenbibliotheek, goed gedocumenteerd                            |
-| Frontend JS       | Vanilla JavaScript     | Geen externe afhankelijkheden nodig, toont basisvaardigheid in DOM-manipulatie                        |
-| Ontwikkelomgeving | XAMPP                  | Alles-in-één pakket (Apache + MySQL + PHP), eenvoudig op te zetten, industrie-standaard voor leren   |
-| Versiebeheer      | Git + GitHub           | Industriestandaard, maakt samenwerking mogelijk, toont professionele werkwijze                       |
-| Ontwerp-thema     | Dark + Glassmorphism   | Past bij de gaming-doelgroep, moderne uitstraling, onderscheidt zich van standaard Bootstrap-thema's |
+| Technologie | Keuze | Onderbouwing |
+| --- | --- | --- |
+| Backend | PHP 7.4+ (vanilla) | Geleerd in de opleiding, toont basisvaardigheden zonder framework |
+| Database | MySQL met InnoDB | Relationele database voor gestructureerde data, ondersteunt foreign keys |
+| Database-toegang | PDO met prepared statements | Veiligste methode tegen SQL-injectie, ondersteunt named parameters |
+| Frontend CSS | Bootstrap 5.3.3 | Snel responsive design, werkt op computer en mobiele telefoon |
+| Frontend JS | Vanilla JavaScript | Geen externe afhankelijkheden nodig, voor dropdowns en validatie |
+| Ontwikkelomgeving | XAMPP | Alles-in-één pakket (Apache + MySQL + PHP), eenvoudig op te zetten |
+| Versiebeheer | Git + GitHub | Industriestandaard, dagelijks commits op GitHub |
+| Ontwerp-thema | Donker + Glassmorphism | Past bij de gaming-doelgroep, donkere kleuren zijn minder vermoeiend voor gamers die 's avonds spelen |
 
 **Bewijs:** Zie README sectie 4 (Technische specificaties).
 
 #### Criterium 5: De student heeft een planning gemaakt met taken, uren en deadlines
 
 **Antwoord:**
-Er is een gedetailleerde planning gemaakt voorafgaand aan het project. De planning bevat:
+Er is een gedetailleerde planning gemaakt met **12 taken** verdeeld over **4 weken**, totaal **49 uur werk** (meer dan de vereiste 40 uur).
 
-- **Faseverdeling:** Oriëntatie → Ontwerp → Realisatie → Testen → Verbeteren → Opleveren
-- **Taken per fase:** Elke fase is opgedeeld in concrete, afrekenbare taken
-- **Ureninschatting:** Per taak is een tijdsinschatting gemaakt
-- **Deadlines:** Per fase is een einddatum bepaald
-- **Projectlog:** Dagelijks bijgehouden met daadwerkelijk bestede uren
+**Takenplanning:**
 
-De totale geplande en gerealiseerde uren overschrijden de minimale 40 uur ruimschoots, gezien de omvang van de applicatie (22+ bronbestanden, 979 regels in `functions.php`, 363 regels in `script.js`, 822 regels in `style.css`, 230 regels in `database.sql`).
+| Taak | Beschrijving | Periode | Week |
+| --- | --- | --- | --- |
+| Taak 1-2 | Omgeving en database opzetten | 2-4 september 2025 | Week 1 |
+| Taak 3 | Inloggen en sessies maken | 5-7 september 2025 | Week 1 |
+| Taak 4 | Basis ontwerp maken | 8-9 september 2025 | Week 2 |
+| Taak 5 | Profielbeheer bouwen | 10-13 september 2025 | Week 2 |
+| Taak 6 | Vriendenlijst maken | 14-16 september 2025 | Week 3 |
+| Taak 7 | Kalender voor speelschema's | 17-18 september 2025 | Week 3 |
+| Taak 8 | Evenementenbeheer | 19-21 september 2025 | Week 3 |
+| Taak 9 | Herinneringen instellen | 22-23 september 2025 | Week 4 |
+| Taak 10 | Testen op bugs | 24-25 september 2025 | Week 4 |
+| Taak 11 | Design checken voor mobiel | 26-27 september 2025 | Week 4 |
+| Taak 12 | Online zetten op server | 28-30 september 2025 | Week 4 |
 
-**Bewijs:** PDF `K1-W1-Planning-Harsha Vardhan Kanaparthi.pdf` (planning) en PDF `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf` (projectlog met uren).
+**Weekoverzicht:**
+
+| Week | Periode | Mijlpaal |
+| --- | --- | --- |
+| Week 1 | 02-09 t/m 07-09 | Start, database en backend af |
+| Week 2 | 08-09 t/m 13-09 | Frontend en profielen klaar |
+| Week 3 | 14-09 t/m 21-09 | Vrienden, schema's en evenementen doen |
+| Week 4 | 22-09 t/m 30-09 | Herinneringen, testen en online zetten |
+
+**Prioriteiten (MoSCoW-methode):**
+
+| Categorie | Items | Betekenis |
+| --- | --- | --- |
+| **Must have** (M) | Inloggen, database, profiel, evenementen, testen, online zetten | Dit moet werken |
+| **Should have** (S) | Vriendenlijst, speelschema's | Dit maakt het beter |
+| **Could have** (C) | Herinneringen, mobiel design | Dit is extra |
+| **Won't have** (W) | Thema's en andere extra's | Komt later |
+
+**Bewijs:** PDF `K1-W1-Planning-Harsha Vardhan Kanaparthi.pdf` (planning), PDF `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf` (projectlog met uren).
 
 #### Criterium 6: De student beschrijft wijzigingen op de oorspronkelijke planning
 
@@ -1795,25 +1833,27 @@ Tijdens het project zijn de volgende wijzigingen doorgevoerd ten opzichte van de
 3. **Glassmorphism-thema:** Het oorspronkelijke ontwerp gebruikte standaard Bootstrap-kleuren; na de eerste iteratie is een custom gaming-thema ontwikkeld
 4. **Soft delete:** Oorspronkelijk was harde delete (fysiek verwijderen) gepland; na overleg met de begeleider is gekozen voor soft delete (logisch verwijderen) voor betere dataveiligheid
 
-Elke wijziging is gedocumenteerd in de projectlog.
+**Omgang met vertragingen:** Als iets uitloopt, worden extra's (Could have items) opzij geschoven om de Must have items op tijd af te krijgen.
 
 **Bewijs:** PDF `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 7: De student heeft overleg gevoerd met opdrachtgever/begeleider
 
 **Antwoord:**
-Er zijn meerdere overlegmomenten geweest met de stagebegeleider. Tijdens deze overleggen zijn de volgende onderwerpen besproken:
+Er zijn **3 geplande overlegmomenten** geweest met stagebegeleider Marius Restua:
 
-- Projectopzet en scope-afbakening
-- Technische keuzes (PHP vs. framework)
-- Databaseontwerp (normalisatie, relaties)
-- Voortgangsbesprekingen per fase
-- Feedback op code-kwaliteit en beveiliging
-- Afronding en oplevering
+| Datum | Onderwerp | Resultaat |
+| --- | --- | --- |
+| 7 september 2025 | Backend check | Database en inloggen goedgekeurd |
+| 16 september 2025 | Vriendenlijst feedback | Feedback verwerkt in vriendenlijst |
+| 27 september 2025 | Design check voor mobiel | Responsive design goedgekeurd |
 
-De overlegverslagen en feedback zijn vastgelegd in aparte PDF-documenten.
+**Voortgangsbewaking:**
+- Elke week checken of alles op tijd gaat
+- Bij vertraging worden extra's (Could have) opzij geschoven
+- Wekelijks contact via chat en overlegmomenten
 
-**Bewijs:** PDF `K2 W1 Overleggen-Harsha Vardhan Kanaparthi.pdf` en PDF `Feedback Stage-Begeleider van Harsha Kanaparthi- K2 - W1.pdf`.
+**Bewijs:** PDF `K2 W1 Overleggen-Harsha Vardhan Kanaparthi.pdf`, PDF `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf`.
 
 ---
 

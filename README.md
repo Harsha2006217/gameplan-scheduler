@@ -114,7 +114,7 @@ De applicatie is gebouwd op basis van 6 gebruikersverhalen (user stories). Elk v
 | --- | --- | --- |
 | Herinnering kiezen | `add_event.php`, `edit_event.php` | Dropdown: Geen / 1 uur / 1 dag ervoor |
 | Herinnering tonen | `index.php` (pop-up) | `getReminders()` |
-| JavaScript pop-up | `script.js` | `showNotification()` |
+| JavaScript pop-up | `script.js` | `toonMelding()` |
 
 ### Gebruikersverhaal 6: Bewerken en verwijderen
 > _Als gamer wil ik alles bewerken of verwijderen, zodat mijn planning altijd klopt._
@@ -359,7 +359,7 @@ ALGORITME: valideerVerplichtVeld(waarde, veldnaam, maxLengte)
 
 #### V4: E-mail formaat validatie (`validateEmail`)
 
-**Bestand:** `functions.php` regel 133-139
+**Bestand:** `functions.php` regel 134-141
 
 ```
 ALGORITME: valideerEmail(email)
@@ -373,7 +373,7 @@ ALGORITME: valideerEmail(email)
 
 #### V5: Wachtwoord lengte validatie
 
-**Bestand:** `functions.php` regel 262-263
+**Bestand:** `functions.php` regel 306-307
 
 ```
 ALGORITME: valideerWachtwoord(wachtwoord)
@@ -385,7 +385,7 @@ ALGORITME: valideerWachtwoord(wachtwoord)
 
 #### V6 + V7: Datum validatie (`validateDate`)
 
-**Bestand:** `functions.php` regel 94-114
+**Bestand:** `functions.php` regel 94-111
 
 ```
 ALGORITME: valideerDatum(datumString)
@@ -403,7 +403,7 @@ ALGORITME: valideerDatum(datumString)
 
 #### V8: Tijd validatie (`validateTime`)
 
-**Bestand:** `functions.php` regel 120-127
+**Bestand:** `functions.php` regel 119-126
 
 ```
 ALGORITME: valideerTijd(tijdString)
@@ -420,7 +420,7 @@ ALGORITME: valideerTijd(tijdString)
 
 #### V9: URL validatie (`validateUrl`)
 
-**Bestand:** `functions.php` regel 145-151
+**Bestand:** `functions.php` regel 149-155
 
 ```
 ALGORITME: valideerUrl(url)
@@ -434,7 +434,7 @@ ALGORITME: valideerUrl(url)
 
 #### V10: Kommagescheiden lijst validatie (`validateCommaSeparated`)
 
-**Bestand:** `functions.php` regel 157-168
+**Bestand:** `functions.php` regel 168-181
 
 ```
 ALGORITME: valideerKommaGescheiden(waarde, veldnaam)
@@ -451,7 +451,7 @@ ALGORITME: valideerKommaGescheiden(waarde, veldnaam)
 
 #### V11: E-mail uniciteit validatie
 
-**Bestand:** `functions.php` regel 266-269
+**Bestand:** `functions.php` regel 310-315
 
 ```
 ALGORITME: controleerEmailBestaat(email)
@@ -465,7 +465,7 @@ ALGORITME: controleerEmailBestaat(email)
 
 #### V12: Spel al in favorieten validatie
 
-**Bestand:** `functions.php` regel 366-369
+**Bestand:** `functions.php` regel 452-458
 
 ```
 ALGORITME: controleerAlFavoriet(userId, gameId)
@@ -479,7 +479,7 @@ ALGORITME: controleerAlFavoriet(userId, gameId)
 
 #### V13: Vriend al toegevoegd validatie
 
-**Bestand:** `functions.php` regel 448-451
+**Bestand:** `functions.php` regel 564-572
 
 ```
 ALGORITME: controleerAlVrienden(userId, vriendNaam)
@@ -495,7 +495,7 @@ ALGORITME: controleerAlVrienden(userId, vriendNaam)
 
 #### V14: Eigenaarschap validatie (`checkOwnership`)
 
-**Bestand:** `functions.php` regel 637-642
+**Bestand:** `functions.php` regel 920-928
 
 ```
 ALGORITME: controleerEigenaarschap(tabel, idKolom, id, userId)
@@ -511,7 +511,7 @@ ALGORITME: controleerEigenaarschap(tabel, idKolom, id, userId)
 
 #### V15: Beschrijving lengte validatie
 
-**Bestand:** `functions.php` regel 574-575
+**Bestand:** `functions.php` regel 791-793
 
 ```
 ALGORITME: valideerBeschrijving(beschrijving)
@@ -523,7 +523,7 @@ ALGORITME: valideerBeschrijving(beschrijving)
 
 #### V16: Herinnering waarde validatie
 
-**Bestand:** `functions.php` regel 576-577
+**Bestand:** `functions.php` regel 794-796
 
 ```
 ALGORITME: valideerHerinnering(herinnering)
@@ -535,7 +535,7 @@ ALGORITME: valideerHerinnering(herinnering)
 
 #### V17: Sessie timeout validatie (`checkSessionTimeout`)
 
-**Bestand:** `functions.php` regel 236-245
+**Bestand:** `functions.php` regel 270-279
 
 ```
 ALGORITME: controleerSessieTimeout()
@@ -551,7 +551,7 @@ ALGORITME: controleerSessieTimeout()
 
 #### V18: Inlogstatus validatie (`isLoggedIn`)
 
-**Bestand:** `functions.php` regel 208-211
+**Bestand:** `functions.php` regel 233-236
 
 ```
 ALGORITME: isIngelogd()
@@ -567,7 +567,7 @@ ALGORITME: isIngelogd()
 
 #### Login formulier validatie (`validateLoginForm`)
 
-**Bestand:** `script.js` regel 41-71
+**Bestand:** `script.js` regel 35-57
 
 ```
 ALGORITME: valideerLoginFormulier()
@@ -585,7 +585,7 @@ ALGORITME: valideerLoginFormulier()
 
 #### Registratie formulier validatie (`validateRegisterForm`)
 
-**Bestand:** `script.js` regel 96-139
+**Bestand:** `script.js` regel 74-111
 
 ```
 ALGORITME: valideerRegistratieFormulier()
@@ -611,7 +611,7 @@ ALGORITME: valideerRegistratieFormulier()
 
 #### Schema formulier validatie (`validateScheduleForm`)
 
-**Bestand:** `script.js` regel 166-227
+**Bestand:** `script.js` regel 129-183
 
 ```
 ALGORITME: valideerSchemaFormulier()
@@ -645,7 +645,7 @@ ALGORITME: valideerSchemaFormulier()
 
 #### Evenement formulier validatie (`validateEventForm`)
 
-**Bestand:** `script.js` regel 256-330
+**Bestand:** `script.js` regel 202-268
 
 ```
 ALGORITME: valideerEvenementFormulier()
@@ -768,7 +768,7 @@ STAP 9: Render HTML met alle gegevens:
         -> footer.php (voettekst)
 STAP 10: JavaScript laadt:
          -> Toon herinnering pop-ups als er actieve herinneringen zijn
-         -> initializeFeatures() voor interactieve elementen
+         -> initialiseerFuncties() voor interactieve elementen
 ```
 
 ### 7.4 Flow: Vriend Toevoegen
@@ -1041,7 +1041,7 @@ BROWSER                          SERVER
   |-- Browser toont dashboard      |
   |-- script.js laadt              |
   |   |-- DOMContentLoaded event   |
-  |   |-- initializeFeatures()     |
+  |   |-- initialiseerFuncties()  |
   |   |   |-- Smooth scroll links  |
   |   |   |-- Bevestiging bij delete|
   |   |   |-- Auto-dismiss alerts  |
@@ -1057,17 +1057,17 @@ BROWSER                          SERVER
 | `index.php`     | -                       | 32-35   | Inlogcontrole          |
 | `index.php`     | -                       | 48-53   | Alle data ophalen      |
 | `index.php`     | -                       | 71-292  | HTML rendering         |
-| `functions.php` | `checkSessionTimeout()` | 236-245 | Sessie-expiratie       |
-| `functions.php` | `getFriends()`          | 485-491 | Vrienden ophalen       |
-| `functions.php` | `getFavoriteGames()`    | 416-422 | Favorieten ophalen     |
-| `functions.php` | `getSchedules()`        | 518-525 | Schema's ophalen       |
-| `functions.php` | `getEvents()`           | 588-595 | Evenementen ophalen    |
-| `functions.php` | `getCalendarItems()`    | 644-653 | Kalender samenvoegen   |
-| `functions.php` | `getReminders()`        | 655-669 | Herinneringen filteren |
-| `functions.php` | `safeEcho()`            | 47-52   | XSS-bescherming        |
-| `header.php`    | -                       | 1-158   | Navigatiebalk          |
-| `footer.php`    | -                       | 1-90    | Voettekst              |
-| `script.js`     | `initializeFeatures()`  | 368-401 | Pagina-initialisatie   |
+| `functions.php` | `checkSessionTimeout()` | 270-279 | Sessie-expiratie       |
+| `functions.php` | `getFriends()`          | 641-651 | Vrienden ophalen       |
+| `functions.php` | `getFavoriteGames()`    | 520-531 | Favorieten ophalen     |
+| `functions.php` | `getSchedules()`        | 696-713 | Schema's ophalen       |
+| `functions.php` | `getEvents()`           | 822-837 | Evenementen ophalen    |
+| `functions.php` | `getCalendarItems()`    | 935-947 | Kalender samenvoegen   |
+| `functions.php` | `getReminders()`        | 955-974 | Herinneringen filteren |
+| `functions.php` | `safeEcho()`            | 50-53   | XSS-bescherming        |
+| `header.php`    | -                       | 1-95    | Navigatiebalk          |
+| `footer.php`    | -                       | 1-43    | Voettekst              |
+| `script.js`     | `initialiseerFuncties()`  | 300-330 | Pagina-initialisatie   |
 
 ### 8.3 Code Flow: Item Verwijderen
 
@@ -1318,8 +1318,8 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 | `validateRegisterForm()`          | geen           | boolean     | Valideert registratie formulier             |
 | `validateScheduleForm()`          | geen           | boolean     | Valideert schema formulier                  |
 | `validateEventForm()`             | geen           | boolean     | Valideert evenement formulier               |
-| `initializeFeatures()`            | geen           | void        | Initialiseert interactieve pagina-elementen |
-| `showNotification(message, type)` | string, string | void        | Toont toast-notificatie                     |
+| `initialiseerFuncties()`          | geen           | void        | Initialiseert interactieve pagina-elementen |
+| `toonMelding(bericht, type)`      | string, string | void        | Toont toast-notificatie                     |
 
 ---
 
@@ -2062,7 +2062,7 @@ De volgende naamgevingsconventies worden consistent aangehouden:
 | Database-kolommen | snake_case       | `user_id`, `game_title`, `created_at`, `deleted_at`, `friend_username` |
 | CSS-klassen       | kebab-case       | `.glass-card`, `.btn-gaming`, `.nav-link`, `.hero-section`             |
 | CSS-variabelen    | kebab met prefix | `--gaming-primary`, `--glass-bg`, `--glass-border`                     |
-| JS-functies       | camelCase        | `validateLoginForm()`, `showNotification()`, `initializeFeatures()`    |
+| JS-functies       | camelCase        | `validateLoginForm()`, `toonMelding()`, `initialiseerFuncties()`       |
 | Bestandsnamen     | snake_case       | `add_friend.php`, `edit_schedule.php`, `edit_favorite.php`             |
 
 #### Criterium 6: De student heeft code voorzien van commentaar

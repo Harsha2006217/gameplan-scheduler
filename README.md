@@ -2052,266 +2052,231 @@ Er zijn screenshots gemaakt van alle pagina's van de applicatie:
 #### Criterium 1: De student heeft een werkende applicatie opgeleverd conform het ontwerp
 
 **Antwoord:**
-De GamePlan Scheduler is een volledig werkende webapplicatie met alle 10 geplande functionaliteiten. Elke functionaliteit is geïmplementeerd, getest en gedocumenteerd. De applicatie draait op XAMPP (Apache + MySQL) en is bereikbaar via `http://localhost/gameplan-scheduler/`.
+De GamePlan Scheduler is een volledig werkende webapplicatie. De projectperiode was **28 dagen** (2 september tot 30 september 2025), met **49 uur coderen** (meer dan de vereiste 40 uur). Elke dag is genoteerd in het projectlog.
+
+**Gebruikte technieken:**
+
+| Technologie | Versie | Doel |
+| --- | --- | --- |
+| PHP | 8.1 | Backend logica (de logica achter de schermen) |
+| MySQL | 8.0 | Database (waar alle data wordt opgeslagen) |
+| HTML | 5 | Structuur van de pagina's |
+| Bootstrap | 5.3.3 | Responsive design (werkt op mobiel en computer) |
+| CSS | 3 | Styling (donker thema in zwart en blauw) |
+| JavaScript | ES6 | Interacties (validatie, pop-ups, herinneringen) |
+
+**Database opbouw (6 tabellen):**
+
+| Tabel | Beschrijving |
+| --- | --- |
+| Users | Gebruikersinfo (naam, e-mail, wachtwoord) |
+| Games | Lijst met games die je kunt kiezen |
+| UserGames | Koppelt gebruikers aan hun favoriete games |
+| Friends | Vriendenlijst met online status |
+| Schedules | Speelschema's met datum en tijd |
+| Events | Evenementen met beschrijving en herinneringen |
 
 **Overzicht van gerealiseerde functionaliteiten:**
 
-| Functionaliteit           | PHP-bestand(en)                                 | Functies in functions.php                                     | Status  |
-| ------------------------- | ----------------------------------------------- | ------------------------------------------------------------- | ------- |
-| Registreren               | register.php                                    | registerUser()                                                | Werkend |
-| Inloggen                  | login.php                                       | loginUser()                                                   | Werkend |
-| Uitloggen                 | logout.php                                      | logout()                                                      | Werkend |
-| Favoriete spellen beheren | profile.php, edit_favorite.php, delete.php      | addFavoriteGame(), updateFavoriteGame(), deleteFavoriteGame() | Werkend |
-| Vriendenlijst beheren     | add_friend.php, edit_friend.php, delete.php     | addFriend(), updateFriend(), deleteFriend()                   | Werkend |
-| Gaming-schema's beheren   | add_schedule.php, edit_schedule.php, delete.php | addSchedule(), editSchedule(), deleteSchedule()               | Werkend |
-| Evenementen beheren       | add_event.php, edit_event.php, delete.php       | addEvent(), editEvent(), deleteEvent()                        | Werkend |
-| Dashboard met kalender    | index.php                                       | getCalendarItems(), getReminders()                            | Werkend |
-| Profiel met statistieken  | profile.php                                     | getFavoriteGames(), getFriends()                              | Werkend |
-| Sorteren                  | index.php                                       | getSchedules($sort), getEvents($sort)                         | Werkend |
+| Functionaliteit | PHP-bestand(en) | Functies in functions.php | Status |
+| --- | --- | --- | --- |
+| Registreren | register.php | registerUser() | Werkend |
+| Inloggen | login.php | loginUser() | Werkend |
+| Uitloggen | logout.php | logout() | Werkend |
+| Favoriete spellen beheren | profile.php, edit_favorite.php, delete.php | addFavoriteGame(), updateFavoriteGame(), deleteFavoriteGame() | Werkend |
+| Vriendenlijst beheren | add_friend.php, edit_friend.php, delete.php | addFriend(), updateFriend(), deleteFriend() | Werkend |
+| Gaming-schema's beheren | add_schedule.php, edit_schedule.php, delete.php | addSchedule(), editSchedule(), deleteSchedule() | Werkend |
+| Evenementen beheren | add_event.php, edit_event.php, delete.php | addEvent(), editEvent(), deleteEvent() | Werkend |
+| Dashboard met kalender | index.php | getCalendarItems(), getReminders() | Werkend |
+| Profiel met statistieken | profile.php | getFavoriteGames(), getFriends() | Werkend |
+| Sorteren | index.php | getSchedules($sort), getEvents($sort) | Werkend |
 
-**Bewijs:** Alle bronbestanden in de repository, README secties 7-8 (functionele flows + code flows), demovideo `K1-W3-DEMO VIDEO.mp4`, PDF `K1 W3 Realisatie-Realisatie verslag-Harsha Vardhan Kanaparthi.pdf`.
+**Bewijs:** Alle bronbestanden in de repository, README secties 7-8, demovideo `K1-W3-DEMO VIDEO.mp4`, PDF `K1 W3 Realisatie-Realisatie verslag-Harsha Vardhan Kanaparthi.pdf`.
 
 #### Criterium 2: De student heeft minimaal 40 uur aan het project gewerkt
 
 **Antwoord:**
-De totale omvang van het project bevestigt dat er ruimschoots meer dan 40 uur aan is gewerkt:
+Totaal **49 uur** besteed (meer dan de vereiste 40 uur). Het projectlog toont **29 taken** over **28 dagen**, allemaal voltooid op tijd.
 
-| Onderdeel       | Omvang                       | Geschatte uren |
-| --------------- | ---------------------------- | -------------- |
-| functions.php   | 979 regels code              | 15+ uur        |
-| script.js       | 363 regels code              | 8+ uur         |
-| style.css       | 822 regels CSS               | 10+ uur        |
-| database.sql    | 230 regels met comments      | 5+ uur         |
-| 15 PHP-pagina's | ±200 regels per pagina gem.  | 12+ uur        |
-| README.md       | 2600+ regels documentatie    | 10+ uur        |
-| Testen          | 52 testcases uitvoeren       | 5+ uur         |
-| Bugfixes        | 4 bugs vinden en oplossen    | 3+ uur         |
-| **Totaal**      | **4000+ regels code + docs** | **80+ uur**    |
+| Onderdeel | Omvang | Geschatte uren |
+| --- | --- | --- |
+| functions.php | 979 regels code | 15+ uur |
+| script.js | 363 regels code | 8+ uur |
+| style.css | 822 regels CSS | 10+ uur |
+| database.sql | 229 regels met commentaar | 5+ uur |
+| 15 PHP-pagina's | ±200 regels per pagina gemiddeld | 12+ uur |
+| README.md | 2600+ regels documentatie | 10+ uur |
+| Testen | 52 testcases uitvoeren | 5+ uur |
+| Bugfixes | 4 bugs vinden en oplossen | 3+ uur |
+| **Totaal** | **4000+ regels code + docs** | **49+ uur** |
 
-De exacte uren zijn bijgehouden in de projectlog.
+**Week voor week voortgang:**
+
+| Week | Periode | Wat is gedaan |
+| --- | --- | --- |
+| Week 1 | 02-09 t/m 07-09 | Omgeving, database, inloggen klaar |
+| Week 2 | 08-09 t/m 13-09 | Frontend, profielbeheer af |
+| Week 3 | 14-09 t/m 21-09 | Vrienden, schema's, evenementen doen |
+| Week 4 | 22-09 t/m 30-09 | Herinneringen, testen, online zetten |
 
 **Bewijs:** PDF `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf`.
 
-#### Criterium 3: De student past best practices toe – DRY (Don't Repeat Yourself)
+#### Criterium 3: De student past best practices toe - DRY (Don't Repeat Yourself)
 
 **Antwoord:**
-Het DRY-principe is consequent toegepast in de hele applicatie:
 
-| DRY-toepassing                  | Waar                   | Toelichting                                                         |
-| ------------------------------- | ---------------------- | ------------------------------------------------------------------- |
-| `getDBConnection()` Singleton   | db.php                 | Eén databaseverbinding hergebruikt door alle functies               |
-| `safeEcho()` helper             | functions.php          | Eén centrale functie voor XSS-bescherming, gebruikt op ELKE uitvoer |
-| `validateRequired()` hergebruik | functions.php          | Alle verplichte-veld-controles gebruiken dezelfde functie           |
-| `checkOwnership()` centraal     | functions.php          | Eén functie voor eigenaarschap-controle, niet per entiteit herhaald |
-| `header.php` / `footer.php`     | header.php, footer.php | Navigatie en footer op 1 plek, automatisch op alle pagina's         |
-| `setMessage()` / `getMessage()` | functions.php          | Eén berichtsysteem voor alle succes- en foutmeldingen               |
-| CSS-variabelen                  | style.css              | Kleuren en waarden als variabelen, 1x wijzen geldt overal           |
+| DRY-toepassing | Waar | Toelichting |
+| --- | --- | --- |
+| `getDBConnection()` Singleton | db.php | Eén databaseverbinding hergebruikt door alle functies |
+| `safeEcho()` helper | functions.php | Eén centrale functie voor XSS-bescherming op ELKE uitvoer |
+| `validateRequired()` hergebruik | functions.php | Alle verplichte-veld-controles gebruiken dezelfde functie |
+| `checkOwnership()` centraal | functions.php | Eén functie voor eigenaarschap-controle |
+| `header.php` / `footer.php` | header.php, footer.php | Navigatie en footer op 1 plek, automatisch op alle pagina's |
+| `setMessage()` / `getMessage()` | functions.php | Eén berichtsysteem voor alle succes- en foutmeldingen |
+| CSS-variabelen | style.css | Kleuren als variabelen, 1x wijzigen geldt overal |
 
-**Voorbeeld:** In plaats van op elke pagina apart `htmlspecialchars()` aan te roepen:
-
-```php
-// FOUT (herhaling):
-echo htmlspecialchars($username, ENT_QUOTES, 'UTF-8');
-echo htmlspecialchars($email, ENT_QUOTES, 'UTF-8');
-
-// GOED (DRY via safeEcho):
-echo safeEcho($username);
-echo safeEcho($email);
-```
-
-#### Criterium 4: De student past best practices toe – SRP (Single Responsibility Principle)
+#### Criterium 4: De student past best practices toe - SRP (Single Responsibility Principle)
 
 **Antwoord:**
-Elk bestand en elke functie heeft precies ÉÉN verantwoordelijkheid:
 
-| Bestand/Functie      | Verantwoordelijkheid                          | Doet NIET                           |
-| -------------------- | --------------------------------------------- | ----------------------------------- |
-| `db.php`             | Alleen databaseverbinding beheren             | Geen queries, geen validatie        |
-| `functions.php`      | Alleen businesslogica (validatie + CRUD)      | Geen HTML, geen routing             |
-| `header.php`         | Alleen navigatie-HTML renderen                | Geen logica, geen queries           |
-| `footer.php`         | Alleen footer-HTML renderen                   | Geen logica, geen queries           |
-| `login.php`          | Alleen loginformulier tonen en afhandelen     | Geen registratie, geen CRUD         |
-| `script.js`          | Alleen client-side validatie en UI-interactie | Geen server-communicatie, geen AJAX |
-| `style.css`          | Alleen visuele styling                        | Geen logica, geen structuur         |
-| `validateRequired()` | Alleen controleren of een veld niet leeg is   | Geen type-specifieke validatie      |
-| `loginUser()`        | Alleen authenticatie uitvoeren                | Geen registratie, geen CRUD         |
-| `checkOwnership()`   | Alleen controleren of gebruiker eigenaar is   | Geen verwijdering, geen bewerking   |
+| Bestand/Functie | Verantwoordelijkheid | Doet NIET |
+| --- | --- | --- |
+| `db.php` | Alleen databaseverbinding beheren | Geen queries, geen validatie |
+| `functions.php` | Alleen businesslogica (validatie + CRUD) | Geen HTML, geen routing |
+| `header.php` | Alleen navigatie-HTML renderen | Geen logica, geen queries |
+| `login.php` | Alleen loginformulier tonen en afhandelen | Geen registratie, geen CRUD |
+| `script.js` | Alleen client-side validatie en UI-interactie | Geen server-communicatie |
+| `style.css` | Alleen visuele styling | Geen logica |
 
 #### Criterium 5: De student hanteert correcte naamgevingsconventies
 
 **Antwoord:**
-De volgende naamgevingsconventies worden consistent aangehouden:
 
-| Type              | Conventie        | Voorbeelden                                                            |
-| ----------------- | ---------------- | ---------------------------------------------------------------------- |
-| PHP-functies      | camelCase        | `addFriend()`, `getFavoriteGames()`, `checkSessionTimeout()`           |
-| PHP-variabelen    | camelCase        | `$friendUsername`, `$sharedWithStr`, `$gameTitle`, `$userId`           |
-| Database-tabellen | PascalCase       | `Users`, `Games`, `UserGames`, `Friends`, `Schedules`, `Events`        |
-| Database-kolommen | snake_case       | `user_id`, `game_title`, `created_at`, `deleted_at`, `friend_username` |
-| CSS-klassen       | kebab-case       | `.glass-card`, `.btn-gaming`, `.nav-link`, `.hero-section`             |
-| CSS-variabelen    | kebab met prefix | `--gaming-primary`, `--glass-bg`, `--glass-border`                     |
-| JS-functies       | camelCase        | `validateLoginForm()`, `toonMelding()`, `initialiseerFuncties()`       |
-| Bestandsnamen     | snake_case       | `add_friend.php`, `edit_schedule.php`, `edit_favorite.php`             |
+| Type | Conventie | Voorbeelden |
+| --- | --- | --- |
+| PHP-functies | camelCase | `addFriend()`, `getFavoriteGames()`, `checkSessionTimeout()` |
+| PHP-variabelen | camelCase | `$friendUsername`, `$sharedWithStr`, `$gameTitle`, `$userId` |
+| Database-tabellen | PascalCase | `Users`, `Games`, `UserGames`, `Friends`, `Schedules`, `Events` |
+| Database-kolommen | snake_case | `user_id`, `deleted_at`, `friend_username` |
+| CSS-klassen | kebab-case | `.glass-card`, `.btn-gaming`, `.nav-link` |
+| CSS-variabelen | kebab met prefix | `--gaming-primary`, `--glass-bg`, `--glass-border` |
+| JS-functies | camelCase | `validateLoginForm()`, `toonMelding()`, `initialiseerFuncties()` |
+| Bestandsnamen | snake_case | `add_friend.php`, `edit_schedule.php` |
 
 #### Criterium 6: De student heeft code voorzien van commentaar
 
 **Antwoord:**
-De code is voorzien van duidelijk commentaar op meerdere niveaus:
-
-**PHP (functions.php) – Functiebeschrijvingen:**
-
-```php
-/**
- * Valideert een verplicht veld
- * Controleert op lege waarde, alleen spaties, en maximale lengte
- */
-function validateRequired($waarde, $veldnaam, $maxLengte = 255) { ... }
-```
-
-**SQL (database.sql) – Nederlands commentaar:**
-
-```sql
--- Users tabel: Slaat gebruikersinformatie op
-CREATE TABLE Users ( ... );
-```
-
-**CSS (style.css) – Sectieheaders:**
-
-```css
-/* ============================================
-   3. GLASSMORPHISME COMPONENTEN
-   ============================================ */
-```
-
-**JavaScript (script.js) – Inline uitleg:**
-
-```javascript
-// Controleer of het veld alleen uit spaties bestaat
-if (/^\s*$/.test(username)) { ... }
-```
-
-**Bewijs:** Alle bronbestanden bevatten commentaar. Zie `functions.php`, `database.sql` (230 regels met Nederlands commentaar), `style.css` (14 benoemde secties), `script.js`.
+Alle bestanden bevatten Nederlands commentaar:
+- **functions.php:** Functiebeschrijvingen boven elke functie
+- **database.sql:** 229 regels met Nederlands commentaar bij elke tabel
+- **style.css:** 14 benoemde secties met sectieheaders
+- **script.js:** Inline uitleg bij elke validatiefunctie
 
 #### Criterium 7: De student gebruikt versiebeheer (Git)
 
 **Antwoord:**
-Het project wordt beheerd met Git en gehost op GitHub:
-
-- **Repository:** `https://github.com/Harsha2006217/gameplan-scheduler`
+- **Repository:** GitHub
 - **Branch:** `main`
-- **Commits:** Meerdere commits met beschrijvende berichten die de voortgang documenteren
-- **Bestanden in versiebeheer:** Alle 22+ bronbestanden, database.sql, README.md, documentatie-PDFs, screenshots
-
-De commit-geschiedenis toont de geleidelijke opbouw van het project: van initiële structuur → databaseontwerp → authenticatie → CRUD-functies → validatie → styling → testen → bugfixes → documentatie.
+- **Werkwijze:** Dagelijks commits op GitHub
+- **Branches voor features:** Bijv. feature/calendar
+- **Minstens 5 oude versies** bewaard voor rollback
+- De commit-geschiedenis toont de geleidelijke opbouw: initiële structuur → databaseontwerp → authenticatie → CRUD-functies → validatie → styling → testen → bugfixes → documentatie
 
 **Bewijs:** GitHub repository en screenshot `Demo Fotos/VersieBeheer/Versiebeheer.png`.
 
 #### Criterium 8: De student handelt randgevallen (edge cases) correct af
 
 **Antwoord:**
-De applicatie handelt de volgende randgevallen af:
 
-| Randgeval                              | Afhandeling                                                             | Validatie-ID |
-| -------------------------------------- | ----------------------------------------------------------------------- | ------------ |
-| Invoer met alleen spaties " "          | Regex `/^\s*$/` detecteert en weigert (Bug #1001 fix)                   | V1           |
-| Onmogelijke datum "2025-13-45"         | `DateTime::createFromFormat()` met stricte vergelijking (Bug #1004 fix) | V6           |
-| Datum in het verleden                  | Vergelijking met `date('Y-m-d')` blokkeert verlopen datums              | V7           |
-| Kommagescheiden lijst met lege items   | Explode + trim + filter op lege strings                                 | V10          |
-| SQL-injectie via invoervelden          | PDO prepared statements met named parameters                            | B2           |
-| XSS via invoervelden                   | `safeEcho()` met htmlspecialchars op alle uitvoer                       | B3           |
-| Verwijderen van andermans data via URL | `checkOwnership()` controle bij elke bewerk/verwijder-actie             | B6           |
-| Sessie-verlopen na inactiviteit        | 30-minuten timeout met automatische redirect naar login                 | B5           |
-| Dubbele registratie met zelfde e-mail  | UNIQUE constraint + PHP-controle retourneert foutmelding                | V11          |
-| Dubbele favoriet (zelfde spel)         | PHP-controle op bestaande koppeling retourneert "Spel al in favorieten" | V12          |
-| Dubbele vriend (zelfde gebruikersnaam) | PHP-controle op bestaande vriendschap retourneert "Al vrienden"         | V13          |
-| Niet-bestaand item verwijderen         | checkOwnership() retourneert false → foutmelding                        | B6           |
+| Randgeval | Afhandeling | Validatie-ID |
+| --- | --- | --- |
+| Invoer met alleen spaties " " | Regex `/^\s*$/` detecteert en weigert (Bug #1001 fix) | V1 |
+| Onmogelijke datum "2025-13-45" | `DateTime::createFromFormat()` met stricte vergelijking (Bug #1004 fix) | V6 |
+| Datum in het verleden | Vergelijking met `date('Y-m-d')` blokkeert verlopen datums | V7 |
+| Kommagescheiden lijst met lege items | Explode + trim + filter op lege strings | V10 |
+| SQL-injectie via invoervelden | PDO prepared statements met named parameters | B2 |
+| XSS via invoervelden | `safeEcho()` met htmlspecialchars op alle uitvoer | B3 |
+| Verwijderen van andermans data via URL | `checkOwnership()` controle bij elke bewerk/verwijder-actie | B6 |
+| Sessie-verlopen na inactiviteit | 30-minuten timeout met automatische redirect naar login | B5 |
+| Dubbele registratie met zelfde e-mail | UNIQUE constraint + PHP-controle | V11 |
+| Dubbele favoriet (zelfde spel) | PHP-controle retourneert "Spel al in favorieten" | V12 |
+| Dubbele vriend (zelfde gebruikersnaam) | PHP-controle retourneert "Al vrienden" | V13 |
 
-**Bewijs:** README sectie 6 (alle validaties), sectie 9 (beveiligingsmaatregelen), sectie 14 (bugfixes).
+**Bewijs:** README sectie 6 (validaties), sectie 9 (beveiligingsmaatregelen), sectie 14 (bugfixes).
 
 #### Criterium 9: De student implementeert foutafhandeling
 
 **Antwoord:**
 Er zijn drie lagen van foutafhandeling:
 
-**Laag 1: Functie-retourwaarden**
-Alle functies retourneren `null` bij succes of een foutmelding-string bij een fout. De aanroepende code controleert dit:
+**Laag 1 - Functie-retourwaarden:** Alle functies retourneren `null` bij succes of een foutmelding-string bij fout.
 
-```php
-$error = addSchedule($userId, $spelTitel, $datum, $tijd, $vrienden, $gedeeldMet);
-if ($error) {
-    setMessage('danger', $error);  // Toon foutmelding
-} else {
-    setMessage('success', 'Schema toegevoegd!');
-    header("Location: index.php");  // Redirect bij succes
-}
-```
+**Laag 2 - Database try-catch:** Alle database-operaties staan in try-catch blokken. Technische fouten worden gelogd met `error_log()`, gebruikers zien alleen generieke berichten.
 
-**Laag 2: Database try-catch**
-Alle database-operaties staan in try-catch blokken:
+**Laag 3 - Sessiebericht-systeem (PRG-patroon):** Berichten worden opgeslagen in sessie en na redirect getoond via Bootstrap alerts.
 
-```php
-try {
-    $stmt = $pdo->prepare("INSERT INTO ...");
-    $stmt->execute([...]);
-} catch (PDOException $e) {
-    error_log("Database fout: " . $e->getMessage());  // Technische log
-    return "Actie mislukt. Probeer opnieuw.";          // Generieke melding
-}
-```
-
-**Laag 3: Sessiebericht-systeem**
-Berichten (succes én fouten) worden opgeslagen in de sessie en na redirect getoond via Bootstrap alerts. Dit implementeert het PRG-patroon (Post-Redirect-Get).
-
-**Bewijs:** README sectie 10 (Foutafhandeling) met alle patronen en sectie 10.4 met tabel van alle foutmeldingen.
+**Bewijs:** README sectie 10 (Foutafhandeling).
 
 #### Criterium 10: De student implementeert dubbele validatie (client-side + server-side)
 
 **Antwoord:**
 
-**Client-side validatie (JavaScript – script.js):**
-6 validatiefuncties die directe feedback geven VOORDAT het formulier wordt verzonden:
+**Client-side validatie (JavaScript - script.js):**
+- `validateLoginForm()` - e-mail en wachtwoord verplicht
+- `validateRegisterForm()` - gebruikersnaam, e-mail, wachtwoord (min. 8 tekens)
+- `validateScheduleForm()` - speltitel, datum (toekomst), tijd (formaat)
+- `validateEventForm()` - titel, datum, tijd, optionele URL-validatie
 
-- `validateLoginForm()` – e-mail en wachtwoord verplicht
-- `validateRegisterForm()` – gebruikersnaam, e-mail, wachtwoord (min. 8 tekens)
-- `validateScheduleForm()` – speltitel, datum (toekomst), tijd (formaat)
-- `validateEventForm()` – titel, datum, tijd, optionele URL-validatie
+**Server-side validatie (PHP - functions.php):**
+- `validateRequired()` - leeg + spaties + maxlengte
+- `validateDate()` - formaat + echte datum + toekomst
+- `validateTime()` - UU:MM formaat
+- `validateEmail()` - e-mailformaat
+- `validateUrl()` - URL-formaat (optioneel veld)
+- `validateCommaSeparated()` - kommagescheiden lijst zonder lege items
 
-Bij een fout wordt `event.preventDefault()` aangeroepen en een visuele foutmelding getoond via Bootstrap toasts.
+**Waarom beide nodig?** Een gebruiker kan JavaScript uitschakelen. De server-side validatie is de echte "poortwachter" en kan NIET omzeild worden. Client-side validatie is puur voor gebruiksgemak (snellere feedback).
 
-**Server-side validatie (PHP – functions.php):**
-7 validatiefuncties die op de server draaien en NIET omzeild kunnen worden:
-
-- `validateRequired()` – leeg + spaties + maxlengte
-- `validateDate()` – formaat + echte datum + toekomst
-- `validateTime()` – UU:MM formaat
-- `validateEmail()` – e-mailformaat
-- `validateUrl()` – URL-formaat (optioneel veld)
-- `validateCommaSeparated()` – kommagescheiden lijst zonder lege items
-
-**Waarom beide nodig?**
-Een gebruiker kan JavaScript uitschakelen in de browser. Dan werkt client-side validatie niet meer. De server-side validatie vangt dit op en is de echte "poortwachter" van de data. Client-side validatie is puur voor gebruiksgemak (snellere feedback).
-
-**Bewijs:** README sectie 6 (alle 18 validatieregels met algoritmen), `functions.php` (server-side), `script.js` (client-side).
+**Bewijs:** README sectie 6 (alle 18 validatieregels), `functions.php` (server-side), `script.js` (client-side).
 
 #### Criterium 11: De student implementeert beveiligingsmaatregelen
 
 **Antwoord:**
-De applicatie bevat 10 beveiligingsmaatregelen:
+De applicatie bevat **10 beveiligingsmaatregelen:**
 
-| Nr  | Maatregel                | Implementatie                                  | Beschermt tegen                |
-| --- | ------------------------ | ---------------------------------------------- | ------------------------------ |
-| B1  | Wachtwoord hashing       | `password_hash(PASSWORD_BCRYPT)`               | Wachtwoorddiefstal             |
-| B2  | Prepared statements      | PDO met `:named` parameters (30+ queries)      | SQL-injectie                   |
-| B3  | Output escaping          | `safeEcho()` op alle gebruikersdata            | XSS (Cross-Site Scripting)     |
-| B4  | Sessie regeneratie       | `session_regenerate_id(true)` na login         | Sessiefixatie                  |
-| B5  | Sessie timeout           | 30 min inactiviteit → automatisch uitloggen    | Onbeheerde sessies             |
-| B6  | Eigenaarschap controle   | `checkOwnership()` bij bewerken/verwijderen    | Ongeautoriseerde toegang       |
-| B7  | Inputvalidatie           | Server-side + client-side dubbel               | Ongeldige/kwaadaardige data    |
-| B8  | Foutmasking              | `error_log()` + generieke gebruikersmelding    | Informatielekken               |
-| B9  | Soft delete              | `deleted_at` timestamp i.p.v. fysiek DELETE    | Dataverlies                    |
+| Nr | Maatregel | Implementatie | Beschermt tegen |
+| --- | --- | --- | --- |
+| B1 | Wachtwoord hashing | `password_hash(PASSWORD_BCRYPT)` | Wachtwoorddiefstal |
+| B2 | Prepared statements | PDO met `:named` parameters | SQL-injectie |
+| B3 | Output escaping | `safeEcho()` op alle gebruikersdata | XSS-aanvallen |
+| B4 | Sessie regeneratie | `session_regenerate_id(true)` na login | Sessiefixatie |
+| B5 | Sessie timeout | 30 min inactiviteit → automatisch uitloggen | Onbeheerde sessies |
+| B6 | Eigenaarschap controle | `checkOwnership()` bij bewerken/verwijderen | Ongeautoriseerde toegang |
+| B7 | Inputvalidatie | Server-side + client-side dubbel | Ongeldige data |
+| B8 | Foutmasking | `error_log()` + generieke gebruikersmelding | Informatielekken |
+| B9 | Soft delete | `deleted_at` timestamp i.p.v. fysiek DELETE | Dataverlies |
 | B10 | Inlogcontrole per pagina | `isLoggedIn()` check op elke beveiligde pagina | Ongeautoriseerde paginatoegang |
 
-**Bewijs:** README sectie 9 (Beveiligingsmaatregelen) met uitgebreide uitleg per maatregel.
+**Bewijs:** README sectie 9 (Beveiligingsmaatregelen).
+
+#### Criterium 12: Projectlog en overlegmomenten
+
+**Antwoord:**
+Het projectlog bevat **29 taken** over **28 dagen**, allemaal voltooid op tijd.
+
+**Bugs opgelost tijdens realisatie:**
+- 09-09: Dubbele insert bij games → opgelost met unique key
+- 19-09: Delete fout door FK constraint → opgelost met cascade delete
+
+**3 overlegmomenten met begeleider:**
+
+| Datum | Onderwerp | Resultaat |
+| --- | --- | --- |
+| 07-09-2025 | Backend check | Database en inloggen goedgekeurd |
+| 14-09-2025 | Vriendenlijst feedback | Feedback verwerkt in code |
+| 27-09-2025 | Design check voor mobiel | Responsive design goedgekeurd |
+
+**Bewijs:** PDF `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf`, PDF `K1 W3 Realisatie-Realisatie verslag-Harsha Vardhan Kanaparthi.pdf`.
 
 ---
 

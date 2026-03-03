@@ -661,5 +661,63 @@ main {
 }
 
 /* ============================================================================
+   SECTION 15: CONTENT PAGE STYLES (Privacy & Contact)
+   ============================================================================
+   ENGLISH: Styles for privacy.php and contact.php to ensure text visibility.
+   DUTCH: Stijlen voor privacy.php en contact.php voor zichtbare tekst.
+*/
+
+/* Card background more visible for content pages */
+main.container .card {
+    background: rgba(18, 18, 26, 0.95);
+    border: 1px solid rgba(13, 110, 253, 0.3);
+}
+
+/* Headings inside card-body */
+main.container .card-body h3 {
+    color: var(--accent-cyan);
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+/* Paragraphs and list items clearly white */
+main.container .card-body p,
+main.container .card-body li {
+    color: var(--text-primary);
+    font-size: 1rem;
+    line-height: 1.8;
+}
+
+/* Bold/strong text highlighted */
+main.container .card-body strong {
+    color: var(--accent-cyan);
+}
+
+/* List styling */
+main.container .card-body ul {
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+
+main.container .card-body ul li {
+    margin-bottom: 6px;
+}
+
+/* Links inside card visible */
+main.container .card-body a.text-info {
+    color: var(--accent-cyan) !important;
+    text-decoration: underline;
+}
+
+main.container .card-body a.text-info:hover {
+    color: #ffffff !important;
+}
+
+/* Secondary/small text readable */
+main.container .card-body .text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+/* ============================================================================
    END OF STYLESHEET / EINDE VAN STYLESHEET
    ============================================================================ */

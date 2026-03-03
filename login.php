@@ -30,11 +30,11 @@ $error = '';
 
 // Verwerk het formulier als het verzonden is (POST verzoek)
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = $_POST['email'] ?? '';
-    $password = $_POST['password'] ?? '';
+    $emailAdres = $_POST['email'] ?? '';
+    $wachtwoord = $_POST['password'] ?? '';
 
     // Probeer in te loggen - retourneert foutmelding of null bij succes
-    $error = loginUser($email, $password);
+    $error = loginUser($emailAdres, $wachtwoord);
 
     if (!$error) {
         header("Location: index.php");

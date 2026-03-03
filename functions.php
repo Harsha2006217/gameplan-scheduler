@@ -131,10 +131,10 @@ function validateTime($tijd)
  * @param string $email  E-mailadres om te controleren
  * @return string|null   Foutmelding of null als alles goed is
  */
-function validateEmail($email)
+function validateEmail($emailAdres)
 {
     // PHP filter_var controleert het e-mail formaat automatisch
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if (!filter_var($emailAdres, FILTER_VALIDATE_EMAIL)) {
         return "Ongeldig e-mail formaat.";
     }
     return null;
@@ -287,35 +287,35 @@ function checkSessionTimeout()
  * 3. Versleutel het wachtwoord met bcrypt
  * 4. Sla de nieuwe gebruiker op in de database
  *
- * @param string $username   Gekozen gebruikersnaam
- * @param string $email      E-mailadres
- * @param string $password   Gekozen wachtwoord
- * @return string|null       Foutmelding of null bij succes
+ * @param string $gebruikersnaam   Gekozen gebruikersnaam
+ * @param string $emailAdres       E-mailadres
+ * @param string $wachtwoord       Gekozen wachtwoord
+ * @return string|null             Foutmelding of null bij succes
  */
-function registerUser($username, $email, $password)
+function registerUser($gebruikersnaam, $emailAdres, $wachtwoord)
 {
     $pdo = getDBConnection();
 
     // Controleer alle invoer
-    if ($err = validateRequired($username, "Gebruikersnaam", 50))
+    if ($err = validateRequired($gebruikersnaam, "Gebruikersnaam", 50))
         return $err;
-    if ($err = validateEmail($email))
+    if ($err = validateEmail($emailAdres))
         return $err;
-    if ($err = validateRequired($password, "Wachtwoord"))
+    if ($err = validateRequired($wachtwoord, "Wachtwoord"))
         return $err;
-    if (strlen($password) < 8)
+    if (strlen($wachtwoord) < 8)
         return "Wachtwoord moet minimaal 8 tekens zijn.";
 
     // Controleer of e-mail al bestaat in de database
     $stmt = $pdo->prepare(
         "SELECT COUNT(*) FROM Users WHERE email = :email AND deleted_at IS NULL"
     );
-    $stmt->execute(['email' => $email]);
+    $stmt->execute(['email' => $emailAdres]);
     if ($stmt->fetchColumn() > 0)
         return "Dit e-mailadres is al geregistreerd.";
 
     // Versleutel het wachtwoord met bcrypt (veilig en niet terug te draaien)
-    $hash = password_hash($password, PASSWORD_BCRYPT);
+    $hash = password_hash($wachtwoord, PASSWORD_BCRYPT);
 
     // Sla de nieuwe gebruiker op in de database
     $stmt = $pdo->prepare(
@@ -323,7 +323,7 @@ function registerUser($username, $email, $password)
          VALUES (:username, :email, :hash)"
     );
     try {
-        $stmt->execute(['username' => $username, 'email' => $email, 'hash' => $hash]);
+        $stmt->execute(['username' => $gebruikersnaam, 'email' => $emailAdres, 'hash' => $hash]);
         return null; // Succes
     } catch (PDOException $e) {
         error_log("Registratie mislukt: " . $e->getMessage());
@@ -340,18 +340,18 @@ function registerUser($username, $email, $password)
  * 3. Controleer het wachtwoord met password_verify
  * 4. Start een sessie voor de gebruiker
  *
- * @param string $email     E-mailadres
- * @param string $password  Wachtwoord
- * @return string|null      Foutmelding of null bij succes
+ * @param string $emailAdres   E-mailadres
+ * @param string $wachtwoord   Wachtwoord
+ * @return string|null         Foutmelding of null bij succes
  */
-function loginUser($email, $password)
+function loginUser($emailAdres, $wachtwoord)
 {
     $pdo = getDBConnection();
 
     // Controleer invoer
-    if ($err = validateRequired($email, "E-mail"))
+    if ($err = validateRequired($emailAdres, "E-mail"))
         return $err;
-    if ($err = validateRequired($password, "Wachtwoord"))
+    if ($err = validateRequired($wachtwoord, "Wachtwoord"))
         return $err;
 
     // Zoek gebruiker op e-mailadres
@@ -359,11 +359,11 @@ function loginUser($email, $password)
         "SELECT user_id, username, password_hash
          FROM Users WHERE email = :email AND deleted_at IS NULL"
     );
-    $stmt->execute(['email' => $email]);
+    $stmt->execute(['email' => $emailAdres]);
     $gebruiker = $stmt->fetch();
 
     // Controleer wachtwoord (password_verify vergelijkt met de hash)
-    if (!$gebruiker || !password_verify($password, $gebruiker['password_hash'])) {
+    if (!$gebruiker || !password_verify($wachtwoord, $gebruiker['password_hash'])) {
         return "Ongeldige e-mail of wachtwoord.";
     }
 

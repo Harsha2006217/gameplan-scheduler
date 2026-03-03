@@ -27,11 +27,11 @@ $error = '';
 
 // Verwerk formulier voor het toevoegen van een favoriet
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_favorite'])) {
-    $title = $_POST['title'] ?? '';
-    $description = $_POST['description'] ?? '';
-    $note = $_POST['note'] ?? '';
+    $titel = $_POST['title'] ?? '';
+    $beschrijving = $_POST['description'] ?? '';
+    $notitie = $_POST['note'] ?? '';
 
-    $error = addFavoriteGame($userId, $title, $description, $note);
+    $error = addFavoriteGame($userId, $titel, $beschrijving, $notitie);
 
     if (!$error) {
         setMessage('success', 'Favoriet spel toegevoegd!');

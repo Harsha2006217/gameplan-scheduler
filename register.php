@@ -28,12 +28,12 @@ $error = '';
 
 // Verwerk formulier verzending
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = $_POST['username'] ?? '';
-    $email = $_POST['email'] ?? '';
-    $password = $_POST['password'] ?? '';
+    $gebruikersnaam = $_POST['username'] ?? '';
+    $emailAdres = $_POST['email'] ?? '';
+    $wachtwoord = $_POST['password'] ?? '';
 
     // Probeer te registreren - retourneert foutmelding of null bij succes
-    $error = registerUser($username, $email, $password);
+    $error = registerUser($gebruikersnaam, $emailAdres, $wachtwoord);
 
     if (!$error) {
         setMessage('success', 'Registratie succesvol! Log nu in.');

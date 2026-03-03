@@ -27,15 +27,15 @@ $error = '';
 
 // Verwerk formulier verzending
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $title = $_POST['title'] ?? '';
-    $date = $_POST['date'] ?? '';
-    $time = $_POST['time'] ?? '';
-    $description = $_POST['description'] ?? '';
-    $reminder = $_POST['reminder'] ?? 'none';
-    $externalLink = $_POST['external_link'] ?? '';
-    $sharedWithStr = $_POST['shared_with_str'] ?? '';
+    $titel = $_POST['title'] ?? '';
+    $datum = $_POST['date'] ?? '';
+    $tijd = $_POST['time'] ?? '';
+    $beschrijving = $_POST['description'] ?? '';
+    $herinnering = $_POST['reminder'] ?? 'none';
+    $externeLink = $_POST['external_link'] ?? '';
+    $gedeeldMetStr = $_POST['shared_with_str'] ?? '';
 
-    $error = addEvent($userId, $title, $date, $time, $description, $reminder, $externalLink, $sharedWithStr);
+    $error = addEvent($userId, $titel, $datum, $tijd, $beschrijving, $herinnering, $externeLink, $gedeeldMetStr);
 
     if (!$error) {
         setMessage('success', 'Evenement toegevoegd!');

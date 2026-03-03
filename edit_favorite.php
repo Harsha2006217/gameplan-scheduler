@@ -42,11 +42,11 @@ $error = '';
 
 // Verwerk formulier verzending
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $title = $_POST['title'] ?? '';
-    $description = $_POST['description'] ?? '';
-    $note = $_POST['note'] ?? '';
+    $titel = $_POST['title'] ?? '';
+    $beschrijving = $_POST['description'] ?? '';
+    $notitie = $_POST['note'] ?? '';
 
-    $error = updateFavoriteGame($userId, $id, $title, $description, $note);
+    $error = updateFavoriteGame($userId, $id, $titel, $beschrijving, $notitie);
 
     if (!$error) {
         setMessage('success', 'Spel bijgewerkt!');

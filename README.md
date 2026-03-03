@@ -936,14 +936,14 @@ BROWSER                          SERVER
   |-- POST /login.php ------------>|
   |   (email + password)           |
   |                                |-- $_SERVER['REQUEST_METHOD'] == 'POST'
-  |                                |-- Haal $email en $password uit $_POST
-  |                                |-- loginUser($email, $password)
+  |                                |-- Haal $emailAdres en $wachtwoord uit $_POST
+  |                                |-- loginUser($emailAdres, $wachtwoord)
   |                                |   |-- getDBConnection() [db.php]
   |                                |   |   |-- Maak PDO-verbinding (Singleton)
-  |                                |   |-- validateRequired($email)
-  |                                |   |-- validateRequired($password)
+  |                                |   |-- validateRequired($emailAdres)
+  |                                |   |-- validateRequired($wachtwoord)
   |                                |   |-- SELECT user WHERE email = :email
-  |                                |   |-- password_verify($password, $hash)
+  |                                |   |-- password_verify($wachtwoord, $hash)
   |                                |   |-- ALS onjuist: return foutmelding
   |                                |   |-- ALS correct:
   |                                |   |   |-- $_SESSION['user_id'] = user_id
@@ -1128,7 +1128,7 @@ Alle database-queries gebruiken PDO prepared statements met `:named` parameters.
 
 ```php
 $stmt = $pdo->prepare("SELECT * FROM Users WHERE email = :email");
-$stmt->execute(['email' => $email]);
+$stmt->execute(['email' => $emailAdres]);
 ```
 
 **B3 - Output escaping (XSS-preventie)**
@@ -1241,7 +1241,7 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 | `validateRequired($waarde, $veldnaam, $maxLengte)` | string, string, int | null of foutmelding | Valideert verplicht veld           |
 | `validateDate($datum)`                              | string              | null of foutmelding | Valideert datumformaat en toekomst |
 | `validateTime($tijd)`                              | string              | null of foutmelding | Valideert tijdformaat UU:MM        |
-| `validateEmail($email)`                            | string              | null of foutmelding | Valideert e-mailformaat            |
+| `validateEmail($emailAdres)`                            | string              | null of foutmelding | Valideert e-mailformaat            |
 | `validateUrl($url)`                                | string              | null of foutmelding | Valideert URL-formaat (optioneel)  |
 | `validateCommaSeparated($waarde, $veldnaam)`       | string, string      | null of foutmelding | Valideert kommagescheiden lijst    |
 
@@ -1260,8 +1260,8 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 | `getUserId()`                                | geen       | int                 | Haalt gebruiker-ID uit sessie (0 als niet ingelogd)               |
 | `updateLastActivity($pdo, $userId)`          | PDO, int   | void                | Werkt laatste activiteit bij in database                          |
 | `checkSessionTimeout()`                      | geen       | void                | Controleert 30-minuten timeout, vernietigt sessie indien verlopen |
-| `registerUser($username, $email, $password)` | 3x string  | null of foutmelding | Registreert nieuw account                                         |
-| `loginUser($email, $password)`               | 2x string  | null of foutmelding | Authenticeert gebruiker                                           |
+| `registerUser($gebruikersnaam, $emailAdres, $wachtwoord)` | 3x string  | null of foutmelding | Registreert nieuw account                                         |
+| `loginUser($emailAdres, $wachtwoord)`               | 2x string  | null of foutmelding | Authenticeert gebruiker                                           |
 | `logout()`                                   | geen       | void                | Vernietigt sessie, redirect naar login                            |
 
 ### 11.5 Spel functies (`functions.php`)
@@ -1674,7 +1674,7 @@ Voor elke bug heb ik het 5-stappenproces gevolgd: **ontdekken → oorzaak analys
 A: "PHP is de taal die we geleerd hebben in de opleiding. Het werkt goed met XAMPP als lokale omgeving en met MySQL als database. Voor een MBO-project is vanilla PHP geschikt omdat het de basis laat zien zonder afhankelijkheid van frameworks."
 
 **V: "Hoe voorkom je SQL-injectie in jouw applicatie?"**
-A: "Ik gebruik PDO prepared statements. In plaats van de gebruikersinvoer direct in de query te plaatsen, gebruik ik `:named` parameters. De database-engine verwerkt de invoer apart van de query, waardoor kwaadaardige SQL-code nooit uitgevoerd wordt. Voorbeeld: `$stmt->execute(['email' => $email]);`"
+A: "Ik gebruik PDO prepared statements. In plaats van de gebruikersinvoer direct in de query te plaatsen, gebruik ik `:named` parameters. De database-engine verwerkt de invoer apart van de query, waardoor kwaadaardige SQL-code nooit uitgevoerd wordt. Voorbeeld: `$stmt->execute(['email' => $emailAdres]);`"
 
 **V: "Wat is het verschil tussen client-side en server-side validatie?"**
 A: "Client-side validatie draait in de browser met JavaScript. Het geeft snelle feedback, maar kan uitgeschakeld worden. Server-side validatie draait op de server met PHP. Dit kan NIET omzeild worden. Ik gebruik BEIDE: JavaScript voor gebruiksgemak, PHP voor veiligheid."
@@ -2153,7 +2153,7 @@ Totaal **49 uur** besteed (meer dan de vereiste 40 uur). Het projectlog toont **
 | Type | Conventie | Voorbeelden |
 | --- | --- | --- |
 | PHP-functies | camelCase | `addFriend()`, `getFavoriteGames()`, `checkSessionTimeout()` |
-| PHP-variabelen | camelCase | `$friendUsername`, `$sharedWithStr`, `$gameTitle`, `$userId` |
+| PHP-variabelen | camelCase | `$vriendUsername`, `$gedeeldMetStr`, `$spelTitel`, `$userId` |
 | Database-tabellen | PascalCase | `Users`, `Games`, `UserGames`, `Friends`, `Schedules`, `Events` |
 | Database-kolommen | snake_case | `user_id`, `deleted_at`, `friend_username` |
 | CSS-klassen | kebab-case | `.glass-card`, `.btn-gaming`, `.nav-link` |

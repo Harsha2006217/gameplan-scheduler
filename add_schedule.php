@@ -26,13 +26,13 @@ $error = '';
 
 // Verwerk formulier verzending
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $gameTitle = $_POST['game_title'] ?? '';
-    $date = $_POST['date'] ?? '';
-    $time = $_POST['time'] ?? '';
-    $friendsStr = $_POST['friends_str'] ?? '';
-    $sharedWithStr = $_POST['shared_with_str'] ?? '';
+    $spelTitel = $_POST['game_title'] ?? '';
+    $datum = $_POST['date'] ?? '';
+    $tijd = $_POST['time'] ?? '';
+    $vriendenStr = $_POST['friends_str'] ?? '';
+    $gedeeldMetStr = $_POST['shared_with_str'] ?? '';
 
-    $error = addSchedule($userId, $gameTitle, $date, $time, $friendsStr, $sharedWithStr);
+    $error = addSchedule($userId, $spelTitel, $datum, $tijd, $vriendenStr, $gedeeldMetStr);
 
     if (!$error) {
         setMessage('success', 'Schema toegevoegd!');

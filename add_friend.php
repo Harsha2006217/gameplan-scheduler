@@ -27,11 +27,11 @@ $error = '';
 
 // Verwerk formulier verzending
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $friendUsername = $_POST['friend_username'] ?? '';
-    $note = $_POST['note'] ?? '';
+    $vriendUsername = $_POST['friend_username'] ?? '';
+    $notitie = $_POST['note'] ?? '';
     $status = $_POST['status'] ?? 'Offline';
 
-    $error = addFriend($userId, $friendUsername, $note, $status);
+    $error = addFriend($userId, $vriendUsername, $notitie, $status);
 
     if (!$error) {
         setMessage('success', 'Vriend toegevoegd!');

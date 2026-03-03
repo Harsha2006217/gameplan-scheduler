@@ -170,10 +170,10 @@ function validateCommaSeparated($waarde, $veldnaam)
     if (empty($waarde))
         return null;
 
-    // Splits op komma en controleer elk item
-    $items = explode(',', $waarde);
-    foreach ($items as $item) {
-        if (empty(trim($item))) {
+    // Splits op komma en controleer elk deel
+    $delen = explode(',', $waarde);
+    foreach ($delen as $deel) {
+        if (empty(trim($deel))) {
             return "$veldnaam bevat lege items.";
         }
     }

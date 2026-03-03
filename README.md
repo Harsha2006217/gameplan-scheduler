@@ -1466,17 +1466,39 @@ Het K1-W4 Testen document bevat **30 kerntests** (5 per user story), verdeeld ov
 
 ### 13.11 Testresultaten samenvatting
 
+**Kerntests (K1-W4 document — 30 tests, 5 per user story):**
+
+| User Story                         | Tests | Geslaagd | Gezakt | Percentage |
+| ---------------------------------- | ----- | -------- | ------ | ---------- |
+| US-1: Profiel met favoriete games  | 5     | 5        | 0      | 100%       |
+| US-2: Vriendenlijst beheren        | 5     | 4        | 1      | 80%        |
+| US-3: Speelschema's delen          | 5     | 5        | 0      | 100%       |
+| US-4: Evenementen toevoegen        | 5     | 5        | 0      | 100%       |
+| US-5: Herinneringen instellen      | 5     | 4        | 1      | 80%        |
+| US-6: Bewerken/verwijderen         | 5     | 5        | 0      | 100%       |
+| **Subtotaal kerntests**            | **30**| **28**   | **2**  | **93%**    |
+
+De 2 gezakte tests betreffen Bug #1001 (US-2: spaties-invoer geaccepteerd) en Bug #1004 (US-5: ongeldige datum geaccepteerd). Na het oplossen van deze bugs zijn alle 30 kerntests opnieuw uitgevoerd met **100% slagingspercentage**.
+
+**Aanvullende tests (README uitbreiding — 22 extra tests):**
+
 | Categorie            | Aantal tests | Geslaagd | Gezakt | Percentage |
 | -------------------- | ------------ | -------- | ------ | ---------- |
-| Registratie          | 7            | 7        | 0      | 100%       |
-| Inloggen             | 5            | 5        | 0      | 100%       |
-| Schema toevoegen     | 8            | 8        | 0      | 100%       |
-| Evenement toevoegen  | 7            | 7        | 0      | 100%       |
-| Vriend toevoegen     | 5            | 5        | 0      | 100%       |
-| Favoriet spel        | 4            | 4        | 0      | 100%       |
-| Bewerken/verwijderen | 7            | 7        | 0      | 100%       |
+| Registratie (extra)  | 2            | 2        | 0      | 100%       |
+| Schema (extra)       | 3            | 3        | 0      | 100%       |
+| Evenement (extra)    | 2            | 2        | 0      | 100%       |
+| Bewerken (extra)     | 2            | 2        | 0      | 100%       |
 | Beveiliging          | 5            | 5        | 0      | 100%       |
 | Responsief ontwerp   | 4            | 4        | 0      | 100%       |
+| Favoriet spel (extra)| 4            | 4        | 0      | 100%       |
+| **Subtotaal extra**  | **22**       | **22**   | **0**  | **100%**   |
+
+**Totaaloverzicht (alle 52 tests na bugfixes):**
+
+| Onderdeel            | Aantal tests | Geslaagd | Gezakt | Percentage |
+| -------------------- | ------------ | -------- | ------ | ---------- |
+| Kerntests (K1-W4)    | 30           | 30       | 0      | 100%       |
+| Aanvullende tests    | 22           | 22       | 0      | 100%       |
 | **TOTAAL**           | **52**       | **52**   | **0**  | **100%**   |
 
 ---
@@ -1485,11 +1507,11 @@ Het K1-W4 Testen document bevat **30 kerntests** (5 per user story), verdeeld ov
 
 ### 14.1 Gevonden fouten en verbeteringen
 
-Tijdens het testen en reviewen van de code zijn de volgende fouten gevonden en verbeterd:
+Tijdens het testen en reviewen van de code zijn de volgende fouten gevonden en verbeterd. De eerste 2 bugs (#1001 en #1004) zijn gevonden via de 30 kerntests (K1-W4). De laatste 2 bugs (#1005 en #1006) zijn gevonden via visuele inspectie en code review.
 
 | Nr        | Fout / Probleem                              | Hoe gevonden                      | Oplossing                                                      | Bestand                  |
 | --------- | -------------------------------------------- | --------------------------------- | -------------------------------------------------------------- | ------------------------ |
-| Bug #1001 | Velden accepteerden alleen spaties           | Handmatig testen                  | Regex `^\s*$` controle toegevoegd                              | functions.php, script.js |
+| Bug #1001 | Velden accepteerden alleen spaties           | Handmatig testen (K1-W4)          | Regex `^\s*$` controle toegevoegd                              | functions.php, script.js |
 | Bug #1004 | Ongeldige datums werden geaccepteerd         | Handmatig testen met "2025-13-45" | `DateTime::createFromFormat()` met strikte controle            | functions.php, script.js |
 | Bug #1005 | CSS kaarten hadden oranje achtergrond        | Visuele inspectie                 | `--glass-bg` van `orange` naar `rgba(255,255,255,0.05)`        | style.css                |
 | Bug #1006 | Sessie-ID werd bij elk verzoek geregenereerd | Code review                       | `session_regenerate_id()` verplaatst naar alleen `loginUser()` | functions.php            |

@@ -1356,11 +1356,16 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 
 ### 13.1 Teststrategie
 
+**Testperiode:** 23 t/m 25 september 2025 (3 dagen, totaal **6 uur** testtijd)
+
 De applicatie is getest op drie niveaus:
 
-1. **Handmatige functionele tests** - Elke functie stap voor stap doorlopen
-2. **Validatietests** - Alle invoervalidaties testen met geldige en ongeldige data
-3. **Beveiligingstests** - Controleren of beveiligingsmaatregelen werken
+1. **Handmatige functionele tests** – Elke functie stap voor stap doorlopen (happy path en edge cases)
+2. **Validatietests** – Alle 18 invoervalidaties testen met geldige en ongeldige data
+3. **Beveiligingstests** – Controleren of beveiligingsmaatregelen werken (SQL-injectie, XSS, URL-manipulatie)
+
+**Testopbouw:**
+Het K1-W4 Testen document bevat **30 kerntests** (5 per user story), verdeeld over de 6 user stories. In de README zijn deze uitgebreid tot **52 individuele testcases** door extra edge cases, beveiligingstests en responsiviteitstests toe te voegen. De 30 kerntests vormen de basis; de overige 22 zijn aanvullende tests.
 
 ### 13.2 Testcases: Registratie
 

@@ -2129,11 +2129,11 @@ Totaal **49 uur** besteed (meer dan de vereiste 40 uur). Het projectlog toont **
 | script.js | 363 regels code | 8+ uur |
 | style.css | 822 regels CSS | 10+ uur |
 | database.sql | 229 regels met commentaar | 5+ uur |
-| 15 PHP-pagina's | ±200 regels per pagina gemiddeld | 12+ uur |
+| 15 PHP-pagina's | ±130 regels per pagina gemiddeld | 12+ uur |
 | README.md | 2900+ regels documentatie | 10+ uur |
 | Testen | 30 testcases uitvoeren (per user story) | 5+ uur |
 | Bugfixes | 2 bugs vinden en oplossen (#1001, #1004) | 3+ uur |
-| **Totaal** | **4000+ regels code + docs** | **49+ uur** |
+| **Totaal** | **7400+ regels code + docs** | **49+ uur** |
 
 **Week voor week voortgang:**
 

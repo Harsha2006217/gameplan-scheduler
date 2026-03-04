@@ -1640,7 +1640,7 @@ Dit overzicht toont hoe dit project alle kerntaken van het examen dekt:
 | **K1-W2 Ontwerp**     | Functioneel en technisch ontwerp    | FO/TO documenten (PDF) | Database ontwerp, wireframes     |
 | **K1-W3 Realisatie**  | Code schrijven en implementeren     | README sectie 1-12     | Alle PHP, JS, CSS, SQL bestanden |
 | **K1-W4 Testen**      | Testcases uitvoeren en documenteren | README sectie 13       | 30 testcases (per user story), 93% → 100% na bugfixes |
-| **K1-W5 Verbeteren**  | Fouten vinden en oplossen           | README sectie 14       | 2 bugs gevonden en gefixt (#1001, #1004) |
+| **K1-W5 Verbeteren**  | Fouten vinden en oplossen           | README sectie 14       | 4 bugs gevonden en gefixt (#1001, #1004 via testen; #1005, #1006 via review) |
 | **K2-W1 Overleggen**  | Communicatie over het project       | Overlegverslagen (PDF) | Bijeenkomsten, feedback          |
 | **K2-W2 Presenteren** | Het project uitleggen               | README + deze sectie   | Demonstratie, uitleg             |
 | **K2-W3 Reflectie**   | Terugkijken op het proces           | Reflectieverslag (PDF) | Wat ging goed/fout               |
@@ -1688,10 +1688,12 @@ De client-side validatie is voor gebruiksgemak. De server-side validatie is voor
 
 #### Punt 5: Bugfixes (hoe ik fouten heb gevonden en opgelost)
 
-"Ik heb 2 bugs gevonden en opgelost tijdens het testproces (K1-W4):
+"Ik heb in totaal **4 bugs** gevonden en opgelost — 2 via het testproces (K1-W4) en 2 via visuele inspectie en code review:
 
 1. **Bug #1001**: Velden accepteerden alleen spaties. Opgelost met `trim()` + regex `/^\s*$/` controle.
 2. **Bug #1004**: Ongeldige datums werden geaccepteerd. Opgelost met `DateTime::createFromFormat()` strikte vergelijking.
+3. **Bug #1005**: CSS kaarten hadden per ongeluk een oranje achtergrond. Opgelost door `--glass-bg` te corrigeren naar `rgba(255,255,255,0.05)`.
+4. **Bug #1006**: Sessie-ID werd bij elk paginaverzoek geregenereerd. Opgelost door `session_regenerate_id()` te verplaatsen naar alleen `loginUser()`.
 
 Voor elke bug heb ik het 5-stappenproces gevolgd: **ontdekken → oorzaak analyseren → oplossen → hertesten → documenteren**."
 
@@ -2132,7 +2134,7 @@ Totaal **49 uur** besteed (meer dan de vereiste 40 uur). Het projectlog toont **
 | 15 PHP-pagina's | ±130 regels per pagina gemiddeld | 12+ uur |
 | README.md | 2900+ regels documentatie | 10+ uur |
 | Testen | 30 testcases uitvoeren (per user story) | 5+ uur |
-| Bugfixes | 2 bugs vinden en oplossen (#1001, #1004) | 3+ uur |
+| Bugfixes | 4 bugs vinden en oplossen (#1001, #1004, #1005, #1006) | 3+ uur |
 | **Totaal** | **7400+ regels code + docs** | **49+ uur** |
 
 **Week voor week voortgang:**
@@ -2458,7 +2460,7 @@ Per bron is kritisch beoordeeld of de informatie actueel, betrouwbaar en toepasb
 
 **Antwoord:**
 
-Tijdens het formele testproces (K1-W4) zijn **2 bugs** gevonden die zijn opgelost:
+Tijdens het project zijn in totaal **4 bugs** gevonden en opgelost — 2 via het formele testproces (K1-W4) en 2 via visuele inspectie en code review:
 
 **Bug #1001 – Velden accepteerden alleen spaties**
 
@@ -2478,10 +2480,28 @@ Tijdens het formele testproces (K1-W4) zijn **2 bugs** gevonden die zijn opgelos
 - **Bestanden gewijzigd:** `functions.php` (server-validatie) en `script.js` (client-validatie met `new Date()` + `isNaN()`)
 - **Hertest:** Na de fix wordt "2025-13-45" correct geweigerd met foutmelding → **Geslaagd**
 
+**Bug #1005 – CSS kaarten hadden oranje achtergrond**
+
+- **Probleem:** Alle kaarten en formulieren toonden een oranje achtergrondkleur in plaats van het glassmorphism-effect
+- **Ontdekt tijdens:** Visuele inspectie van de applicatie
+- **Oorzaak:** De CSS-variabele `--glass-bg` stond ingesteld op `orange` in plaats van een semi-transparante waarde
+- **Oplossing:** `--glass-bg` gewijzigd van `orange` naar `rgba(255, 255, 255, 0.05)` voor het correcte glassmorphism-effect
+- **Bestanden gewijzigd:** `style.css`
+- **Hertest:** Alle pagina's gecontroleerd — kaarten tonen nu correct subtiel glassmorphism-effect → **Geslaagd**
+
+**Bug #1006 – Sessie-ID regeneratie bij elk paginaverzoek**
+
+- **Probleem:** `session_regenerate_id(true)` werd bij elk paginaverzoek aangeroepen, niet alleen bij inloggen
+- **Ontdekt tijdens:** Code review van `functions.php`
+- **Oorzaak:** De functie stond in het sessie-startblok dat bij ELKE paginalading wordt uitgevoerd. Dit gaf de gebruiker steeds een nieuw sessie-ID, wat problemen kon veroorzaken bij gelijktijdige verzoeken.
+- **Oplossing:** `session_regenerate_id(true)` verwijderd uit het sessie-startblok en ALLEEN aangeroepen in `loginUser()` (regel 375) — de correcte plek: alleen na succesvolle authenticatie
+- **Bestanden gewijzigd:** `functions.php`
+- **Hertest:** Inloggen werkt correct, navigatie stabiel zonder sessie-verlies → **Geslaagd**
+
 **Verbeterproces per bug (5-stappenmodel):**
 
 ```
-STAP 1: ONTDEKKEN  → Bug gevonden via handmatig testen
+STAP 1: ONTDEKKEN  → Bug gevonden via handmatig testen of code review
 STAP 2: ANALYSEREN → Oorzaak achterhalen door code te doorlopen
 STAP 3: OPLOSSEN   → Fix implementeren in server + client
 STAP 4: HERTESTEN  → Dezelfde testcase opnieuw uitvoeren
@@ -2794,7 +2814,7 @@ Ik heb het project systematisch aangepakt in 5 fasen:
 | Week 1 | K1-W1 Planning | Projectplan, user stories, MoSCoW, SMART-doel, takenplanning |
 | Week 1-2 | K1-W2 Ontwerp | Database-ontwerp (ERD), functioneel ontwerp, technisch ontwerp, wireframes |
 | Week 1-4 | K1-W3 Realisatie | 22+ bestanden coderen (PHP, JS, CSS, SQL), 10 beveiligingsmaatregelen, 18 validatieregels |
-| Week 4 | K1-W4 Testen | 30 testcases uitvoeren, 2 bugs vinden en oplossen, performance test |
+| Week 4 | K1-W4 Testen | 30 testcases uitvoeren, 2 bugs vinden via testen + 2 via review, performance test |
 | Week 4 | K1-W5 Verbeteren | 6 verbetervoorstellen, feedback verwerken, oplevering |
 
 **R – Resultaat:**
@@ -2875,7 +2895,7 @@ Er is een portfolio-presentatie voorbereid die het volledige project samenvat en
 | 5 | Beveiligingsmaatregelen | 10 maatregelen met uitleg (BCrypt, PDO, safeEcho, etc.) |
 | 6 | Validaties | 18 regels, dubbele validatie (client + server) |
 | 7 | Live demonstratie | Alle functionaliteiten doorlopen |
-| 8 | Testresultaten | 30 testcases, 93%→100%, 2 bugs gevonden en opgelost |
+| 8 | Testresultaten | 30 testcases, 93%→100%, 4 bugs gevonden en opgelost (2 via testen, 2 via review) |
 | 9 | Verbeteringen | 6 voorstellen met prioritering |
 | 10 | Reflectie | STARR-methode, leermomenten, wat ging goed/kon beter |
 

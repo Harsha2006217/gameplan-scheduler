@@ -21,5 +21,3 @@ Icon?
 !database.sql
 # Ensure database.sql is tracked, but any personal backups are ignored.
 
-# Claude Code temp files and directories
-tmpclaude-*

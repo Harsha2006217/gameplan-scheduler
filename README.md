@@ -1154,7 +1154,7 @@ Voor elke bewerk- of verwijderactie wordt gecontroleerd of de ingelogde gebruike
 Technische foutmeldingen (met databasepad, queries, etc.) worden NOOIT aan de gebruiker getoond. Ze worden gelogd met `error_log()` voor ontwikkelaars. Gebruikers zien alleen generieke berichten zoals "Er is een fout opgetreden."
 
 **B9 - Soft delete**
-Data wordt nooit echt verwijderd. In plaats daarvan wordt het veld `deleted_at` gezet op de huidige datum/tijd. Alle queries filteren op `WHERE deleted_at IS NULL`. Dit biedt mogelijkheid tot herstel.
+Data wordt niet echt verwijderd. In plaats daarvan wordt het veld `deleted_at` gezet op de huidige datum/tijd. Alle queries filteren op `WHERE deleted_at IS NULL`. Dit biedt mogelijkheid tot herstel. Uitzondering: de koppeltabel `UserGames` (favorieten) gebruikt harde delete omdat het een relatie-koppeling is — het spel zelf blijft bewaard in de `Games` tabel.
 
 ---
 
@@ -1682,7 +1682,7 @@ De client-side validatie is voor gebruiksgemak. De server-side validatie is voor
 
 - `Users` is de hoofdtabel waar alle andere tabellen naar verwijzen
 - `UserGames` is een **koppeltabel** (veel-op-veel relatie) tussen Users en Games
-- Alle tabellen hebben `deleted_at` voor **soft delete**: data wordt nooit echt verwijderd
+- 5 van de 6 tabellen hebben `deleted_at` voor **soft delete**: data wordt niet echt verwijderd. De koppeltabel `UserGames` gebruikt harde delete (het spel zelf blijft in `Games`)
 - Ik gebruik **foreign keys met CASCADE**: als een gebruiker verwijderd wordt, worden automatisch al hun vrienden, schema's en evenementen ook verwijderd
 - Ik heb **indexen** toegevoegd op veelgebruikte kolommen voor snellere queries"
 
@@ -1707,7 +1707,7 @@ A: "Ik gebruik PDO prepared statements. In plaats van de gebruikersinvoer direct
 A: "Client-side validatie draait in de browser met JavaScript. Het geeft snelle feedback, maar kan uitgeschakeld worden. Server-side validatie draait op de server met PHP. Dit kan NIET omzeild worden. Ik gebruik BEIDE: JavaScript voor gebruiksgemak, PHP voor veiligheid."
 
 **V: "Wat is soft delete en waarom gebruik je het?"**
-A: "Bij soft delete markeer ik een record als verwijderd door `deleted_at` op de huidige datum te zetten. De data blijft in de database staan. Alle queries filteren op `WHERE deleted_at IS NULL` om verwijderde items te verbergen. Het voordeel is dat data hersteld kan worden als iemand per ongeluk iets verwijdert."
+A: "Bij soft delete markeer ik een record als verwijderd door `deleted_at` op de huidige datum te zetten. De data blijft in de database staan. Alle queries filteren op `WHERE deleted_at IS NULL` om verwijderde items te verbergen. Het voordeel is dat data hersteld kan worden als iemand per ongeluk iets verwijdert. De enige uitzondering is de koppeltabel `UserGames` (favorieten): daar gebruik ik harde delete omdat het alleen een relatie-koppeling is — het spel zelf blijft altijd bewaard in de `Games` tabel."
 
 **V: "Hoe werkt de sessie timeout?"**
 A: "Na inloggen wordt `$_SESSION['last_activity']` opgeslagen met de huidige tijd. Bij elk paginaverzoek controleert `checkSessionTimeout()` of het verschil met de huidige tijd groter is dan 1800 seconden (30 minuten). Als dat zo is, wordt de sessie vernietigd en de gebruiker naar de loginpagina gestuurd."
@@ -2661,7 +2661,7 @@ De stagebegeleider Marius Restua (Kompas Publishing B.V.) heeft een beoordelings
 | "Voeg eigenaarschapscontrole toe" | `checkOwnership()` functie geïmplementeerd in functions.php |
 | "Dubbele validatie toepassen" | 18 validatieregels op zowel client (JS) als server (PHP) |
 | "Documentatie uitbreiden" | README uitgebreid naar 2900+ regels met alle 16 secties |
-| "Soft delete toevoegen" | `deleted_at` kolom in alle 6 tabellen, alle queries aangepast |
+| "Soft delete toevoegen" | `deleted_at` kolom in 5 tabellen (Users, Games, Friends, Schedules, Events); koppeltabel UserGames gebruikt harde delete |
 
 **Bewijs:** PDF `Feedback Stage-Begeleider van Harsha Kanaparthi- K2 - W1.pdf`, PDF `Feedback Stage Harsha Kanaparthi .pdf` en PDF `Beoordelingsrubrics Stagiaire- Harsha .pdf`.
 

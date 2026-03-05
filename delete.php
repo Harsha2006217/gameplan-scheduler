@@ -3,41 +3,188 @@
  * ==========================================================================
  * DELETE.PHP - VERWIJDER HANDLER (BACKEND SCRIPT)
  * ==========================================================================
- * Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
+ * Bestandsnaam : delete.php
+ * Auteur       : Harsha Kanaparthi
+ * Studentnummer: 2195344
+ * Opleiding    : MBO-4 Software Developer (Crebo 25998)
+ * Datum        : 30-09-2025
+ * Versie       : 1.0
+ * PHP-versie   : 8.1+
+ * Encoding     : UTF-8
  *
+ * ==========================================================================
+ * BESCHRIJVING
+ * ==========================================================================
  * Dit bestand is een PUUR BACKEND SCRIPT - het bevat GEEN HTML-code.
  * Het enige doel van dit bestand is: ontvang een verwijderverzoek via de URL,
  * voer de juiste verwijder-functie uit, en stuur de gebruiker terug naar
  * de juiste pagina met een succes- of foutmelding.
  *
- * HOE HET WERKT (stap voor stap):
- * 1. De gebruiker klikt op een "verwijder" knop ergens in de applicatie
- * 2. Die knop stuurt de browser naar: delete.php?type=schedule&id=5
- * 3. Dit script leest "type" en "id" uit de URL ($_GET parameters)
- * 4. Op basis van het type wordt de juiste verwijder-functie aangeroepen
- * 5. De functie voert een SOFT DELETE uit (zet deleted_at timestamp)
- * 6. Er wordt een succes- of foutmelding klaargezet in de sessie
- * 7. De gebruiker wordt doorgestuurd (redirect) naar de juiste pagina
+ * UNIEK AAN DIT BESTAND:
+ * - Bevat GEEN HTML (puur PHP server-side logica)
+ * - Ontvangt gegevens via GET (URL-parameters), niet via POST (formulier)
+ * - Voert alleen SOFT DELETE uit (data wordt nooit echt gewist)
+ * - Werkt als een "router": stuurt het verzoek door naar de juiste functie
+ * - Toont zelf niets: stuurt altijd door (redirect) naar een andere pagina
  *
+ * ==========================================================================
+ * HOE HET WERKT (VERZOEK-STROOM / REQUEST FLOW)
+ * ==========================================================================
+ *
+ * ┌─────────────────────────────────────────────────────────────────────┐
+ * │ 1. Gebruiker klikt op een "Verwijder" knop op een pagina           │
+ * │    Voorbeeld: op index.php bij een speelschema                     │
+ * │                                                                     │
+ * │ 2. Browser navigeert naar: delete.php?type=schedule&id=5           │
+ * │    - type = welk soort item (schedule/event/favorite/friend)       │
+ * │    - id   = welk specifiek item (database primary key)             │
+ * │                                                                     │
+ * │ 3. PHP leest de URL-parameters via $_GET                           │
+ * │    $type = $_GET['type'] → "schedule"                              │
+ * │    $id   = $_GET['id']   → 5                                      │
+ * │                                                                     │
+ * │ 4. if/elseif keten bepaalt welke functie wordt aangeroepen         │
+ * │    → deleteSchedule($userId, $id) ← SOFT DELETE                   │
+ * │                                                                     │
+ * │ 5. Flash melding wordt klaargezet in $_SESSION                     │
+ * │    → setMessage('success', 'Schema succesvol verwijderd!')         │
+ * │                                                                     │
+ * │ 6. Redirect naar de juiste pagina: header("Location: index.php")   │
+ * │    De melding verschijnt daar 1x en verdwijnt daarna               │
+ * └─────────────────────────────────────────────────────────────────────┘
+ *
+ * ==========================================================================
  * WAT IS SOFT DELETE?
+ * ==========================================================================
  * Bij een "soft delete" wordt data NIET echt uit de database verwijderd.
  * In plaats daarvan wordt er een tijdstempel (deleted_at) gezet op het record.
- * Dit betekent dat de data nog steeds in de database staat, maar als
- * "verwijderd" wordt behandeld. Voordelen hiervan zijn:
+ *
+ * ┌──────────────────────────────────────────────────────────────────┐
+ * │ HARD DELETE (NIET gebruikt):                                     │
+ * │   DELETE FROM Schedules WHERE schedule_id = 5                    │
+ * │   → Rij is PERMANENT weg, NIET meer te herstellen               │
+ * │                                                                   │
+ * │ SOFT DELETE (WEL gebruikt):                                      │
+ * │   UPDATE Schedules SET deleted_at = NOW() WHERE schedule_id = 5  │
+ * │   → Rij staat er NOG, maar deleted_at is niet meer NULL          │
+ * │   → Alle queries filteren op WHERE deleted_at IS NULL            │
+ * │   → Rij is dus "onzichtbaar" maar herstelbaar                    │
+ * └──────────────────────────────────────────────────────────────────┘
+ *
+ * Voordelen van soft delete:
  * - Data kan later hersteld worden als de gebruiker zich bedenkt
  * - Er is een audit trail (je kunt zien wanneer iets verwijderd is)
  * - Referentiele integriteit blijft behouden (geen kapotte verwijzingen)
  *
- * Dit bestand handelt het verwijderen af van items:
- * - Schema's (speelschema's)
- * - Evenementen
- * - Favoriete spellen
- * - Vrienden
+ * ==========================================================================
+ * ONDERSTEUNDE VERWIJDER-TYPES (4 types)
+ * ==========================================================================
+ * ┌────────────┬──────────────────────┬─────────────┬────────────────────┐
+ * │ Type (URL) │ Functie              │ Tabel       │ Redirect naar      │
+ * ├────────────┼──────────────────────┼─────────────┼────────────────────┤
+ * │ schedule   │ deleteSchedule()     │ Schedules   │ index.php          │
+ * │ event      │ deleteEvent()        │ Events      │ index.php          │
+ * │ favorite   │ deleteFavoriteGame() │ UserGames   │ profile.php        │
+ * │ friend     │ deleteFriend()       │ Friends     │ add_friend.php     │
+ * │ (ongeldig) │ (geen functie)       │ (geen)      │ index.php          │
+ * └────────────┴──────────────────────┴─────────────┴────────────────────┘
  *
- * Beveiliging:
- * - Controleert of gebruiker ingelogd is
- * - Valideert eigenaarschap voor verwijdering
- * - Geeft juiste succes/fout meldingen
+ * ==========================================================================
+ * DATABASE TABELLEN DIE BEÏNVLOED WORDEN
+ * ==========================================================================
+ * ┌─────────────┬──────────────┬────────────────────────────────────────┐
+ * │ Tabel       │ Kolom        │ Wat er gebeurt bij soft delete         │
+ * ├─────────────┼──────────────┼────────────────────────────────────────┤
+ * │ Schedules   │ deleted_at   │ NULL → NOW() (huidige datum/tijd)      │
+ * │ Events      │ deleted_at   │ NULL → NOW() (huidige datum/tijd)      │
+ * │ UserGames   │ (hele rij)   │ DELETE (hard delete, geen soft delete) │
+ * │ Friends     │ deleted_at   │ NULL → NOW() (huidige datum/tijd)      │
+ * └─────────────┴──────────────┴────────────────────────────────────────┘
+ *
+ * LET OP: UserGames gebruikt een HARD DELETE omdat het een koppeltabel is.
+ * De relatie (welke user welk spel favoriet heeft) wordt volledig verwijderd.
+ *
+ * ==========================================================================
+ * BEVEILIGING (Security)
+ * ==========================================================================
+ * 1. INLOG-CONTROLE: isLoggedIn() controleert of de gebruiker een geldige
+ *    sessie heeft. Zonder inlog → redirect naar login.php.
+ *    → OWASP A01: Broken Access Control voorkomen
+ *
+ * 2. EIGENAARSCHAP-CONTROLE: Elke delete-functie controleert of het item
+ *    daadwerkelijk van de ingelogde gebruiker is ($userId).
+ *    Gebruiker A kan NIET de items van Gebruiker B verwijderen.
+ *    → OWASP A01: Broken Access Control voorkomen
+ *
+ * 3. SESSIE-TIMEOUT: checkSessionTimeout() beëindigt inactieve sessies
+ *    na 30 minuten. Voorkomt misbruik op onbeheerde computers.
+ *
+ * 4. PREPARED STATEMENTS: De delete-functies in functions.php gebruiken
+ *    PDO prepared statements. Het ID wordt als parameter meegegeven,
+ *    NIET direct in de SQL-query geplakt.
+ *    → OWASP A03: Injection voorkomen
+ *
+ * 5. EXIT NA REDIRECT: Na elke header("Location:") volgt exit; zodat
+ *    geen code meer wordt uitgevoerd na het doorsturen.
+ *
+ * 6. FLASH MESSAGES: setMessage() slaat meldingen op in $_SESSION.
+ *    Geen gevoelige informatie in de URL (geen ?error=... parameters).
+ *
+ * ==========================================================================
+ * BESTANDSSTRUCTUUR (6 stappen)
+ * ==========================================================================
+ * STAP 1: functions.php laden + sessie-timeout controleren
+ * STAP 2: Inlog-controle (isLoggedIn) → redirect als niet ingelogd
+ * STAP 3: URL-parameters ophalen ($_GET: type + id)
+ * STAP 4: if/elseif keten → juiste delete-functie aanroepen
+ * STAP 5: Flash melding klaarzetten (succes of fout)
+ * STAP 6: Redirect naar de juiste pagina + exit
+ *
+ * ==========================================================================
+ * GEBRUIKTE BESTANDEN
+ * ==========================================================================
+ * - functions.php : Alle delete-functies + isLoggedIn + getUserId + setMessage
+ *   (functions.php laadt op zijn beurt db.php voor database-toegang)
+ *
+ * PAGINA'S DIE NAAR DIT BESTAND LINKEN:
+ * - index.php     : Verwijderknoppen bij schema's en evenementen
+ * - profile.php   : Verwijderknoppen bij favoriete spellen
+ * - add_friend.php: Verwijderknoppen bij vrienden in de vriendenlijst
+ *
+ * ==========================================================================
+ * PHP CONCEPTEN GEBRUIKT IN DIT BESTAND
+ * ==========================================================================
+ * - require_once          : Bestand laden (eenmalig, fatale fout als niet gevonden)
+ * - $_GET                 : Superglobale array met URL-parameters
+ * - ?? (null coalescing)  : Standaardwaarde als variabele null/niet-bestaand is
+ * - if/elseif/else        : Voorwaardelijke logica (vertakkingsstructuur)
+ * - == (vergelijking)     : Controleert of twee waarden gelijk zijn
+ * - ! (logische NOT)      : Keert een boolean waarde om (true→false, false→true)
+ * - header("Location:")   : HTTP redirect - stuurt browser naar andere pagina
+ * - exit                  : Stopt het PHP-script onmiddellijk
+ * - Associatieve array    : Array met naamsleutels ($typeNamen['schedule'] → 'Schema')
+ * - . (concatenatie)      : Teksten aan elkaar plakken
+ * - Flash messages        : Eenmalige meldingen via $_SESSION
+ *
+ * ==========================================================================
+ * VERSCHIL MET ANDERE PAGINA'S
+ * ==========================================================================
+ * ┌──────────────────────┬──────────┬──────────┬──────────┬──────────────┐
+ * │ Eigenschap           │ delete   │ add_event│ login    │ contact      │
+ * ├──────────────────────┼──────────┼──────────┼──────────┼──────────────┤
+ * │ Bevat HTML?          │ Nee      │ Ja       │ Ja       │ Ja           │
+ * │ Ontvangt via GET?    │ Ja       │ Nee      │ Nee      │ Nee          │
+ * │ Ontvangt via POST?   │ Nee      │ Ja       │ Ja       │ Nee          │
+ * │ Heeft formulier?     │ Nee      │ Ja       │ Ja       │ Nee          │
+ * │ Redirect altijd?     │ Ja       │ Na POST  │ Na POST  │ Nee          │
+ * │ Database schrijven?  │ UPDATE   │ INSERT   │ SELECT   │ Nee          │
+ * │ Toont zelf pagina?   │ Nee      │ Ja       │ Ja       │ Ja           │
+ * └──────────────────────┴──────────┴──────────┴──────────┴──────────────┘
+ *
+ * delete.php is UNIEK omdat het de enige pagina is die:
+ * - GEEN HTML bevat (puur backend logica)
+ * - ALTIJD redirect (toont nooit zelf iets)
+ * - GET-parameters gebruikt in plaats van POST-formulieren
  * ==========================================================================
  */
 
@@ -296,4 +443,24 @@ header("Location: " . $doorstuurPagina);
 // 3. Extra serverbelasting door onnodige verwerking
 // exit; stopt het PHP-script ONMIDDELLIJK en volledig.
 exit;
+
+// ==========================================================================
+// EINDE VAN DELETE.PHP
+// ==========================================================================
+// LET OP: Er staat hier GEEN afsluitende PHP tag (  wordt WEGGELATEN).
+// Dit is een BEST PRACTICE (PSR-12 standaard) omdat een afsluitende  tag
+// onzichtbare witruimte kan toevoegen, wat "headers already sent" fouten
+// veroorzaakt bij header("Location:") redirects.
+// Aangezien dit bestand ALTIJD een redirect doet, is het extra belangrijk
+// om geen onbedoelde uitvoer te genereren.
+//
+// SAMENVATTING VAN DIT BESTAND:
+// ─────────────────────────────
+// - 4 verwijder-types: schedule, event, favorite, friend
+// - 4 delete-functies: deleteSchedule, deleteEvent, deleteFavoriteGame, deleteFriend
+// - Soft delete patroon: deleted_at = NOW() (data blijft bewaard)
+// - Flash messages: succes (groen) of fout (rood) melding via $_SESSION
+// - Altijd redirect: toont zelf GEEN HTML, stuurt altijd door
+// - Beveiliging: inlog-check + eigenaarschap-check + sessie-timeout
+// ==========================================================================
 ?>

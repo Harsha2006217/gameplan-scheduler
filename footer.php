@@ -3,23 +3,142 @@
  * ==========================================================================
  * FOOTER.PHP - WEBSITE FOOTER (ONDERBALK)
  * ==========================================================================
- * Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
+ * Bestandsnaam : footer.php
+ * Auteur       : Harsha Kanaparthi
+ * Studentnummer: 2195344
+ * Opleiding    : MBO-4 Software Developer (Crebo 25998)
+ * Datum        : 30-09-2025
+ * Versie       : 1.0
+ * PHP-versie   : 8.1+
+ * Encoding     : UTF-8
  *
- * WAT DOET DIT BESTAND?
- * ---------------------
- * Dit bestand bevat de onderbalk (footer) die op ELKE pagina verschijnt.
- * De footer staat VAST aan de onderkant van het scherm en bevat:
- * - Copyright informatie (wie de app heeft gemaakt en in welk jaar)
- * - Link naar het Privacybeleid (verplicht voor AVG/GDPR wetgeving)
- * - Link naar de Contact pagina
+ * ==========================================================================
+ * BESCHRIJVING
+ * ==========================================================================
+ * Dit bestand bevat de vaste onderbalk (footer) die op ELKE pagina verschijnt.
+ * De footer staat VAST aan de onderkant van het scherm (fixed-bottom) en bevat:
+ *   - Copyright informatie (wie de app heeft gemaakt en in welk jaar)
+ *   - Link naar het Privacybeleid (verplicht voor AVG/GDPR wetgeving)
+ *   - Link naar de Contact pagina
  *
- * Dit bestand wordt INGEVOEGD in andere pagina's met de PHP include functie.
+ * Dit bestand wordt INGEVOEGD in andere pagina's met de PHP include functie:
+ *   <?php include 'footer.php'; ?>
  * Zo hoef je de footer niet in elk bestand opnieuw te schrijven.
+ * Dit is het DRY-principe: "Don't Repeat Yourself" (Herhaal Jezelf Niet).
  *
- * ONTWERP SPECIFICATIES:
- * - Hoogte: 50px (volgens het ontwerpdocument)
- * - Positie: vast aan de onderkant (fixed-bottom)
- * - Kleur: donkere achtergrond met lichte tekst
+ * Samen met header.php vormt dit de "wrapper" (omhulsel) van elke pagina:
+ *   header.php → navigatiebalk BOVENAAN
+ *   footer.php → onderbalk ONDERAAN
+ *
+ * ==========================================================================
+ * HOE DIT BESTAND WORDT GEBRUIKT
+ * ==========================================================================
+ *
+ * ┌─────────────────────────────────────────────────────────────────────┐
+ * │ Elke pagina (bijv. index.php, profile.php, login.php) doet:       │
+ * │                                                                     │
+ * │   <?php include 'header.php'; ?>   ← navigatiebalk BOVENAAN       │
+ * │                                                                     │
+ * │   <main> ... pagina-inhoud ... </main>                              │
+ * │                                                                     │
+ * │   <?php include 'footer.php'; ?>   ← onderbalk ONDERAAN           │
+ * │                                                                     │
+ * │ De footer wordt als LAATSTE HTML-element geladen, net voor         │
+ * │ de Bootstrap JS en script.js worden ingeladen.                     │
+ * └─────────────────────────────────────────────────────────────────────┘
+ *
+ * ==========================================================================
+ * ONTWERP SPECIFICATIES
+ * ==========================================================================
+ * ┌──────────────────────┬──────────────────────────────────────────────┐
+ * │ Eigenschap           │ Waarde                                       │
+ * ├──────────────────────┼──────────────────────────────────────────────┤
+ * │ Hoogte               │ ~50px (automatisch via p-2 padding)          │
+ * │ Positie              │ fixed-bottom (altijd zichtbaar onderaan)     │
+ * │ Achtergrondkleur     │ bg-secondary (overschreven door style.css)   │
+ * │ Tekstkleur           │ text-light (wit)                             │
+ * │ Uitlijning           │ text-center (gecentreerd)                    │
+ * │ Padding              │ p-2 (0.5rem = 8px rondom)                    │
+ * │ Links kleur          │ text-info (cyaan/lichtblauw)                 │
+ * │ Links onderstreping  │ text-decoration-none (geen)                  │
+ * │ Scheidingstekens     │ | (verticale streep) in text-secondary       │
+ * └──────────────────────┴──────────────────────────────────────────────┘
+ *
+ * ==========================================================================
+ * VERSCHIL MET HEADER.PHP
+ * ==========================================================================
+ * ┌──────────────────────┬───────────────────┬─────────────────────────┐
+ * │ Eigenschap           │ header.php        │ footer.php              │
+ * ├──────────────────────┼───────────────────┼─────────────────────────┤
+ * │ Positie op de pagina │ Bovenaan          │ Onderaan                │
+ * │ HTML-element         │ <nav>             │ <footer>                │
+ * │ Bootstrap positie    │ fixed-top         │ fixed-bottom            │
+ * │ Inhoud               │ Logo + navigatie  │ Copyright + links       │
+ * │ PHP-logica?          │ Ja (inlog-check)  │ Nee (puur HTML)         │
+ * │ Aantal links         │ 5-7 (dynamisch)   │ 2 (statisch)            │
+ * │ Responsive menu?     │ Ja (hamburger)    │ Nee (altijd zichtbaar)  │
+ * │ Bevat JavaScript?    │ Nee               │ Nee                     │
+ * └──────────────────────┴───────────────────┴─────────────────────────┘
+ *
+ * ==========================================================================
+ * WAAR WORDT DIT BESTAND GE-INCLUDE?
+ * ==========================================================================
+ * Dit bestand wordt ge-include op ALLE pagina's van de applicatie:
+ *   - index.php            (dashboard / hoofdpagina)
+ *   - profile.php          (profielpagina)
+ *   - login.php            (inlogpagina)
+ *   - register.php         (registratiepagina)
+ *   - add_event.php        (evenement toevoegen)
+ *   - edit_event.php       (evenement bewerken)
+ *   - add_schedule.php     (speelschema toevoegen)
+ *   - edit_schedule.php    (speelschema bewerken)
+ *   - add_friend.php       (vriend toevoegen + vriendenlijst)
+ *   - edit_friend.php      (vriend bewerken)
+ *   - edit_favorite.php    (favoriet spel bewerken)
+ *   - contact.php          (contactpagina)
+ *   - privacy.php          (privacybeleid)
+ *   - delete.php           (verwijderpagina)
+ *
+ * ==========================================================================
+ * HTML STRUCTUUR VAN DE FOOTER
+ * ==========================================================================
+ *
+ *   <footer>
+ *     ├── <span> Copyright © 2025 tekst
+ *     ├── <span> | scheidingsteken
+ *     ├── <a>    Link naar privacy.php (Privacybeleid)
+ *     ├── <span> | scheidingsteken
+ *     └── <a>    Link naar contact.php (Contact)
+ *   </footer>
+ *
+ * ==========================================================================
+ * BEVEILIGING EN WETGEVING
+ * ==========================================================================
+ * 1. GEEN PHP-LOGICA: Dit bestand bevat GEEN PHP-code (afgezien van de
+ *    header-commentaar). Het is puur HTML en daardoor veilig.
+ *
+ * 2. AVG/GDPR COMPLIANCE: De link naar privacy.php is VERPLICHT volgens
+ *    Europese privacywetgeving (Algemene Verordening Gegevensbescherming).
+ *    Gebruikers moeten worden geïnformeerd over gegevensverzameling.
+ *
+ * 3. XSS-VEILIG: Alle tekst in de footer is STATISCH (hardcoded).
+ *    Er wordt geen gebruikersinvoer weergegeven, dus XSS is niet mogelijk.
+ *
+ * ==========================================================================
+ * HTML CONCEPTEN GEBRUIKT IN DIT BESTAND
+ * ==========================================================================
+ * - <footer>               : Semantisch HTML5-element voor onderbalk
+ * - <span>                 : Inline container voor tekstreeksen
+ * - <a href="...">         : Hyperlinks naar andere pagina's
+ * - Bootstrap: bg-secondary, p-2, text-center, fixed-bottom
+ * - Bootstrap: text-light, text-secondary, text-info, mx-2
+ * - text-decoration-none   : CSS-klasse om onderstreping te verwijderen
+ * - fixed-bottom           : CSS-positie vast aan onderkant viewport
+ * - ©                      : HTML-entiteit voor copyright-symbool
+ *
+ * CSS CONCEPTEN (style.css overschrijvingen):
+ * - De footer-achtergrondkleur wordt overschreven door style.css
+ *   met het donkere gaming-thema (glassmorphism-effect).
  * ==========================================================================
  */
 ?>

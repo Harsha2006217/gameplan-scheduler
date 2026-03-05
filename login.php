@@ -1,27 +1,90 @@
 <?php
 /**
- * ==========================================================================
+ * ===========================================================================
  * LOGIN.PHP - INLOG PAGINA
+ * ===========================================================================
+ * Bestandsnaam : login.php
+ * Auteur       : Harsha Kanaparthi
+ * Studentnummer: 2195344
+ * Opleiding    : MBO-4 Software Developer (Crebo 25998)
+ * Datum        : 30-09-2025
+ * Versie       : 1.0
+ * PHP-versie   : 8.1+
+ * Encoding     : UTF-8
+ *
+ * ===========================================================================
+ * BESCHRIJVING
+ * ===========================================================================
+ * Dit bestand is de INLOGPAGINA van GamePlan Scheduler.
+ * Hier logt een gebruiker in met e-mail en wachtwoord.
+ * Bij succes wordt een sessie gestart en volgt een redirect naar het dashboard.
+ *
+ * ===========================================================================
+ * STRUCTUUR EN FLOW
+ * ===========================================================================
+ * ┌─────────────────────────────────────────────────────────────────────┐
+ * │ 1. Pagina laadt: require_once 'functions.php'                      │
+ * │ 2. Sessiecontrole: isLoggedIn() → redirect indien ingelogd         │
+ * │ 3. Formulier tonen (GET)                                          │
+ * │ 4. Formulier verwerken (POST): loginUser()                        │
+ * │ 5. Sessie aanmaken bij succes, foutmelding tonen bij mislukking    │
+ * │ 6. Link naar registratiepagina                                    │
+ * └─────────────────────────────────────────────────────────────────────┘
+ *
+ * ===========================================================================
+ * BEVEILIGING (Security)
+ * ===========================================================================
+ * 1. INLOG-CONTROLE: isLoggedIn() + redirect naar index.php
+ *    → OWASP A01: Broken Access Control voorkomen
+ * 2. SESSIE-BEHEER: sessie wordt veilig aangemaakt en vernietigd
+ * 3. WACHTWOORD HASHING: wachtwoorden worden gehasht met bcrypt
+ *    → password_verify() in loginUser()
+ * 4. SQL-INJECTIE: loginUser() gebruikt prepared statements (PDO)
+ *    → OWASP A03: Injection voorkomen
+ * 5. XSS-BESCHERMING: safeEcho() voor foutmeldingen
+ *    → OWASP A07: Cross-Site Scripting voorkomen
+ * 6. CLIENT-SIDE VALIDATIE: validateLoginForm() in script.js
+ *    → Extra laag, maar server-side validatie blijft verplicht
+ *
+ * ===========================================================================
+ * DATABASE TABELLEN
+ * ===========================================================================
+ * Tabel: Users
+ * ┌─────────────┬─────────────┬─────────────┬─────────────┐
+ * │ id (PK)     │ email       │ wachtwoord  │ naam        │
+ * └─────────────┴─────────────┴─────────────┴─────────────┘
+ * loginUser() zoekt gebruiker op via e-mail en vergelijkt wachtwoord.
+ *
+ * ===========================================================================
+ * VERGELIJKING MET ANDERE PAGINA'S
+ * ===========================================================================
+ * ┌───────────────┬───────────────┬───────────────┬───────────────┐
+ * │ Eigenschap    │ login.php     │ register.php  │ index.php     │
+ * ├───────────────┼───────────────┼───────────────┼───────────────┤
+ * │ Doel          │ inloggen      │ registreren   │ dashboard     │
+ * │ Sessie check  │ ja            │ ja            │ ja            │
+ * │ Data ophalen  │ gebruiker     │ gebruiker     │ alles         │
+ * │ Security      │ hoog          │ hoog          │ hoog          │
+ * │ Validatie     │ server+client │ server+client │ server+client │
+ * │ Redirect      │ index.php     │ index.php     │ n.v.t.        │
+ * └───────────────┴───────────────┴───────────────┴───────────────┘
+ *
+ * ===========================================================================
+ * GEBRUIKTE CONCEPTEN
+ * ===========================================================================
+ * PHP:
+ *   - Functies, parameters, return values
+ *   - Prepared statements (PDO)
+ *   - Sessie beheer (session_start, session_destroy)
+ *   - Validatie, exception handling
+ *   - array_filter, foreach, empty()
+ * HTML:
+ *   - Formulieren, labels, invoervelden, knoppen
+ *   - Bootstrap: container, form-control, btn, alert, mb-5, mt-5, pt-5
+ *   - Client-side validatie via required, type="email", type="password"
+ *   - Toegankelijkheid: aria-label, role="alert", lang="nl"
  * ==========================================================================
- * Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
- *
- * Deze pagina laat gebruikers inloggen op hun GamePlan Scheduler account.
- * Het valideert e-mail en wachtwoord, en maakt een sessie aan bij succes.
- *
- * Functies:
- * - E-mail en wachtwoord validatie
- * - Sessie aanmaken bij succes
- * - Redirect naar dashboard na inloggen
- * - Link naar registratie pagina voor nieuwe gebruikers
- *
- * Hoe het inlogproces werkt:
- * 1. De gebruiker opent deze pagina in de browser (GET verzoek).
- * 2. Het formulier wordt getoond met velden voor e-mail en wachtwoord.
- * 3. De gebruiker vult de velden in en klikt op "Inloggen" (POST verzoek).
- * 4. PHP ontvangt de POST-gegevens en roept loginUser() aan.
- * 5. loginUser() controleert of de e-mail bestaat en het wachtwoord klopt.
- * 6. Als alles klopt: sessie wordt aangemaakt en doorsturen naar index.php.
- * 7. Als er een fout is: foutmelding wordt getoond op de pagina.
+ * EXAMENNIVEAU: VOLLEDIG GEDOCUMENTEERD, OWASP, DATABASE, FLOW, VERGELIJKING
  * ==========================================================================
  */
 

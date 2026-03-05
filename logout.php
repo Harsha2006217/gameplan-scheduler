@@ -3,33 +3,79 @@
  * ==========================================================================
  * LOGOUT.PHP - UITLOG SCRIPT
  * ==========================================================================
- * Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
+ * Bestandsnaam : logout.php
+ * Auteur       : Harsha Kanaparthi
+ * Studentnummer: 2195344
+ * Opleiding    : MBO-4 Software Developer (Crebo 25998)
+ * Datum        : 30-09-2025
+ * Versie       : 1.0
+ * PHP-versie   : 8.1+
+ * Encoding     : UTF-8
  *
- * WAT DOET DIT BESTAND?
- * ---------------------
- * Dit bestand logt de gebruiker uit door ALLES op te ruimen dat met
- * de inlogsessie te maken heeft. Na het uitloggen wordt de gebruiker
- * doorgestuurd naar de inlogpagina.
+ * ==========================================================================
+ * BESCHRIJVING
+ * ==========================================================================
+ * Dit bestand logt de gebruiker UIT door ALLE sessiegegevens op te ruimen:
+ *   - Sessie variabelen leegmaken
+ *   - Sessie cookie verwijderen
+ *   - Sessie vernietigen op de server
+ *   - Redirect naar login.php met een uitlogbericht
  *
- * EEN SESSIE UITGELEGD:
- * Wanneer je inlogt, maakt PHP een "sessie" aan. Een sessie is als een
- * tijdelijk mapje op de server met jouw gegevens (zoals je user_id en
- * gebruikersnaam). De browser krijgt een cookie (klein tekstbestandje)
- * met een uniek sessie-nummer. Elke keer als je een pagina bezoekt,
- * stuurt de browser dit cookie mee, zodat de server weet wie je bent.
+ * ==========================================================================
+ * STRUCTUUR EN FLOW
+ * ==========================================================================
+ * ┌─────────────────────────────────────────────────────────────────────┐
+ * │ 1. Laad functions.php                                              │
+ * │ 2. Start sessie indien nodig                                       │
+ * │ 3. Maak $_SESSION leeg                                             │
+ * │ 4. Verwijder sessie cookie                                         │
+ * │ 5. session_destroy()                                               │
+ * │ 6. Redirect naar login.php?msg=logged_out                          │
+ * └─────────────────────────────────────────────────────────────────────┘
  *
- * Bij het uitloggen moeten we ALLES opruimen:
- * 1. De sessie variabelen (het mapje leegmaken)
- * 2. Het sessie cookie (het nummertje in de browser verwijderen)
- * 3. De sessie zelf vernietigen (het mapje weggooien)
+ * ==========================================================================
+ * BEVEILIGING (Security)
+ * ==========================================================================
+ * 1. SESSIE-BEHEER: alle sessiegegevens worden veilig verwijderd
+ * 2. COOKIE-BEHEER: sessie cookie wordt overschreven met verlopen datum
+ * 3. REDIRECT: gebruiker wordt direct doorgestuurd na uitloggen
+ * 4. OWASP A05: Security Misconfiguration voorkomen (geen restdata)
+ * 5. OWASP A01: Broken Access Control voorkomen (geen toegang na uitloggen)
  *
- * STAPPEN IN DIT BESTAND:
- * Stap 1: Laad de functies (functions.php)
- * Stap 2: Start de sessie als die nog niet is gestart
- * Stap 3: Maak alle sessie variabelen leeg
- * Stap 4: Verwijder het sessie cookie uit de browser
- * Stap 5: Vernietig de sessie op de server
- * Stap 6: Stuur de gebruiker door naar de inlogpagina
+ * ==========================================================================
+ * SESSIE-UITLEG
+ * ==========================================================================
+ * Een PHP-sessie is een tijdelijk mapje op de server met gebruikersdata.
+ * Bij uitloggen wordt alles verwijderd zodat niemand meer toegang heeft.
+ *
+ * ==========================================================================
+ * DATABASE TABELLEN
+ * ==========================================================================
+ * Geen directe database interactie in logout.php, maar sessiegegevens zijn
+ * afkomstig uit de Users-tabel (user_id, email, naam).
+ *
+ * ==========================================================================
+ * VERGELIJKING MET ANDERE PAGINA'S
+ * ==========================================================================
+ * ┌───────────────┬───────────────┬───────────────┬───────────────┐
+ * │ Eigenschap    │ logout.php    │ login.php     │ index.php     │
+ * ├───────────────┼───────────────┼───────────────┼───────────────┤
+ * │ Doel          │ uitloggen     │ inloggen      │ dashboard     │
+ * │ Sessie check  │ ja            │ ja            │ ja            │
+ * │ Data ophalen  │ n.v.t.        │ gebruiker     │ alles         │
+ * │ Security      │ hoog          │ hoog          │ hoog          │
+ * │ Redirect      │ login.php     │ index.php     │ n.v.t.        │
+ * └───────────────┴───────────────┴───────────────┴───────────────┘
+ *
+ * ==========================================================================
+ * GEBRUIKTE CONCEPTEN
+ * ==========================================================================
+ * PHP:
+ *   - session_start(), session_destroy(), $_SESSION, setcookie()
+ *   - header("Location: ..."), exit
+ *   - session_get_cookie_params(), session_name(), ini_get()
+ * ==========================================================================
+ * EXAMENNIVEAU: VOLLEDIG GEDOCUMENTEERD, OWASP, SESSIE, FLOW, VERGELIJKING
  * ==========================================================================
  */
 

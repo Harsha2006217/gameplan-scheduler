@@ -6,8 +6,32 @@
 **Project:** GamePlan Scheduler
 **Opleiding:** MBO-4 Software Development
 **Kerntaak:** K1-W3 Realisatie
-
----
+**Versie:** 1.0 (Examendocumentatie)
+**Encoding:** UTF-8
+**Bestandstype:** Markdown (.md)
+**Examenniveau:** MBO-4, Crebo 25998
+**Stagebedrijf:** Kompas Publishing B.V.
+**Begeleider:** Marius Restua
+**Examencriteria:** K1-W1 t/m K2-W3 volledig gedocumenteerd
+**Doelgroep:** Jonge gamers (16-25 jaar)
+**Technologieën:** PHP 8.1, MySQL 8.0, Bootstrap 5.3.3, CSS3, JavaScript ES6, XAMPP
+**Database:** 6 tabellen, soft delete, foreign keys, indexen
+**Beveiliging:** 10 maatregelen (bcrypt, PDO, XSS, sessie, eigenaarschap)
+**Validatie:** 18 regels (client + server)
+**Testen:** 30 testcases, 93%→100% na bugfixes
+**Verbeteringen:** 6 voorstellen, feedback verwerkt
+**Documentatie:** 2900+ regels, 16 secties, 21 PDF-bewijsstukken
+**Portfolio:** Presentatie, reflectie, beoordelingsrubric
+**Installatie:** XAMPP, database.sql, stap-voor-stap instructies
+**Overdracht:** Oplevernotities, herstel soft delete, sessie timeout
+**Examenvragen:** Veelgestelde vragen met antwoorden (zie sectie 15.3)
+**Flowdiagrammen:** Login, dashboard, delete (ASCII)
+**Functionele flows:** 10 activiteitendiagrammen
+**Wireframes:** 12 screenshots, glassmorphism-thema
+**Vergelijkingstabel:** Zie sectie "Technische Specificaties"
+**Concepten:** Separation of Concerns, DRY, SRP, PRG, Singleton, soft delete
+**Examenhulp:** Checklist per werkproces, bewijs-index
+**Contact:** harsha.kanaparthi@student.nl
 
 ## Inhoudsopgave
 
@@ -28,16 +52,12 @@
 15. [Examenpresentatie Hulp](#15-examenpresentatie-hulp)
 16. [Onderlegger C24 – Examen Checklistvragen](#16-onderlegger-c24--examen-checklistvragen)
 
----
-
 ## 1. Projectbeschrijving
 
 ### Wat is GamePlan Scheduler?
 
 GamePlan Scheduler is een webapplicatie waarmee gamers hun gaming-activiteiten kunnen organiseren. De applicatie biedt de volgende kernfuncties:
 
-- **Registreren en inloggen** met een beveiligd account
-- **Vrienden beheren** (toevoegen, bewerken, verwijderen)
 - **Favoriete spellen beheren** (toevoegen, bewerken, verwijderen)
 - **Gaming-schema's plannen** met datum, tijd en vrienden
 - **Evenementen aanmaken** (toernooien, streams) met herinneringen
@@ -68,74 +88,80 @@ De applicatie is bedoeld voor gamers die hun speelsessies willen plannen en coö
 De applicatie is gebouwd op basis van 6 gebruikersverhalen (user stories). Elk verhaal beschrijft wat een gebruiker wil doen en waarom:
 
 ### Gebruikersverhaal 1: Profiel met favoriete games
+
 > _Als gamer wil ik een profiel maken met mijn favoriete games, zodat anderen zien wat ik speel._
 
-| Onderdeel | Bestand(en) | Functies |
-| --- | --- | --- |
-| Profiel bekijken | `profile.php` | `getFavoriteGames()` |
-| Favoriet toevoegen | `profile.php` (formulier) | `addFavoriteGame()`, `getOrCreateGameId()` |
-| Favoriet bewerken | `edit_favorite.php` | `updateFavoriteGame()` |
-| Favoriet verwijderen | `delete.php?type=favorite` | `deleteFavoriteGame()` |
+| Onderdeel            | Bestand(en)                | Functies                                   |
+| -------------------- | -------------------------- | ------------------------------------------ |
+| Profiel bekijken     | `profile.php`              | `getFavoriteGames()`                       |
+| Favoriet toevoegen   | `profile.php` (formulier)  | `addFavoriteGame()`, `getOrCreateGameId()` |
+| Favoriet bewerken    | `edit_favorite.php`        | `updateFavoriteGame()`                     |
+| Favoriet verwijderen | `delete.php?type=favorite` | `deleteFavoriteGame()`                     |
 
 ### Gebruikersverhaal 2: Vriendenlijst beheren
+
 > _Als gamer wil ik vrienden toevoegen aan mijn lijst, zodat ik makkelijk contact houd._
 
-| Onderdeel | Bestand(en) | Functies |
-| --- | --- | --- |
-| Vriendenlijst zien | `index.php` (dashboard) | `getFriends()` |
-| Vriend toevoegen | `add_friend.php` | `addFriend()` |
-| Vriend bewerken | `edit_friend.php` | `updateFriend()` |
+| Onderdeel          | Bestand(en)              | Functies         |
+| ------------------ | ------------------------ | ---------------- |
+| Vriendenlijst zien | `index.php` (dashboard)  | `getFriends()`   |
+| Vriend toevoegen   | `add_friend.php`         | `addFriend()`    |
+| Vriend bewerken    | `edit_friend.php`        | `updateFriend()` |
 | Vriend verwijderen | `delete.php?type=friend` | `deleteFriend()` |
 
 ### Gebruikersverhaal 3: Speelschema's delen
+
 > _Als gamer wil ik speelschema's delen in een kalender, zodat ik met vrienden kan afspreken om te gamen._
 
-| Onderdeel | Bestand(en) | Functies |
-| --- | --- | --- |
-| Schema's bekijken | `index.php` (dashboard + kalender) | `getSchedules()`, `getCalendarItems()` |
-| Schema toevoegen | `add_schedule.php` | `addSchedule()` |
-| Schema bewerken | `edit_schedule.php` | `editSchedule()` |
-| Schema verwijderen | `delete.php?type=schedule` | `deleteSchedule()` |
+| Onderdeel          | Bestand(en)                        | Functies                               |
+| ------------------ | ---------------------------------- | -------------------------------------- |
+| Schema's bekijken  | `index.php` (dashboard + kalender) | `getSchedules()`, `getCalendarItems()` |
+| Schema toevoegen   | `add_schedule.php`                 | `addSchedule()`                        |
+| Schema bewerken    | `edit_schedule.php`                | `editSchedule()`                       |
+| Schema verwijderen | `delete.php?type=schedule`         | `deleteSchedule()`                     |
 
 ### Gebruikersverhaal 4: Evenementen toevoegen
+
 > _Als gamer wil ik evenementen toevoegen zoals toernooien, zodat ik een overzicht heb van aankomende activiteiten._
 
-| Onderdeel | Bestand(en) | Functies |
-| --- | --- | --- |
-| Evenementen bekijken | `index.php` (dashboard + kalender) | `getEvents()`, `getCalendarItems()` |
-| Evenement toevoegen | `add_event.php` | `addEvent()` |
-| Evenement bewerken | `edit_event.php` | `editEvent()` |
-| Evenement verwijderen | `delete.php?type=event` | `deleteEvent()` |
+| Onderdeel             | Bestand(en)                        | Functies                            |
+| --------------------- | ---------------------------------- | ----------------------------------- |
+| Evenementen bekijken  | `index.php` (dashboard + kalender) | `getEvents()`, `getCalendarItems()` |
+| Evenement toevoegen   | `add_event.php`                    | `addEvent()`                        |
+| Evenement bewerken    | `edit_event.php`                   | `editEvent()`                       |
+| Evenement verwijderen | `delete.php?type=event`            | `deleteEvent()`                     |
 
 ### Gebruikersverhaal 5: Herinneringen instellen
+
 > _Als gamer wil ik herinneringen instellen voor schema's en evenementen, zodat ik niets mis._
 
-| Onderdeel | Bestand(en) | Functies |
-| --- | --- | --- |
+| Onderdeel          | Bestand(en)                       | Functies                              |
+| ------------------ | --------------------------------- | ------------------------------------- |
 | Herinnering kiezen | `add_event.php`, `edit_event.php` | Dropdown: Geen / 1 uur / 1 dag ervoor |
-| Herinnering tonen | `index.php` (pop-up) | `getReminders()` |
-| JavaScript pop-up | `script.js` | `toonMelding()` |
+| Herinnering tonen  | `index.php` (pop-up)              | `getReminders()`                      |
+| JavaScript pop-up  | `script.js`                       | `toonMelding()`                       |
 
 ### Gebruikersverhaal 6: Bewerken en verwijderen
+
 > _Als gamer wil ik alles bewerken of verwijderen, zodat mijn planning altijd klopt._
 
-| Onderdeel | Bestand(en) | Functies |
-| --- | --- | --- |
-| Bewerken (alle items) | `edit_*.php` pagina's | `updateFavoriteGame()`, `updateFriend()`, `editSchedule()`, `editEvent()` |
-| Verwijderen (alle items) | `delete.php` | `deleteFavoriteGame()`, `deleteFriend()`, `deleteSchedule()`, `deleteEvent()` |
-| Eigenaarschap controle | `functions.php` | `checkOwnership()` |
-| Bevestigingsdialoog | `script.js` | JavaScript `confirm()` pop-up |
+| Onderdeel                | Bestand(en)           | Functies                                                                      |
+| ------------------------ | --------------------- | ----------------------------------------------------------------------------- |
+| Bewerken (alle items)    | `edit_*.php` pagina's | `updateFavoriteGame()`, `updateFriend()`, `editSchedule()`, `editEvent()`     |
+| Verwijderen (alle items) | `delete.php`          | `deleteFavoriteGame()`, `deleteFriend()`, `deleteSchedule()`, `deleteEvent()` |
+| Eigenaarschap controle   | `functions.php`       | `checkOwnership()`                                                            |
+| Bevestigingsdialoog      | `script.js`           | JavaScript `confirm()` pop-up                                                 |
 
 ### Samenvatting: Alle user stories gerealiseerd
 
-| Nr | User Story | Status | Bewijs |
-| --- | --- | --- | --- |
-| US-1 | Profiel met favoriete games | Gerealiseerd | `profile.php`, `edit_favorite.php` |
-| US-2 | Vriendenlijst beheren | Gerealiseerd | `add_friend.php`, `edit_friend.php` |
+| Nr   | User Story                      | Status       | Bewijs                                                           |
+| ---- | ------------------------------- | ------------ | ---------------------------------------------------------------- |
+| US-1 | Profiel met favoriete games     | Gerealiseerd | `profile.php`, `edit_favorite.php`                               |
+| US-2 | Vriendenlijst beheren           | Gerealiseerd | `add_friend.php`, `edit_friend.php`                              |
 | US-3 | Speelschema's delen in kalender | Gerealiseerd | `add_schedule.php`, `edit_schedule.php`, kalender in `index.php` |
-| US-4 | Evenementen toevoegen | Gerealiseerd | `add_event.php`, `edit_event.php` |
-| US-5 | Herinneringen instellen | Gerealiseerd | Herinnering-dropdown + `getReminders()` pop-up |
-| US-6 | Alles bewerken of verwijderen | Gerealiseerd | `edit_*.php` + `delete.php` met soft delete |
+| US-4 | Evenementen toevoegen           | Gerealiseerd | `add_event.php`, `edit_event.php`                                |
+| US-5 | Herinneringen instellen         | Gerealiseerd | Herinnering-dropdown + `getReminders()` pop-up                   |
+| US-6 | Alles bewerken of verwijderen   | Gerealiseerd | `edit_*.php` + `delete.php` met soft delete                      |
 
 ---
 
@@ -1050,24 +1076,24 @@ BROWSER                          SERVER
 
 **Kritieke bestanden en functies:**
 
-| Bestand         | Functie                 | Regel   | Taak                   |
-| --------------- | ----------------------- | ------- | ---------------------- |
-| `index.php`     | -                       | 21      | Laadt functions.php    |
-| `index.php`     | -                       | 24      | checkSessionTimeout()  |
-| `index.php`     | -                       | 27-30   | Inlogcontrole          |
-| `index.php`     | -                       | 43-48   | Alle data ophalen      |
-| `index.php`     | -                       | 55-290  | HTML rendering         |
-| `functions.php` | `checkSessionTimeout()` | 270-279 | Sessie-expiratie       |
-| `functions.php` | `getFriends()`          | 641-651 | Vrienden ophalen       |
-| `functions.php` | `getFavoriteGames()`    | 520-531 | Favorieten ophalen     |
-| `functions.php` | `getSchedules()`        | 696-713 | Schema's ophalen       |
-| `functions.php` | `getEvents()`           | 822-837 | Evenementen ophalen    |
-| `functions.php` | `getCalendarItems()`    | 935-947 | Kalender samenvoegen   |
-| `functions.php` | `getReminders()`        | 955-974 | Herinneringen filteren |
-| `functions.php` | `safeEcho()`            | 50-53   | XSS-bescherming        |
-| `header.php`    | -                       | 1-94    | Navigatiebalk          |
-| `footer.php`    | -                       | 1-42    | Voettekst              |
-| `script.js`     | `initialiseerFuncties()`  | 300-330 | Pagina-initialisatie   |
+| Bestand         | Functie                  | Regel   | Taak                   |
+| --------------- | ------------------------ | ------- | ---------------------- |
+| `index.php`     | -                        | 21      | Laadt functions.php    |
+| `index.php`     | -                        | 24      | checkSessionTimeout()  |
+| `index.php`     | -                        | 27-30   | Inlogcontrole          |
+| `index.php`     | -                        | 43-48   | Alle data ophalen      |
+| `index.php`     | -                        | 55-290  | HTML rendering         |
+| `functions.php` | `checkSessionTimeout()`  | 270-279 | Sessie-expiratie       |
+| `functions.php` | `getFriends()`           | 641-651 | Vrienden ophalen       |
+| `functions.php` | `getFavoriteGames()`     | 520-531 | Favorieten ophalen     |
+| `functions.php` | `getSchedules()`         | 696-713 | Schema's ophalen       |
+| `functions.php` | `getEvents()`            | 822-837 | Evenementen ophalen    |
+| `functions.php` | `getCalendarItems()`     | 935-947 | Kalender samenvoegen   |
+| `functions.php` | `getReminders()`         | 955-974 | Herinneringen filteren |
+| `functions.php` | `safeEcho()`             | 50-53   | XSS-bescherming        |
+| `header.php`    | -                        | 1-94    | Navigatiebalk          |
+| `footer.php`    | -                        | 1-42    | Voettekst              |
+| `script.js`     | `initialiseerFuncties()` | 300-330 | Pagina-initialisatie   |
 
 ### 8.3 Code Flow: Item Verwijderen
 
@@ -1239,87 +1265,87 @@ echo getMessage();  // Toont Bootstrap alert, verwijdert daarna uit sessie
 | -------------------------------------------------- | ------------------- | ------------------- | ---------------------------------- |
 | `safeEcho($tekst)`                                 | string              | string              | Escapet HTML-tekens tegen XSS      |
 | `validateRequired($waarde, $veldnaam, $maxLengte)` | string, string, int | null of foutmelding | Valideert verplicht veld           |
-| `validateDate($datum)`                              | string              | null of foutmelding | Valideert datumformaat en toekomst |
+| `validateDate($datum)`                             | string              | null of foutmelding | Valideert datumformaat en toekomst |
 | `validateTime($tijd)`                              | string              | null of foutmelding | Valideert tijdformaat UU:MM        |
-| `validateEmail($emailAdres)`                            | string              | null of foutmelding | Valideert e-mailformaat            |
+| `validateEmail($emailAdres)`                       | string              | null of foutmelding | Valideert e-mailformaat            |
 | `validateUrl($url)`                                | string              | null of foutmelding | Valideert URL-formaat (optioneel)  |
 | `validateCommaSeparated($waarde, $veldnaam)`       | string, string      | null of foutmelding | Valideert kommagescheiden lijst    |
 
 ### 11.3 Sessie- en berichtfuncties (`functions.php`)
 
-| Functie                   | Parameters     | Retourneert | Beschrijving                              |
-| ------------------------- | -------------- | ----------- | ----------------------------------------- |
+| Functie                     | Parameters     | Retourneert | Beschrijving                              |
+| --------------------------- | -------------- | ----------- | ----------------------------------------- |
 | `setMessage($type, $tekst)` | string, string | void        | Slaat bericht op in sessie                |
-| `getMessage()`            | geen           | HTML string | Haalt bericht op en verwijdert uit sessie |
+| `getMessage()`              | geen           | HTML string | Haalt bericht op en verwijdert uit sessie |
 
 ### 11.4 Authenticatie functies (`functions.php`)
 
-| Functie                                      | Parameters | Retourneert         | Beschrijving                                                      |
-| -------------------------------------------- | ---------- | ------------------- | ----------------------------------------------------------------- |
-| `isLoggedIn()`                               | geen       | boolean             | Controleert of gebruiker ingelogd is                              |
-| `getUserId()`                                | geen       | int                 | Haalt gebruiker-ID uit sessie (0 als niet ingelogd)               |
-| `updateLastActivity($pdo, $userId)`          | PDO, int   | void                | Werkt laatste activiteit bij in database                          |
-| `checkSessionTimeout()`                      | geen       | void                | Controleert 30-minuten timeout, vernietigt sessie indien verlopen |
+| Functie                                                   | Parameters | Retourneert         | Beschrijving                                                      |
+| --------------------------------------------------------- | ---------- | ------------------- | ----------------------------------------------------------------- |
+| `isLoggedIn()`                                            | geen       | boolean             | Controleert of gebruiker ingelogd is                              |
+| `getUserId()`                                             | geen       | int                 | Haalt gebruiker-ID uit sessie (0 als niet ingelogd)               |
+| `updateLastActivity($pdo, $userId)`                       | PDO, int   | void                | Werkt laatste activiteit bij in database                          |
+| `checkSessionTimeout()`                                   | geen       | void                | Controleert 30-minuten timeout, vernietigt sessie indien verlopen |
 | `registerUser($gebruikersnaam, $emailAdres, $wachtwoord)` | 3x string  | null of foutmelding | Registreert nieuw account                                         |
-| `loginUser($emailAdres, $wachtwoord)`               | 2x string  | null of foutmelding | Authenticeert gebruiker                                           |
-| `logout()`                                   | geen       | void                | Vernietigt sessie, redirect naar login                            |
+| `loginUser($emailAdres, $wachtwoord)`                     | 2x string  | null of foutmelding | Authenticeert gebruiker                                           |
+| `logout()`                                                | geen       | void                | Vernietigt sessie, redirect naar login                            |
 
 ### 11.5 Spel functies (`functions.php`)
 
-| Functie                                                             | Parameters          | Retourneert         | Beschrijving                          |
-| ------------------------------------------------------------------- | ------------------- | ------------------- | ------------------------------------- |
-| `getOrCreateGameId($pdo, $titel, $beschrijving)`                     | PDO, string, string | int (game_id)       | Haalt bestaand spel op of maakt nieuw |
+| Functie                                                                 | Parameters          | Retourneert         | Beschrijving                          |
+| ----------------------------------------------------------------------- | ------------------- | ------------------- | ------------------------------------- |
+| `getOrCreateGameId($pdo, $titel, $beschrijving)`                        | PDO, string, string | int (game_id)       | Haalt bestaand spel op of maakt nieuw |
 | `addFavoriteGame($userId, $titel, $beschrijving, $notitie)`             | int, 3x string      | null of foutmelding | Voegt spel toe aan favorieten         |
 | `updateFavoriteGame($userId, $gameId, $titel, $beschrijving, $notitie)` | int, int, 3x string | null of foutmelding | Bewerkt favoriet spel                 |
-| `deleteFavoriteGame($userId, $gameId)`                              | int, int            | null                | Verwijdert spel uit favorieten        |
-| `getFavoriteGames($userId)`                                         | int                 | array               | Haalt alle favoriete spellen op       |
-| `getGames()`                                                        | geen                | array               | Haalt alle spellen op                 |
+| `deleteFavoriteGame($userId, $gameId)`                                  | int, int            | null                | Verwijdert spel uit favorieten        |
+| `getFavoriteGames($userId)`                                             | int                 | array               | Haalt alle favoriete spellen op       |
+| `getGames()`                                                            | geen                | array               | Haalt alle spellen op                 |
 
 ### 11.6 Vrienden functies (`functions.php`)
 
-| Functie                                                             | Parameters          | Retourneert         | Beschrijving                    |
-| ------------------------------------------------------------------- | ------------------- | ------------------- | ------------------------------- |
+| Functie                                                                      | Parameters          | Retourneert         | Beschrijving                    |
+| ---------------------------------------------------------------------------- | ------------------- | ------------------- | ------------------------------- |
 | `addFriend($userId, $vriendGebruikersnaam, $notitie, $status)`               | int, 3x string      | null of foutmelding | Voegt vriend toe                |
 | `updateFriend($userId, $friendId, $vriendGebruikersnaam, $notitie, $status)` | int, int, 3x string | null of foutmelding | Bewerkt vriend                  |
-| `deleteFriend($userId, $friendId)`                                  | int, int            | null                | Verwijdert vriend (soft delete) |
-| `getFriends($userId)`                                               | int                 | array               | Haalt alle vrienden op          |
+| `deleteFriend($userId, $friendId)`                                           | int, int            | null                | Verwijdert vriend (soft delete) |
+| `getFriends($userId)`                                                        | int                 | array               | Haalt alle vrienden op          |
 
 ### 11.7 Schema functies (`functions.php`)
 
-| Functie                                                                                     | Parameters          | Retourneert         | Beschrijving                    |
-| ------------------------------------------------------------------------------------------- | ------------------- | ------------------- | ------------------------------- |
-| `addSchedule($userId, $spelTitel, $datum, $tijd, $vrienden, $gedeeldMet)`               | int, 5x string      | null of foutmelding | Maakt gaming-schema             |
-| `getSchedules($userId, $sort)`                                                              | int, string         | array               | Haalt schema's op (gesorteerd)  |
+| Functie                                                                               | Parameters          | Retourneert         | Beschrijving                    |
+| ------------------------------------------------------------------------------------- | ------------------- | ------------------- | ------------------------------- |
+| `addSchedule($userId, $spelTitel, $datum, $tijd, $vrienden, $gedeeldMet)`             | int, 5x string      | null of foutmelding | Maakt gaming-schema             |
+| `getSchedules($userId, $sort)`                                                        | int, string         | array               | Haalt schema's op (gesorteerd)  |
 | `editSchedule($userId, $schemaId, $spelTitel, $datum, $tijd, $vrienden, $gedeeldMet)` | int, int, 5x string | null of foutmelding | Bewerkt schema                  |
-| `deleteSchedule($userId, $schemaId)`                                                      | int, int            | null of foutmelding | Verwijdert schema (soft delete) |
+| `deleteSchedule($userId, $schemaId)`                                                  | int, int            | null of foutmelding | Verwijdert schema (soft delete) |
 
 ### 11.8 Evenement functies (`functions.php`)
 
-| Functie                                                                                                      | Parameters          | Retourneert         | Beschrijving                       |
-| ------------------------------------------------------------------------------------------------------------ | ------------------- | ------------------- | ---------------------------------- |
+| Functie                                                                                                       | Parameters          | Retourneert         | Beschrijving                       |
+| ------------------------------------------------------------------------------------------------------------- | ------------------- | ------------------- | ---------------------------------- |
 | `addEvent($userId, $titel, $datum, $tijd, $beschrijving, $herinnering, $externeLink, $gedeeldMet)`            | int, 7x string      | null of foutmelding | Maakt evenement                    |
-| `getEvents($userId, $sort)`                                                                                  | int, string         | array               | Haalt evenementen op (gesorteerd)  |
+| `getEvents($userId, $sort)`                                                                                   | int, string         | array               | Haalt evenementen op (gesorteerd)  |
 | `editEvent($userId, $eventId, $titel, $datum, $tijd, $beschrijving, $herinnering, $externeLink, $gedeeldMet)` | int, int, 7x string | null of foutmelding | Bewerkt evenement                  |
-| `deleteEvent($userId, $eventId)`                                                                             | int, int            | null of foutmelding | Verwijdert evenement (soft delete) |
+| `deleteEvent($userId, $eventId)`                                                                              | int, int            | null of foutmelding | Verwijdert evenement (soft delete) |
 
 ### 11.9 Hulpfuncties (`functions.php`)
 
-| Functie                                                 | Parameters          | Retourneert | Beschrijving                                          |
-| ------------------------------------------------------- | ------------------- | ----------- | ----------------------------------------------------- |
+| Functie                                                | Parameters          | Retourneert | Beschrijving                                          |
+| ------------------------------------------------------ | ------------------- | ----------- | ----------------------------------------------------- |
 | `checkOwnership($pdo, $tabel, $idKolom, $id, $userId)` | PDO, 3x string, int | boolean     | Controleert of gebruiker eigenaar is                  |
-| `getCalendarItems($userId)`                             | int                 | array       | Combineert schema's en evenementen, sorteert op datum |
-| `getReminders($userId)`                                 | int                 | array       | Filtert evenementen met actieve herinneringen         |
+| `getCalendarItems($userId)`                            | int                 | array       | Combineert schema's en evenementen, sorteert op datum |
+| `getReminders($userId)`                                | int                 | array       | Filtert evenementen met actieve herinneringen         |
 
 ### 11.10 JavaScript functies (`script.js`)
 
-| Functie                           | Parameters     | Retourneert | Beschrijving                                |
-| --------------------------------- | -------------- | ----------- | ------------------------------------------- |
-| `validateLoginForm()`             | geen           | boolean     | Valideert login formulier                   |
-| `validateRegisterForm()`          | geen           | boolean     | Valideert registratie formulier             |
-| `validateScheduleForm()`          | geen           | boolean     | Valideert schema formulier                  |
-| `validateEventForm()`             | geen           | boolean     | Valideert evenement formulier               |
-| `initialiseerFuncties()`          | geen           | void        | Initialiseert interactieve pagina-elementen |
-| `toonMelding(bericht, type)`      | string, string | void        | Toont toast-notificatie                     |
+| Functie                      | Parameters     | Retourneert | Beschrijving                                |
+| ---------------------------- | -------------- | ----------- | ------------------------------------------- |
+| `validateLoginForm()`        | geen           | boolean     | Valideert login formulier                   |
+| `validateRegisterForm()`     | geen           | boolean     | Valideert registratie formulier             |
+| `validateScheduleForm()`     | geen           | boolean     | Valideert schema formulier                  |
+| `validateEventForm()`        | geen           | boolean     | Valideert evenement formulier               |
+| `initialiseerFuncties()`     | geen           | void        | Initialiseert interactieve pagina-elementen |
+| `toonMelding(bericht, type)` | string, string | void        | Toont toast-notificatie                     |
 
 ---
 
@@ -1468,38 +1494,38 @@ Het K1-W4 Testen document bevat **30 kerntests** (5 per user story), verdeeld ov
 
 **Kerntests (K1-W4 document — 30 tests, 5 per user story):**
 
-| User Story                         | Tests | Geslaagd | Gezakt | Percentage |
-| ---------------------------------- | ----- | -------- | ------ | ---------- |
-| US-1: Profiel met favoriete games  | 5     | 5        | 0      | 100%       |
-| US-2: Vriendenlijst beheren        | 5     | 4        | 1      | 80%        |
-| US-3: Speelschema's delen          | 5     | 5        | 0      | 100%       |
-| US-4: Evenementen toevoegen        | 5     | 5        | 0      | 100%       |
-| US-5: Herinneringen instellen      | 5     | 4        | 1      | 80%        |
-| US-6: Bewerken/verwijderen         | 5     | 5        | 0      | 100%       |
-| **Subtotaal kerntests**            | **30**| **28**   | **2**  | **93%**    |
+| User Story                        | Tests  | Geslaagd | Gezakt | Percentage |
+| --------------------------------- | ------ | -------- | ------ | ---------- |
+| US-1: Profiel met favoriete games | 5      | 5        | 0      | 100%       |
+| US-2: Vriendenlijst beheren       | 5      | 4        | 1      | 80%        |
+| US-3: Speelschema's delen         | 5      | 5        | 0      | 100%       |
+| US-4: Evenementen toevoegen       | 5      | 5        | 0      | 100%       |
+| US-5: Herinneringen instellen     | 5      | 4        | 1      | 80%        |
+| US-6: Bewerken/verwijderen        | 5      | 5        | 0      | 100%       |
+| **Subtotaal kerntests**           | **30** | **28**   | **2**  | **93%**    |
 
 De 2 gezakte tests betreffen Bug #1001 (US-2: spaties-invoer geaccepteerd) en Bug #1004 (US-5: ongeldige datum geaccepteerd). Na het oplossen van deze bugs zijn alle 30 kerntests opnieuw uitgevoerd met **100% slagingspercentage**.
 
 **Aanvullende tests (README uitbreiding — 22 extra tests):**
 
-| Categorie            | Aantal tests | Geslaagd | Gezakt | Percentage |
-| -------------------- | ------------ | -------- | ------ | ---------- |
-| Registratie (extra)  | 2            | 2        | 0      | 100%       |
-| Schema (extra)       | 3            | 3        | 0      | 100%       |
-| Evenement (extra)    | 2            | 2        | 0      | 100%       |
-| Bewerken (extra)     | 2            | 2        | 0      | 100%       |
-| Beveiliging          | 5            | 5        | 0      | 100%       |
-| Responsief ontwerp   | 4            | 4        | 0      | 100%       |
-| Favoriet spel (extra)| 4            | 4        | 0      | 100%       |
-| **Subtotaal extra**  | **22**       | **22**   | **0**  | **100%**   |
+| Categorie             | Aantal tests | Geslaagd | Gezakt | Percentage |
+| --------------------- | ------------ | -------- | ------ | ---------- |
+| Registratie (extra)   | 2            | 2        | 0      | 100%       |
+| Schema (extra)        | 3            | 3        | 0      | 100%       |
+| Evenement (extra)     | 2            | 2        | 0      | 100%       |
+| Bewerken (extra)      | 2            | 2        | 0      | 100%       |
+| Beveiliging           | 5            | 5        | 0      | 100%       |
+| Responsief ontwerp    | 4            | 4        | 0      | 100%       |
+| Favoriet spel (extra) | 4            | 4        | 0      | 100%       |
+| **Subtotaal extra**   | **22**       | **22**   | **0**  | **100%**   |
 
 **Totaaloverzicht (alle 52 tests na bugfixes):**
 
-| Onderdeel            | Aantal tests | Geslaagd | Gezakt | Percentage |
-| -------------------- | ------------ | -------- | ------ | ---------- |
-| Kerntests (K1-W4)    | 30           | 30       | 0      | 100%       |
-| Aanvullende tests    | 22           | 22       | 0      | 100%       |
-| **TOTAAL**           | **52**       | **52**   | **0**  | **100%**   |
+| Onderdeel         | Aantal tests | Geslaagd | Gezakt | Percentage |
+| ----------------- | ------------ | -------- | ------ | ---------- |
+| Kerntests (K1-W4) | 30           | 30       | 0      | 100%       |
+| Aanvullende tests | 22           | 22       | 0      | 100%       |
+| **TOTAAL**        | **52**       | **52**   | **0**  | **100%**   |
 
 ---
 
@@ -1634,16 +1660,16 @@ STAP 4: OPNIEUW GETEST
 
 Dit overzicht toont hoe dit project alle kerntaken van het examen dekt:
 
-| Kerntaak              | Onderdeel                           | Waar gedocumenteerd    | Bewijsmateriaal                  |
-| --------------------- | ----------------------------------- | ---------------------- | -------------------------------- |
-| **K1-W1 Planning**    | Projectplanning en aanpak           | PvA document (PDF)     | Tijdsplanning, user stories      |
-| **K1-W2 Ontwerp**     | Functioneel en technisch ontwerp    | FO/TO documenten (PDF) | Database ontwerp, wireframes     |
-| **K1-W3 Realisatie**  | Code schrijven en implementeren     | README sectie 1-12     | Alle PHP, JS, CSS, SQL bestanden |
-| **K1-W4 Testen**      | Testcases uitvoeren en documenteren | README sectie 13       | 30 testcases (per user story), 93% → 100% na bugfixes |
+| Kerntaak              | Onderdeel                           | Waar gedocumenteerd    | Bewijsmateriaal                                                              |
+| --------------------- | ----------------------------------- | ---------------------- | ---------------------------------------------------------------------------- |
+| **K1-W1 Planning**    | Projectplanning en aanpak           | PvA document (PDF)     | Tijdsplanning, user stories                                                  |
+| **K1-W2 Ontwerp**     | Functioneel en technisch ontwerp    | FO/TO documenten (PDF) | Database ontwerp, wireframes                                                 |
+| **K1-W3 Realisatie**  | Code schrijven en implementeren     | README sectie 1-12     | Alle PHP, JS, CSS, SQL bestanden                                             |
+| **K1-W4 Testen**      | Testcases uitvoeren en documenteren | README sectie 13       | 30 testcases (per user story), 93% → 100% na bugfixes                        |
 | **K1-W5 Verbeteren**  | Fouten vinden en oplossen           | README sectie 14       | 4 bugs gevonden en gefixt (#1001, #1004 via testen; #1005, #1006 via review) |
-| **K2-W1 Overleggen**  | Communicatie over het project       | Overlegverslagen (PDF) | Bijeenkomsten, feedback          |
-| **K2-W2 Presenteren** | Het project uitleggen               | README + deze sectie   | Demonstratie, uitleg             |
-| **K2-W3 Reflectie**   | Terugkijken op het proces           | Reflectieverslag (PDF) | Wat ging goed/fout               |
+| **K2-W1 Overleggen**  | Communicatie over het project       | Overlegverslagen (PDF) | Bijeenkomsten, feedback                                                      |
+| **K2-W2 Presenteren** | Het project uitleggen               | README + deze sectie   | Demonstratie, uitleg                                                         |
+| **K2-W3 Reflectie**   | Terugkijken op het proces           | Reflectieverslag (PDF) | Wat ging goed/fout                                                           |
 
 ### 15.2 Belangrijkste punten om uit te leggen aan de examinator
 
@@ -1746,11 +1772,11 @@ GamePlan Scheduler is ontwikkeld als individueel project voor de MBO-4 opleiding
 
 **Betrokkenen:**
 
-| Rol | Persoon | Verantwoordelijkheid |
-| --- | --- | --- |
-| Ontwikkelaar | Harsha Kanaparthi | Plant, codeert en test alles |
-| Begeleider | Marius Restua | Geeft advies en feedback |
-| Gebruikers | Jonge gamers | Testen de app en geven feedback |
+| Rol          | Persoon           | Verantwoordelijkheid            |
+| ------------ | ----------------- | ------------------------------- |
+| Ontwikkelaar | Harsha Kanaparthi | Plant, codeert en test alles    |
+| Begeleider   | Marius Restua     | Geeft advies en feedback        |
+| Gebruikers   | Jonge gamers      | Testen de app en geven feedback |
 
 **Bewijs:** Zie README sectie 1 (Projectbeschrijving) en PDF `K1-W1-Planning-Harsha Vardhan Kanaparthi.pdf`.
 
@@ -1764,13 +1790,13 @@ GamePlan Scheduler is ontwikkeld als individueel project voor de MBO-4 opleiding
 
 **Doel (SMART-methode):**
 
-| SMART | Beschrijving |
-| --- | --- |
-| **Specifiek** | Een webapp voor gamers om profielen, vrienden en evenementen te beheren |
-| **Meetbaar** | Gamers gebruiken de app minimaal 3 keer per week |
-| **Acceptabel** | Past bij jonge gamers en is haalbaar om te bouwen |
-| **Realistisch** | Met mijn PHP-kennis kan dit in 1 maand worden gebouwd |
-| **Tijdsgebonden** | Klaar op 30 september 2025 |
+| SMART             | Beschrijving                                                            |
+| ----------------- | ----------------------------------------------------------------------- |
+| **Specifiek**     | Een webapp voor gamers om profielen, vrienden en evenementen te beheren |
+| **Meetbaar**      | Gamers gebruiken de app minimaal 3 keer per week                        |
+| **Acceptabel**    | Past bij jonge gamers en is haalbaar om te bouwen                       |
+| **Realistisch**   | Met mijn PHP-kennis kan dit in 1 maand worden gebouwd                   |
+| **Tijdsgebonden** | Klaar op 30 september 2025                                              |
 
 **Succescriteria:** De app is succesvol als gamers hem gebruiken en het hen helpt om beter samen te gamen, hun tijd beter te beheren en geen belangrijke game-momenten te missen.
 
@@ -1781,14 +1807,14 @@ GamePlan Scheduler is ontwikkeld als individueel project voor de MBO-4 opleiding
 **Antwoord:**
 De applicatie is gebouwd op basis van 6 gebruikersverhalen (user stories):
 
-| Nr | User Story | Functionaliteit | Status |
-| --- | --- | --- | --- |
+| Nr   | User Story                  | Functionaliteit                                            | Status       |
+| ---- | --------------------------- | ---------------------------------------------------------- | ------------ |
 | US-1 | Profiel met favoriete games | Gamers kunnen een profiel aanmaken met hun favoriete games | Gerealiseerd |
-| US-2 | Vriendenlijst beheren | Vrienden toevoegen om contact te houden | Gerealiseerd |
-| US-3 | Speelschema's delen | Speelschema's delen in een kalender | Gerealiseerd |
-| US-4 | Evenementen toevoegen | Evenementen plannen zoals toernooien of meetups | Gerealiseerd |
-| US-5 | Herinneringen instellen | Herinneringen instellen zodat je niets vergeet | Gerealiseerd |
-| US-6 | Bewerken en verwijderen | Alles bewerken of verwijderen wanneer nodig | Gerealiseerd |
+| US-2 | Vriendenlijst beheren       | Vrienden toevoegen om contact te houden                    | Gerealiseerd |
+| US-3 | Speelschema's delen         | Speelschema's delen in een kalender                        | Gerealiseerd |
+| US-4 | Evenementen toevoegen       | Evenementen plannen zoals toernooien of meetups            | Gerealiseerd |
+| US-5 | Herinneringen instellen     | Herinneringen instellen zodat je niets vergeet             | Gerealiseerd |
+| US-6 | Bewerken en verwijderen     | Alles bewerken of verwijderen wanneer nodig                | Gerealiseerd |
 
 **Bewijs:** Zie README sectie 7 (Functionele Flows), demovideo `K1-W3-DEMO VIDEO.mp4`.
 
@@ -1796,16 +1822,16 @@ De applicatie is gebouwd op basis van 6 gebruikersverhalen (user stories):
 
 **Antwoord:**
 
-| Technologie | Keuze | Onderbouwing |
-| --- | --- | --- |
-| Backend | PHP 7.4+ (vanilla) | Geleerd in de opleiding, toont basisvaardigheden zonder framework |
-| Database | MySQL met InnoDB | Relationele database voor gestructureerde data, ondersteunt foreign keys |
-| Database-toegang | PDO met prepared statements | Veiligste methode tegen SQL-injectie, ondersteunt named parameters |
-| Frontend CSS | Bootstrap 5.3.3 | Snel responsive design, werkt op computer en mobiele telefoon |
-| Frontend JS | Vanilla JavaScript | Geen externe afhankelijkheden nodig, voor dropdowns en validatie |
-| Ontwikkelomgeving | XAMPP | Alles-in-één pakket (Apache + MySQL + PHP), eenvoudig op te zetten |
-| Versiebeheer | Git + GitHub | Industriestandaard, dagelijks commits op GitHub |
-| Ontwerp-thema | Donker + Glassmorphism | Past bij de gaming-doelgroep, donkere kleuren zijn minder vermoeiend voor gamers die 's avonds spelen |
+| Technologie       | Keuze                       | Onderbouwing                                                                                          |
+| ----------------- | --------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Backend           | PHP 7.4+ (vanilla)          | Geleerd in de opleiding, toont basisvaardigheden zonder framework                                     |
+| Database          | MySQL met InnoDB            | Relationele database voor gestructureerde data, ondersteunt foreign keys                              |
+| Database-toegang  | PDO met prepared statements | Veiligste methode tegen SQL-injectie, ondersteunt named parameters                                    |
+| Frontend CSS      | Bootstrap 5.3.3             | Snel responsive design, werkt op computer en mobiele telefoon                                         |
+| Frontend JS       | Vanilla JavaScript          | Geen externe afhankelijkheden nodig, voor dropdowns en validatie                                      |
+| Ontwikkelomgeving | XAMPP                       | Alles-in-één pakket (Apache + MySQL + PHP), eenvoudig op te zetten                                    |
+| Versiebeheer      | Git + GitHub                | Industriestandaard, dagelijks commits op GitHub                                                       |
+| Ontwerp-thema     | Donker + Glassmorphism      | Past bij de gaming-doelgroep, donkere kleuren zijn minder vermoeiend voor gamers die 's avonds spelen |
 
 **Bewijs:** Zie README sectie 4 (Technische specificaties).
 
@@ -1816,37 +1842,37 @@ Er is een gedetailleerde planning gemaakt met **12 taken** verdeeld over **4 wek
 
 **Takenplanning:**
 
-| Taak | Beschrijving | Periode | Week |
-| --- | --- | --- | --- |
-| Taak 1-2 | Omgeving en database opzetten | 2-4 september 2025 | Week 1 |
-| Taak 3 | Inloggen en sessies maken | 5-7 september 2025 | Week 1 |
-| Taak 4 | Basis ontwerp maken | 8-9 september 2025 | Week 2 |
-| Taak 5 | Profielbeheer bouwen | 10-13 september 2025 | Week 2 |
-| Taak 6 | Vriendenlijst maken | 14-16 september 2025 | Week 3 |
-| Taak 7 | Kalender voor speelschema's | 17-18 september 2025 | Week 3 |
-| Taak 8 | Evenementenbeheer | 19-21 september 2025 | Week 3 |
-| Taak 9 | Herinneringen instellen | 22-23 september 2025 | Week 4 |
-| Taak 10 | Testen op bugs | 24-25 september 2025 | Week 4 |
-| Taak 11 | Design checken voor mobiel | 26-27 september 2025 | Week 4 |
-| Taak 12 | Online zetten op server | 28-30 september 2025 | Week 4 |
+| Taak     | Beschrijving                  | Periode              | Week   |
+| -------- | ----------------------------- | -------------------- | ------ |
+| Taak 1-2 | Omgeving en database opzetten | 2-4 september 2025   | Week 1 |
+| Taak 3   | Inloggen en sessies maken     | 5-7 september 2025   | Week 1 |
+| Taak 4   | Basis ontwerp maken           | 8-9 september 2025   | Week 2 |
+| Taak 5   | Profielbeheer bouwen          | 10-13 september 2025 | Week 2 |
+| Taak 6   | Vriendenlijst maken           | 14-16 september 2025 | Week 3 |
+| Taak 7   | Kalender voor speelschema's   | 17-18 september 2025 | Week 3 |
+| Taak 8   | Evenementenbeheer             | 19-21 september 2025 | Week 3 |
+| Taak 9   | Herinneringen instellen       | 22-23 september 2025 | Week 4 |
+| Taak 10  | Testen op bugs                | 24-25 september 2025 | Week 4 |
+| Taak 11  | Design checken voor mobiel    | 26-27 september 2025 | Week 4 |
+| Taak 12  | Online zetten op server       | 28-30 september 2025 | Week 4 |
 
 **Weekoverzicht:**
 
-| Week | Periode | Mijlpaal |
-| --- | --- | --- |
-| Week 1 | 02-09 t/m 07-09 | Start, database en backend af |
-| Week 2 | 08-09 t/m 13-09 | Frontend en profielen klaar |
+| Week   | Periode         | Mijlpaal                               |
+| ------ | --------------- | -------------------------------------- |
+| Week 1 | 02-09 t/m 07-09 | Start, database en backend af          |
+| Week 2 | 08-09 t/m 13-09 | Frontend en profielen klaar            |
 | Week 3 | 14-09 t/m 21-09 | Vrienden, schema's en evenementen doen |
 | Week 4 | 22-09 t/m 30-09 | Herinneringen, testen en online zetten |
 
 **Prioriteiten (MoSCoW-methode):**
 
-| Categorie | Items | Betekenis |
-| --- | --- | --- |
-| **Must have** (M) | Inloggen, database, profiel, evenementen, testen, online zetten | Dit moet werken |
-| **Should have** (S) | Vriendenlijst, speelschema's | Dit maakt het beter |
-| **Could have** (C) | Herinneringen, mobiel design | Dit is extra |
-| **Won't have** (W) | Thema's en andere extra's | Komt later |
+| Categorie           | Items                                                           | Betekenis           |
+| ------------------- | --------------------------------------------------------------- | ------------------- |
+| **Must have** (M)   | Inloggen, database, profiel, evenementen, testen, online zetten | Dit moet werken     |
+| **Should have** (S) | Vriendenlijst, speelschema's                                    | Dit maakt het beter |
+| **Could have** (C)  | Herinneringen, mobiel design                                    | Dit is extra        |
+| **Won't have** (W)  | Thema's en andere extra's                                       | Komt later          |
 
 **Bewijs:** PDF `K1-W1-Planning-Harsha Vardhan Kanaparthi.pdf` (planning), PDF `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf` (projectlog met uren).
 
@@ -1869,13 +1895,14 @@ Tijdens het project zijn de volgende wijzigingen doorgevoerd ten opzichte van de
 **Antwoord:**
 Er zijn **3 geplande overlegmomenten** geweest met stagebegeleider Marius Restua:
 
-| Datum | Onderwerp | Resultaat |
-| --- | --- | --- |
-| 7 september 2025 | Backend check | Database en inloggen goedgekeurd |
-| 16 september 2025 | Vriendenlijst feedback | Feedback verwerkt in vriendenlijst |
-| 27 september 2025 | Design check voor mobiel | Responsive design goedgekeurd |
+| Datum             | Onderwerp                | Resultaat                          |
+| ----------------- | ------------------------ | ---------------------------------- |
+| 7 september 2025  | Backend check            | Database en inloggen goedgekeurd   |
+| 16 september 2025 | Vriendenlijst feedback   | Feedback verwerkt in vriendenlijst |
+| 27 september 2025 | Design check voor mobiel | Responsive design goedgekeurd      |
 
 **Voortgangsbewaking:**
+
 - Elke week checken of alles op tijd gaat
 - Bij vertraging worden extra's (Could have) opzij geschoven
 - Wekelijks contact via chat en overlegmomenten
@@ -1893,21 +1920,21 @@ Het functioneel ontwerp beschrijft WAT de applicatie doet vanuit gebruikerspersp
 
 **Schermen per user story (6 stuks, 13 schermen totaal):**
 
-| User Story | Scherm | Beschrijving |
-| --- | --- | --- |
-| US-1: Profiel maken | Scherm 1 | Formulier met naam, games, e-mail, wachtwoord |
-| US-1: Profiel maken | Scherm 2 | Bevestiging "Profiel gemaakt!" met knop naar home |
-| US-2: Vrienden toevoegen | Scherm 1 | Lijst met huidige vrienden en online status |
-| US-2: Vrienden toevoegen | Scherm 2 | Zoekveld om nieuwe vriend toe te voegen |
-| US-3: Speelschema's delen | Scherm 1 | Kalender met gekleurde blokjes per dag |
-| US-3: Speelschema's delen | Scherm 2 | Formulier met game, tijd, datum, vrienden selecteren |
-| US-4: Evenementen toevoegen | Scherm 1 | Lijst met aankomende evenementen als kaarten |
-| US-4: Evenementen toevoegen | Scherm 2 | Formulier met titel, datum, tijd, beschrijving |
-| US-5: Herinneringen instellen | Scherm 1 | Dropdown in formulier (1 uur ervoor, 1 dag ervoor) |
-| US-5: Herinneringen instellen | Scherm 2 | Pop-up melding als herinnering komt |
-| US-6: Bewerken/verwijderen | Scherm 1 | Details pagina met knoppen Bewerken en Verwijderen |
-| US-6: Bewerken/verwijderen | Scherm 2 | Bewerken formulier met ingevulde velden |
-| US-6: Bewerken/verwijderen | Scherm 3 | Bevestiging "Zeker weten?" met Ja/Nee |
+| User Story                    | Scherm   | Beschrijving                                         |
+| ----------------------------- | -------- | ---------------------------------------------------- |
+| US-1: Profiel maken           | Scherm 1 | Formulier met naam, games, e-mail, wachtwoord        |
+| US-1: Profiel maken           | Scherm 2 | Bevestiging "Profiel gemaakt!" met knop naar home    |
+| US-2: Vrienden toevoegen      | Scherm 1 | Lijst met huidige vrienden en online status          |
+| US-2: Vrienden toevoegen      | Scherm 2 | Zoekveld om nieuwe vriend toe te voegen              |
+| US-3: Speelschema's delen     | Scherm 1 | Kalender met gekleurde blokjes per dag               |
+| US-3: Speelschema's delen     | Scherm 2 | Formulier met game, tijd, datum, vrienden selecteren |
+| US-4: Evenementen toevoegen   | Scherm 1 | Lijst met aankomende evenementen als kaarten         |
+| US-4: Evenementen toevoegen   | Scherm 2 | Formulier met titel, datum, tijd, beschrijving       |
+| US-5: Herinneringen instellen | Scherm 1 | Dropdown in formulier (1 uur ervoor, 1 dag ervoor)   |
+| US-5: Herinneringen instellen | Scherm 2 | Pop-up melding als herinnering komt                  |
+| US-6: Bewerken/verwijderen    | Scherm 1 | Details pagina met knoppen Bewerken en Verwijderen   |
+| US-6: Bewerken/verwijderen    | Scherm 2 | Bewerken formulier met ingevulde velden              |
+| US-6: Bewerken/verwijderen    | Scherm 3 | Bevestiging "Zeker weten?" met Ja/Nee                |
 
 **Alle invoervelden per formulier** zijn beschreven met verwachte datatypes en beperkingen.
 **Foutscenario's** per functie zijn beschreven (wat gebeurt er bij ongeldige invoer?).
@@ -1921,34 +1948,36 @@ Het technisch ontwerp beschrijft HOE de applicatie werkt vanuit technisch perspe
 
 **Lay-out en visueel ontwerp:**
 
-| Onderdeel | Specificatie |
-| --- | --- |
-| Header | Bovenaan, logo links, menu in midden, profiel rechts, **hoogte 80 pixels**, blijft altijd zichtbaar |
-| Kleuren | Donker (zwart en blauw) voor game-gevoel, witte tekst voor leesbaarheid |
-| Hoofdgedeelte | 80% van breedte, daar staat de inhoud |
-| Footer | Onderaan, **50 pixels**, met copyright en privacy links |
-| Knoppen | **40 pixels hoog**, groot genoeg voor mobiel |
+| Onderdeel     | Specificatie                                                                                        |
+| ------------- | --------------------------------------------------------------------------------------------------- |
+| Header        | Bovenaan, logo links, menu in midden, profiel rechts, **hoogte 80 pixels**, blijft altijd zichtbaar |
+| Kleuren       | Donker (zwart en blauw) voor game-gevoel, witte tekst voor leesbaarheid                             |
+| Hoofdgedeelte | 80% van breedte, daar staat de inhoud                                                               |
+| Footer        | Onderaan, **50 pixels**, met copyright en privacy links                                             |
+| Knoppen       | **40 pixels hoog**, groot genoeg voor mobiel                                                        |
 
 **Navigatie (6 knoppen in header):**
 
-| Knop | Functie |
-| --- | --- |
-| Home | Dashboard met overzicht |
-| Profiel | Favoriete spellen beheren |
-| Vrienden | Vriendenlijst beheren |
-| Schema's | Gaming-schema's beheren |
-| Evenementen | Evenementen beheren |
-| Uitloggen | Sessie vernietigen |
+| Knop        | Functie                   |
+| ----------- | ------------------------- |
+| Home        | Dashboard met overzicht   |
+| Profiel     | Favoriete spellen beheren |
+| Vrienden    | Vriendenlijst beheren     |
+| Schema's    | Gaming-schema's beheren   |
+| Evenementen | Evenementen beheren       |
+| Uitloggen   | Sessie vernietigen        |
 
 **Navigatiestructuur:** Lineair - van home naar andere pagina's en terug. Op mobiel klapt het menu in tot een hamburger-lijst. Icoontjes bij knoppen voor sneller herkennen.
 
 **Architectuur:** Separation of Concerns met 4 lagen:
+
 - Datalaag (`db.php` - PDO Singleton verbinding)
 - Logicalaag (`functions.php` - alle validatie, authenticatie, CRUD)
 - Presentatielaag (PHP-pagina's + `header.php`/`footer.php`)
 - Client-laag (`script.js` + `style.css`)
 
 **Techniek:**
+
 - PHP voor backend logica (inloggen, data verwerken)
 - MySQL voor database (alle data opslaan)
 - HTML en CSS voor lay-out en ontwerp
@@ -1963,6 +1992,7 @@ Het technisch ontwerp beschrijft HOE de applicatie werkt vanuit technisch perspe
 
 **Schematechniek 1: Entity-Relationship Diagram (ERD)**
 Het databaseontwerp bevat 6 tabellen met relaties:
+
 - Users (hoofdtabel) `1 ──── N` Friends
 - Users `1 ──── N` Schedules
 - Users `1 ──── N` Events
@@ -1973,6 +2003,7 @@ Het databaseontwerp bevat 6 tabellen met relaties:
 
 **Schematechniek 2: Flowcharts / Code Flow Diagrammen**
 Gedetailleerde sequentiediagrammen die de interactie tussen Browser, Server en Database tonen:
+
 - **Login Code Flow** (README sectie 8.1): Browser → login.php → loginUser() → SELECT/password_verify → sessie aanmaken → redirect
 - **Dashboard Code Flow** (README sectie 8.2): Browser → index.php → 5 parallelle queries → HTML renderen
 - **Delete Code Flow** (README sectie 8.3): Browser → confirm() → delete.php → checkOwnership() → soft delete → redirect
@@ -1981,11 +2012,13 @@ Gedetailleerde sequentiediagrammen die de interactie tussen Browser, Server en D
 
 **Schematechniek 3: Activiteitendiagrammen (Functionele Flows)**
 Voor alle 10 hoofdfunctionaliteiten zijn stap-voor-stap activiteitendiagrammen gemaakt:
+
 - Startpunt → Invoer → Validatie → Beslispunt (geldig/ongeldig) → Database-actie → Resultaat → Eindpunt
 
 **Bewijs:** README sectie 7 (Functionele Flows) met alle 10 flows.
 
 **Schematechniek 4: Use Case Diagram**
+
 - **Acteur:** Gamer
 - **Use Cases:** Inloggen, Profiel maken, Vriend toevoegen, Schema delen, Evenement toevoegen, Herinnering instellen, Bewerken/verwijderen
 - **Inloggen is verplicht** voor alle andere acties
@@ -1996,19 +2029,19 @@ Voor alle 10 hoofdfunctionaliteiten zijn stap-voor-stap activiteitendiagrammen g
 
 **Antwoord:**
 
-| Ontwerpkeuze | Motivatie |
-| --- | --- |
-| Donkere kleuren | Gamers spelen vaak 's avonds, donker is minder vermoeiend voor de ogen |
-| Ronde hoeken | Vriendelijk oogt, past bij jonge gebruikers |
-| Icoontjes bij knoppen | Sneller herkennen voor gamers die haast hebben |
-| Checkboxes bij vrienden | Makkelijk delen met groepen |
-| Dropdown voor herinneringen | Bespaart stappen, voorkomt typefouten |
-| Bevestiging bij verwijderen | Voorkomt ongelukken |
-| PDO Singleton patroon | Voorkomt meerdere databaseverbindingen per pagina, bespaart geheugen |
-| Soft delete (deleted_at) | Data wordt nooit fysiek verwijderd, biedt herstelmogelijkheid bij ongelukken |
-| Dubbele validatie (JS + PHP) | Client-side voor snelle feedback, server-side voor veiligheid |
-| Bootstrap 5.3.3 | Snel responsive design, jQuery-vrij |
-| Aparte header.php/footer.php | DRY-principe: navigatie en footer op 1 plek beheerd |
+| Ontwerpkeuze                 | Motivatie                                                                    |
+| ---------------------------- | ---------------------------------------------------------------------------- |
+| Donkere kleuren              | Gamers spelen vaak 's avonds, donker is minder vermoeiend voor de ogen       |
+| Ronde hoeken                 | Vriendelijk oogt, past bij jonge gebruikers                                  |
+| Icoontjes bij knoppen        | Sneller herkennen voor gamers die haast hebben                               |
+| Checkboxes bij vrienden      | Makkelijk delen met groepen                                                  |
+| Dropdown voor herinneringen  | Bespaart stappen, voorkomt typefouten                                        |
+| Bevestiging bij verwijderen  | Voorkomt ongelukken                                                          |
+| PDO Singleton patroon        | Voorkomt meerdere databaseverbindingen per pagina, bespaart geheugen         |
+| Soft delete (deleted_at)     | Data wordt nooit fysiek verwijderd, biedt herstelmogelijkheid bij ongelukken |
+| Dubbele validatie (JS + PHP) | Client-side voor snelle feedback, server-side voor veiligheid                |
+| Bootstrap 5.3.3              | Snel responsive design, jQuery-vrij                                          |
+| Aparte header.php/footer.php | DRY-principe: navigatie en footer op 1 plek beheerd                          |
 
 **Bewijs:** README secties 4, 5, 9 en PDF `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`.
 
@@ -2017,26 +2050,27 @@ Voor alle 10 hoofdfunctionaliteiten zijn stap-voor-stap activiteitendiagrammen g
 **Antwoord:**
 Er zijn screenshots gemaakt van alle pagina's van de applicatie:
 
-| Screenshot | Pagina | Locatie |
-| --- | --- | --- |
-| InlogPagina.png | Inlogformulier | `Demo Fotos/Software Fotos/` |
-| Account Aanmaak Pagina.png | Registratieformulier | `Demo Fotos/Software Fotos/` |
-| HomePagina.png | Dashboard/overzicht | `Demo Fotos/Software Fotos/` |
-| Profile Add Pagina.png | Profiel met favoriet toevoegen | `Demo Fotos/Software Fotos/` |
-| Profile Edit Pagina.png | Profiel bewerken | `Demo Fotos/Software Fotos/` |
-| Add Friend Pagina.png | Vriend toevoegen formulier | `Demo Fotos/Software Fotos/` |
-| Edit Friend Pagina.png | Vriend bewerken formulier | `Demo Fotos/Software Fotos/` |
-| Schedule Add Pagina.png | Schema toevoegen formulier | `Demo Fotos/Software Fotos/` |
-| Edit Schedule Pagina.png | Schema bewerken formulier | `Demo Fotos/Software Fotos/` |
-| Events Add Pagina.png | Evenement toevoegen formulier | `Demo Fotos/Software Fotos/` |
-| Events Edit Pagina.png | Evenement bewerken formulier | `Demo Fotos/Software Fotos/` |
-| Delete Button.png | Verwijderbevestiging | `Demo Fotos/Software Fotos/` |
+| Screenshot                 | Pagina                         | Locatie                      |
+| -------------------------- | ------------------------------ | ---------------------------- |
+| InlogPagina.png            | Inlogformulier                 | `Demo Fotos/Software Fotos/` |
+| Account Aanmaak Pagina.png | Registratieformulier           | `Demo Fotos/Software Fotos/` |
+| HomePagina.png             | Dashboard/overzicht            | `Demo Fotos/Software Fotos/` |
+| Profile Add Pagina.png     | Profiel met favoriet toevoegen | `Demo Fotos/Software Fotos/` |
+| Profile Edit Pagina.png    | Profiel bewerken               | `Demo Fotos/Software Fotos/` |
+| Add Friend Pagina.png      | Vriend toevoegen formulier     | `Demo Fotos/Software Fotos/` |
+| Edit Friend Pagina.png     | Vriend bewerken formulier      | `Demo Fotos/Software Fotos/` |
+| Schedule Add Pagina.png    | Schema toevoegen formulier     | `Demo Fotos/Software Fotos/` |
+| Edit Schedule Pagina.png   | Schema bewerken formulier      | `Demo Fotos/Software Fotos/` |
+| Events Add Pagina.png      | Evenement toevoegen formulier  | `Demo Fotos/Software Fotos/` |
+| Events Edit Pagina.png     | Evenement bewerken formulier   | `Demo Fotos/Software Fotos/` |
+| Delete Button.png          | Verwijderbevestiging           | `Demo Fotos/Software Fotos/` |
 
 **Bewijs:** Map `Demo Fotos/Software Fotos/` (12 PNG-screenshots).
 
 #### Criterium 6: Privacy, security, ethiek en usability
 
 **Privacy (AVG-compliant):**
+
 - Data opslaan in MySQL met wachtwoordbeveiliging
 - Wachtwoorden gehasht met bcrypt (niet leesbaar opgeslagen)
 - Gamers kunnen eigen data verwijderen (soft delete)
@@ -2045,6 +2079,7 @@ Er zijn screenshots gemaakt van alle pagina's van de applicatie:
 - Volgt AVG-regels
 
 **Security (beveiliging, 10 maatregelen):**
+
 - Inloggen met e-mail en wachtwoord (bcrypt hashing)
 - Sessies voor toegang (je blijft ingelogd)
 - Sessies verlopen na 30 minuten stilzitten
@@ -2057,6 +2092,7 @@ Er zijn screenshots gemaakt van alle pagina's van de applicatie:
 - Inlogcontrole per pagina (`isLoggedIn()`)
 
 **Ethiek (eerlijk gebruik):**
+
 - Iedereen kan de app gebruiken, geen uitsluiting
 - Geen reclame die aanzet tot te veel spelen
 - Data niet delen met anderen zonder toestemming
@@ -2064,6 +2100,7 @@ Er zijn screenshots gemaakt van alle pagina's van de applicatie:
 - Positief voor jonge gebruikers
 
 **Usability (gemakkelijk te gebruiken):**
+
 - Grote knoppen (minstens 40 pixels) voor mobiel
 - Duidelijke labels bij velden
 - Kleuren: blauw voor knoppen, rood voor waarschuwingen
@@ -2083,40 +2120,40 @@ De GamePlan Scheduler is een volledig werkende webapplicatie. De projectperiode 
 
 **Gebruikte technieken:**
 
-| Technologie | Versie | Doel |
-| --- | --- | --- |
-| PHP | 8.1 | Backend logica (de logica achter de schermen) |
-| MySQL | 8.0 | Database (waar alle data wordt opgeslagen) |
-| HTML | 5 | Structuur van de pagina's |
-| Bootstrap | 5.3.3 | Responsive design (werkt op mobiel en computer) |
-| CSS | 3 | Styling (donker thema in zwart en blauw) |
-| JavaScript | ES6 | Interacties (validatie, pop-ups, herinneringen) |
+| Technologie | Versie | Doel                                            |
+| ----------- | ------ | ----------------------------------------------- |
+| PHP         | 8.1    | Backend logica (de logica achter de schermen)   |
+| MySQL       | 8.0    | Database (waar alle data wordt opgeslagen)      |
+| HTML        | 5      | Structuur van de pagina's                       |
+| Bootstrap   | 5.3.3  | Responsive design (werkt op mobiel en computer) |
+| CSS         | 3      | Styling (donker thema in zwart en blauw)        |
+| JavaScript  | ES6    | Interacties (validatie, pop-ups, herinneringen) |
 
 **Database opbouw (6 tabellen):**
 
-| Tabel | Beschrijving |
-| --- | --- |
-| Users | Gebruikersinfo (naam, e-mail, wachtwoord) |
-| Games | Lijst met games die je kunt kiezen |
-| UserGames | Koppelt gebruikers aan hun favoriete games |
-| Friends | Vriendenlijst met online status |
-| Schedules | Speelschema's met datum en tijd |
-| Events | Evenementen met beschrijving en herinneringen |
+| Tabel     | Beschrijving                                  |
+| --------- | --------------------------------------------- |
+| Users     | Gebruikersinfo (naam, e-mail, wachtwoord)     |
+| Games     | Lijst met games die je kunt kiezen            |
+| UserGames | Koppelt gebruikers aan hun favoriete games    |
+| Friends   | Vriendenlijst met online status               |
+| Schedules | Speelschema's met datum en tijd               |
+| Events    | Evenementen met beschrijving en herinneringen |
 
 **Overzicht van gerealiseerde functionaliteiten:**
 
-| Functionaliteit | PHP-bestand(en) | Functies in functions.php | Status |
-| --- | --- | --- | --- |
-| Registreren | register.php | registerUser() | Werkend |
-| Inloggen | login.php | loginUser() | Werkend |
-| Uitloggen | logout.php | logout() | Werkend |
-| Favoriete spellen beheren | profile.php, edit_favorite.php, delete.php | addFavoriteGame(), updateFavoriteGame(), deleteFavoriteGame() | Werkend |
-| Vriendenlijst beheren | add_friend.php, edit_friend.php, delete.php | addFriend(), updateFriend(), deleteFriend() | Werkend |
-| Gaming-schema's beheren | add_schedule.php, edit_schedule.php, delete.php | addSchedule(), editSchedule(), deleteSchedule() | Werkend |
-| Evenementen beheren | add_event.php, edit_event.php, delete.php | addEvent(), editEvent(), deleteEvent() | Werkend |
-| Dashboard met kalender | index.php | getCalendarItems(), getReminders() | Werkend |
-| Profiel met statistieken | profile.php | getFavoriteGames(), getFriends() | Werkend |
-| Sorteren | index.php | getSchedules($sort), getEvents($sort) | Werkend |
+| Functionaliteit           | PHP-bestand(en)                                 | Functies in functions.php                                     | Status  |
+| ------------------------- | ----------------------------------------------- | ------------------------------------------------------------- | ------- |
+| Registreren               | register.php                                    | registerUser()                                                | Werkend |
+| Inloggen                  | login.php                                       | loginUser()                                                   | Werkend |
+| Uitloggen                 | logout.php                                      | logout()                                                      | Werkend |
+| Favoriete spellen beheren | profile.php, edit_favorite.php, delete.php      | addFavoriteGame(), updateFavoriteGame(), deleteFavoriteGame() | Werkend |
+| Vriendenlijst beheren     | add_friend.php, edit_friend.php, delete.php     | addFriend(), updateFriend(), deleteFriend()                   | Werkend |
+| Gaming-schema's beheren   | add_schedule.php, edit_schedule.php, delete.php | addSchedule(), editSchedule(), deleteSchedule()               | Werkend |
+| Evenementen beheren       | add_event.php, edit_event.php, delete.php       | addEvent(), editEvent(), deleteEvent()                        | Werkend |
+| Dashboard met kalender    | index.php                                       | getCalendarItems(), getReminders()                            | Werkend |
+| Profiel met statistieken  | profile.php                                     | getFavoriteGames(), getFriends()                              | Werkend |
+| Sorteren                  | index.php                                       | getSchedules($sort), getEvents($sort)                         | Werkend |
 
 **Bewijs:** Alle bronbestanden in de repository, README secties 7-8, demovideo `K1-W3-DEMO VIDEO.mp4`, PDF `K1 W3 Realisatie-Realisatie verslag-Harsha Vardhan Kanaparthi.pdf`.
 
@@ -2125,24 +2162,24 @@ De GamePlan Scheduler is een volledig werkende webapplicatie. De projectperiode 
 **Antwoord:**
 Totaal **49 uur** besteed (meer dan de vereiste 40 uur). Het projectlog toont **29 taken** over **28 dagen**, allemaal voltooid op tijd.
 
-| Onderdeel | Omvang | Geschatte uren |
-| --- | --- | --- |
-| functions.php | 978 regels code | 15+ uur |
-| script.js | 363 regels code | 8+ uur |
-| style.css | 822 regels CSS | 10+ uur |
-| database.sql | 229 regels met commentaar | 5+ uur |
-| 15 PHP-pagina's | ±130 regels per pagina gemiddeld | 12+ uur |
-| README.md | 2900+ regels documentatie | 10+ uur |
-| Testen | 30 testcases uitvoeren (per user story) | 5+ uur |
-| Bugfixes | 4 bugs vinden en oplossen (#1001, #1004, #1005, #1006) | 3+ uur |
-| **Totaal** | **7400+ regels code + docs** | **49+ uur** |
+| Onderdeel       | Omvang                                                 | Geschatte uren |
+| --------------- | ------------------------------------------------------ | -------------- |
+| functions.php   | 978 regels code                                        | 15+ uur        |
+| script.js       | 363 regels code                                        | 8+ uur         |
+| style.css       | 822 regels CSS                                         | 10+ uur        |
+| database.sql    | 229 regels met commentaar                              | 5+ uur         |
+| 15 PHP-pagina's | ±130 regels per pagina gemiddeld                       | 12+ uur        |
+| README.md       | 2900+ regels documentatie                              | 10+ uur        |
+| Testen          | 30 testcases uitvoeren (per user story)                | 5+ uur         |
+| Bugfixes        | 4 bugs vinden en oplossen (#1001, #1004, #1005, #1006) | 3+ uur         |
+| **Totaal**      | **7400+ regels code + docs**                           | **49+ uur**    |
 
 **Week voor week voortgang:**
 
-| Week | Periode | Wat is gedaan |
-| --- | --- | --- |
-| Week 1 | 02-09 t/m 07-09 | Omgeving, database, inloggen klaar |
-| Week 2 | 08-09 t/m 13-09 | Frontend, profielbeheer af |
+| Week   | Periode         | Wat is gedaan                        |
+| ------ | --------------- | ------------------------------------ |
+| Week 1 | 02-09 t/m 07-09 | Omgeving, database, inloggen klaar   |
+| Week 2 | 08-09 t/m 13-09 | Frontend, profielbeheer af           |
 | Week 3 | 14-09 t/m 21-09 | Vrienden, schema's, evenementen doen |
 | Week 4 | 22-09 t/m 30-09 | Herinneringen, testen, online zetten |
 
@@ -2152,48 +2189,49 @@ Totaal **49 uur** besteed (meer dan de vereiste 40 uur). Het projectlog toont **
 
 **Antwoord:**
 
-| DRY-toepassing | Waar | Toelichting |
-| --- | --- | --- |
-| `getDBConnection()` Singleton | db.php | Eén databaseverbinding hergebruikt door alle functies |
-| `safeEcho()` helper | functions.php | Eén centrale functie voor XSS-bescherming op ELKE uitvoer |
-| `validateRequired()` hergebruik | functions.php | Alle verplichte-veld-controles gebruiken dezelfde functie |
-| `checkOwnership()` centraal | functions.php | Eén functie voor eigenaarschap-controle |
-| `header.php` / `footer.php` | header.php, footer.php | Navigatie en footer op 1 plek, automatisch op alle pagina's |
-| `setMessage()` / `getMessage()` | functions.php | Eén berichtsysteem voor alle succes- en foutmeldingen |
-| CSS-variabelen | style.css | Kleuren als variabelen, 1x wijzigen geldt overal |
+| DRY-toepassing                  | Waar                   | Toelichting                                                 |
+| ------------------------------- | ---------------------- | ----------------------------------------------------------- |
+| `getDBConnection()` Singleton   | db.php                 | Eén databaseverbinding hergebruikt door alle functies       |
+| `safeEcho()` helper             | functions.php          | Eén centrale functie voor XSS-bescherming op ELKE uitvoer   |
+| `validateRequired()` hergebruik | functions.php          | Alle verplichte-veld-controles gebruiken dezelfde functie   |
+| `checkOwnership()` centraal     | functions.php          | Eén functie voor eigenaarschap-controle                     |
+| `header.php` / `footer.php`     | header.php, footer.php | Navigatie en footer op 1 plek, automatisch op alle pagina's |
+| `setMessage()` / `getMessage()` | functions.php          | Eén berichtsysteem voor alle succes- en foutmeldingen       |
+| CSS-variabelen                  | style.css              | Kleuren als variabelen, 1x wijzigen geldt overal            |
 
 #### Criterium 4: De student past best practices toe - SRP (Single Responsibility Principle)
 
 **Antwoord:**
 
-| Bestand/Functie | Verantwoordelijkheid | Doet NIET |
-| --- | --- | --- |
-| `db.php` | Alleen databaseverbinding beheren | Geen queries, geen validatie |
-| `functions.php` | Alleen businesslogica (validatie + CRUD) | Geen HTML, geen routing |
-| `header.php` | Alleen navigatie-HTML renderen | Geen logica, geen queries |
-| `login.php` | Alleen loginformulier tonen en afhandelen | Geen registratie, geen CRUD |
-| `script.js` | Alleen client-side validatie en UI-interactie | Geen server-communicatie |
-| `style.css` | Alleen visuele styling | Geen logica |
+| Bestand/Functie | Verantwoordelijkheid                          | Doet NIET                    |
+| --------------- | --------------------------------------------- | ---------------------------- |
+| `db.php`        | Alleen databaseverbinding beheren             | Geen queries, geen validatie |
+| `functions.php` | Alleen businesslogica (validatie + CRUD)      | Geen HTML, geen routing      |
+| `header.php`    | Alleen navigatie-HTML renderen                | Geen logica, geen queries    |
+| `login.php`     | Alleen loginformulier tonen en afhandelen     | Geen registratie, geen CRUD  |
+| `script.js`     | Alleen client-side validatie en UI-interactie | Geen server-communicatie     |
+| `style.css`     | Alleen visuele styling                        | Geen logica                  |
 
 #### Criterium 5: De student hanteert correcte naamgevingsconventies
 
 **Antwoord:**
 
-| Type | Conventie | Voorbeelden |
-| --- | --- | --- |
-| PHP-functies | camelCase | `addFriend()`, `getFavoriteGames()`, `checkSessionTimeout()` |
-| PHP-variabelen | camelCase | `$vriendGebruikersnaam`, `$gedeeldMetStr`, `$spelTitel`, `$userId` |
-| Database-tabellen | PascalCase | `Users`, `Games`, `UserGames`, `Friends`, `Schedules`, `Events` |
-| Database-kolommen | snake_case | `user_id`, `deleted_at`, `friend_username` |
-| CSS-klassen | kebab-case | `.glass-card`, `.btn-gaming`, `.nav-link` |
-| CSS-variabelen | kebab met prefix | `--gaming-primary`, `--glass-bg`, `--glass-border` |
-| JS-functies | camelCase | `validateLoginForm()`, `toonMelding()`, `initialiseerFuncties()` |
-| Bestandsnamen | snake_case | `add_friend.php`, `edit_schedule.php` |
+| Type              | Conventie        | Voorbeelden                                                        |
+| ----------------- | ---------------- | ------------------------------------------------------------------ |
+| PHP-functies      | camelCase        | `addFriend()`, `getFavoriteGames()`, `checkSessionTimeout()`       |
+| PHP-variabelen    | camelCase        | `$vriendGebruikersnaam`, `$gedeeldMetStr`, `$spelTitel`, `$userId` |
+| Database-tabellen | PascalCase       | `Users`, `Games`, `UserGames`, `Friends`, `Schedules`, `Events`    |
+| Database-kolommen | snake_case       | `user_id`, `deleted_at`, `friend_username`                         |
+| CSS-klassen       | kebab-case       | `.glass-card`, `.btn-gaming`, `.nav-link`                          |
+| CSS-variabelen    | kebab met prefix | `--gaming-primary`, `--glass-bg`, `--glass-border`                 |
+| JS-functies       | camelCase        | `validateLoginForm()`, `toonMelding()`, `initialiseerFuncties()`   |
+| Bestandsnamen     | snake_case       | `add_friend.php`, `edit_schedule.php`                              |
 
 #### Criterium 6: De student heeft code voorzien van commentaar
 
 **Antwoord:**
 Alle bestanden bevatten Nederlands commentaar:
+
 - **functions.php:** Functiebeschrijvingen boven elke functie
 - **database.sql:** 229 regels met Nederlands commentaar bij elke tabel
 - **style.css:** 14 benoemde secties met sectieheaders
@@ -2202,6 +2240,7 @@ Alle bestanden bevatten Nederlands commentaar:
 #### Criterium 7: De student gebruikt versiebeheer (Git)
 
 **Antwoord:**
+
 - **Repository:** GitHub
 - **Branch:** `main`
 - **Werkwijze:** Dagelijks commits op GitHub
@@ -2215,19 +2254,19 @@ Alle bestanden bevatten Nederlands commentaar:
 
 **Antwoord:**
 
-| Randgeval | Afhandeling | Validatie-ID |
-| --- | --- | --- |
-| Invoer met alleen spaties " " | Regex `/^\s*$/` detecteert en weigert (Bug #1001 fix) | V1 |
-| Onmogelijke datum "2025-13-45" | `DateTime::createFromFormat()` met stricte vergelijking (Bug #1004 fix) | V6 |
-| Datum in het verleden | Vergelijking met `date('Y-m-d')` blokkeert verlopen datums | V7 |
-| Kommagescheiden lijst met lege items | Explode + trim + filter op lege strings | V10 |
-| SQL-injectie via invoervelden | PDO prepared statements met named parameters | B2 |
-| XSS via invoervelden | `safeEcho()` met htmlspecialchars op alle uitvoer | B3 |
-| Verwijderen van andermans data via URL | `checkOwnership()` controle bij elke bewerk/verwijder-actie | B6 |
-| Sessie-verlopen na inactiviteit | 30-minuten timeout met automatische redirect naar login | B5 |
-| Dubbele registratie met zelfde e-mail | UNIQUE constraint + PHP-controle | V11 |
-| Dubbele favoriet (zelfde spel) | PHP-controle retourneert "Spel al in favorieten" | V12 |
-| Dubbele vriend (zelfde gebruikersnaam) | PHP-controle retourneert "Al vrienden" | V13 |
+| Randgeval                              | Afhandeling                                                             | Validatie-ID |
+| -------------------------------------- | ----------------------------------------------------------------------- | ------------ |
+| Invoer met alleen spaties " "          | Regex `/^\s*$/` detecteert en weigert (Bug #1001 fix)                   | V1           |
+| Onmogelijke datum "2025-13-45"         | `DateTime::createFromFormat()` met stricte vergelijking (Bug #1004 fix) | V6           |
+| Datum in het verleden                  | Vergelijking met `date('Y-m-d')` blokkeert verlopen datums              | V7           |
+| Kommagescheiden lijst met lege items   | Explode + trim + filter op lege strings                                 | V10          |
+| SQL-injectie via invoervelden          | PDO prepared statements met named parameters                            | B2           |
+| XSS via invoervelden                   | `safeEcho()` met htmlspecialchars op alle uitvoer                       | B3           |
+| Verwijderen van andermans data via URL | `checkOwnership()` controle bij elke bewerk/verwijder-actie             | B6           |
+| Sessie-verlopen na inactiviteit        | 30-minuten timeout met automatische redirect naar login                 | B5           |
+| Dubbele registratie met zelfde e-mail  | UNIQUE constraint + PHP-controle                                        | V11          |
+| Dubbele favoriet (zelfde spel)         | PHP-controle retourneert "Spel al in favorieten"                        | V12          |
+| Dubbele vriend (zelfde gebruikersnaam) | PHP-controle retourneert "Al vrienden"                                  | V13          |
 
 **Bewijs:** README sectie 6 (validaties), sectie 9 (beveiligingsmaatregelen), sectie 14 (bugfixes).
 
@@ -2249,12 +2288,14 @@ Er zijn drie lagen van foutafhandeling:
 **Antwoord:**
 
 **Client-side validatie (JavaScript - script.js):**
+
 - `validateLoginForm()` - e-mail en wachtwoord verplicht
 - `validateRegisterForm()` - gebruikersnaam, e-mail, wachtwoord (min. 8 tekens)
 - `validateScheduleForm()` - speltitel, datum (toekomst), tijd (formaat)
 - `validateEventForm()` - titel, datum, tijd, optionele URL-validatie
 
 **Server-side validatie (PHP - functions.php):**
+
 - `validateRequired()` - leeg + spaties + maxlengte
 - `validateDate()` - formaat + echte datum + toekomst
 - `validateTime()` - UU:MM formaat
@@ -2271,17 +2312,17 @@ Er zijn drie lagen van foutafhandeling:
 **Antwoord:**
 De applicatie bevat **10 beveiligingsmaatregelen:**
 
-| Nr | Maatregel | Implementatie | Beschermt tegen |
-| --- | --- | --- | --- |
-| B1 | Wachtwoord hashing | `password_hash(PASSWORD_BCRYPT)` | Wachtwoorddiefstal |
-| B2 | Prepared statements | PDO met `:named` parameters | SQL-injectie |
-| B3 | Output escaping | `safeEcho()` op alle gebruikersdata | XSS-aanvallen |
-| B4 | Sessie regeneratie | `session_regenerate_id(true)` na login | Sessiefixatie |
-| B5 | Sessie timeout | 30 min inactiviteit → automatisch uitloggen | Onbeheerde sessies |
-| B6 | Eigenaarschap controle | `checkOwnership()` bij bewerken/verwijderen | Ongeautoriseerde toegang |
-| B7 | Inputvalidatie | Server-side + client-side dubbel | Ongeldige data |
-| B8 | Foutmasking | `error_log()` + generieke gebruikersmelding | Informatielekken |
-| B9 | Soft delete | `deleted_at` timestamp i.p.v. fysiek DELETE | Dataverlies |
+| Nr  | Maatregel                | Implementatie                                  | Beschermt tegen                |
+| --- | ------------------------ | ---------------------------------------------- | ------------------------------ |
+| B1  | Wachtwoord hashing       | `password_hash(PASSWORD_BCRYPT)`               | Wachtwoorddiefstal             |
+| B2  | Prepared statements      | PDO met `:named` parameters                    | SQL-injectie                   |
+| B3  | Output escaping          | `safeEcho()` op alle gebruikersdata            | XSS-aanvallen                  |
+| B4  | Sessie regeneratie       | `session_regenerate_id(true)` na login         | Sessiefixatie                  |
+| B5  | Sessie timeout           | 30 min inactiviteit → automatisch uitloggen    | Onbeheerde sessies             |
+| B6  | Eigenaarschap controle   | `checkOwnership()` bij bewerken/verwijderen    | Ongeautoriseerde toegang       |
+| B7  | Inputvalidatie           | Server-side + client-side dubbel               | Ongeldige data                 |
+| B8  | Foutmasking              | `error_log()` + generieke gebruikersmelding    | Informatielekken               |
+| B9  | Soft delete              | `deleted_at` timestamp i.p.v. fysiek DELETE    | Dataverlies                    |
 | B10 | Inlogcontrole per pagina | `isLoggedIn()` check op elke beveiligde pagina | Ongeautoriseerde paginatoegang |
 
 **Bewijs:** README sectie 9 (Beveiligingsmaatregelen).
@@ -2292,16 +2333,17 @@ De applicatie bevat **10 beveiligingsmaatregelen:**
 Het projectlog bevat **29 taken** over **28 dagen**, allemaal voltooid op tijd.
 
 **Bugs opgelost tijdens realisatie:**
+
 - 09-09: Dubbele insert bij games → opgelost met unique key
 - 19-09: Delete fout door FK constraint → opgelost met cascade delete
 
 **3 overlegmomenten met begeleider:**
 
-| Datum | Onderwerp | Resultaat |
-| --- | --- | --- |
-| 07-09-2025 | Backend check | Database en inloggen goedgekeurd |
-| 14-09-2025 | Vriendenlijst feedback | Feedback verwerkt in code |
-| 27-09-2025 | Design check voor mobiel | Responsive design goedgekeurd |
+| Datum      | Onderwerp                | Resultaat                        |
+| ---------- | ------------------------ | -------------------------------- |
+| 07-09-2025 | Backend check            | Database en inloggen goedgekeurd |
+| 14-09-2025 | Vriendenlijst feedback   | Feedback verwerkt in code        |
+| 27-09-2025 | Design check voor mobiel | Responsive design goedgekeurd    |
 
 **Bewijs:** PDF `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf`, PDF `K1 W3 Realisatie-Realisatie verslag-Harsha Vardhan Kanaparthi.pdf`.
 
@@ -2323,6 +2365,7 @@ De teststrategie is gebaseerd op vier testniveaus:
 4. **Responsiviteitstests:** De applicatie is getest op 4 schermgrootten (desktop, tablet, mobiel, klein mobiel) en specifiek op een **Samsung Galaxy S21** smartphone.
 
 **Testtools gebruikt:**
+
 - Browser DevTools (Chrome) voor responsiviteitscontrole en netwerk-analyse
 - Handmatig testen met voorgeschreven testcases per user story
 - Samsung Galaxy S21 voor echte mobiele test
@@ -2334,19 +2377,20 @@ De teststrategie is gebaseerd op vier testniveaus:
 **Antwoord:**
 Er zijn **30 testcases** opgesteld en uitgevoerd, verdeeld per user story:
 
-| User Story | Functionaliteit | Aantal tests | Geslaagd | Gezakt |
-| --- | --- | --- | --- | --- |
-| US-1 | Profiel met favoriete games | 5 | 5 | 0 |
-| US-2 | Vriendenlijst beheren | 5 | 4 | 1 |
-| US-3 | Speelschema's delen in kalender | 5 | 5 | 0 |
-| US-4 | Evenementen toevoegen | 5 | 5 | 0 |
-| US-5 | Herinneringen instellen | 5 | 4 | 1 |
-| US-6 | Alles bewerken of verwijderen | 5 | 5 | 0 |
-| **Totaal** | | **30** | **28** | **2** |
+| User Story | Functionaliteit                 | Aantal tests | Geslaagd | Gezakt |
+| ---------- | ------------------------------- | ------------ | -------- | ------ |
+| US-1       | Profiel met favoriete games     | 5            | 5        | 0      |
+| US-2       | Vriendenlijst beheren           | 5            | 4        | 1      |
+| US-3       | Speelschema's delen in kalender | 5            | 5        | 0      |
+| US-4       | Evenementen toevoegen           | 5            | 5        | 0      |
+| US-5       | Herinneringen instellen         | 5            | 4        | 1      |
+| US-6       | Alles bewerken of verwijderen   | 5            | 5        | 0      |
+| **Totaal** |                                 | **30**       | **28**   | **2**  |
 
 **Slagingspercentage: 28 van 30 = 93%**
 
 De 2 gezakte tests betreffen:
+
 - **Bug #1001** (US-2): Vriend toevoegen met alleen spaties werd geaccepteerd → opgelost met `trim()` + regex `/^\s*$/`
 - **Bug #1004** (US-5): Ongeldige datum "2025-13-45" werd geaccepteerd → opgelost met `DateTime::createFromFormat()` strikte controle
 
@@ -2360,14 +2404,14 @@ Elk testscenario bevat: testcase-ID, invoer, verwacht resultaat, werkelijk resul
 
 **Happy path tests (alles gaat goed) – per user story:**
 
-| User Story | Happy path test | Resultaat |
-| --- | --- | --- |
-| US-1 | Favoriet spel toevoegen met geldige titel en beschrijving | Geslaagd |
-| US-2 | Vriend toevoegen met geldige gebruikersnaam en status | Geslaagd |
-| US-3 | Gaming-schema toevoegen met speltitel, datum in toekomst, tijd | Geslaagd |
-| US-4 | Evenement toevoegen met titel, datum, tijd, beschrijving | Geslaagd |
-| US-5 | Herinnering instellen op "1 uur ervoor" bij evenement | Geslaagd |
-| US-6 | Item bewerken en verwijderen met eigenaarschapscontrole | Geslaagd |
+| User Story | Happy path test                                                | Resultaat |
+| ---------- | -------------------------------------------------------------- | --------- |
+| US-1       | Favoriet spel toevoegen met geldige titel en beschrijving      | Geslaagd  |
+| US-2       | Vriend toevoegen met geldige gebruikersnaam en status          | Geslaagd  |
+| US-3       | Gaming-schema toevoegen met speltitel, datum in toekomst, tijd | Geslaagd  |
+| US-4       | Evenement toevoegen met titel, datum, tijd, beschrijving       | Geslaagd  |
+| US-5       | Herinnering instellen op "1 uur ervoor" bij evenement          | Geslaagd  |
+| US-6       | Item bewerken en verwijderen met eigenaarschapscontrole        | Geslaagd  |
 
 **Edge case tests (grensgevallen):**
 
@@ -2395,22 +2439,22 @@ Elk testscenario bevat: testcase-ID, invoer, verwacht resultaat, werkelijk resul
 
 **Testresultaten eerste ronde (23-25 september 2025):**
 
-| User Story | Tests | Geslaagd | Gezakt | Score |
-| --- | --- | --- | --- | --- |
-| US-1: Profiel met favoriete games | 5 | 5 | 0 | 100% |
-| US-2: Vriendenlijst beheren | 5 | 4 | 1 | 80% |
-| US-3: Speelschema's delen | 5 | 5 | 0 | 100% |
-| US-4: Evenementen toevoegen | 5 | 5 | 0 | 100% |
-| US-5: Herinneringen instellen | 5 | 4 | 1 | 80% |
-| US-6: Bewerken/verwijderen | 5 | 5 | 0 | 100% |
-| **TOTAAL** | **30** | **28** | **2** | **93%** |
+| User Story                        | Tests  | Geslaagd | Gezakt | Score   |
+| --------------------------------- | ------ | -------- | ------ | ------- |
+| US-1: Profiel met favoriete games | 5      | 5        | 0      | 100%    |
+| US-2: Vriendenlijst beheren       | 5      | 4        | 1      | 80%     |
+| US-3: Speelschema's delen         | 5      | 5        | 0      | 100%    |
+| US-4: Evenementen toevoegen       | 5      | 5        | 0      | 100%    |
+| US-5: Herinneringen instellen     | 5      | 4        | 1      | 80%     |
+| US-6: Bewerken/verwijderen        | 5      | 5        | 0      | 100%    |
+| **TOTAAL**                        | **30** | **28**   | **2**  | **93%** |
 
 **Gevonden bugs tijdens testen:**
 
-| Bug-ID | Beschrijving | User Story | Ernst | Status |
-| --- | --- | --- | --- | --- |
-| Bug #1001 | Velden accepteerden alleen spaties als geldige invoer | US-2 | Hoog | Opgelost |
-| Bug #1004 | Ongeldige datums (bijv. 2025-13-45) werden geaccepteerd | US-5 | Hoog | Opgelost |
+| Bug-ID    | Beschrijving                                            | User Story | Ernst | Status   |
+| --------- | ------------------------------------------------------- | ---------- | ----- | -------- |
+| Bug #1001 | Velden accepteerden alleen spaties als geldige invoer   | US-2       | Hoog  | Opgelost |
+| Bug #1004 | Ongeldige datums (bijv. 2025-13-45) werden geaccepteerd | US-5       | Hoog  | Opgelost |
 
 **Na bugfixes zijn alle 30 tests opnieuw uitgevoerd met 100% slagingspercentage.**
 
@@ -2419,12 +2463,12 @@ De gemiddelde laadtijd van de applicatie is gemeten op **1,8 seconden**. Dit is 
 
 **Responsiviteitstest:**
 
-| Apparaat/Scherm | Breedte | Resultaat |
-| --- | --- | --- |
-| Desktop | > 992px | Volledige navigatie, tabellen breed – Geslaagd |
-| Tablet | 768px - 992px | Hamburger menu, tabellen scrollbaar – Geslaagd |
-| Mobiel (Samsung Galaxy S21) | < 768px | Hamburger menu, knoppen full-width – Geslaagd |
-| Klein mobiel | < 480px | Alles past op scherm, footer leesbaar – Geslaagd |
+| Apparaat/Scherm             | Breedte       | Resultaat                                        |
+| --------------------------- | ------------- | ------------------------------------------------ |
+| Desktop                     | > 992px       | Volledige navigatie, tabellen breed – Geslaagd   |
+| Tablet                      | 768px - 992px | Hamburger menu, tabellen scrollbaar – Geslaagd   |
+| Mobiel (Samsung Galaxy S21) | < 768px       | Hamburger menu, knoppen full-width – Geslaagd    |
+| Klein mobiel                | < 480px       | Alles past op scherm, footer leesbaar – Geslaagd |
 
 **Bewijs:** README sectie 13.11 (Testresultaten samenvatting) en PDF `K1-W4-Testen-Harsha Vardhan Kanaparthi.pdf`.
 
@@ -2438,19 +2482,19 @@ De gemiddelde laadtijd van de applicatie is gemeten op **1,8 seconden**. Dit is 
 
 Tijdens het verbeterproces zijn **3 informatiebronnen** geraadpleegd om verbeterpunten te identificeren:
 
-| Nr | Bron | Wat geanalyseerd | Resultaat |
-| --- | --- | --- | --- |
-| 1 | **Testrapport** (K1-W4) | 30 testcases met 2 gezakte tests (93%) | Bug #1001 en Bug #1004 geïdentificeerd en opgelost |
-| 2 | **Opleveringsdocument** | Functionaliteitschecklist per user story | Alle 6 user stories gerealiseerd, 6 verbetervoorstellen opgesteld |
-| 3 | **Reflectieverslag** | Eigen analyse van het ontwikkelproces | Leermomenten vastgelegd voor toekomstige projecten |
+| Nr  | Bron                    | Wat geanalyseerd                         | Resultaat                                                         |
+| --- | ----------------------- | ---------------------------------------- | ----------------------------------------------------------------- |
+| 1   | **Testrapport** (K1-W4) | 30 testcases met 2 gezakte tests (93%)   | Bug #1001 en Bug #1004 geïdentificeerd en opgelost                |
+| 2   | **Opleveringsdocument** | Functionaliteitschecklist per user story | Alle 6 user stories gerealiseerd, 6 verbetervoorstellen opgesteld |
+| 3   | **Reflectieverslag**    | Eigen analyse van het ontwikkelproces    | Leermomenten vastgelegd voor toekomstige projecten                |
 
 Daarnaast zijn de volgende technische bronnen geraadpleegd voor het oplossen van de gevonden bugs:
 
-| Bron | Gebruikt voor | Voorbeeld |
-| --- | --- | --- |
-| PHP.net (officieel) | Functiedocumentatie, best practices | `password_hash()`, `DateTime::createFromFormat()` |
-| MDN Web Docs | JavaScript validatie, DOM-manipulatie | `addEventListener()`, regex patronen, `Date` object |
-| OWASP | Beveiligingsrichtlijnen | SQL-injectie preventie, XSS-bescherming |
+| Bron                | Gebruikt voor                         | Voorbeeld                                           |
+| ------------------- | ------------------------------------- | --------------------------------------------------- |
+| PHP.net (officieel) | Functiedocumentatie, best practices   | `password_hash()`, `DateTime::createFromFormat()`   |
+| MDN Web Docs        | JavaScript validatie, DOM-manipulatie | `addEventListener()`, regex patronen, `Date` object |
+| OWASP               | Beveiligingsrichtlijnen               | SQL-injectie preventie, XSS-bescherming             |
 
 Per bron is kritisch beoordeeld of de informatie actueel, betrouwbaar en toepasbaar is. Officiële documentatie (PHP.net, MDN) heeft altijd voorrang boven community-antwoorden.
 
@@ -2516,25 +2560,26 @@ STAP 5: DOCUMENTEREN → Bug, oorzaak, oplossing en hertest vastleggen
 
 Er zijn **6 verbetervoorstellen** opgesteld op basis van de testresultaten, gebruikersfeedback en eigen analyse:
 
-| Nr | Voorstel | Beschrijving | Impact | Prioriteit |
-| --- | --- | --- | --- | --- |
-| #1001 | Wachtwoord vergeten functie | E-mail met reset-link sturen zodat gebruikers hun wachtwoord kunnen herstellen | Gebruikers die hun wachtwoord kwijtraken hoeven geen nieuw account te maken | **Hoog** |
-| #1002 | Profielfoto uploaden | Gebruikers kunnen een avatar uploaden voor een persoonlijkere ervaring | Meer betrokkenheid en herkenning tussen gamers | **Gemiddeld** |
-| #1003 | Zoekfunctie | Zoeken in schema's, evenementen en vrienden op trefwoord | Sneller items terugvinden bij veel data, betere bruikbaarheid | **Gemiddeld** |
-| #1004 | Real-time vriendenlijst | WebSocket-verbinding voor live online-status updates zonder pagina te verversen | Live statusupdates verbeteren de sociale ervaring | **Laag** |
-| #1005 | Meerdere talen (NL/EN) | Volledig taalwisselaar voor Nederlands en Engels | Breder publiek bereiken, internationalisatie | **Laag** |
-| #1006 | E-mail notificaties | Automatische herinnering per e-mail versturen bij evenementen | Hogere opkomst bij evenementen, minder gemiste afspraken | **Gemiddeld** |
+| Nr    | Voorstel                    | Beschrijving                                                                    | Impact                                                                      | Prioriteit    |
+| ----- | --------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------- |
+| #1001 | Wachtwoord vergeten functie | E-mail met reset-link sturen zodat gebruikers hun wachtwoord kunnen herstellen  | Gebruikers die hun wachtwoord kwijtraken hoeven geen nieuw account te maken | **Hoog**      |
+| #1002 | Profielfoto uploaden        | Gebruikers kunnen een avatar uploaden voor een persoonlijkere ervaring          | Meer betrokkenheid en herkenning tussen gamers                              | **Gemiddeld** |
+| #1003 | Zoekfunctie                 | Zoeken in schema's, evenementen en vrienden op trefwoord                        | Sneller items terugvinden bij veel data, betere bruikbaarheid               | **Gemiddeld** |
+| #1004 | Real-time vriendenlijst     | WebSocket-verbinding voor live online-status updates zonder pagina te verversen | Live statusupdates verbeteren de sociale ervaring                           | **Laag**      |
+| #1005 | Meerdere talen (NL/EN)      | Volledig taalwisselaar voor Nederlands en Engels                                | Breder publiek bereiken, internationalisatie                                | **Laag**      |
+| #1006 | E-mail notificaties         | Automatische herinnering per e-mail versturen bij evenementen                   | Hogere opkomst bij evenementen, minder gemiste afspraken                    | **Gemiddeld** |
 
 **Prioritering met onderbouwing:**
 
-| Prioriteit | Voorstellen | Onderbouwing |
-| --- | --- | --- |
-| **Hoog** | #1001 | Directe impact op gebruikerservaring, relatief eenvoudig te implementeren met bestaande PHP-mailfuncties |
-| **Gemiddeld** | #1002, #1003, #1006 | Verbetert de ervaring aanzienlijk, maar vereist nieuwe functionaliteit en testen |
-| **Laag** | #1004, #1005 | Vereist fundamentele architectuurwijzigingen (WebSocket-server, i18n-framework), beter geschikt voor een volgende projectfase |
+| Prioriteit    | Voorstellen         | Onderbouwing                                                                                                                  |
+| ------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **Hoog**      | #1001               | Directe impact op gebruikerservaring, relatief eenvoudig te implementeren met bestaande PHP-mailfuncties                      |
+| **Gemiddeld** | #1002, #1003, #1006 | Verbetert de ervaring aanzienlijk, maar vereist nieuwe functionaliteit en testen                                              |
+| **Laag**      | #1004, #1005        | Vereist fundamentele architectuurwijzigingen (WebSocket-server, i18n-framework), beter geschikt voor een volgende projectfase |
 
 **Gebruikersfeedback:**
 De applicatie is getest door **3 testgebruikers** (gamers uit de doelgroep). Hun feedback is meegenomen in de verbetervoorstellen:
+
 - Testgebruiker 1: "Een zoekfunctie zou handig zijn als je veel schema's hebt" → Voorstel #1003
 - Testgebruiker 2: "Het zou leuk zijn om een profielfoto te hebben" → Voorstel #1002
 - Testgebruiker 3: "E-mail herinneringen zouden helpen om afspraken niet te vergeten" → Voorstel #1006
@@ -2549,12 +2594,12 @@ Het verbeterproces is systematisch uitgevoerd volgens het 5-stappenmodel (ontdek
 
 **Belangrijkste leerpunten uit het verbeterproces:**
 
-| Nr | Leerpunt | Uitleg |
-| --- | --- | --- |
-| 1 | Regex-validatie alleen is NIET voldoende voor datumcontrole | Gebruik altijd ook de `DateTime`-klasse om te controleren of een datum echt bestaat |
-| 2 | PHP's `empty()` functie heeft onverwacht gedrag met spaties | Altijd combineren met `trim()` om witruimte te verwijderen |
-| 3 | Dubbele validatie is essentieel | Client-side validatie voor gebruiksgemak, server-side validatie voor veiligheid |
-| 4 | Testen onthult verborgen bugs | Zonder systematisch testen waren Bug #1001 en #1004 in productie gekomen |
+| Nr  | Leerpunt                                                    | Uitleg                                                                              |
+| --- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| 1   | Regex-validatie alleen is NIET voldoende voor datumcontrole | Gebruik altijd ook de `DateTime`-klasse om te controleren of een datum echt bestaat |
+| 2   | PHP's `empty()` functie heeft onverwacht gedrag met spaties | Altijd combineren met `trim()` om witruimte te verwijderen                          |
+| 3   | Dubbele validatie is essentieel                             | Client-side validatie voor gebruiksgemak, server-side validatie voor veiligheid     |
+| 4   | Testen onthult verborgen bugs                               | Zonder systematisch testen waren Bug #1001 en #1004 in productie gekomen            |
 
 **Bewijs:** README sectie 14.2 (volledig verbeterproces per bug) en PDF `K1-W5-Verbeteren-Harsha Vardhan Kanaparthi.pdf`.
 
@@ -2566,13 +2611,13 @@ Stagebegeleider **Marius Restua** heeft feedback gegeven op het verbeterproces e
 
 **Feedback van Marius Restua:**
 
-| Onderdeel | Feedback | Verwerkt |
-| --- | --- | --- |
-| Code-kwaliteit | "Goede scheiding van verantwoordelijkheden, nette structuur" | Ja – Separation of Concerns consequent toegepast |
-| Beveiliging | "Prepared statements en XSS-bescherming correct geïmplementeerd" | Ja – 10 beveiligingsmaatregelen |
-| Validatie | "Dubbele validatie (client + server) is een goede keuze" | Ja – 18 validatieregels op beide lagen |
-| Documentatie | "README is uitgebreid en duidelijk, goed als naslagwerk" | Ja – 2900+ regels documentatie |
-| Verbeterpunten | "Overweeg geautomatiseerde tests voor toekomstige projecten" | Opgenomen als leerpunt |
+| Onderdeel      | Feedback                                                         | Verwerkt                                         |
+| -------------- | ---------------------------------------------------------------- | ------------------------------------------------ |
+| Code-kwaliteit | "Goede scheiding van verantwoordelijkheden, nette structuur"     | Ja – Separation of Concerns consequent toegepast |
+| Beveiliging    | "Prepared statements en XSS-bescherming correct geïmplementeerd" | Ja – 10 beveiligingsmaatregelen                  |
+| Validatie      | "Dubbele validatie (client + server) is een goede keuze"         | Ja – 18 validatieregels op beide lagen           |
+| Documentatie   | "README is uitgebreid en duidelijk, goed als naslagwerk"         | Ja – 2900+ regels documentatie                   |
+| Verbeterpunten | "Overweeg geautomatiseerde tests voor toekomstige projecten"     | Opgenomen als leerpunt                           |
 
 **Bewijs:** PDF `K1-W5-Verbeteren-Harsha Vardhan Kanaparthi-Feedback van Stagebegeleider.pdf`.
 
@@ -2582,15 +2627,15 @@ Stagebegeleider **Marius Restua** heeft feedback gegeven op het verbeterproces e
 
 Het project is opgeleverd met de volgende onderdelen:
 
-| Nr | Onderdeel | Beschrijving |
-| --- | --- | --- |
-| 1 | Volledige broncode | 22+ bestanden (PHP, JS, CSS, SQL) in de GitHub-repository |
-| 2 | Database-script | `database.sql` voor eenvoudige installatie van de database |
-| 3 | Installatie-instructies | README sectie 12 met stap-voor-stap uitleg |
-| 4 | Documentatie | README.md met 2900+ regels technische documentatie |
-| 5 | Demovideo | `K1-W3-DEMO VIDEO.mp4` met demonstratie van alle functionaliteiten |
-| 6 | Screenshots | `Demo Fotos/Software Fotos/` met 12 PNG-screenshots van alle pagina's |
-| 7 | Oplevernotities | Aandachtspunten voor overdracht aan eventuele opvolger |
+| Nr  | Onderdeel               | Beschrijving                                                          |
+| --- | ----------------------- | --------------------------------------------------------------------- |
+| 1   | Volledige broncode      | 22+ bestanden (PHP, JS, CSS, SQL) in de GitHub-repository             |
+| 2   | Database-script         | `database.sql` voor eenvoudige installatie van de database            |
+| 3   | Installatie-instructies | README sectie 12 met stap-voor-stap uitleg                            |
+| 4   | Documentatie            | README.md met 2900+ regels technische documentatie                    |
+| 5   | Demovideo               | `K1-W3-DEMO VIDEO.mp4` met demonstratie van alle functionaliteiten    |
+| 6   | Screenshots             | `Demo Fotos/Software Fotos/` met 12 PNG-screenshots van alle pagina's |
+| 7   | Oplevernotities         | Aandachtspunten voor overdracht aan eventuele opvolger                |
 
 **Oplevernotities (aandachtspunten):**
 
@@ -2615,12 +2660,12 @@ Het project is opgeleverd met de volgende onderdelen:
 
 Er zijn meerdere overlegmomenten geweest gedurende het project:
 
-| Datum | Type overleg | Deelnemers | Onderwerp | Resultaat |
-| --- | --- | --- | --- | --- |
-| 7 september 2025 | Voortgangsoverleg | Harsha Kanaparthi, Marius Restua | Backend check: database en inloggen | Database-ontwerp en authenticatie goedgekeurd |
-| 16 september 2025 | Voortgangsoverleg | Harsha Kanaparthi, Marius Restua | Vriendenlijst feedback en functionaliteit | Feedback verwerkt in vriendenlijst-implementatie |
-| 27 september 2025 | Voortgangsoverleg | Harsha Kanaparthi, Marius Restua | Design check voor mobiel en responsiviteit | Responsive design goedgekeurd |
-| 29 januari 2025 | Evaluatie-overleg | Harsha Kanaparthi, Marius Restua | Eindevaluatie en beoordeling | Beoordelingsrubric ingevuld |
+| Datum             | Type overleg      | Deelnemers                       | Onderwerp                                  | Resultaat                                        |
+| ----------------- | ----------------- | -------------------------------- | ------------------------------------------ | ------------------------------------------------ |
+| 7 september 2025  | Voortgangsoverleg | Harsha Kanaparthi, Marius Restua | Backend check: database en inloggen        | Database-ontwerp en authenticatie goedgekeurd    |
+| 16 september 2025 | Voortgangsoverleg | Harsha Kanaparthi, Marius Restua | Vriendenlijst feedback en functionaliteit  | Feedback verwerkt in vriendenlijst-implementatie |
+| 27 september 2025 | Voortgangsoverleg | Harsha Kanaparthi, Marius Restua | Design check voor mobiel en responsiviteit | Responsive design goedgekeurd                    |
+| 29 januari 2025   | Evaluatie-overleg | Harsha Kanaparthi, Marius Restua | Eindevaluatie en beoordeling               | Beoordelingsrubric ingevuld                      |
 
 Bij elk overleg zijn de volgende zaken gedocumenteerd:
 
@@ -2631,14 +2676,14 @@ Bij elk overleg zijn de volgende zaken gedocumenteerd:
 
 **Actiepunten uit overleggen:**
 
-| Overleg | Actiepunt | Status |
-| --- | --- | --- |
-| 7 september | Foreign keys toevoegen aan database-tabellen | Afgerond |
-| 7 september | Soft delete implementeren i.p.v. harde delete | Afgerond |
+| Overleg      | Actiepunt                                                 | Status   |
+| ------------ | --------------------------------------------------------- | -------- |
+| 7 september  | Foreign keys toevoegen aan database-tabellen              | Afgerond |
+| 7 september  | Soft delete implementeren i.p.v. harde delete             | Afgerond |
 | 16 september | Dubbele-vriend controle toevoegen (hoofdletterongevoelig) | Afgerond |
-| 16 september | Online-status dropdown toevoegen bij vriend toevoegen | Afgerond |
-| 27 september | Minimale knophoogte 40px voor mobiel | Afgerond |
-| 27 september | Hamburger menu testen op klein scherm | Afgerond |
+| 16 september | Online-status dropdown toevoegen bij vriend toevoegen     | Afgerond |
+| 27 september | Minimale knophoogte 40px voor mobiel                      | Afgerond |
+| 27 september | Hamburger menu testen op klein scherm                     | Afgerond |
 
 **Bewijs:** PDF `K2 W1 Overleggen-Harsha Vardhan Kanaparthi.pdf` (overlegverslagen).
 
@@ -2652,14 +2697,14 @@ De stagebegeleider Marius Restua (Kompas Publishing B.V.) heeft een beoordelings
 
 **Totaalscore: 19 van 54 punten (gemiddelde: 4,4 op schaal van 10)**
 
-| Criterium | Score | Toelichting |
-| --- | --- | --- |
-| Communicatie | Voldoende | Duidelijk in overleg, stelt goede vragen |
+| Criterium               | Score     | Toelichting                                |
+| ----------------------- | --------- | ------------------------------------------ |
+| Communicatie            | Voldoende | Duidelijk in overleg, stelt goede vragen   |
 | Technische vaardigheden | Voldoende | PHP, MySQL en JavaScript correct toegepast |
-| Zelfstandigheid | Voldoende | Werkt zelfstandig na instructie |
-| Documentatie | Goed | Uitgebreide README en technische docs |
-| Code-kwaliteit | Voldoende | Separation of Concerns, DRY-principe |
-| Samenwerking | Voldoende | Werkt mee in feedbackmomenten |
+| Zelfstandigheid         | Voldoende | Werkt zelfstandig na instructie            |
+| Documentatie            | Goed      | Uitgebreide README en technische docs      |
+| Code-kwaliteit          | Voldoende | Separation of Concerns, DRY-principe       |
+| Samenwerking            | Voldoende | Werkt mee in feedbackmomenten              |
 
 **Pluspunten (benoemd door begeleider):**
 
@@ -2676,12 +2721,12 @@ De stagebegeleider Marius Restua (Kompas Publishing B.V.) heeft een beoordelings
 
 **Hoe feedback is verwerkt:**
 
-| Feedback | Verwerking |
-| --- | --- |
-| "Voeg eigenaarschapscontrole toe" | `checkOwnership()` functie geïmplementeerd in functions.php |
-| "Dubbele validatie toepassen" | 18 validatieregels op zowel client (JS) als server (PHP) |
-| "Documentatie uitbreiden" | README uitgebreid naar 2900+ regels met alle 16 secties |
-| "Soft delete toevoegen" | `deleted_at` kolom in 5 tabellen (Users, Games, Friends, Schedules, Events); koppeltabel UserGames gebruikt harde delete |
+| Feedback                          | Verwerking                                                                                                               |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| "Voeg eigenaarschapscontrole toe" | `checkOwnership()` functie geïmplementeerd in functions.php                                                              |
+| "Dubbele validatie toepassen"     | 18 validatieregels op zowel client (JS) als server (PHP)                                                                 |
+| "Documentatie uitbreiden"         | README uitgebreid naar 2900+ regels met alle 16 secties                                                                  |
+| "Soft delete toevoegen"           | `deleted_at` kolom in 5 tabellen (Users, Games, Friends, Schedules, Events); koppeltabel UserGames gebruikt harde delete |
 
 **Bewijs:** PDF `Feedback Stage-Begeleider van Harsha Kanaparthi- K2 - W1.pdf`, PDF `Feedback Stage Harsha Kanaparthi .pdf` en PDF `Beoordelingsrubrics Stagiaire- Harsha .pdf`.
 
@@ -2699,13 +2744,13 @@ Er zijn **2 presentaties** gegeven op **10 maart 2025**:
 
 **Presentatie 1: Portfolio Website – met stagebegeleider**
 
-| Onderdeel | Details |
-| --- | --- |
-| **Datum** | 10 maart 2025 |
-| **Presentator** | Harsha Kanaparthi |
-| **Publiek** | Marius Restua (stagebegeleider, Kompas Publishing B.V.) |
-| **Onderwerp** | Portfolio Website – demonstratie van de GamePlan Scheduler applicatie |
-| **Duur** | Circa 15 minuten presentatie + 10 minuten vragen |
+| Onderdeel       | Details                                                               |
+| --------------- | --------------------------------------------------------------------- |
+| **Datum**       | 10 maart 2025                                                         |
+| **Presentator** | Harsha Kanaparthi                                                     |
+| **Publiek**     | Marius Restua (stagebegeleider, Kompas Publishing B.V.)               |
+| **Onderwerp**   | Portfolio Website – demonstratie van de GamePlan Scheduler applicatie |
+| **Duur**        | Circa 15 minuten presentatie + 10 minuten vragen                      |
 
 **Inhoud van presentatie 1:**
 
@@ -2718,14 +2763,15 @@ Er zijn **2 presentaties** gegeven op **10 maart 2025**:
 
 **Feedback van Marius Restua op presentatie 1:**
 
-| Aspect | Feedback |
-| --- | --- |
-| Inhoud | "Goed opgebouwd, duidelijke structuur van begin tot eind" |
-| Technisch | "Goede uitleg van beveiligingsmaatregelen en validatie" |
-| Demonstratie | "Live demo liet alle functies goed zien" |
+| Aspect       | Feedback                                                   |
+| ------------ | ---------------------------------------------------------- |
+| Inhoud       | "Goed opgebouwd, duidelijke structuur van begin tot eind"  |
+| Technisch    | "Goede uitleg van beveiligingsmaatregelen en validatie"    |
+| Demonstratie | "Live demo liet alle functies goed zien"                   |
 | Verbeterpunt | "Iets meer nadruk op de 'waarom' achter technische keuzes" |
 
 **Bewijs presentatie 1:**
+
 - PDF `K2 W2 Presenteren-Presentatie met stage begeleider-Presentatie-1.pdf`
 - PDF `K2 W2 Presenteren-Presentatie met stage begeleider-Presentatie-1-Feedback Van de stage begeleider-Harsha Vardhan Kanaparthi (1).pdf`
 - PDF `K2 W2 Presenteren-Presentatie met stage begeleider-Presentatie-1- Reflectie Verslag_ Portfolio Website-Harsha Vardhan Kanaparthi.pdf`
@@ -2734,13 +2780,13 @@ Er zijn **2 presentaties** gegeven op **10 maart 2025**:
 
 **Presentatie 2: MBO-4 Opleiding Software Development – met studiegenoot**
 
-| Onderdeel | Details |
-| --- | --- |
-| **Datum** | 10 maart 2025 |
-| **Presentator** | Harsha Kanaparthi |
-| **Publiek** | Billy den Ouden (studiegenoot) |
-| **Onderwerp** | MBO-4 Opleiding Software Development – wat heb ik geleerd? |
-| **Duur** | Circa 15 minuten presentatie + 10 minuten vragen |
+| Onderdeel       | Details                                                    |
+| --------------- | ---------------------------------------------------------- |
+| **Datum**       | 10 maart 2025                                              |
+| **Presentator** | Harsha Kanaparthi                                          |
+| **Publiek**     | Billy den Ouden (studiegenoot)                             |
+| **Onderwerp**   | MBO-4 Opleiding Software Development – wat heb ik geleerd? |
+| **Duur**        | Circa 15 minuten presentatie + 10 minuten vragen           |
 
 **Inhoud van presentatie 2:**
 
@@ -2752,13 +2798,14 @@ Er zijn **2 presentaties** gegeven op **10 maart 2025**:
 
 **Feedback van Billy den Ouden op presentatie 2:**
 
-| Aspect | Feedback |
-| --- | --- |
-| Inhoud | "Duidelijk overzicht van wat je geleerd hebt" |
-| Presentatievaardigheden | "Helder en gestructureerd gepresenteerd" |
-| Verbeterpunt | "Meer voorbeelden uit de praktijk toevoegen" |
+| Aspect                  | Feedback                                      |
+| ----------------------- | --------------------------------------------- |
+| Inhoud                  | "Duidelijk overzicht van wat je geleerd hebt" |
+| Presentatievaardigheden | "Helder en gestructureerd gepresenteerd"      |
+| Verbeterpunt            | "Meer voorbeelden uit de praktijk toevoegen"  |
 
 **Bewijs presentatie 2:**
+
 - PDF `K2 W2 Presenteren-Presentatie met studiegenoot-Presentatie-2-MBO-4-Opleiding-Software-Development.pdf`
 - PDF `K2 W2 Presenteren-Presentatie met studiegenoot-Presentatie-2-MBO-4-Opleiding-Software-Development-  Reflectie- Verslag- Portfolio- Website-Harsha -Vardhan- Kanaparthi.pdf`
 
@@ -2770,23 +2817,23 @@ Na elke presentatie is een **reflectieverslag** geschreven:
 
 **Reflectie op presentatie 1 (Portfolio Website – Marius Restua):**
 
-| Reflectievraag | Antwoord |
-| --- | --- |
-| Wat ging goed? | De live demonstratie verliep soepel, alle functies werkten correct. De structuur van de presentatie was duidelijk. |
-| Wat kon beter? | Meer nadruk op de 'waarom' achter technische keuzes. Dieper ingaan op de onderbouwing van ontwerpbeslissingen. |
-| Hoe was de interactie? | Marius stelde goede vragen over beveiliging en architectuur. Ik kon deze vragen goed beantwoorden. |
-| Welke vragen werden gesteld? | "Waarom PDO en niet MySQLi?", "Hoe werkt de sessie-timeout precies?" |
-| Wat neem ik mee? | Bij de volgende presentatie meer nadruk op de onderbouwing van keuzes, niet alleen het resultaat. |
+| Reflectievraag               | Antwoord                                                                                                           |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Wat ging goed?               | De live demonstratie verliep soepel, alle functies werkten correct. De structuur van de presentatie was duidelijk. |
+| Wat kon beter?               | Meer nadruk op de 'waarom' achter technische keuzes. Dieper ingaan op de onderbouwing van ontwerpbeslissingen.     |
+| Hoe was de interactie?       | Marius stelde goede vragen over beveiliging en architectuur. Ik kon deze vragen goed beantwoorden.                 |
+| Welke vragen werden gesteld? | "Waarom PDO en niet MySQLi?", "Hoe werkt de sessie-timeout precies?"                                               |
+| Wat neem ik mee?             | Bij de volgende presentatie meer nadruk op de onderbouwing van keuzes, niet alleen het resultaat.                  |
 
 **Reflectie op presentatie 2 (MBO-4 Opleiding – Billy den Ouden):**
 
-| Reflectievraag | Antwoord |
-| --- | --- |
-| Wat ging goed? | De presentatie was helder en gestructureerd. Billy begreep de inhoud goed. |
-| Wat kon beter? | Meer concrete voorbeelden uit de stagepraktijk toevoegen om de leerervaringen te illustreren. |
-| Hoe was de interactie? | Billy stelde vragen over de opleiding en technologiekeuzes. Goede dialoog. |
-| Welke vragen werden gesteld? | "Welke taal vond je het moeilijkst?", "Wat is je favoriete project geweest?" |
-| Wat neem ik mee? | Voorbeelden maken een presentatie levendiger. In het vervolg meer praktijkvoorbeelden gebruiken. |
+| Reflectievraag               | Antwoord                                                                                         |
+| ---------------------------- | ------------------------------------------------------------------------------------------------ |
+| Wat ging goed?               | De presentatie was helder en gestructureerd. Billy begreep de inhoud goed.                       |
+| Wat kon beter?               | Meer concrete voorbeelden uit de stagepraktijk toevoegen om de leerervaringen te illustreren.    |
+| Hoe was de interactie?       | Billy stelde vragen over de opleiding en technologiekeuzes. Goede dialoog.                       |
+| Welke vragen werden gesteld? | "Welke taal vond je het moeilijkst?", "Wat is je favoriete project geweest?"                     |
+| Wat neem ik mee?             | Voorbeelden maken een presentatie levendiger. In het vervolg meer praktijkvoorbeelden gebruiken. |
 
 **Bewijs:** Reflectieverslagen zijn opgenomen in de presentatie-PDFs (zie hierboven).
 
@@ -2809,16 +2856,17 @@ Mijn taak was om in **4 weken** (2 september t/m 30 september 2025, totaal **49 
 **A – Actie:**
 Ik heb het project systematisch aangepakt in 5 fasen:
 
-| Fase | Werkproces | Activiteiten |
-| --- | --- | --- |
-| Week 1 | K1-W1 Planning | Projectplan, user stories, MoSCoW, SMART-doel, takenplanning |
-| Week 1-2 | K1-W2 Ontwerp | Database-ontwerp (ERD), functioneel ontwerp, technisch ontwerp, wireframes |
+| Fase     | Werkproces       | Activiteiten                                                                              |
+| -------- | ---------------- | ----------------------------------------------------------------------------------------- |
+| Week 1   | K1-W1 Planning   | Projectplan, user stories, MoSCoW, SMART-doel, takenplanning                              |
+| Week 1-2 | K1-W2 Ontwerp    | Database-ontwerp (ERD), functioneel ontwerp, technisch ontwerp, wireframes                |
 | Week 1-4 | K1-W3 Realisatie | 22+ bestanden coderen (PHP, JS, CSS, SQL), 10 beveiligingsmaatregelen, 18 validatieregels |
-| Week 4 | K1-W4 Testen | 30 testcases uitvoeren, 2 bugs vinden via testen + 2 via review, performance test |
-| Week 4 | K1-W5 Verbeteren | 6 verbetervoorstellen, feedback verwerken, oplevering |
+| Week 4   | K1-W4 Testen     | 30 testcases uitvoeren, 2 bugs vinden via testen + 2 via review, performance test         |
+| Week 4   | K1-W5 Verbeteren | 6 verbetervoorstellen, feedback verwerken, oplevering                                     |
 
 **R – Resultaat:**
 De GamePlan Scheduler is een volledig werkende webapplicatie met:
+
 - 6 gerealiseerde user stories (100%)
 - 22+ bronbestanden (PHP, JS, CSS, SQL)
 - 6 database-tabellen met relaties
@@ -2833,22 +2881,22 @@ De GamePlan Scheduler is een volledig werkende webapplicatie met:
 
 **Wat ging goed:**
 
-| Nr | Aspect | Toelichting |
-| --- | --- | --- |
-| 1 | Separation of Concerns | De code-structuur is overzichtelijk en onderhoudbaar dankzij de scheiding van lagen |
-| 2 | Dubbele validatie | Client-side + server-side validatie heeft veel potentiële problemen voorkomen |
-| 3 | Beveiligingsmaatregelen | 10 maatregelen geïmplementeerd, waaronder bcrypt, prepared statements en XSS-bescherming |
-| 4 | Documentatie | Uitgebreide README met 16 secties maakt het project overdraagbaar |
-| 5 | Systematisch testen | Het testproces heeft 2 bugs aan het licht gebracht die anders in productie waren gekomen |
+| Nr  | Aspect                  | Toelichting                                                                              |
+| --- | ----------------------- | ---------------------------------------------------------------------------------------- |
+| 1   | Separation of Concerns  | De code-structuur is overzichtelijk en onderhoudbaar dankzij de scheiding van lagen      |
+| 2   | Dubbele validatie       | Client-side + server-side validatie heeft veel potentiële problemen voorkomen            |
+| 3   | Beveiligingsmaatregelen | 10 maatregelen geïmplementeerd, waaronder bcrypt, prepared statements en XSS-bescherming |
+| 4   | Documentatie            | Uitgebreide README met 16 secties maakt het project overdraagbaar                        |
+| 5   | Systematisch testen     | Het testproces heeft 2 bugs aan het licht gebracht die anders in productie waren gekomen |
 
 **Wat kon beter:**
 
-| Nr | Aspect | Toelichting |
-| --- | --- | --- |
-| 1 | Eerder testen | Eerder beginnen met testen in plaats van alles in de laatste week |
-| 2 | Geautomatiseerde tests | Unit tests met PHPUnit overwegen voor snellere en herhaalbare tests |
-| 3 | Proactievere communicatie | Wijzigingen eerder melden aan de stagebegeleider |
-| 4 | MVC-patroon | Een MVC-structuur overwegen voor nog betere scheiding van logica en presentatie |
+| Nr  | Aspect                    | Toelichting                                                                     |
+| --- | ------------------------- | ------------------------------------------------------------------------------- |
+| 1   | Eerder testen             | Eerder beginnen met testen in plaats van alles in de laatste week               |
+| 2   | Geautomatiseerde tests    | Unit tests met PHPUnit overwegen voor snellere en herhaalbare tests             |
+| 3   | Proactievere communicatie | Wijzigingen eerder melden aan de stagebegeleider                                |
+| 4   | MVC-patroon               | Een MVC-structuur overwegen voor nog betere scheiding van logica en presentatie |
 
 **Probleemsituatie (STARR):**
 
@@ -2868,15 +2916,15 @@ Tijdens het project liep ik tegen een probleem aan met de datumvalidatie:
 
 Stagebegeleider **Marius Restua** (Kompas Publishing B.V.) heeft een feedbackformulier ingevuld en **ondertekend**. Dit document bevat:
 
-| Onderdeel | Inhoud |
-| --- | --- |
-| Beoordeling technische vaardigheden | PHP, MySQL en JavaScript correct toegepast, goede beveiliging |
-| Beoordeling werkhouding | Zelfstandig, gemotiveerd, houdt zich aan afspraken |
-| Beoordeling communicatie | Duidelijk in overleg, stelt goede vragen, kan beter in pro-actief melden van wijzigingen |
-| Beoordeling samenwerking | Werkt goed samen, verwerkt feedback constructief |
-| Opmerkingen | "Harsha heeft een goed project opgeleverd met nette code en uitgebreide documentatie" |
-| Aanbevelingen | Geautomatiseerde tests overwegen, eerder beginnen met testen |
-| **Handtekening** | **Ondertekend door Marius Restua** |
+| Onderdeel                           | Inhoud                                                                                   |
+| ----------------------------------- | ---------------------------------------------------------------------------------------- |
+| Beoordeling technische vaardigheden | PHP, MySQL en JavaScript correct toegepast, goede beveiliging                            |
+| Beoordeling werkhouding             | Zelfstandig, gemotiveerd, houdt zich aan afspraken                                       |
+| Beoordeling communicatie            | Duidelijk in overleg, stelt goede vragen, kan beter in pro-actief melden van wijzigingen |
+| Beoordeling samenwerking            | Werkt goed samen, verwerkt feedback constructief                                         |
+| Opmerkingen                         | "Harsha heeft een goed project opgeleverd met nette code en uitgebreide documentatie"    |
+| Aanbevelingen                       | Geautomatiseerde tests overwegen, eerder beginnen met testen                             |
+| **Handtekening**                    | **Ondertekend door Marius Restua**                                                       |
 
 **Bewijs:** PDF `K2 W3 Reflectie-Harsha Vardhan Kanaparthi-Feedback  bij Stage-Begeleider  Met Handtekening.pdf`.
 
@@ -2886,18 +2934,18 @@ Stagebegeleider **Marius Restua** (Kompas Publishing B.V.) heeft een feedbackfor
 
 Er is een portfolio-presentatie voorbereid die het volledige project samenvat en geschikt is voor het examenmoment. De presentatie bevat:
 
-| Slide | Onderwerp | Inhoud |
-| --- | --- | --- |
-| 1 | Titelslide | GamePlan Scheduler – Harsha Kanaparthi – 2195344 |
-| 2 | Projectoverzicht | Wat is het, voor wie, welk probleem lost het op? |
-| 3 | Technische architectuur | PHP + MySQL + Bootstrap, Separation of Concerns, 4 lagen |
-| 4 | Database-ontwerp | 6 tabellen, ERD, relaties, indexen |
-| 5 | Beveiligingsmaatregelen | 10 maatregelen met uitleg (BCrypt, PDO, safeEcho, etc.) |
-| 6 | Validaties | 18 regels, dubbele validatie (client + server) |
-| 7 | Live demonstratie | Alle functionaliteiten doorlopen |
-| 8 | Testresultaten | 30 testcases, 93%→100%, 4 bugs gevonden en opgelost (2 via testen, 2 via review) |
-| 9 | Verbeteringen | 6 voorstellen met prioritering |
-| 10 | Reflectie | STARR-methode, leermomenten, wat ging goed/kon beter |
+| Slide | Onderwerp               | Inhoud                                                                           |
+| ----- | ----------------------- | -------------------------------------------------------------------------------- |
+| 1     | Titelslide              | GamePlan Scheduler – Harsha Kanaparthi – 2195344                                 |
+| 2     | Projectoverzicht        | Wat is het, voor wie, welk probleem lost het op?                                 |
+| 3     | Technische architectuur | PHP + MySQL + Bootstrap, Separation of Concerns, 4 lagen                         |
+| 4     | Database-ontwerp        | 6 tabellen, ERD, relaties, indexen                                               |
+| 5     | Beveiligingsmaatregelen | 10 maatregelen met uitleg (BCrypt, PDO, safeEcho, etc.)                          |
+| 6     | Validaties              | 18 regels, dubbele validatie (client + server)                                   |
+| 7     | Live demonstratie       | Alle functionaliteiten doorlopen                                                 |
+| 8     | Testresultaten          | 30 testcases, 93%→100%, 4 bugs gevonden en opgelost (2 via testen, 2 via review) |
+| 9     | Verbeteringen           | 6 voorstellen met prioritering                                                   |
+| 10    | Reflectie               | STARR-methode, leermomenten, wat ging goed/kon beter                             |
 
 **Bewijs:** PDF `K2 W3 Reflectie-Portfolio-Website-Presentatie.pdf`.
 
@@ -2908,16 +2956,19 @@ Er is een portfolio-presentatie voorbereid die het volledige project samenvat en
 De stagebegeleider Marius Restua heeft een **beoordelingsrubric** ingevuld en **eindfeedback** gegeven over de hele stageperiode.
 
 **Beoordelingsrubric:**
+
 - Totaalscore: **19 van 54 punten** (gemiddelde: **4,4** op schaal van 10)
 - Alle criteria zijn beoordeeld op een schaal van onvoldoende tot goed
 - Documentatie scoorde het hoogst (goed)
 
 **Eindfeedback stage:**
+
 - Positief: nette code, uitgebreide documentatie, goede beveiligingsmaatregelen
 - Verbeterpunten: eerder testen, geautomatiseerde tests, proactievere communicatie
 - Eindoordeel: "Harsha heeft het project succesvol afgerond en alle user stories gerealiseerd"
 
 **Bewijs:**
+
 - PDF `Beoordelingsrubrics Stagiaire- Harsha .pdf` (beoordelingsrubric)
 - PDF `Feedback Stage Harsha Kanaparthi .pdf` (eindfeedback stage)
 
@@ -2927,16 +2978,16 @@ De stagebegeleider Marius Restua heeft een **beoordelingsrubric** ingevuld en **
 
 De onderstaande tabel geeft per werkproces een compleet overzicht van alle bewijsstukken:
 
-| Werkproces | README Sectie(s) | PDF Document(en) | Screenshots / Video |
-| --- | --- | --- | --- |
-| **K1-W1** Planning | 1, 4 | `K1-W1-Planning-Harsha Vardhan Kanaparthi.pdf`, `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf` | – |
-| **K1-W2** Ontwerpen | 4, 5, 6, 7, 8 | `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf` | `Demo Fotos/Software Fotos/` (12 screenshots) |
-| **K1-W3** Realiseren | 1–12 | `K1 W3 Realisatie-Realisatie verslag-Harsha Vardhan Kanaparthi.pdf`, `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf` | `K1-W3-DEMO VIDEO.mp4`, `Demo Fotos/VersieBeheer/Versiebeheer.png` |
-| **K1-W4** Testen | 13 | `K1-W4-Testen-Harsha Vardhan Kanaparthi.pdf` | – |
-| **K1-W5** Verbeteren | 14 | `K1-W5-Verbeteren-Harsha Vardhan Kanaparthi.pdf`, `K1-W5-Verbeteren-...-Feedback van Stagebegeleider.pdf`, `K1-W5-Verbeteren-...-Oplevering Notities.pdf` | – |
-| **K2-W1** Overleggen | – | `K2 W1 Overleggen-Harsha Vardhan Kanaparthi.pdf`, `Feedback Stage-Begeleider van Harsha Kanaparthi- K2 - W1.pdf`, `Beoordelingsrubrics Stagiaire- Harsha .pdf` | – |
-| **K2-W2** Presenteren | – | Presentatie-1 (3 PDFs: presentatie + feedback + reflectie), Presentatie-2 (2 PDFs: presentatie + reflectie) | – |
-| **K2-W3** Reflecteren | – | `K2 W3 Reflectie-Harsha Vardhan Kanaparthi.pdf`, `K2 W3 Reflectie-...-Feedback Met Handtekening.pdf`, `K2 W3 Reflectie-Portfolio-Website-Presentatie.pdf`, `Beoordelingsrubrics Stagiaire- Harsha .pdf`, `Feedback Stage Harsha Kanaparthi .pdf` | – |
+| Werkproces            | README Sectie(s) | PDF Document(en)                                                                                                                                                                                                                                 | Screenshots / Video                                                |
+| --------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| **K1-W1** Planning    | 1, 4             | `K1-W1-Planning-Harsha Vardhan Kanaparthi.pdf`, `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf`                                                                                                                                      | –                                                                  |
+| **K1-W2** Ontwerpen   | 4, 5, 6, 7, 8    | `K1-W2-Ontwerp-Harsha Vardhan Kanaparthi.pdf`                                                                                                                                                                                                    | `Demo Fotos/Software Fotos/` (12 screenshots)                      |
+| **K1-W3** Realiseren  | 1–12             | `K1 W3 Realisatie-Realisatie verslag-Harsha Vardhan Kanaparthi.pdf`, `K1 W3 Realisatie-Projectlog-Harsha Vardhan Kanaparthi.pdf`                                                                                                                 | `K1-W3-DEMO VIDEO.mp4`, `Demo Fotos/VersieBeheer/Versiebeheer.png` |
+| **K1-W4** Testen      | 13               | `K1-W4-Testen-Harsha Vardhan Kanaparthi.pdf`                                                                                                                                                                                                     | –                                                                  |
+| **K1-W5** Verbeteren  | 14               | `K1-W5-Verbeteren-Harsha Vardhan Kanaparthi.pdf`, `K1-W5-Verbeteren-...-Feedback van Stagebegeleider.pdf`, `K1-W5-Verbeteren-...-Oplevering Notities.pdf`                                                                                        | –                                                                  |
+| **K2-W1** Overleggen  | –                | `K2 W1 Overleggen-Harsha Vardhan Kanaparthi.pdf`, `Feedback Stage-Begeleider van Harsha Kanaparthi- K2 - W1.pdf`, `Beoordelingsrubrics Stagiaire- Harsha .pdf`                                                                                   | –                                                                  |
+| **K2-W2** Presenteren | –                | Presentatie-1 (3 PDFs: presentatie + feedback + reflectie), Presentatie-2 (2 PDFs: presentatie + reflectie)                                                                                                                                      | –                                                                  |
+| **K2-W3** Reflecteren | –                | `K2 W3 Reflectie-Harsha Vardhan Kanaparthi.pdf`, `K2 W3 Reflectie-...-Feedback Met Handtekening.pdf`, `K2 W3 Reflectie-Portfolio-Website-Presentatie.pdf`, `Beoordelingsrubrics Stagiaire- Harsha .pdf`, `Feedback Stage Harsha Kanaparthi .pdf` | –                                                                  |
 
 **Totaal bewijsstukken:** 21 PDF-documenten + 12 screenshots + 1 demovideo + 1 versiebeheer-screenshot + README.md (2900+ regels) + 22+ bronbestanden
 

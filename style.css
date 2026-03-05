@@ -3,217 +3,752 @@
    ==========================================================================
    Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
 
-   Donker gaming-thema met Bootstrap 5 aanpassingen.
-   Ontwerp: Donker thema (zwart/blauw), responsief, 40px min knoppen, glassmorphism.
+   Dit is het HOOFD CSS-BESTAND (Cascading Style Sheets) van de applicatie.
+   CSS bepaalt HOE de HTML-elementen eruit zien op het scherm: kleuren,
+   lettertypen, afmetingen, posities, animaties en responsieve aanpassingen.
+
+   THEMA: Donker gaming-thema met glassmorphism effecten.
+   - Glassmorphism is een modern ontwerp-effect waarbij elementen een
+     doorschijnende, glazen uitstraling krijgen door blur + transparantie.
+   - Het donkere kleurenschema (zwart/blauw/paars) past bij de gaming-doelgroep.
+
+   STRUCTUUR: Dit bestand is verdeeld in 16 secties:
+   1.  CSS Variabelen (:root)       - Herbruikbare waarden
+   2.  Basis stijlen                - Reset en body
+   3.  Header stijlen               - Navigatiebalk
+   4.  Footer stijlen               - Voettekst
+   5.  Hoofd container              - Pagina-indeling
+   6.  Kaarten en tabellen          - Glassmorphism kaarten
+   7.  Formulier stijlen            - Invoervelden
+   8.  Knop stijlen                 - Alle knoppen
+   9.  Melding stijlen              - Waarschuwingen
+   10. Kalender kaarten             - Agenda-items
+   11. Inlog/registratie            - Auth-pagina's
+   12. Responsief ontwerp           - Mobiel/tablet
+   13. Animaties                    - Beweging en effecten
+   14. Hulp klassen                 - Utility classes
+   15. Bootstrap overschrijvingen   - Framework fixes
+   16. Inhoud pagina stijlen        - Privacy & Contact
+
+   TECHNISCHE CONCEPTEN:
+   - CSS Specificity: hoe de browser bepaalt welke stijl wint bij conflicten
+     (inline > id > class > element). !important overschrijft alles.
+   - CSS Box Model: elk element is een rechthoek met content, padding,
+     border en margin (van binnen naar buiten).
+   - Flexbox: een lay-outsysteem voor het positioneren van elementen in
+     een rij of kolom, met eenvoudige centrering en verdeling.
+   - CSS Custom Properties (variabelen): waarden die je een keer definieert
+     in :root en overal hergebruikt met var(--naam).
+   - Media Queries: regels die alleen gelden bij bepaalde schermbreedtes
+     (bijv. @media (max-width: 768px) voor mobiel).
 
    BUGFIX:
    - #1005: --glass-bg van 'orange' naar 'rgba(255, 255, 255, 0.05)'
+     De glassmorphism achtergrond was per ongeluk oranje ingesteld,
+     waardoor kaarten een oranje tint hadden in plaats van doorschijnend.
    ========================================================================== */
 
 
 /* ==========================================================================
-   SECTIE 1: CSS VARIABELEN
+   SECTIE 1: CSS VARIABELEN (Custom Properties)
    ==========================================================================
-   Herbruikbare kleuren en waarden voor consistente styling.
+   CSS Variabelen (ook wel Custom Properties genoemd) zijn herbruikbare
+   waarden die je een keer definieert en overal in het bestand kunt gebruiken.
+
+   VOORDELEN VAN CSS VARIABELEN:
+   1. Consistentie: dezelfde kleur wordt overal exact hetzelfde weergegeven
+   2. Onderhoud: als je een kleur wilt veranderen, hoef je het maar op
+      EEN plek aan te passen (hier in :root)
+   3. Leesbaarheid: var(--accent-blue) is duidelijker dan #0d6efd
+   4. Thema's: je kunt makkelijk van thema wisselen door de variabelen
+      te overschrijven (bijv. voor een licht thema)
+
+   SYNTAX: --naam: waarde;
+   GEBRUIK: var(--naam)
+
+   :root is een CSS pseudo-klasse die het HOOFD-element van het document
+   selecteert (het <html>-element). Variabelen in :root zijn GLOBAAL
+   beschikbaar in het hele CSS-bestand. Dit is vergelijkbaar met globale
+   variabelen in JavaScript of PHP.
    ========================================================================== */
 
 :root {
-    /* Primaire kleuren - Gaming donker thema */
-    --bg-dark: #0a0a0f;              /* Zeer donkere achtergrond */
-    --bg-secondary: #12121a;          /* Kaart achtergronden */
-    --bg-card: #1a1a25;              /* Verhoogde oppervlakken */
-    --accent-blue: #0d6efd;          /* Primaire blauwe accent */
-    --accent-cyan: #00d4ff;          /* Neon cyaan voor highlights */
-    --accent-purple: #9d4edd;        /* Paarse accent */
-    --text-primary: #ffffff;          /* Hoofd tekstkleur */
-    --text-secondary: #b0b0b0;        /* Secundaire tekst */
-    --success: #28a745;              /* Succes groen */
-    --danger: #dc3545;               /* Gevaar rood */
-    --warning: #ffc107;              /* Waarschuwing geel */
+    /* ======================================================================
+       KLEURENPALET - Gaming donker thema
+       ======================================================================
+       Deze kleuren vormen het visuele thema van de hele applicatie.
+       Hexadecimale kleurcodes (#) bestaan uit 6 tekens: RRGGBB
+       waarbij RR=rood, GG=groen, BB=blauw (elk 00-FF).
+       Lagere waarden = donkerder, hogere waarden = lichter.
+       ====================================================================== */
 
-    /* Glassmorphism effect waarden */
+    /* Achtergrondkleuren - Van donkerst naar lichtst */
+    --bg-dark: #0a0a0f;              /* Zeer donkere achtergrond (bijna zwart met een
+                                         vleugje blauw). Dit is de basis achtergrondkleur
+                                         van de hele pagina. #0a = 10 van 255, dus 96%
+                                         zwart. De 0f aan het eind geeft een subtiele
+                                         blauwe tint. */
+
+    --bg-secondary: #12121a;          /* Iets lichtere achtergrond voor kaarten en secties.
+                                         Dit creëert DIEPTE (depth): donkerdere elementen
+                                         lijken verder weg, lichtere lijken dichterbij.
+                                         Verschil met --bg-dark is subtiel maar merkbaar. */
+
+    --bg-card: #1a1a25;              /* Achtergrond voor verhoogde oppervlakken zoals
+                                         invoervelden en tabelrijen. De lichtste van de
+                                         drie achtergrondkleuren, wat een laagjes-effect
+                                         (layering) creëert: pagina -> sectie -> element. */
+
+    /* Accentkleuren - Voor knoppen, links en highlights */
+    --accent-blue: #0d6efd;          /* Primaire blauwe accentkleur, identiek aan Bootstrap's
+                                         btn-primary kleur. Blauw staat voor betrouwbaarheid
+                                         en professionaliteit. Wordt gebruikt voor primaire
+                                         knoppen, actieve elementen en links. */
+
+    --accent-cyan: #00d4ff;          /* Neon cyaan (felblauw) voor highlights en hover-effecten.
+                                         Deze kleur geeft een "neon glow" effect dat populair
+                                         is in gaming-interfaces. Wordt gebruikt voor titels,
+                                         links en interactieve elementen. */
+
+    --accent-purple: #9d4edd;        /* Paarse accentkleur voor gradiënten en decoratie.
+                                         Paars gecombineerd met blauw is een klassiek
+                                         gaming-kleurenpalet (denk aan Twitch, Discord).
+                                         Wordt gebruikt in de header gradient en knop-effecten. */
+
+    /* Tekstkleuren */
+    --text-primary: #ffffff;          /* Hoofd tekstkleur: puur wit (#ffffff).
+                                         Op een donkere achtergrond is wit de beste keuze
+                                         voor leesbaarheid. Het contrast ratio tussen wit
+                                         tekst en onze donkere achtergrond is >15:1, wat
+                                         ruim boven de WCAG AA-norm van 4.5:1 ligt. */
+
+    --text-secondary: #b0b0b0;        /* Secundaire tekstkleur: lichtgrijs.
+                                         Wordt gebruikt voor minder belangrijke informatie
+                                         zoals hulptekst, placeholder-tekst en metadata.
+                                         Nog steeds goed leesbaar maar minder opvallend
+                                         dan de primaire witte tekst. */
+
+    /* Status kleuren - Universele betekenissen */
+    --success: #28a745;              /* Succes/positief: groen. Universeel begrepen als
+                                         "goed", "geslaagd", "actief". Gebruikt voor
+                                         succesmeldingen en bevestigingsknoppen. */
+
+    --danger: #dc3545;               /* Gevaar/negatief: rood. Universeel begrepen als
+                                         "fout", "verwijderen", "gevaarlijk". Gebruikt voor
+                                         foutmeldingen en verwijderknoppen. */
+
+    --warning: #ffc107;              /* Waarschuwing: geel/amber. Universeel begrepen als
+                                         "let op", "bewerken", "let op". Gebruikt voor
+                                         waarschuwingen en bewerkingsknoppen. */
+
+    /* ======================================================================
+       GLASSMORPHISM VARIABELEN
+       ======================================================================
+       Glassmorphism is een visueel ontwerp-effect dat elementen laat lijken
+       op matglas: semi-transparant met een blur (wazig) effect erachter.
+
+       Het effect ontstaat door drie eigenschappen te combineren:
+       1. Semi-transparante achtergrond (--glass-bg)
+       2. Doorzichtige rand (--glass-border)
+       3. Achtergrond vervaging / blur (--glass-blur)
+
+       BUGFIX #1005: --glass-bg was per ongeluk 'orange' in plaats van
+       rgba(255, 255, 255, 0.05). Dit is gecorrigeerd.
+       ====================================================================== */
+
     --glass-bg: rgba(255, 255, 255, 0.05);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --glass-blur: 10px;
+                                      /* Achtergrond voor glas-elementen.
+                                         rgba() = rood, groen, blauw, alpha (transparantie).
+                                         255,255,255 = wit. 0.05 = 5% zichtbaar, 95% transparant.
+                                         Dit geeft een HEEL subtiele witte sluier over de
+                                         achtergrond, wat het glas-effect creëert. */
 
-    /* Afmetingen en tussenruimte */
-    --header-height: 80px;
-    --footer-height: 50px;
-    --button-min-height: 40px;        /* Minimaal 40px voor mobiel */
-    --border-radius: 12px;
-    --border-radius-lg: 20px;
+    --glass-border: rgba(255, 255, 255, 0.1);
+                                      /* Rand voor glas-elementen: 10% zichtbaar wit.
+                                         Deze subtiele rand maakt de contouren van het
+                                         "glas" zichtbaar zonder te opvallend te zijn. */
+
+    --glass-blur: 10px;              /* Blur-sterkte voor backdrop-filter.
+                                         10px betekent dat de achtergrond 10 pixels
+                                         wazig wordt gemaakt. Hogere waarden = meer blur.
+                                         Dit is het effect dat je ziet als je door matglas kijkt. */
+
+    /* ======================================================================
+       AFMETINGEN EN TUSSENRUIMTE (Spacing)
+       ======================================================================
+       Vaste afmetingen voor consistente lay-out door de hele applicatie.
+       Door deze als variabelen te definiëren, blijven header, footer en
+       knoppen overal even groot.
+       ====================================================================== */
+
+    --header-height: 80px;           /* Hoogte van de navigatiebalk (header).
+                                         80px geeft genoeg ruimte voor het logo,
+                                         navigatielinks en knoppen. */
+
+    --footer-height: 50px;           /* Hoogte van de voettekst (footer).
+                                         50px is compact maar voldoende voor
+                                         copyright-tekst en links. */
+
+    --button-min-height: 40px;        /* Minimale hoogte voor ALLE knoppen.
+                                         40px is de aanbevolen minimale aanraakgrootte
+                                         voor mobiele apparaten (Apple richtlijnen: 44px,
+                                         Material Design: 48px, wij gebruiken 40px als
+                                         compromis tussen grootte en ruimte). */
+
+    --border-radius: 12px;           /* Hoekafronding voor kaarten, knoppen en invoervelden.
+                                         12px geeft een moderne, afgeronde uitstraling
+                                         zonder volledig rond te zijn. Hogere waarden = ronder. */
+
+    --border-radius-lg: 20px;        /* Grotere hoekafronding voor speciale elementen
+                                         zoals de inlog/registratie container.
+                                         20px geeft een zachtere, meer uitnodigende uitstraling. */
 }
 
 
 /* ==========================================================================
-   SECTIE 2: BASIS STIJLEN
+   SECTIE 2: BASIS STIJLEN (Reset & Body)
+   ==========================================================================
+   Deze sectie bevat de FUNDAMENTELE stijlen die gelden voor de hele pagina.
+   Het begint met een CSS RESET die standaard browser-stijlen verwijdert,
+   gevolgd door de body-stijlen die het donkere thema instellen.
+
+   WAAROM EEN RESET?
+   Elke browser heeft standaard stijlen voor HTML-elementen (bijv. margins
+   bij <h1>, padding bij <ul>). Deze verschillen TUSSEN browsers. Een reset
+   zorgt ervoor dat alle browsers met dezelfde basis beginnen, zodat onze
+   eigen stijlen consistent werken in Chrome, Firefox, Safari, Edge, etc.
    ========================================================================== */
 
-/* Reset en basis body styling */
+/* UNIVERSELE RESET (*) - Geldt voor ALLE HTML-elementen op de pagina.
+   De * selector (universele selector) selecteert ieder element.
+   Dit is de meest brede selector die er bestaat. */
 * {
+    /* box-sizing: border-box verandert HOE de browser de BREEDTE van
+       elementen berekent. Standaard (content-box) worden padding en border
+       BOVENOP de opgegeven breedte geteld. Met border-box worden padding en
+       border BINNENIN de opgegeven breedte geteld.
+       Voorbeeld: een element met width: 200px en padding: 20px:
+       - content-box: totaal 240px breed (200 + 20 + 20)
+       - border-box: totaal 200px breed (160 content + 20 + 20)
+       border-box maakt het VEEL makkelijker om lay-outs te maken. */
     box-sizing: border-box;
+
+    /* Verwijder de standaard buitenruimte (margin) van alle elementen.
+       Veel elementen (h1, p, ul) hebben standaard margin. Door dit op 0
+       te zetten, kunnen we zelf bepalen hoeveel ruimte er tussen elementen zit. */
     margin: 0;
+
+    /* Verwijder de standaard binnenruimte (padding) van alle elementen.
+       Elementen als ul en body hebben standaard padding. */
     padding: 0;
 }
 
+/* BODY STIJLEN - De <body> bevat alle zichtbare inhoud van de pagina.
+   Alles wat de gebruiker ziet staat binnen de body. */
 body {
+    /* background: linear-gradient() creëert een KLEURVERLOOP als achtergrond.
+       linear-gradient = een recht verloop van kleur A naar kleur B.
+       135deg = de hoek van het verloop (135 graden = diagonaal linksboven naar rechtsonder).
+       var(--bg-dark) 0% = start met de donkere kleur (#0a0a0f) bij 0%.
+       #0d1421 50% = gaat via een iets lichtere blauw-zwart op het middenpunt (50%).
+       var(--bg-dark) 100% = eindigt weer met de donkere kleur bij 100%.
+       Dit creëert een subtiel lichteffect in het midden van de pagina. */
     background: linear-gradient(135deg, var(--bg-dark) 0%, #0d1421 50%, var(--bg-dark) 100%);
+
+    /* background-attachment: fixed maakt de achtergrond VAST.
+       Als de gebruiker scrollt, beweegt de achtergrond NIET mee.
+       De inhoud scrolt over de vaste achtergrond heen, wat een
+       parallax-achtig diepte-effect geeft. */
     background-attachment: fixed;
+
+    /* color: var(--text-primary) stelt de STANDAARD tekstkleur in op wit.
+       Alle tekst in de body (en onderliggende elementen) wordt wit,
+       tenzij een specifieker stijlregel dit overschrijft. */
     color: var(--text-primary);
+
+    /* font-family stelt het LETTERTYPE in met een fallback-keten:
+       1. 'Segoe UI' - Het standaard lettertype van Windows (modern, goed leesbaar)
+       2. 'Roboto' - Het standaard lettertype van Android/Material Design
+       3. 'Arial' - Een universeel beschikbaar sans-serif lettertype
+       4. sans-serif - De generieke categorie als geen van de bovenstaande beschikbaar is.
+       De browser probeert het eerste lettertype; als dat niet beschikbaar is,
+       probeert het het volgende, enzovoort. */
     font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+
+    /* min-height: 100vh zorgt dat de body MINSTENS de volledige hoogte van het
+       browservenster inneemt. vh = viewport height (1vh = 1% van de vensterhoogte).
+       100vh = 100% van het venster. Zonder dit zou een pagina met weinig inhoud
+       de voettekst halverwege het scherm tonen in plaats van onderaan. */
     min-height: 100vh;
-    padding-top: calc(var(--header-height) + 20px);    /* Ruimte voor vaste header */
-    padding-bottom: calc(var(--footer-height) + 30px);  /* Ruimte voor vaste footer */
+
+    /* padding-top: calc() berekent dynamisch de bovenste binnenruimte.
+       calc() is een CSS-functie die wiskundige berekeningen uitvoert.
+       var(--header-height) + 20px = 80px + 20px = 100px.
+       Dit duwt de pagina-inhoud NAAR BENEDEN zodat het niet achter
+       de vaste (fixed) header verdwijnt. De 20px extra geeft ademruimte. */
+    padding-top: calc(var(--header-height) + 20px);
+
+    /* padding-bottom: calc() berekent de onderste binnenruimte.
+       var(--footer-height) + 30px = 50px + 30px = 80px.
+       Dit voorkomt dat inhoud achter de vaste footer verdwijnt. */
+    padding-bottom: calc(var(--footer-height) + 30px);
+
+    /* line-height: 1.6 stelt de REGELHOOGTE in op 1.6x de lettergrootte.
+       Bij een lettergrootte van 16px wordt de regelhoogte 25.6px.
+       Dit geeft meer ruimte tussen tekstregels, wat de leesbaarheid
+       verbetert. De standaard is ±1.2, maar 1.5-1.8 is optimaal voor
+       langere tekstblokken (volgens typografie-onderzoek). */
     line-height: 1.6;
 }
 
-/* Vloeiend scrollen voor pagina navigatie */
+/* HTML ELEMENT - Instellingen voor het document als geheel.
+   <html> is het buitenste element dat alles bevat. */
 html {
+    /* scroll-behavior: smooth maakt ALLE scrollbewegingen VLOEIEND.
+       Als de gebruiker op een ankerlink klikt die naar een ander deel
+       van de pagina scrollt, glijdt de pagina er GELEIDELIJK naartoe
+       in plaats van er in een keer heen te springen. Dit geeft een
+       prettigere gebruikerservaring.
+       Werkt samen met JavaScript: doel.scrollIntoView({ behavior: 'smooth' }) */
     scroll-behavior: smooth;
 }
 
 
 /* ==========================================================================
-   SECTIE 3: HEADER STIJLEN
+   SECTIE 3: HEADER STIJLEN (Navigatiebalk)
+   ==========================================================================
+   De header is de NAVIGATIEBALK bovenaan elke pagina. Hij is "fixed"
+   (vastgezet), wat betekent dat hij altijd zichtbaar blijft, ook als de
+   gebruiker naar beneden scrollt. Dit is een veelgebruikt patroon bij
+   webapplicaties omdat de navigatie altijd bereikbaar moet zijn.
+
+   STRUCTUUR: header > container > [logo + nav links + knoppen]
    ========================================================================== */
 
+/* HEADER ELEMENT - De buitenste container van de navigatiebalk. */
 header {
+    /* background: linear-gradient(90deg, ...) creëert een HORIZONTAAL kleurverloop.
+       90deg = van links naar rechts (0deg = van onder naar boven, 180deg = boven naar beneden).
+       Begint met blauw (--accent-blue) links en gaat over in paars (--accent-purple) rechts.
+       Dit geeft de header een opvallende, gaming-achtige uitstraling. */
     background: linear-gradient(90deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+
+    /* height: var(--header-height) = 80px.
+       Een vaste hoogte zorgt voor een consistente navigatiebalk. */
     height: var(--header-height);
+
+    /* position: fixed haalt het element uit de normale documentstroom
+       en plakt het vast op het browservenster. Het beweegt NIET mee bij scrollen.
+       De header blijft altijd bovenaan zichtbaar. */
     position: fixed;
+
+    /* top, left, right: 0 positioneert de header helemaal bovenaan,
+       van de linkerrand tot de rechterrand van het venster.
+       Dit zorgt ervoor dat de header de VOLLEDIGE breedte inneemt. */
     top: 0;
     left: 0;
     right: 0;
+
+    /* z-index: 1000 bepaalt de STAPELVOLGORDE van overlappende elementen.
+       Hogere waarden verschijnen BOVEN lagere waarden.
+       1000 is een hoog getal dat ervoor zorgt dat de header BOVEN alle
+       andere pagina-elementen verschijnt (die meestal z-index: auto of 0 hebben).
+       Dit voorkomt dat inhoud over de header heen scrolt. */
     z-index: 1000;
+
+    /* box-shadow voegt een SCHADUW toe onder de header.
+       0 = geen horizontale verschuiving
+       4px = 4 pixels verticale verschuiving (schaduw valt naar beneden)
+       20px = 20 pixels blur (hoe wazig de schaduw is)
+       rgba(0,0,0,0.3) = zwarte kleur met 30% dekking (semi-transparant)
+       De schaduw creëert DIEPTE: het lijkt alsof de header boven de pagina zweeft. */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+
+    /* display: flex activeert CSS FLEXBOX lay-out.
+       Flexbox is een modern lay-outsysteem dat het eenvoudig maakt om
+       elementen in een rij of kolom te rangschikken. Kinderen van een
+       flex-container worden automatisch naast elkaar geplaatst. */
     display: flex;
+
+    /* align-items: center centreert de kinderen VERTICAAL binnen de header.
+       Zonder dit zouden de navigatielinks en het logo bovenaan in de header staan
+       in plaats van in het midden. */
     align-items: center;
 }
 
+/* HEADER CONTAINER - De binnenste wrapper die de header-inhoud centreert. */
 header .container {
+    /* display: flex maakt dit ook een flexbox-container.
+       De kinderen (logo, navigatie, knoppen) worden naast elkaar geplaatst. */
     display: flex;
+
+    /* justify-content: space-between verdeelt de kinderen met gelijke
+       tussenruimte. Het eerste kind (logo) gaat naar links, het laatste
+       (navigatie) gaat naar rechts, en de ruimte ertussen wordt verdeeld.
+       Dit is het meest gebruikte patroon voor navigatiebalken. */
     justify-content: space-between;
+
+    /* align-items: center centreert de kinderen verticaal. */
     align-items: center;
+
+    /* width: 100% zorgt dat de container de volledige breedte inneemt. */
     width: 100%;
 }
 
+/* HEADER LOGO (H1) - De applicatienaam "🎮 GamePlan" in de header. */
 header h1 {
+    /* font-size: 1.5rem = 1.5 keer de standaard lettergrootte.
+       rem = root em, gebaseerd op de lettergrootte van het html-element.
+       Standaard is 1rem = 16px, dus 1.5rem = 24px.
+       rem wordt aanbevolen boven px omdat het mee schaalt met de
+       browser lettergrootte-instelling van de gebruiker (toegankelijkheid). */
     font-size: 1.5rem;
+
+    /* font-weight: 700 maakt de tekst VETGEDRUKT (bold).
+       Schaal: 100 (dun) tot 900 (extra vet). 400 = normaal, 700 = vet.
+       Het logo moet opvallen, vandaar vetgedrukt. */
     font-weight: 700;
+
+    /* color: white maakt de logotekst wit voor contrast op de gekleurde header. */
     color: white;
+
+    /* text-shadow voegt een GLOEI-EFFECT toe achter de tekst.
+       0 0 = geen horizontale/verticale verschuiving (schaduw direct achter tekst)
+       10px = blur-radius (hoe ver de gloed zich verspreidt)
+       rgba(0, 212, 255, 0.5) = cyaan kleur met 50% dekking
+       Dit geeft een neon-glow effect dat populair is in gaming-design. */
     text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+
+    /* margin: 0 verwijdert de standaard marge van het h1-element.
+       h1 heeft standaard een grote marge boven en onder, die we hier niet willen. */
     margin: 0;
 }
 
+/* HEADER LOGO HOVER - Effect wanneer de muis over het logo beweegt. */
 header h1:hover {
+    /* Bij hover wordt de gloed STERKER: 20px blur en felle cyaan kleur. */
     text-shadow: 0 0 20px var(--accent-cyan);
+
+    /* transition maakt de verandering GELEIDELIJK in plaats van abrupt.
+       text-shadow = welke eigenschap geanimeerd wordt
+       0.3s = duur van de animatie (0.3 seconden = 300 milliseconden)
+       ease = versnellingscurve (start langzaam, versnelt, en vertraagt weer)
+       Zonder transition zou de gloed direct verschijnen/verdwijnen. */
     transition: text-shadow 0.3s ease;
 }
 
-/* Navigatie links */
+/* NAVIGATIE LINKS - De menu-items in de header (Dashboard, Profiel, etc.). */
 .navbar-nav .nav-link {
+    /* !important overschrijft Bootstrap's standaard linkkleur.
+       Bootstrap geeft nav-links standaard een grijze kleur, maar wij willen
+       dat ze wit zijn op onze gekleurde header. !important is nodig omdat
+       Bootstrap's stijlen een hogere specifiteit kunnen hebben. */
     color: white !important;
+
+    /* font-weight: 500 = medium dikte (tussen normaal en vet).
+       Dit maakt de links iets dikker dan standaard tekst, zodat ze
+       duidelijk leesbaar zijn op de gekleurde achtergrond. */
     font-weight: 500;
+
+    /* padding: 10px 15px voegt binnenruimte toe:
+       10px boven en onder, 15px links en rechts.
+       Dit maakt het KLIKBARE GEBIED groter, wat de bruikbaarheid verbetert.
+       Grotere klikgebieden zijn vooral belangrijk op mobiele apparaten (touch). */
     padding: 10px 15px;
+
+    /* border-radius: 8px rondt de hoeken af met een straal van 8 pixels.
+       Gecombineerd met de hover-achtergrondkleur geeft dit een afgerond
+       knop-achtig effect wanneer de gebruiker over een link beweegt. */
     border-radius: 8px;
+
+    /* transition: all 0.3s ease animeert ALLE verzekerbare eigenschappen.
+       Als een eigenschap verandert (bijv. bij hover), gebeurt dit geleidelijk.
+       'all' is handig maar minder performant dan specifieke eigenschappen.
+       0.3s is een standaard duur voor subtiele UI-animaties. */
     transition: all 0.3s ease;
+
+    /* min-height: var(--button-min-height) = 40px.
+       Zorgt dat links minstens 40px hoog zijn voor goede aanraakbaarheid
+       op mobiele apparaten. */
     min-height: var(--button-min-height);
+
+    /* display: flex en align-items: center samen zorgen dat de tekst
+       VERTICAAL gecentreerd is binnen het linkgebied van 40px. */
     display: flex;
     align-items: center;
 }
 
+/* NAVIGATIE LINK HOVER - Effect bij muisbeweging over een link. */
 .navbar-nav .nav-link:hover {
+    /* Bij hover verschijnt een semi-transparante witte achtergrond.
+       rgba(255,255,255,0.15) = wit met 15% dekking.
+       Dit geeft een subtiel "oplichtend" effect dat aangeeft dat
+       de link klikbaar is. */
     background: rgba(255, 255, 255, 0.15);
+
+    /* transform: translateY(-2px) verplaatst de link 2 pixels OMHOOG.
+       Dit "lift" effect geeft de indruk dat de link naar voren springt.
+       -2px (negatief) = naar boven; positief = naar beneden.
+       Dit is een microinteractie die de interface levendiger maakt. */
     transform: translateY(-2px);
 }
 
-/* Evenement toevoegen knop - speciale styling */
+/* EVENEMENT TOEVOEGEN KNOP - De groene actieknop in de header. */
 .navbar-nav .btn-success {
+    /* linear-gradient(45deg, ...) creëert een DIAGONAAL kleurverloop (45 graden)
+       van het standaard groen (--success) naar een cyaan-groen (#20c997).
+       Dit maakt de knop visueel interessanter dan een platte kleur. */
     background: linear-gradient(45deg, var(--success), #20c997);
+
+    /* border: none verwijdert de standaard rand van de knop.
+       De kleurverloop-achtergrond is voldoende visuele afbakening. */
     border: none;
+
+    /* box-shadow voegt een GEKLEURDE schaduw toe onder de knop.
+       0 = geen horizontale verschuiving
+       4px = 4 pixels naar beneden
+       15px = blur-radius (zachte schaduw)
+       rgba(40, 167, 69, 0.4) = groene kleur met 40% dekking
+       Een gekleurde schaduw (in plaats van zwart) is een modern designpatroon
+       dat meer diepte geeft zonder zwaar te ogen. */
     box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
 }
 
+/* EVENEMENT KNOP HOVER - Effect bij muisbeweging. */
 .navbar-nav .btn-success:hover {
+    /* Combinatie van omhoog verplaatsen (-2px) en iets vergroten (1.02 = 102%).
+       scale(1.02) maakt de knop 2% groter, wat een subtiel "groeien" geeft.
+       Transform-functies kunnen gecombineerd worden met een spatie ertussen. */
     transform: translateY(-2px) scale(1.02);
+
+    /* Bij hover wordt de schaduw GROTER en STERKER, wat het zweef-effect versterkt.
+       6px verschuiving en 20px blur (groter dan de 4px en 15px in normale staat). */
     box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5);
 }
 
-/* Hamburger menu voor mobiel */
+/* HAMBURGER MENU - Het ☰ icoon dat op mobiel het navigatiemenu opent/sluit.
+   Dit wordt door Bootstrap's JavaScript getoond op kleine schermen wanneer
+   de navigatielinks niet meer naast elkaar passen. */
 .navbar-toggler {
+    /* Een semi-transparante witte rand rondom het hamburger-icoon.
+       2px = randdikte, solid = doorgetrokken lijn (geen stippels).
+       De 50% transparantie maakt het subtiel maar wel zichtbaar. */
     border: 2px solid rgba(255, 255, 255, 0.5);
+
+    /* padding voegt ruimte toe BINNEN de knop, rondom het icoon.
+       8px boven/onder, 12px links/rechts maakt het klikgebied groter. */
     padding: 8px 12px;
 }
 
+/* HAMBURGER ICOON - De drie horizontale streepjes (☰) in het hamburger menu.
+   Bootstrap gebruikt een achtergrondafbeelding (SVG) om het icoon te tekenen. */
 .navbar-toggler-icon {
+    /* background-image vervangt de standaard Bootstrap toggler-icon (die donker is)
+       met een WITTE versie. Dit is nodig omdat onze header een gekleurde
+       achtergrond heeft waarop een donker icoon niet zichtbaar zou zijn.
+
+       De waarde is een inline SVG (Scalable Vector Graphics), gecodeerd als URL.
+       %3csvg = <svg>, %3cpath = <path>, %3e = >
+       De drie 'M4 7h22', 'M4 15h22', 'M4 23h22' tekenen drie horizontale lijnen
+       op y-posities 7, 15 en 23 (de drie streepjes van het hamburger-icoon).
+       stroke='rgba(255, 255, 255, 0.9)' maakt de lijnen wit met 90% dekking. */
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
 
 /* ==========================================================================
-   SECTIE 4: FOOTER STIJLEN
+   SECTIE 4: FOOTER STIJLEN (Voettekst)
+   ==========================================================================
+   De footer is de VOETTEKST onderaan elke pagina met copyright-informatie
+   en links naar contact/privacy pagina's. Net als de header is de footer
+   "fixed" (vastgezet) zodat hij altijd onderaan het scherm zichtbaar is.
+
+   FIXED FOOTER PATROON:
+   position: fixed + bottom: 0 plakt de footer vast aan de onderkant.
+   De body padding-bottom (berekend met calc()) zorgt ervoor dat
+   de pagina-inhoud NIET achter de footer verdwijnt.
    ========================================================================== */
 
+/* FOOTER ELEMENT - De voettekst container onderaan het scherm. */
 footer {
+    /* Horizontaal kleurverloop van donker links naar iets lichter rechts.
+       Dit geeft de footer een subtiele diepte zonder te opvallend te zijn. */
     background: linear-gradient(90deg, var(--bg-secondary) 0%, #1a1a25 100%);
+
+    /* Vaste hoogte van 50px voor de footer. */
     height: var(--footer-height);
+
+    /* position: fixed + bottom: 0 plakt de footer vast aan de ONDERKANT
+       van het browservenster. De footer beweegt niet mee bij scrollen. */
     position: fixed;
     bottom: 0;
+
+    /* left: 0 en right: 0 zorgen dat de footer de VOLLEDIGE breedte inneemt
+       van het browservenster, van linkerrand tot rechterrand. */
     left: 0;
     right: 0;
+
+    /* z-index: 1000 zorgt dat de footer BOVEN alle andere elementen verschijnt,
+       net als de header. Pagina-inhoud kan er niet overheen scrollen. */
     z-index: 1000;
+
+    /* Flexbox voor het centreren van de footer-inhoud.
+       display: flex maakt de footer een flex-container.
+       align-items: center centreert de inhoud verticaal.
+       justify-content: center centreert de inhoud horizontaal.
+       Samen zorgen deze drie regels voor PERFECTE centrering. */
     display: flex;
     align-items: center;
     justify-content: center;
+
+    /* border-top: een dunne (1px) doorgetrokken (solid) lijn bovenop de footer.
+       De kleur is de glassmorphism-rand (10% wit), wat een subtiele scheiding
+       creëert tussen de pagina-inhoud en de footer. */
     border-top: 1px solid var(--glass-border);
+
+    /* font-size: 0.9rem = 90% van de standaardgrootte = ±14.4px.
+       Footer-tekst is iets kleiner dan de gewone tekst omdat het
+       ondersteunende informatie bevat (copyright), niet de hoofdinhoud. */
     font-size: 0.9rem;
 }
 
+/* FOOTER LINKS - Hyperlinks in de voettekst (bijv. "Contact", "Privacy"). */
 footer a {
+    /* Cyaan kleur voor links, passend bij het gaming-thema.
+       var(--accent-cyan) = #00d4ff (neon blauw). */
     color: var(--accent-cyan);
+
+    /* text-decoration: none verwijdert de STANDAARD ONDERSTREPING van links.
+       Standaard worden <a>-elementen onderstreept, maar in modern webdesign
+       worden links vaak niet onderstreept en krijgen ze een kleur als visuele aanduiding. */
     text-decoration: none;
+
+    /* transition animeert de kleurverandering bij hover over 0.3 seconden.
+       Zonder transition zou de kleur abrupt veranderen. */
     transition: color 0.3s ease;
 }
 
+/* FOOTER LINK HOVER - Wanneer de muis over een footer-link beweegt. */
 footer a:hover {
+    /* Bij hover verandert de kleur van cyaan naar wit,
+       wat een subtiel maar merkbaar visueel signaal geeft. */
     color: white;
+
+    /* Bij hover verschijnt WEL een onderstreping, wat bevestigt
+       dat het element klikbaar is. Dit is een toegankelijkheidspraktijk. */
     text-decoration: underline;
 }
 
 
 /* ==========================================================================
-   SECTIE 5: HOOFD CONTAINER STIJLEN
+   SECTIE 5: HOOFD CONTAINER STIJLEN (Pagina-indeling)
+   ==========================================================================
+   Het <main>-element bevat de HOOFDINHOUD van elke pagina (alles tussen
+   header en footer). De .container klasse (van Bootstrap) centreert de
+   inhoud en beperkt de maximale breedte.
+
+   We voegen hier extra stijlen toe voor de pagina-indeling,
+   sectiekoppen (h2) en paginatitels (h1).
    ========================================================================== */
 
+/* HOOFD CONTAINER - De centrale inhoud van elke pagina. */
 main.container {
+    /* max-width: 1200px beperkt de breedte op grote schermen.
+       Op een 4K-monitor (3840px breed) zou de tekst anders heel ver
+       uit elkaar staan, wat moeilijk leesbaar is. 1200px is een
+       veelgebruikte standaard voor webpagina-inhoud. */
     max-width: 1200px;
+
+    /* width: 90% maakt de container 90% van het beschikbare scherm breed.
+       Op een klein scherm van 400px = 360px breed.
+       Op schermen breder dan 1333px wordt max-width de limiet (1200px). */
     width: 90%;
+
+    /* margin: 0 auto centreert het element HORIZONTAAL.
+       0 = geen marge boven/onder. auto = automatische gelijke marge links/rechts.
+       Dit is de klassieke CSS-techniek voor horizontaal centreren. */
     margin: 0 auto;
+
+    /* padding: 20px voegt 20 pixels binnenruimte toe aan ALLE vier de zijden.
+       Dit voorkomt dat tekst direct tegen de rand van de container staat. */
     padding: 20px;
 }
 
-/* Sectie koppen */
+/* SECTIE KOPPEN (H2) - Koppen boven elke sectie op de pagina.
+   Bijvoorbeeld: "📋 Jouw Schema's", "⭐ Jouw Favorieten". */
 main h2 {
+    /* Witte kleur voor de koptekst. */
     color: var(--text-primary);
+
+    /* font-weight: 600 = semi-bold (tussen normaal 400 en vet 700).
+       Dit maakt de kop opvallend maar niet overdreven dik. */
     font-weight: 600;
+
+    /* margin-bottom: 20px geeft ruimte ONDER de kop,
+       zodat er een duidelijke scheiding is tussen kop en inhoud. */
     margin-bottom: 20px;
+
+    /* padding-bottom: 10px geeft BINNENRUIMTE onder de koptekst,
+       waar de border-bottom (blauwe lijn) zit. */
     padding-bottom: 10px;
+
+    /* border-bottom: een blauwe lijn onder de kop (2px dik, doorgetrokken).
+       Dit is een visuele scheiding die de sectiestructuur verduidelijkt.
+       De blauwe kleur (--accent-blue) past bij het thema. */
     border-bottom: 2px solid var(--accent-blue);
+
+    /* Flexbox om het emoji-icoon en de tekst naast elkaar te plaatsen
+       en verticaal te centreren. */
     display: flex;
     align-items: center;
+
+    /* gap: 10px voegt 10 pixels ruimte toe TUSSEN de flex-kinderen
+       (het ::before pseudo-element en de koptekst).
+       gap is een moderne Flexbox-eigenschap die afstand regelt
+       zonder margin nodig te hebben. */
     gap: 10px;
 }
 
+/* SECTIE KOP ICOON - Een gamepad-emoji voor elke sectiekop.
+   ::before is een CSS PSEUDO-ELEMENT dat inhoud toevoegt VOOR het element.
+   Het wordt niet in de HTML geschreven maar door CSS gegenereerd. */
 main h2::before {
+    /* content: '🎮' plaatst een gamepad-emoji voor elke h2 kop.
+       Dit geeft een visuele gaming-touch aan alle secties.
+       Opmerking: content is VERPLICHT bij ::before en ::after.
+       Zonder content verschijnt het pseudo-element niet. */
     content: '🎮';
+
+    /* font-size: 1.2em = 120% van de tekstgrootte van het bovenliggend element.
+       em is RELATIEF aan het lettertype van het ouder-element (anders dan rem). */
     font-size: 1.2em;
 }
 
-/* Pagina titels */
+/* PAGINA TITELS (H1) - De grote titel bovenaan de pagina.
+   Bijvoorbeeld: "🎮 Dashboard" of "📅 Evenement Toevoegen".
+   Gebruikt een GRADIENT TEKST-EFFECT: de tekst lijkt een kleurgradient te bevatten. */
 main h1 {
+    /* text-align: center centreert de titel horizontaal op de pagina. */
     text-align: center;
+
+    /* font-size: 2.5rem = 40px. Een grote titel die duidelijk leesbaar is. */
     font-size: 2.5rem;
+
+    /* margin-bottom: 30px geeft ruimte onder de titel. */
     margin-bottom: 30px;
+
+    /* === GRADIENT TEKST EFFECT ===
+       Dit is een gefaseerd CSS-trucje dat een kleurverloop IN de tekst plaatst:
+
+       STAP 1: background: linear-gradient(...) maakt een kleurverloop
+       als achtergrond (blauw -> cyaan).
+       STAP 2: -webkit-background-clip: text (en background-clip: text)
+       knipt de achtergrond bij tot ALLEEN het tekstgebied.
+       STAP 3: -webkit-text-fill-color: transparent maakt de tekstkleur
+       transparant, zodat de achtergrondgradient door de tekst heen schijnt.
+
+       RESULTAAT: de tekst zelf lijkt een blauw-naar-cyaan kleurverloop te hebben.
+       -webkit- prefix is nodig voor Chrome, Safari en Edge (Webkit/Blink engines). */
     background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -222,348 +757,863 @@ main h1 {
 
 
 /* ==========================================================================
-   SECTIE 6: KAART EN TABEL STIJLEN
+   SECTIE 6: KAART EN TABEL STIJLEN (Glassmorphism)
    ==========================================================================
-   Glassmorfisme effect voor een moderne uitstraling.
+   Bootstrap gebruikt het "card" component (kaart) als container voor inhoud.
+   Wij overschrijven de standaard Bootstrap card-stijlen met een GLASSMORPHISM
+   effect: semi-transparante achtergrond + blur + dunne rand = matglas-effect.
+
+   GLASSMORPHISM UITLEG:
+   Het is een modern UI-ontwerp patroon (populair sinds 2020) dat elementen
+   laat lijken op matglas. Het effect wordt bereikt door:
+   1. Semi-transparante achtergrond: rgba() met lage alpha (0.05 = 5%)
+   2. Backdrop-filter: blur() die de achtergrond ACHTER het element vervaagt
+   3. Subtiele rand: een licht-transparante witte rand
+   4. Schaduw: voor diepte en een zwevend effect
    ========================================================================== */
 
+/* KAART COMPONENT - Container voor formulieren, lijsten en secties. */
 .card {
+    /* Semi-transparante witte achtergrond (glassmorphism basis).
+       var(--glass-bg) = rgba(255, 255, 255, 0.05) = 5% wit.
+       De achtergrond onder de kaart schijnt er deels doorheen. */
     background: var(--glass-bg);
+
+    /* backdrop-filter: blur() vervaagt de achtergrond ACHTER dit element.
+       var(--glass-blur) = 10px = de achtergrondpixels worden 10px vervaagd.
+       Dit creëert het "matglas" effect: je ziet vaag wat erachter zit.
+       -webkit- prefix is nodig voor Safari en oudere browsers. */
     -webkit-backdrop-filter: blur(var(--glass-blur));
     backdrop-filter: blur(var(--glass-blur));
+
+    /* Subtiele witte rand rondom de kaart (10% dekking).
+       Dit tekent de contouren van het "glas" af tegen de achtergrond. */
     border: 1px solid var(--glass-border);
+
+    /* Afgeronde hoeken met straal van 12px. */
     border-radius: var(--border-radius);
+
+    /* Grote, zachte schaduw onder de kaart voor een zweef-effect.
+       0 = geen horizontale verschuiving
+       8px = 8 pixels naar beneden
+       32px = grote blur voor een zachte, verspreide schaduw
+       rgba(0,0,0,0.3) = 30% zwart
+       Dit geeft DIEPTE: de kaart lijkt boven de pagina te zweven. */
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+    /* transition animeert transform en box-shadow bij hover.
+       Twee eigenschappen worden tegelijk geanimeerd in 0.3 seconden.
+       Meerdere transities worden gescheiden door komma's. */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    /* overflow: hidden verbergt inhoud die buiten de kaart uitsteekt.
+       Dit is nodig omdat de afgeronde hoeken (border-radius) anders
+       overlapt zouden worden door de inhoud binnenin de kaart. */
     overflow: hidden;
 }
 
+/* KAART HOVER - Effect wanneer de muis over een kaart beweegt. */
 .card:hover {
+    /* translateY(-5px) verplaatst de kaart 5 pixels OMHOOG.
+       Dit "lift" effect versterkt de illusie dat de kaart zweeft. */
     transform: translateY(-5px);
+
+    /* Bij hover wordt de schaduw groter (40px blur vs 32px) en krijgt
+       een BLAUWE tint. Dit benadrukt de interactiviteit. */
     box-shadow: 0 12px 40px rgba(13, 110, 253, 0.2);
 }
 
+/* KAART BODY - De binnenste container met de daadwerkelijke inhoud. */
 .card-body {
+    /* 20px binnenruimte aan alle kanten van de kaart-inhoud.
+       Zonder padding zou de tekst direct tegen de kaartrand staan. */
     padding: 20px;
 }
 
+/* KAART TITEL - De koptekst binnen een kaart. */
 .card-title {
+    /* Cyaan kleur voor kaarttitels, passend bij het neon gaming-thema. */
     color: var(--accent-cyan);
+
+    /* Semi-bold letterdikte (600 op de schaal 100-900). */
     font-weight: 600;
+
+    /* 15px ruimte onder de titel voor scheiding met de kaart-inhoud. */
     margin-bottom: 15px;
 }
 
-/* Tabel styling met donker thema */
+/* ======================================================================
+   TABEL STIJLEN - Donker thema voor HTML-tabellen
+   ======================================================================
+   Bootstrap .table-dark geeft tabellen een donkere achtergrond.
+   Wij voegen extra stijlen toe: kleurverloop in de kop, afgeronde hoeken,
+   hover-effecten per rij, en de glassmorphism rand.
+   ====================================================================== */
+
+/* TABEL CONTAINER - De buitenste tabelstijl. */
 .table-dark {
+    /* Donkere achtergrondkleur voor de tabel. */
     background: var(--bg-card);
+
+    /* Afgeronde hoeken voor de hele tabel. */
     border-radius: var(--border-radius);
+
+    /* overflow: hidden voorkomt dat tabelinhoud buiten de afgeronde hoeken uitsteekt.
+       Dit is essentieel omdat <table>-elementen standaard scherpe hoeken hebben. */
     overflow: hidden;
+
+    /* Dunne glassmorphism-rand rondom de tabel. */
     border: 1px solid var(--glass-border);
 }
 
+/* TABEL KOP (THEAD) - De koprij met kolomnamen.
+   Krijgt dezelfde blauw-naar-paars gradient als de header. */
 .table-dark thead {
+    /* Horizontaal kleurverloop van blauw naar paars.
+       Dit maakt de tabelkop visueel opvallend en thema-consistent. */
     background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
 }
 
+/* TABEL KOP CELLEN (TH) - Individuele kolomkoppen. */
 .table-dark thead th {
+    /* Witte tekst voor contrast op de gekleurde achtergrond. */
     color: white;
+
+    /* Semi-bold letterdikte voor de kolomnamen. */
     font-weight: 600;
+
+    /* Ruime padding (15px) maakt de kop cellen goed leesbaar. */
     padding: 15px;
+
+    /* border: none verwijdert de standaard celranden in de kop.
+       De gradient-achtergrond is voldoende visuele afbakening. */
     border: none;
+
+    /* text-transform: uppercase zet alle tekst om naar HOOFDLETTERS.
+       Bijvoorbeeld: "titel" wordt "TITEL".
+       Dit is een veelgebruikt patroon voor tabelkoppen dat
+       visueel onderscheid maakt tussen kop en data. */
     text-transform: uppercase;
+
+    /* Iets kleiner lettertype (0.85rem = ±13.6px) omdat de
+       hoofdletters al meer visueel gewicht geven. */
     font-size: 0.85rem;
+
+    /* letter-spacing: 0.5px vergroot de ruimte TUSSEN letters.
+       Dit verbetert de leesbaarheid van HOOFDLETTERS tekst
+       doordat de letters niet tegen elkaar aan geplakt staan. */
     letter-spacing: 0.5px;
 }
 
+/* TABEL GEGEVENSRIJEN - Elke rij in de body van de tabel. */
 .table-dark tbody tr {
+    /* transition animeert de achtergrondkleurverandering bij hover.
+       0.2s = snelle maar vloeiende overgang. */
     transition: background 0.2s ease;
 }
 
+/* TABEL RIJ HOVER - Wanneer de muis over een gegevensrij beweegt. */
 .table-dark tbody tr:hover {
+    /* Een subtiele blauwe tint (10% dekking) verschijnt bij hover.
+       Dit helpt de gebruiker te zien welke rij geselecteerd is,
+       vooral handig bij brede tabellen met veel kolommen. */
     background: rgba(13, 110, 253, 0.1);
 }
 
+/* TABEL GEGEVENSCELLEN (TD) - Individuele datacellen. */
 .table-dark td {
+    /* Ruime padding: 12px boven/onder, 15px links/rechts.
+       Dit geeft elke cel voldoende ruimte voor de inhoud. */
     padding: 12px 15px;
+
+    /* border-bottom: een subtiele scheidingslijn onder elke cel.
+       De glassmorphism-rand kleur (10% wit) is subtiel maar merkbaar. */
     border-bottom: 1px solid var(--glass-border);
+
+    /* vertical-align: middle centreert de celinhoud VERTICAAL.
+       Als een cel tekst bevat en de naburige cel een knop, worden
+       ze op dezelfde hoogte geplaatst in plaats van bovenaan de cel. */
     vertical-align: middle;
 }
 
 
 /* ==========================================================================
-   SECTIE 7: FORMULIER STIJLEN
+   SECTIE 7: FORMULIER STIJLEN (Invoervelden & Labels)
+   ==========================================================================
+   Formulieren zijn een KERNONDERDEEL van deze applicatie: de gebruiker
+   voert gegevens in via formulieren (inloggen, registreren, toevoegen, etc.).
+
+   Bootstrap biedt standaard formulierstijlen via .form-control en .form-select.
+   Wij overschrijven deze met ons donkere thema: donkere achtergrond,
+   subtiele randen, en een blauwe focus-indicator.
+
+   FOCUS STATE: wanneer een invoerveld de focus heeft (de cursor staat erin),
+   krijgt het een blauwe rand en gloed om aan te geven dat het actief is.
    ========================================================================== */
 
+/* INVOERVELDEN EN DROPDOWN MENU'S
+   .form-control = tekstvelden, e-mailvelden, wachtwoordvelden, textarea's
+   .form-select = dropdown-menu's (<select> elementen)
+   De komma combineert twee selectors zodat dezelfde stijlen op beide gelden. */
 .form-control,
 .form-select {
+    /* Donkere achtergrond passend bij het thema.
+       var(--bg-card) = #1a1a25 (de lichtste donkere achtergrondkleur). */
     background: var(--bg-card);
+
+    /* Dunne glassmorphism-rand (1px, doorgetrokken, 10% wit).
+       De rand maakt de grenzen van het invoerveld zichtbaar op de donkere achtergrond. */
     border: 1px solid var(--glass-border);
+
+    /* Afgeronde hoeken met 10px straal voor een moderne uitstraling. */
     border-radius: 10px;
+
+    /* Witte tekstkleur voor de door de gebruiker GETYPTE tekst.
+       Zonder dit zou de tekst mogelijk onzichtbaar zijn op de donkere achtergrond. */
     color: var(--text-primary);
+
+    /* BINNENRUIMTE: 12px boven/onder, 15px links/rechts.
+       Dit geeft de tekst ademruimte binnen het invoerveld
+       en maakt het visueel niet te krap. */
     padding: 12px 15px;
+
+    /* Minimale hoogte van 40px voor goede aanraakbaarheid op mobiel.
+       Apple richtlijnen raden minimaal 44px aan; 40px is ons compromis. */
     min-height: var(--button-min-height);
+
+    /* transition animeert ALLE eigenschap-veranderingen (kleur, rand, schaduw)
+       in 0.3 seconden. Dit maakt de focus-overgang vloeiend. */
     transition: all 0.3s ease;
 }
 
+/* FOCUS STATE - Wanneer de cursor IN het invoerveld staat.
+   :focus is een CSS pseudo-klasse die actief wordt wanneer een element
+   de toetsenbordfocus heeft (door klikken of tab-toets). */
 .form-control:focus,
 .form-select:focus {
+    /* Iets donkerdere achtergrond bij focus, wat een subtiel visueel
+       verschil geeft ten opzichte van niet-actieve velden. */
     background: var(--bg-secondary);
+
+    /* Blauwe rand bij focus in plaats van de standaard transparante rand.
+       Dit maakt DUIDELIJK welk veld op dit moment actief is. */
     border-color: var(--accent-blue);
+
+    /* box-shadow: 0 0 0 3px ... creëert een GLOED-RING rondom het veld.
+       Anders dan een gewone schaduw:
+       0 = geen x-verschuiving
+       0 = geen y-verschuiving
+       0 = geen blur (scherpe ring)
+       3px = de breedte van de ring (spread-radius)
+       rgba(13, 110, 253, 0.25) = blauwe kleur met 25% dekking
+       Dit is het "focus ring" patroon dat Bootstrap ook gebruikt. */
     box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+
+    /* Behoud de witte tekstkleur bij focus. */
     color: var(--text-primary);
+
+    /* outline: none verwijdert de STANDAARD browser focus-indicator
+       (een lelijke blauwe of zwarte lijn). We hebben onze eigen focus-
+       indicatie met box-shadow, dus outline is niet meer nodig.
+       LET OP: outline verwijderen zonder alternatief is SLECHT voor
+       toegankelijkheid. Onze box-shadow VERVANGT de outline functionaliteit. */
     outline: none;
 }
 
+/* PLACEHOLDER TEKST - De grijze voorbeeldtekst in lege invoervelden.
+   ::placeholder is een pseudo-element dat de placeholder-tekst selecteert.
+   Placeholder-tekst verschijnt als het veld LEEG is en verdwijnt bij typen. */
 .form-control::placeholder {
+    /* Grijze kleur (--text-secondary = #b0b0b0) voor de placeholder.
+       Dit is bewust LICHTER dan de getypte tekst (wit) zodat de gebruiker
+       het verschil ziet tussen placeholder en echte invoer. */
     color: var(--text-secondary);
 }
 
+/* FORMULIER LABELS - De tekst boven elk invoerveld (bijv. "📧 E-mailadres"). */
 .form-label {
+    /* Witte kleur voor goede leesbaarheid op de donkere achtergrond. */
     color: var(--text-primary);
+
+    /* font-weight: 500 (medium) maakt labels iets dikker dan gewone tekst,
+       zodat ze duidelijk herkenbaar zijn als label. */
     font-weight: 500;
+
+    /* 8px ruimte ONDER het label, BOVEN het invoerveld.
+       Dit creëert een visuele koppeling: het label hoort bij het veld eronder. */
     margin-bottom: 8px;
+
+    /* display: block maakt het label een BLOK-element dat de volledige
+       breedte inneemt. Standaard is <label> een inline element.
+       Met display: block begint het invoerveld op een NIEUWE regel onder het label. */
     display: block;
 }
 
-/* Tekstvak styling */
+/* TEKSTVAK STYLING - Speciaal voor <textarea> (meerregelige tekstvelden).
+   textarea.form-control selecteert ALLEEN textarea's met de form-control klasse. */
 textarea.form-control {
+    /* Minimale hoogte van 100px (groter dan gewone invoervelden).
+       Een tekstvak moet meerdere regels tekst kunnen tonen. */
     min-height: 100px;
+
+    /* resize: vertical staat de gebruiker toe om het tekstvak VERTICAAL
+       te vergroten of verkleinen door de onderkant te slepen.
+       'vertical' beperkt dit tot alleen de hoogte (niet de breedte).
+       Opties: none (niet resizeable), both (beide richtingen),
+       vertical (alleen hoogte), horizontal (alleen breedte). */
     resize: vertical;
 }
 
 
 /* ==========================================================================
-   SECTIE 8: KNOP STIJLEN
+   SECTIE 8: KNOP STIJLEN (Buttons)
    ==========================================================================
-   Minimaal 40px hoogte voor mobiele bruikbaarheid volgens ontwerp.
+   Knoppen zijn de primaire INTERACTIE-ELEMENTEN waarmee gebruikers acties
+   uitvoeren: opslaan, verwijderen, navigeren, etc.
+
+   KNOP VARIANTEN (gebaseerd op Bootstrap's kleurensysteem):
+   .btn-primary  = Blauw-paars gradient - hoofdactie (opslaan, toevoegen)
+   .btn-warning  = Geel-oranje gradient - bewerken
+   .btn-danger   = Rood gradient - verwijderen
+   .btn-success  = Groen gradient - bevestigen (al gestyled in header sectie)
+   .btn-light    = Transparant wit - secundaire/annuleer actie
+
+   KNOP GROOTTEN:
+   .btn (standaard) = 40px hoogte
+   .btn-sm (klein)  = 32px hoogte - voor tabelacties
+   .btn-lg (groot)  = 50px hoogte - voor formulierbevestigingen
+
+   MOBIELE TOEGANKELIJKHEID:
+   Alle knoppen hebben een minimale hoogte van 40px (--button-min-height).
+   Dit is gebaseerd op Apple's Human Interface Guidelines die 44px aanbevelen
+   als minimaal aanraakgebied voor touch-interfaces.
    ========================================================================== */
 
+/* BASIS KNOP - De standaardstijl voor ALLE knoppen (.btn klasse).
+   Dit is de "basis" waarop alle varianten (primary, danger, etc.) voortbouwen. */
 .btn {
+    /* Minimale hoogte van 40px voor mobiele bruikbaarheid.
+       Kleinere knoppen zijn moeilijk aan te raken op touchscreens. */
     min-height: var(--button-min-height);
+
+    /* Binnenruimte: 10px boven/onder, 20px links/rechts.
+       Dit geeft de knoptekst ademruimte en maakt het klikgebied groter. */
     padding: 10px 20px;
+
+    /* Afgeronde hoeken (12px) voor een moderne, vriendelijke uitstraling. */
     border-radius: var(--border-radius);
+
+    /* font-weight: 600 (semi-bold) maakt de knoptekst opvallend.
+       Knoppen moeten direct herkenbaar zijn als interactie-elementen. */
     font-weight: 600;
+
+    /* transition: all 0.3s ease animeert ALLE veranderbare eigenschappen.
+       Hierdoor zijn hover-effecten (kleur, positie, schaduw) vloeiend.
+       'all' dekt: transform, box-shadow, background, color, border, etc. */
     transition: all 0.3s ease;
+
+    /* display: inline-flex combineert INLINE (naast andere elementen) met FLEXBOX.
+       inline-flex = de knop neemt alleen de benodigde ruimte in (anders dan flex
+       dat de volledige breedte pakt), maar de INHOUD wordt met flexbox ingedeeld.
+       align-items: center + justify-content: center centreert de inhoud
+       zowel verticaal als horizontaal binnen de knop. */
     display: inline-flex;
     align-items: center;
     justify-content: center;
+
+    /* gap: 8px voegt ruimte toe TUSSEN flex-kinderen.
+       Als een knop een icoon EN tekst bevat (bijv. "+ Toevoegen"),
+       komt er 8px ruimte tussen icoon en tekst. */
     gap: 8px;
+
+    /* border: none verwijdert de standaard HTML-knoprand.
+       Onze knoppen gebruiken gradient-achtergronden en schaduwen. */
     border: none;
+
+    /* cursor: pointer verandert de muiscursor naar een HANDJE
+       wanneer de muis over de knop beweegt. Dit is de universele
+       aanduiding dat een element klikbaar is. Zonder dit zou de
+       standaard pijlcursor verschijnen. */
     cursor: pointer;
 }
 
+/* PRIMAIRE KNOP - De HOOFDACTIE-knop (blauw-paars gradient).
+   Gebruikt voor: Opslaan, Toevoegen, Inloggen, Registreren.
+   Dit is de meest opvallende knop en trekt de aandacht. */
 .btn-primary {
+    /* Diagonaal kleurverloop (45°) van blauw naar paars.
+       Dit geeft de knop een premium, gaming-achtige uitstraling.
+       45deg = de gradient loopt van linksonder naar rechtsboven. */
     background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
+
+    /* Witte tekst voor contrast op de gekleurde achtergrond. */
     color: white;
+
+    /* GEKLEURDE SCHADUW in blauw (40% dekking) onder de knop.
+       In tegenstelling tot zwarte schaduwen, geven gekleurde schaduwen
+       een "glow" effect dat de kleur van de knop weerspiegelt.
+       Dit is een populair modern UI-designpatroon. */
     box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4);
 }
 
+/* PRIMAIRE KNOP HOVER - Hover-effect met lift en sterkere schaduw.
+   Het 3D-effect geeft de indruk dat de knop naar de gebruiker toe komt. */
 .btn-primary:hover {
+    /* Knop beweegt 2px omhoog (negatief = omhoog). */
     transform: translateY(-2px);
+
+    /* Schaduw wordt GROTER bij hover (6px offset, 20px blur, 50% dekking).
+       Dit versterkt het "zwevende" 3D-effect. */
     box-shadow: 0 6px 20px rgba(13, 110, 253, 0.5);
+
+    /* Bij hover worden de gradient-kleuren DONKERDER:
+       #0b5ed7 (donkerder blauw) en #7c3aed (donkerder paars).
+       Dit geeft visuele feedback dat de knop actief is. */
     background: linear-gradient(45deg, #0b5ed7, #7c3aed);
 }
 
+/* WAARSCHUWING KNOP - Geel-oranje gradient voor BEWERK-acties.
+   Geel wordt universeel geassocieerd met "waarschuwing" en "bewerken".
+   De zwarte tekst (#000) biedt maximaal contrast op de lichte achtergrond. */
 .btn-warning {
     background: linear-gradient(45deg, var(--warning), #ff9500);
     color: #000;
 }
 
+/* GEVAAR KNOP - Rode gradient voor VERWIJDER-acties.
+   Rood wordt universeel geassocieerd met "gevaar", "stoppen" en "verwijderen".
+   De witte tekst biedt goede leesbaarheid op de rode achtergrond. */
 .btn-danger {
     background: linear-gradient(45deg, var(--danger), #ff4757);
     color: white;
 }
 
+/* LICHTE KNOP - Semi-transparant voor SECUNDAIRE acties.
+   Gebruikt voor: Annuleren, Terug, secundaire opties.
+   De lage dekking (10% wit) maakt deze knop visueel minder opvallend
+   dan de primaire knop, wat de visuele hiërarchie respecteert. */
 .btn-light {
+    /* 10% witte achtergrond - subtiel maar zichtbaar op donkere achtergrond. */
     background: rgba(255, 255, 255, 0.1);
     color: white;
+
+    /* Een dunne rand maakt de grenzen van de knop zichtbaar.
+       De glassmorphism-rand (10% wit) is subtiel. */
     border: 1px solid var(--glass-border);
 }
 
+/* LICHTE KNOP HOVER - De achtergrond wordt iets minder transparant (20% wit). */
 .btn-light:hover {
     background: rgba(255, 255, 255, 0.2);
     color: white;
 }
 
+/* KLEINE KNOP (.btn-sm) - Compacte knop voor tabelacties (Bewerken/Verwijderen).
+   In tabellen zijn de standaard knoppen te groot, daarom bieden we een
+   kleinere variant aan die minder ruimte inneemt. */
 .btn-sm {
+    /* 32px hoogte (8px kleiner dan standaard 40px). */
     min-height: 32px;
+
+    /* Minder padding: 5px boven/onder, 12px links/rechts. */
     padding: 5px 12px;
+
+    /* 85% lettergrootte (±13.6px) zodat de tekst past in de kleinere knop. */
     font-size: 0.85rem;
 }
 
+/* GROTE KNOP (.btn-lg) - Extra grote knop voor prominente acties.
+   Gebruikt voor: grote "Opslaan" knoppen onder formulieren.
+   De grotere afmetingen trekken de aandacht en zijn makkelijker aan te raken. */
 .btn-lg {
+    /* 50px hoogte (10px groter dan standaard). */
     min-height: 50px;
+
+    /* Ruimere padding: 15px boven/onder, 30px links/rechts. */
     padding: 15px 30px;
+
+    /* 110% lettergrootte (±17.6px). */
     font-size: 1.1rem;
 }
 
 
 /* ==========================================================================
-   SECTIE 9: MELDING STIJLEN (ALERTS)
+   SECTIE 9: MELDING STIJLEN (Alerts / Gebruikersmeldingen)
+   ==========================================================================
+   Meldingen (alerts) zijn korte berichten die de gebruiker informeren over
+   het RESULTAAT van een actie: succes, fout of waarschuwing.
+
+   KLEURCONVENTIES (universeel in webdesign):
+   GROEN  (success) = Actie gelukt!    ("Evenement toegevoegd")
+   ROOD   (danger)  = Er ging iets mis  ("Wachtwoord onjuist")
+   GEEL   (warning) = Let op!           ("Sessie verlopen")
+
+   ONTWERP PATROON:
+   Elke alert heeft:
+   1. Een subtiele gradient-achtergrond (20% dekking van de themakleur)
+   2. Een DIKKE gekleurde rand links (border-left: 4px) als visueel anker
+   3. Een lichte tekstkleur die past bij de achtergrondkleur
+   Dit patroon heet "left-bordered alert" en is een modern designpatroon.
    ========================================================================== */
 
+/* BASIS ALERT - Gedeelde stijlen voor ALLE meldingstypen. */
 .alert {
+    /* Afgeronde hoeken (12px) consistent met kaarten en knoppen. */
     border-radius: var(--border-radius);
+
+    /* border: none verwijdert de standaard Bootstrap-rand.
+       Wij gebruiken border-left voor een gekleurde streep links. */
     border: none;
+
+    /* Ruime padding (15px boven/onder, 20px links/rechts) voor leesbaarheid.
+       De tekst heeft ademruimte binnen de alert-box. */
     padding: 15px 20px;
+
+    /* 20px ruimte ONDER de alert, zodat de volgende inhoud niet direct
+       tegen de melding aan staat. */
     margin-bottom: 20px;
+
+    /* Flexbox voor het uitlijnen van icoon en tekst.
+       display: flex + align-items: center plaatst de inhoud op één rij
+       met verticale centrering. gap: 10px voegt ruimte toe tussen
+       het icoon (::before) en de meldingstekst. */
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
+/* SUCCES MELDING - Groene gradient voor positieve meldingen.
+   Voorbeeld: "Evenement succesvol toegevoegd!" */
 .alert-success {
+    /* Subtiele gradient van groen (20% dekking) naar cyaan-groen (20% dekking).
+       De lage dekking (0.2 = 20%) zorgt dat de achtergrond NIET te fel is
+       en de tekst leesbaar blijft op de semi-transparante achtergrond. */
     background: linear-gradient(45deg, rgba(40, 167, 69, 0.2), rgba(32, 201, 151, 0.2));
+
+    /* Dikke groene streep (4px) aan de linkerkant als visueel anker.
+       De gebruiker herkent onmiddellijk de kleur en het type melding. */
     border-left: 4px solid var(--success);
+
+    /* Lichtgroene tekstkleur (#a3e8b3) die leesbaar is op de donkere achtergrond.
+       Dit is een LICHTERE versie van groen die contrast biedt. */
     color: #a3e8b3;
 }
 
+/* FOUT MELDING - Rode gradient voor foutmeldingen.
+   Voorbeeld: "Wachtwoord is onjuist" of "E-mailadres al in gebruik". */
 .alert-danger {
+    /* Subtiele rode gradient (20% dekking) van rood naar koraalrood. */
     background: linear-gradient(45deg, rgba(220, 53, 69, 0.2), rgba(255, 71, 87, 0.2));
+
+    /* Dikke rode streep links. */
     border-left: 4px solid var(--danger);
+
+    /* Lichtroze tekstkleur (#f5a9b0) voor contrast op de donkere achtergrond. */
     color: #f5a9b0;
 }
 
+/* WAARSCHUWING MELDING - Gele gradient voor waarschuwingen.
+   Voorbeeld: "Sessie is verlopen" of "Veld is verplicht". */
 .alert-warning {
+    /* Subtiele gele gradient (20% dekking) van geel naar oranje. */
     background: linear-gradient(45deg, rgba(255, 193, 7, 0.2), rgba(255, 149, 0, 0.2));
+
+    /* Dikke gele streep links. */
     border-left: 4px solid var(--warning);
+
+    /* Lichtgele tekstkleur (#ffd97a) voor leesbaarheid. */
     color: #ffd97a;
 }
 
+/* WEGSLUITKNOP (.btn-close) - Het kruisje om de alert te sluiten.
+   Bootstrap's .alert-dismissible voegt automatisch een sluitknop toe.
+   De standaard sluitknop is ZWART (ontworpen voor lichte achtergronden).
+   filter: invert(1) keert de kleuren om: zwart wordt WIT.
+   invert() is een CSS filter die de kleurwaarden omkeert (0->255, 255->0). */
 .alert-dismissible .btn-close {
     filter: invert(1);
 }
 
 
 /* ==========================================================================
-   SECTIE 10: KALENDER KAARTEN
+   SECTIE 10: KALENDER KAARTEN (Dashboard Overzicht)
+   ==========================================================================
+   Kalenderkaarten worden gebruikt op het dashboard (index.php) om
+   schema's en evenementen weer te geven in een lijstweergave.
+   Ze hebben een GEKLEURDE LINKERKANT die dient als visuele indicator
+   en een subtiel hover-effect dat de kaart naar rechts schuift.
    ========================================================================== */
 
+/* KALENDER KAART - Individueel schema/evenement item op het dashboard. */
 .calendar-card {
+    /* Diagonale gradient (135°) van donkerder naar iets lichter.
+       135deg = van linksboven naar rechtsonder.
+       Dit geeft subtiele diepte aan de kaart. */
     background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+
+    /* Afgeronde hoeken consistent met andere elementen. */
     border-radius: var(--border-radius);
+
+    /* 20px binnenruimte aan alle kanten. */
     padding: 20px;
+
+    /* 15px ruimte ONDER elke kaart, zodat meerdere kaarten niet aan
+       elkaar vastzitten. Dit is de visuele scheiding tussen items. */
     margin-bottom: 15px;
+
+    /* ACCENT-RAND LINKS - Een dikke (4px) cyaan-blauwe streep.
+       Dit is hetzelfde patroon als bij alerts (border-left = visueel anker).
+       De cyaan kleur geeft een gaming/neon-achtige uitstraling. */
     border-left: 4px solid var(--accent-cyan);
+
+    /* Animeer alle veranderbare eigenschappen bij hover. */
     transition: all 0.3s ease;
 }
 
+/* KALENDER KAART HOVER - De kaart schuift naar rechts en de rand wordt paars.
+   Dit is een HORIZONTALE beweging (translateX) in plaats van de verticale
+   beweging (translateY) die bij gewone kaarten wordt gebruikt.
+   Dit onderscheidt kalenderkaarten visueel van andere kaarttypes. */
 .calendar-card:hover {
+    /* De linkerrand verandert van cyaan naar paars, wat een
+       kleur-wissel effect geeft dat speels en interactief aanvoelt. */
     border-left-color: var(--accent-purple);
+
+    /* translateX(5px) verplaatst de kaart 5px naar RECHTS.
+       Dit geeft het gevoel dat de kaart "uitschuift" wanneer je
+       er met de muis overheen beweegt, als een lade die opengaat. */
     transform: translateX(5px);
 }
 
 
 /* ==========================================================================
-   SECTIE 11: INLOG/REGISTRATIE PAGINA STIJLEN
+   SECTIE 11: INLOG/REGISTRATIE PAGINA STIJLEN (Authenticatie)
+   ==========================================================================
+   De authenticatie-container (.auth-container) wordt gebruikt op de
+   login.php en register.php pagina's. Het is een GECENTREERD formulier
+   met glassmorphism-effect dat visueel "zweeft" boven de achtergrond.
+
+   De container is smaller dan de standaard pagina-inhoud (450px vs 1200px)
+   omdat inlog/registratie formulieren niet veel breedte nodig hebben.
+   Een smaller formulier is visueel aantrekkelijker en gemakkelijker te gebruiken.
    ========================================================================== */
 
+/* AUTH CONTAINER - De wrapper rondom het inlog/registratie formulier. */
 .auth-container {
+    /* max-width: 450px beperkt de breedte tot een compacte kolom.
+       Dit is een standaard breedte voor authenticatie-formulieren.
+       Op schermen smaller dan 450px wordt het formulier 100% breed. */
     max-width: 450px;
+
+    /* margin: 0 auto centreert de container HORIZONTAAL op de pagina.
+       0 = geen marge boven/onder. auto = gelijke marge links/rechts. */
     margin: 0 auto;
+
+    /* Ruime binnenruimte (40px) geeft het formulier een luchtige,
+       professionele uitstraling. Op de login-pagina is er geen sidebar
+       of andere afleiding, dus de extra ruimte is welkom. */
     padding: 40px;
+
+    /* GLASSMORPHISM EFFECT - Hetzelfde matglas-effect als bij kaarten.
+       Semi-transparante achtergrond (5% wit) + achtergrondonscherpte (10px blur).
+       De -webkit- prefix is nodig voor Safari en oudere browsers. */
     background: var(--glass-bg);
     -webkit-backdrop-filter: blur(var(--glass-blur));
     backdrop-filter: blur(var(--glass-blur));
+
+    /* GROTERE afgeronde hoeken (--border-radius-lg = 16px) dan standaard (12px).
+       Een groter formulier verdient grotere hoeken voor visuele balans. */
     border-radius: var(--border-radius-lg);
+
+    /* Subtiele glassmorphism-rand. */
     border: 1px solid var(--glass-border);
+
+    /* EXTRA GROTE schaduw (60px blur met 50% zwart) voor een dramatisch
+       zweef-effect. De auth-container is het enige element op de pagina,
+       dus een grotere schaduw helpt om de aandacht te trekken.
+       Vergelijk: card box-shadow = 32px blur; auth = 60px blur. */
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
+/* AUTH CONTAINER TITEL - De titel boven het formulier ("Inloggen" / "Registreren"). */
 .auth-container h1 {
+    /* Tekst horizontaal gecentreerd. */
     text-align: center;
+
+    /* 30px ruimte onder de titel, BOVEN de formuliervelden.
+       Dit creëert een duidelijke visuele scheiding. */
     margin-bottom: 30px;
 }
 
 
 /* ==========================================================================
-   SECTIE 12: RESPONSIEF ONTWERP
+   SECTIE 12: RESPONSIEF ONTWERP (Media Queries)
    ==========================================================================
-   Past de layout aan voor tablets en mobiele telefoons.
+   Responsief ontwerp (Responsive Web Design, RWD) zorgt ervoor dat de
+   website er goed uitziet op ALLE schermformaten: desktop, tablet en mobiel.
+
+   CSS MEDIA QUERIES:
+   @media (max-width: Xpx) { ... } past stijlen toe wanneer het venster
+   KLEINER is dan X pixels breed. Dit heet "mobile-last" / "desktop-first":
+   de standaardstijlen zijn voor desktop, en media queries OVERSCHRIJVEN
+   deze voor kleinere schermen.
+
+   BREAKPOINTS (schermbreedtes waar het ontwerp verandert):
+   - 992px = Tablet (bijv. iPad = 768-1024px) - kolommen worden smaller
+   - 768px = Mobiel landschap / kleine tablet - navigatie wordt verticaal
+   - 480px = Kleine mobiel (bijv. iPhone SE = 375px) - alles wordt compact
+
+   WAAROM DEZE BREAKPOINTS?
+   992px en 768px zijn de standaard Bootstrap breakpoints (md en sm).
+   480px is toegevoegd voor extra kleine telefoons.
    ========================================================================== */
 
-/* Tablet weergave (max 992px) */
+/* TABLET WEERGAVE (schermen tot 992px breed)
+   Tablets zoals iPad Air (820px) en iPad Pro (1024px).
+   Media query: @media (max-width: 992px) = als het scherm ≤ 992px is. */
 @media (max-width: 992px) {
+    /* De hoofdcontainer wordt breder (95% i.p.v. 90%) om de beschikbare
+       ruimte beter te benutten op het smallere tabletscherm. */
     main.container {
         width: 95%;
+        /* Iets minder padding (15px i.p.v. 20px) om ruimte te besparen. */
         padding: 15px;
     }
 
+    /* HORIZONTAAL SCROLLEN voor tabellen die te breed zijn.
+       overflow-x: auto voegt een horizontale scrollbalk toe als de tabel
+       breder is dan het scherm. Zonder dit zou de tabel buiten het scherm
+       uitsteken en de paginalayout breken.
+       .table-responsive is een Bootstrap klasse die we hier activeren. */
     .table-responsive {
         overflow-x: auto;
     }
 }
 
-/* Mobiel weergave (max 768px) */
+/* MOBIELE WEERGAVE (schermen tot 768px breed)
+   Mobiele telefoons in landscape (horizontaal) en kleine tablets.
+   Dit is het belangrijkste breakpoint waar de LAYOUT fundamenteel verandert. */
 @media (max-width: 768px) {
+    /* De header wordt hoger op mobiel (70px i.p.v. 60px) om ruimte te geven
+       aan het compactere hamburger-menu en de grotere aanraakgebieden.
+       Door de CSS variabele aan te passen, verandert ALLES dat ervan afhangt
+       (bijv. body padding-top) automatisch mee. */
     :root {
         --header-height: 70px;
     }
 
+    /* De body padding-top past zich automatisch aan via calc() in de
+       standaardregel, maar we moeten het hier opnieuw declareren omdat
+       de variabele binnen @media opnieuw berekend moet worden. */
     body {
         padding-top: calc(var(--header-height) + 10px);
     }
 
+    /* KLEINERE LETTERGROOTTES op mobiel.
+       Op een klein scherm is minder ruimte beschikbaar, dus lettergroottes
+       worden proportioneel verkleind om de tekst passend te houden. */
     header h1 {
+        /* 1.2rem (19.2px) i.p.v. 1.5rem (24px) voor het logo. */
         font-size: 1.2rem;
     }
 
     main h1 {
+        /* 1.8rem (28.8px) i.p.v. 2.5rem (40px) voor paginatitels. */
         font-size: 1.8rem;
     }
 
     main h2 {
+        /* 1.3rem (20.8px) voor sectiekoppen. */
         font-size: 1.3rem;
     }
 
+    /* Kaarten krijgen minder marge onderaan (15px i.p.v. standaard). */
     .card {
         margin-bottom: 15px;
     }
 
+    /* Tabelcellen worden compacter: 10px padding i.p.v. 12-15px,
+       en een kleiner lettertype (0.85rem = 13.6px). */
     .table-dark th,
     .table-dark td {
         padding: 10px;
         font-size: 0.85rem;
     }
 
+    /* KNOPPEN WORDEN VOLLEDIGE BREEDTE (width: 100%) op mobiel.
+       Op een smal scherm is er te weinig ruimte voor knoppen naast elkaar.
+       Door ze 100% breed te maken, worden ze gestapeld (onder elkaar)
+       en zijn ze gemakkelijker aan te raken met de duim.
+       margin-bottom: 8px voegt ruimte toe tussen gestapelde knoppen. */
     .btn {
         width: 100%;
         margin-bottom: 8px;
     }
 
+    /* UITZONDERING: kleine knoppen (.btn-sm) in tabellen behouden
+       hun automatische breedte. In een tabelcel is een 100% brede knop
+       niet gewenst omdat het de kolom te breed maakt. */
     .btn-sm {
         width: auto;
     }
 
-    /* Stapel navigatie op mobiel */
+    /* MOBIELE NAVIGATIE - Het uitklapmenu (hamburger menu).
+       Op desktop staan links naast elkaar; op mobiel klappen ze
+       uit als een verticaal menu onder de header. */
+
+    /* .navbar-collapse is de Bootstrap container die het menu bevat.
+       Dit element wordt verborgen/getoond wanneer de hamburger-knop
+       wordt geklikt (via Bootstrap's JavaScript collapse plugin). */
     .navbar-collapse {
+        /* Donkere achtergrond voor het uitklapmenu. */
         background: var(--bg-secondary);
+
+        /* 15px binnenruimte rondom de menulinks. */
         padding: 15px;
+
+        /* Afgeronde hoeken voor het uitklapmenu. */
         border-radius: var(--border-radius);
+
+        /* 10px ruimte boven het menu, ONDER de header. */
         margin-top: 10px;
     }
 
+    /* .navbar-nav schakelt van HORIZONTAAL (rij) naar VERTICAAL (kolom).
+       flex-direction: column plaatst de links ONDER elkaar i.p.v. naast elkaar.
+       Flexbox-richting: row (standaard) = horizontaal, column = verticaal. */
     .navbar-nav {
         flex-direction: column;
     }
 
+    /* Elke navigatielink krijgt een verticale marge van 5px.
+       Dit voorkomt dat de links aan elkaar vastzitten in het verticale menu. */
     .navbar-nav .nav-link {
         margin: 5px 0;
     }
 }
 
-/* Klein mobiel (max 480px) */
+/* KLEIN MOBIEL (schermen tot 480px breed)
+   Zeer kleine telefoons zoals iPhone SE (375px) of Galaxy S8 (360px).
+   Hier worden de laatste ruimte-optimalisaties toegepast. */
 @media (max-width: 480px) {
+    /* Container wordt 100% breed (geen zijmarges meer) en minimale padding.
+       Op een 375px scherm is elke pixel telt. */
     main.container {
         width: 100%;
         padding: 10px;
     }
 
+    /* Auth-container wordt smaller met minder padding.
+       25px boven/onder en 20px links/rechts (i.p.v. 40px allemaal).
+       margin: 10px geeft een kleine marge rond het formulier. */
     .auth-container {
         padding: 25px 20px;
         margin: 10px;
     }
 
+    /* Footer wordt compacter: kleinere tekst (0.75rem = 12px) en
+       minder padding (10px). Op kleine schermen is de footer minder
+       belangrijk en mag hij minimale ruimte innemen. */
     footer {
         font-size: 0.75rem;
         padding: 10px;
@@ -572,39 +1622,101 @@ textarea.form-control {
 
 
 /* ==========================================================================
-   SECTIE 13: ANIMATIES
+   SECTIE 13: ANIMATIES (CSS Animations & Keyframes)
+   ==========================================================================
+   CSS-animaties voegen BEWEGING en DYNAMIEK toe aan de interface.
+   Ze maken de gebruikerservaring levendiger en professioneler.
+
+   CSS ANIMATIE SYSTEEM:
+   1. @keyframes definieert de STAPPEN van de animatie (begin -> einde)
+   2. animation: eigenschap KOPPELT een keyframes-animatie aan een element
+
+   ANIMATIE EIGENSCHAP SYNTAX:
+   animation: [naam] [duur] [timing] [herhaling];
+   Voorbeeld: animation: pulse 1.5s infinite;
+   - pulse     = de naam van de @keyframes
+   - 1.5s      = duur (1.5 seconden per cyclus)
+   - infinite  = oneindig herhalen
+
+   TWEE ANIMATIES IN DIT PROJECT:
+   1. fadeIn  = Pagina fade-in bij laden (eenmalig)
+   2. pulse   = Gloeien knop-effect bij focus (oneindig)
    ========================================================================== */
 
-/* Fade-in animatie bij het laden van de pagina */
+/* FADE-IN ANIMATIE - Pagina-inhoud "glijdt" van onderen naar boven
+   terwijl het langzaam zichtbaar wordt (opacity: 0 -> 1).
+
+   @keyframes is een CSS-regel die animatiestappen definieert.
+   'fadeIn' is de naam die we kiezen (willekeurig).
+
+   'from' en 'to' zijn shortcuts voor 0% en 100% van de animatie.
+   Je kunt ook tussenliggende percentages gebruiken (bijv. 50%).
+
+   Deze animatie combineert twee effecten:
+   1. TRANSPARANTIE: opacity gaat van 0 (onzichtbaar) naar 1 (volledig zichtbaar)
+   2. POSITIE: het element schuift 20px omhoog (van +20px naar 0px) */
 @keyframes fadeIn {
+    /* BEGIN (0%): element is ONZICHTBAAR en 20px lager dan eindpositie. */
     from {
         opacity: 0;
         transform: translateY(20px);
     }
 
+    /* EINDE (100%): element is VOLLEDIG ZICHTBAAR op normale positie. */
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
+/* FADE-IN TOEPASSEN op het <main> element (de pagina-inhoud).
+   Bij het laden van elke pagina "glijdt" de inhoud van onder naar boven.
+   Dit geeft een professionele, gepolijste overgang. */
 main {
+    /* animation: fadeIn = gebruik de fadeIn keyframes hierboven.
+       0.5s = de animatie duurt 0.5 seconden (snel maar merkbaar).
+       ease-out = de animatie VERTRAAGT aan het einde.
+       Timing functies:
+       - ease = langzaam starten, versnellen, langzaam eindigen
+       - ease-in = langzaam starten, snel eindigen
+       - ease-out = snel starten, langzaam eindigen (meest natuurlijk)
+       - linear = constante snelheid (robotachtig)
+       ease-out is het meest natuurlijk voor iets dat "op zijn plek valt". */
     animation: fadeIn 0.5s ease-out;
 }
 
-/* Puls animatie voor belangrijke elementen */
-@keyframes pulse {
+/* PULSE ANIMATIE - Een pulserende GLOED-ring rondom een element.
+   Het element lijkt ritmisch te "ademen" met een cyaan-blauwe gloed.
+   Dit trekt de aandacht naar het element.
 
+   De animatie bestaat uit drie keyframes:
+   0% (begin) en 100% (einde): gloed is ZICHTBAAR (40% dekking, 0px spread)
+   50% (midden): gloed is UITGESPREID (20px) maar VERDWENEN (0% dekking)
+
+   Het effect: de gloed breidt uit en verdwijnt, dan verschijnt hij weer.
+   Dit geeft een pulserende "hartslag" effect. */
+@keyframes pulse {
+    /* BEGIN EN EINDE - Gloed is compacte ring rondom het element.
+       box-shadow: 0 0 0 0 = scherpe ring met 0px spread (compact).
+       0.4 = 40% dekking (zichtbaar). */
     0%,
     100% {
         box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4);
     }
 
+    /* MIDDEN - Gloed is maximaal uitgebreid maar onzichtbaar.
+       20px blur en 10px spread = grote gloed.
+       0 = 0% dekking (onzichtbaar, uitgevaagd).
+       Het effect: de gloed "gaat uit" in het midden van de cyclus. */
     50% {
         box-shadow: 0 0 20px 10px rgba(0, 212, 255, 0);
     }
 }
 
+/* PULSE TOEPASSEN op de primaire knop (.btn-primary) wanneer deze FOCUS heeft.
+   :focus wordt actief bij klikken of Tab-toets (toetsenbord navigatie).
+   infinite = de animatie herhaalt ONEINDIG totdat de focus verdwijnt.
+   1.5s per cyclus = rustig, niet te snel (anders wordt het irritant). */
 .btn-primary:focus {
     animation: pulse 1.5s infinite;
 }

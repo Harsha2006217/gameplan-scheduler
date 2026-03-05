@@ -344,7 +344,7 @@ Ik gebruik **6 tabellen** om alles netjes op te slaan.
 
 ---
 
-# 🚀 8. Installatie (Hoe start je het?)
+# 🚀 7. Installatie (Hoe start je het?)
 
 1. Installeer **XAMPP**
 2. Start **Apache** en **MySQL**
@@ -352,35 +352,6 @@ Ik gebruik **6 tabellen** om alles netjes op te slaan.
 4. Maak database via `database.sql`
 5. Ga naar `localhost/gameplan-scheduler`
 6. Maak account aan en log in
-
----
-
-# ✅ 9. Checklist voor Examengesprek (5-15 minuten)
-
-Gebruik deze volgorde:
-
-1. **Intro (1 min)**  
-   Wie ben ik en wat is GamePlan Scheduler?
-
-2. **K1 Project (5 min)**  
-   Planning → Ontwerp → Code → Testen → Verbeteren
-
-3. **K2 Stage (3 min)**  
-   Overleg → Presentaties → Reflectie (STARR)
-
-4. **Demo (5 min)**  
-   Inloggen  
-   Vriend toevoegen  
-   Schema maken
-
-5. **Code (2 min)**  
-   `functions.php` en `db.php` uitleg
-
-6. **Afsluiting (1 min)**  
-   Wat heb ik geleerd?
-
-- Eerder hulp vragen
-- Beter plannen
 
 ---
 

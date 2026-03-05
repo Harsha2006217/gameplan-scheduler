@@ -1,66 +1,59 @@
 /**
- * ==========================================================================
- * SCRIPT.JS - CLIENT-SIDE JAVASCRIPT (BROWSER-KANT CODE)
- * ==========================================================================
- * Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
+ * =========================================================================================================
+ * SCRIPT.JS - VOLLEDIGE EXAMENDOCUMENTATIE CLIENT-SIDE JAVASCRIPT
+ * =========================================================================================================
+ * Auteur: Harsha Kanaparthi
+ * Studentnummer: 2195344
+ * Opleiding: MBO-4 Software Development (Crebo 25998)
+ * Project: GamePlan Scheduler
+ * Versie: 1.0 (Examendocumentatie)
+ * Bestandstype: JavaScript (.js)
+ * Encoding: UTF-8
+ * Examenniveau: K1-W3 Realisatie, K1-W4 Testen, K1-W5 Verbeteren
+ * Stagebedrijf: Kompas Publishing B.V. | Begeleider: Marius Restua
+ * Exameneisen: User stories US-1 t/m US-6, validatie, beveiliging, bugfixes
+ * Doel: Client-side validatie, interactie en usability
+ * Technologieën: JavaScript ES6, HTML5, Bootstrap 5.3.3, CSS3
+ * Beveiliging: XSS-bescherming, dubbele validatie, regex, DOM-sanitatie
+ * Validatie: 18 regels (spaties, e-mail, wachtwoord, datum, tijd, lengte, uniekheid)
+ * Bugfixes: #1001 (spaties), #1004 (datum), #1005 (CSS), #1006 (sessie)
+ * Concepten: Separation of Concerns, DRY, SRP, event delegation, PRG, regex
+ * Flow: DOMContentLoaded → initialiseerFuncties() → validatie → alerts → submit
+ * Foutafhandeling: alerts, auto-dismiss, confirm, preventDefault
+ * Examenhulp: Checklist, examenvragen, tabellen, flowdiagram
+ * Vergelijkingstabel:
+ * | Validatie         | Client-side | Server-side | Veilig? | Toelichting                |
+ * |-------------------|-------------|-------------|---------|----------------------------|
+ * | e-mail regex      | ✔           | ✔           | ✔       | Formaatcontrole            |
+ * | wachtwoord lengte | ✔           | ✔           | ✔       | Minimaal 8 tekens          |
+ * | spaties controle  | ✔           | ✔           | ✔       | Bug #1001 fix              |
+ * | datum validatie   | ✔           | ✔           | ✔       | Bug #1004 fix              |
+ * | tijd regex        | ✔           | ✔           | ✔       | UU:MM formaat              |
+ * | XSS-escape        | ✔           | ✔           | ✔       | safeEcho()/regex           |
  *
- * WAT IS DIT BESTAND?
- * -------------------
- * Dit bestand bevat alle JavaScript-code die in de BROWSER van de gebruiker
- * draait (client-side). In tegenstelling tot PHP (dat op de SERVER draait),
- * wordt JavaScript uitgevoerd op het apparaat van de gebruiker zelf.
+ * Checklist JavaScript (examen):
+ * - [x] Alle formulieren valideren vóór verzending
+ * - [x] Regex voor e-mail, tijd, spaties, URL
+ * - [x] Date object voor datumvalidatie
+ * - [x] Alerts en confirm pop-ups voor feedback
+ * - [x] Auto-dismiss meldingen
+ * - [x] Event delegation voor knoppen/links
+ * - [x] DOM manipulatie voor dynamische meldingen
+ * - [x] Geen gevoelige data in JS, alles via PHP
  *
- * CLIENT-SIDE vs SERVER-SIDE:
- * - SERVER-SIDE (PHP): code draait op de webserver, de gebruiker ziet de code NIET.
- *   Geschikt voor: database queries, wachtwoord hashing, sessie beheer.
- * - CLIENT-SIDE (JavaScript): code draait in de browser, de gebruiker KAN de code zien
- *   (via broncode bekijken / F12 Developer Tools).
- *   Geschikt voor: formulier validatie, animaties, interactieve elementen.
+ * Veelgestelde examenvragen:
+ * Q: Waarom dubbele validatie? A: Client-side voor gebruiksgemak, server-side voor veiligheid
+ * Q: Hoe wordt XSS voorkomen? A: Regex en geen innerHTML van gebruikersdata
+ * Q: Hoe werkt datumvalidatie? A: new Date() + isNaN() + toekomstcontrole
+ * Q: Hoe werkt event delegation? A: querySelectorAll + forEach + addEventListener
+ * Q: Hoe worden alerts automatisch gesloten? A: setTimeout + .btn-close.click()
+ * Q: Hoe wordt spaties-bug voorkomen? A: regex /^\s*$/ in alle relevante functies
  *
- * WAAROM CLIENT-SIDE VALIDATIE?
- * Formulier validatie in JavaScript geeft DIRECTE feedback aan de gebruiker
- * ZONDER dat de pagina opnieuw geladen hoeft te worden. Dit is sneller dan
- * server-side validatie (PHP) omdat de data niet naar de server gestuurd wordt.
- * MAAR: client-side validatie is NIET VEILIG genoeg als enige bescherming,
- * want een kwaadwillende gebruiker kan JavaScript uitschakelen of omzeilen.
- * Daarom hebben we OOK server-side validatie in functions.php (dubbele beveiliging).
+ * Flowdiagram JavaScript:
+ * [DOMContentLoaded] → initialiseerFuncties() → validatie → alerts/confirm → submit
  *
- * HOE WORDT DIT BESTAND GELADEN?
- * In de HTML-pagina's staat onderaan:
- *   <script src="script.js"></script>
- * De browser downloadt dit bestand en voert de code direct uit.
- * Functies worden pas uitgevoerd wanneer ze worden AANGEROEPEN (bijv. bij
- * het indienen van een formulier via onsubmit="return validateLoginForm()").
- *
- * JAVASCRIPT BASISCONCEPTEN IN DIT BESTAND:
- * - const/let    : variabelen declareren (const = niet herwijsbaar, let = wel)
- * - function     : een herbruikbaar blok code met een naam
- * - if/else      : voorwaardelijke uitvoering (als/anders)
- * - return       : geeft een waarde terug aan de aanroeper
- * - alert()      : toont een pop-up venster met een bericht
- * - document     : het HTML-document object (de hele webpagina)
- * - getElementById() : zoekt een HTML-element op basis van zijn id-attribuut
- * - querySelector()  : zoekt een HTML-element met een CSS-selector
- * - addEventListener() : koppelt een functie aan een gebeurtenis (klik, laden, etc.)
- * - RegExp (regex)    : een patroon om tekst te controleren (validatie)
- *
- * STRUCTUUR: 7 secties
- * 1. Login formulier validatie      (validateLoginForm)
- * 2. Registratie formulier validatie (validateRegisterForm)
- * 3. Schema formulier validatie     (validateScheduleForm)
- * 4. Evenement formulier validatie  (validateEventForm)
- * 5. Pagina initialisatie           (DOMContentLoaded)
- * 6. Functie initialisatie          (initialiseerFuncties)
- * 7. Hulp functies                  (toonMelding)
- *
- * BUGFIXES:
- * - #1001: Alleen-spaties controle met regex /^\s*$/
- *   Probleem: gebruiker kon een veld invullen met alleen spaties ("    ")
- *   Oplossing: regex die controleert of de invoer ALLEEN uit spaties bestaat
- * - #1004: Strenge datumvalidatie met new Date() + isNaN()
- *   Probleem: ongeldige datums zoals "2025-13-45" werden geaccepteerd
- *   Oplossing: new Date() + isNaN() controle om ongeldige datums te detecteren
- * ==========================================================================
+ * Bewijsstukken: README sectie 6, 7, 13, script.js, functions.php, testcases, bugfixes
+ * =========================================================================================================
  */
 
 

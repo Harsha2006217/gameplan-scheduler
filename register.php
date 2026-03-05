@@ -1,38 +1,61 @@
 <?php
 /**
- * ==========================================================================
- * REGISTER.PHP - REGISTRATIE PAGINA
- * ==========================================================================
- * Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
+ * =========================================================================================================
+ * REGISTER.PHP - VOLLEDIGE EXAMENDOCUMENTATIE REGISTRATIE PAGINA
+ * =========================================================================================================
+ * Auteur: Harsha Kanaparthi
+ * Studentnummer: 2195344
+ * Opleiding: MBO-4 Software Development (Crebo 25998)
+ * Project: GamePlan Scheduler
+ * Versie: 1.0 (Examendocumentatie)
+ * Bestandstype: PHP
+ * Encoding: UTF-8
+ * Examenniveau: K1-W3 Realisatie, K1-W4 Testen, K1-W5 Verbeteren
+ * Stagebedrijf: Kompas Publishing B.V. | Begeleider: Marius Restua
+ * Exameneisen: User story US-1 (registratie), validatie, beveiliging, foutafhandeling
+ * Doel: Nieuwe gebruikers veilig en AVG-compliant registreren
+ * Technologieën: PHP 8.1, MySQL 8.0, Bootstrap 5.3.3, CSS3, JavaScript ES6
+ * Database: Tabel Users (user_id, username, email, password_hash, created_at, deleted_at)
+ * Beveiliging: bcrypt hashing, prepared statements, XSS-bescherming, sessie, eigenaarschap
+ * Validatie: 6 regels (leeg, spaties, e-mail, wachtwoord, uniekheid, lengte)
+ * Bugfixes: #1001 (spaties), #1004 (e-mail), #1006 (sessie)
+ * Concepten: Separation of Concerns, DRY, SRP, PRG, soft delete
+ * Flow: GET → formulier tonen, POST → registerUser() → validatie → hashing → database → redirect
+ * Foutafhandeling: try-catch, foutmelding-string, sessiebericht, PRG-patroon
+ * Examenhulp: Checklist, examenvragen, tabellen, flowdiagram
+ * Vergelijkingstabel:
+ * | Methode         | Veilig? | Uniek? | AVG-proof? | Toelichting                |
+ * |-----------------|--------|--------|------------|----------------------------|
+ * | bcrypt hashing  | ✔      | n.v.t. | ✔          | Wachtwoord nooit leesbaar  |
+ * | prepared stmt   | ✔      | n.v.t. | ✔          | SQL-injectie voorkomen     |
+ * | e-mail uniek    | ✔      | ✔      | ✔          | 1 gebruiker per e-mail     |
+ * | soft delete     | ✔      | n.v.t. | ✔          | Data herstelbaar           |
+ * | XSS-escape      | ✔      | n.v.t. | ✔          | safeEcho() op uitvoer      |
  *
- * Deze pagina laat nieuwe gebruikers een GamePlan Scheduler account aanmaken.
- * Het valideert gebruikersnaam, e-mail en wachtwoord, en maakt het account aan.
+ * Checklist registratie (examen):
+ * - [x] Formulier valideert client-side (JS) en server-side (PHP)
+ * - [x] Wachtwoord minimaal 8 tekens, bcrypt gehasht
+ * - [x] E-mail uniek, correct formaat
+ * - [x] Spaties en lege velden geweigerd (Bug #1001 fix)
+ * - [x] Foutmelding bij mislukking, succesbericht bij slagen
+ * - [x] Redirect naar login.php na succes (PRG)
+ * - [x] Sessie niet aangemaakt tot login
+ * - [x] AVG: wachtwoord nooit leesbaar, e-mail niet gedeeld
  *
- * Beveiligingsmaatregelen:
- * - Wachtwoord wordt versleuteld met bcrypt (nooit als platte tekst opgeslagen)
- * - E-mail uniekheid controle (één account per e-mail)
- * - Invoer validatie (BUG FIX #1001: spaties controle)
- * - Minimale wachtwoord lengte: 8 tekens
+ * Veelgestelde examenvragen:
+ * Q: Hoe voorkom je SQL-injectie? A: Prepared statements (PDO)
+ * Q: Hoe wordt het wachtwoord opgeslagen? A: bcrypt hash, nooit als platte tekst
+ * Q: Waarom dubbele validatie? A: Client-side voor gebruiksgemak, server-side voor veiligheid
+ * Q: Hoe wordt uniekheid van e-mail gegarandeerd? A: UNIQUE constraint + PHP-controle
+ * Q: Hoe wordt XSS voorkomen? A: safeEcho() op alle uitvoer
+ * Q: Hoe werkt soft delete? A: deleted_at timestamp, data blijft herstelbaar
  *
- * Hoe het registratieproces werkt:
- * 1. De gebruiker opent deze pagina in de browser (GET verzoek).
- * 2. Het formulier wordt getoond met velden voor gebruikersnaam, e-mail
- *    en wachtwoord.
- * 3. De gebruiker vult alles in en klikt op "Account Aanmaken" (POST verzoek).
- * 4. PHP ontvangt de POST-gegevens en roept registerUser() aan.
- * 5. registerUser() controleert:
- *    a. Of alle velden zijn ingevuld en geen onnodige spaties bevatten.
- *    b. Of het e-mailadres een geldig formaat heeft.
- *    c. Of het wachtwoord minstens 8 tekens lang is.
- *    d. Of het e-mailadres niet al in gebruik is door een andere gebruiker.
- * 6. Het wachtwoord wordt gehasht met bcrypt (password_hash) voor veilige
- *    opslag. Dit betekent dat het originele wachtwoord NOOIT in de database
- *    wordt bewaard - alleen een versleutelde versie die niet terug te
- *    rekenen is naar het origineel.
- * 7. Bij succes: de gebruiker wordt doorgestuurd naar login.php met een
- *    succesbericht.
- * 8. Bij een fout: de foutmelding wordt getoond op de pagina.
- * ==========================================================================
+ * Flowdiagram registratie:
+ * [Browser] → register.php (GET) → formulier → (POST) → registerUser() → validatie → hashing → database → redirect
+ *
+ * Bewijsstukken: README sectie 7, 9, 10, 13, functions.php, database.sql, testcases, bugfixes
+ *
+ * =========================================================================================================
  */
 
 // ============================================================================

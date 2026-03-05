@@ -3,31 +3,89 @@
  * ==========================================================================
  * HEADER.PHP - NAVIGATIE HEADER (BOVENBALK)
  * ==========================================================================
- * Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
+ * Bestandsnaam : header.php
+ * Auteur       : Harsha Kanaparthi
+ * Studentnummer: 2195344
+ * Opleiding    : MBO-4 Software Developer (Crebo 25998)
+ * Datum        : 30-09-2025
+ * Versie       : 1.0
+ * PHP-versie   : 8.1+
+ * Encoding     : UTF-8
  *
- * WAT DOET DIT BESTAND?
- * ---------------------
- * Dit bestand bevat de bovenbalk (header) die op ELKE pagina verschijnt.
+ * ==========================================================================
+ * BESCHRIJVING
+ * ==========================================================================
+ * Dit bestand bevat de vaste bovenbalk (header) die op ELKE pagina verschijnt.
  * De header bevat het logo en het navigatiemenu waarmee je naar
  * verschillende pagina's kunt gaan (Dashboard, Profiel, Vrienden, enz.).
  *
  * Dit bestand wordt INGEVOEGD in andere pagina's met:
  *   <?php include 'header.php'; ?>
- * Dat betekent dat de code in dit bestand wordt "geplakt" in de andere pagina.
  * Zo hoef je de header niet in elk bestand opnieuw te schrijven.
+ * Dit is het DRY-principe: "Don't Repeat Yourself" (Herhaal Jezelf Niet).
  *
- * ONTWERP SPECIFICATIES:
- * - Hoogte: 80px (volgens het ontwerpdocument)
- * - Bevat: Logo, navigatiemenu, hamburger menu voor mobiel
- * - Kleur: Blauw-paars gradient (gaming gevoel)
- * - Knoppen: minimaal 40px hoogte voor mobiele bruikbaarheid
- * - Responsief: op kleine schermen wordt het menu een hamburger menu
+ * Samen met footer.php vormt dit de "wrapper" (omhulsel) van elke pagina:
+ *   header.php → navigatiebalk BOVENAAN
+ *   footer.php → onderbalk ONDERAAN
  *
- * HOE WERKT DE NAVIGATIE?
- * De header gebruikt Bootstrap 5 klassen voor het responsieve layout:
- * - Op grote schermen (meer dan 992px): alle menu items zijn zichtbaar naast elkaar
- * - Op kleine schermen (minder dan 992px): menu items verbergen achter een
- *   hamburger knop (drie streepjes) die je kunt aanklikken
+ * ==========================================================================
+ * STRUCTUUR EN ONTWERP
+ * ==========================================================================
+ * ┌──────────────────────┬──────────────────────────────────────────────┐
+ * │ Eigenschap           │ Waarde                                       │
+ * ├──────────────────────┼──────────────────────────────────────────────┤
+ * │ Hoogte               │ ~80px (volgens ontwerp, via py-2/p-0)        │
+ * │ Positie              │ fixed-top (altijd zichtbaar bovenaan)        │
+ * │ Achtergrondkleur     │ bg-primary (overschreven door style.css)     │
+ * │ Tekstkleur           │ text-white (logo + menu)                     │
+ * │ Logo                 │ 🎮 GamePlan Scheduler (h4/h1)                │
+ * │ Navigatie            │ Bootstrap navbar, hamburger menu mobiel      │
+ * │ Menu-items           │ 6 links: Dashboard, Profiel, Vrienden,       │
+ * │                      │ Planning, Evenement, Uitloggen               │
+ * │ Knoppen              │ btn-success (groen) voor Evenement           │
+ * │ Responsief           │ navbar-expand-lg, collapse, toggler          │
+ * │ Padding/marges       │ p-0, py-2, mb-4, ms-auto, gap-2, ms-2, px-3  │
+ * └──────────────────────┴──────────────────────────────────────────────┘
+ *
+ * ==========================================================================
+ * VERGELIJKING MET FOOTER.PHP
+ * ==========================================================================
+ * ┌──────────────────────┬───────────────┬───────────────┐
+ * │ Eigenschap           │ header.php    │ footer.php    │
+ * ├──────────────────────┼───────────────┼───────────────┤
+ * │ Positie op de pagina │ Bovenaan      │ Onderaan      │
+ * │ HTML-element         │ <header>      │ <footer>      │
+ * │ Bootstrap positie    │ fixed-top     │ fixed-bottom  │
+ * │ Inhoud               │ Logo + menu   │ Copyright + links │
+ * │ PHP-logica?          │ Ja (inlog-check)│ Nee (puur HTML) │
+ * │ Aantal links         │ 6 (dynamisch) │ 2 (statisch)  │
+ * │ Responsive menu?     │ Ja (hamburger)| Nee           │
+ * │ Bevat JavaScript?    │ Nee           │ Nee           │
+ * └──────────────────────┴───────────────┴───────────────┘
+ *
+ * ==========================================================================
+ * BEVEILIGING EN GEBRUIK
+ * ==========================================================================
+ * 1. GEEN GEBRUIKERSINVOER: Alle menu-items zijn hardcoded, geen XSS mogelijk
+ * 2. INLOG-CHECK: In sommige pagina's wordt header.php pas geladen NA inlogcontrole
+ * 3. RESPONSIVE DESIGN: Hamburger menu voorkomt dat menu-items buiten beeld vallen
+ * 4. DRY-principe: één centrale header voor alle pagina's
+ *
+ * ==========================================================================
+ * HTML CONCEPTEN GEBRUIKT IN DIT BESTAND
+ * ==========================================================================
+ * - <header>               : Semantisch HTML5-element voor bovenbalk
+ * - <nav>                  : Navigatiebalk (Bootstrap navbar)
+ * - <ul>/<li>              : Menu-items als lijst
+ * - <a href="...">         : Hyperlinks naar andere pagina's
+ * - <button>               : Hamburger menu knop
+ * - Bootstrap: fixed-top, bg-primary, text-white, navbar, navbar-toggler, collapse
+ * - btn-success, ms-auto, gap-2, ms-2, px-3, mb-4, py-2
+ * - h1/h4                  : Logo-tekst
+ * ==========================================================================
+ * CSS CONCEPTEN (style.css overschrijvingen):
+ * - De header-achtergrondkleur en knoppen worden overschreven door style.css
+ *   met het donkere gaming-thema (glassmorphism-effect).
  * ==========================================================================
  */
 ?>

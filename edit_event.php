@@ -3,21 +3,198 @@
  * ==========================================================================
  * EDIT_EVENT.PHP - EVENEMENT BEWERKEN PAGINA
  * ==========================================================================
- * Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
+ * Bestandsnaam : edit_event.php
+ * Auteur       : Harsha Kanaparthi
+ * Studentnummer: 2195344
+ * Opleiding    : MBO-4 Software Developer (Crebo 25998)
+ * Datum        : 30-09-2025
+ * Versie       : 1.0
+ * PHP-versie   : 8.1+
+ * Encoding     : UTF-8
  *
+ * ==========================================================================
+ * BESCHRIJVING
+ * ==========================================================================
  * Bewerk een bestaand gaming evenement met alle velden en validatie.
+ * Dit is de BEWERKPAGINA voor evenementen - de "Update" in CRUD
+ * (Create, Read, Update, Delete).
  *
- * Gebruikersverhaal: "Voeg evenementen toe zoals toernooien"
+ * Gebruikersverhaal: "Als ingelogde gebruiker wil ik mijn evenementen
+ * kunnen bewerken, zodat ik de gegevens kan aanpassen als iets verandert."
  *
- * --------------------------------------------------------------------------
- * HOE DEZE PAGINA WERKT (samenvatting):
- * --------------------------------------------------------------------------
- * 1. Het evenement-ID wordt opgehaald uit de URL (?id=123).
- * 2. Er wordt gecontroleerd of het ID een geldig nummer is.
- * 3. Het bijbehorende evenement wordt opgezocht in de lijst van de gebruiker.
- * 4. Het formulier wordt vooraf ingevuld met de bestaande gegevens.
- * 5. Bij verzending worden de gewijzigde gegevens opgeslagen via editEvent().
- * 6. Bij succes wordt de gebruiker doorgestuurd naar de hoofdpagina.
+ * UNIEK AAN DEZE PAGINA (verschil met add_event.php):
+ * - Haalt een BESTAAND evenement op uit de database (via URL-parameter ?id=)
+ * - Vult het formulier VOORAF IN met de bestaande gegevens (value-attributen)
+ * - Roept editEvent() aan in plaats van addEvent()
+ * - Heeft extra beveiligingscontroles: geldig ID + evenement bestaat + eigenaarschap
+ *
+ * ==========================================================================
+ * HOE DEZE PAGINA WERKT (VERZOEK-STROOM / REQUEST FLOW)
+ * ==========================================================================
+ *
+ * ┌─────────────────────────────────────────────────────────────────────┐
+ * │ GET-VERZOEK (pagina laden - formulier tonen):                      │
+ * │                                                                     │
+ * │ 1. Gebruiker klikt op "Bewerk" bij een evenement op index.php      │
+ * │ 2. Browser gaat naar: edit_event.php?id=5                          │
+ * │ 3. PHP controleert: ingelogd? → ID geldig? → evenement gevonden?   │
+ * │ 4. Formulier wordt getoond met bestaande gegevens vooraf ingevuld  │
+ * │                                                                     │
+ * │ POST-VERZOEK (formulier verzenden - wijzigingen opslaan):          │
+ * │                                                                     │
+ * │ 1. Gebruiker wijzigt gegevens en klikt op "Bijwerken"              │
+ * │ 2. JavaScript validateEventForm() controleert de invoer (client)   │
+ * │ 3. Formulier wordt via POST verzonden naar edit_event.php?id=5     │
+ * │ 4. PHP leest $_POST gegevens en roept editEvent() aan              │
+ * │ 5. editEvent() valideert server-side en voert UPDATE query uit     │
+ * │ 6. Bij succes → redirect naar index.php met succesmelding          │
+ * │ 7. Bij fout → formulier opnieuw tonen met foutmelding              │
+ * └─────────────────────────────────────────────────────────────────────┘
+ *
+ * ==========================================================================
+ * DATABASE KOPPELING
+ * ==========================================================================
+ * Dit bestand werkt met de Events tabel:
+ *
+ * ┌──────────────┬──────────────┬────────────────────────────────────────┐
+ * │ Kolom        │ Type         │ Formulierveld                          │
+ * ├──────────────┼──────────────┼────────────────────────────────────────┤
+ * │ event_id     │ INT (PK)     │ URL-parameter (?id=)                   │
+ * │ user_id      │ INT (FK)     │ Automatisch via getUserId()            │
+ * │ title        │ VARCHAR(100) │ Veld 1: Titel (verplicht)              │
+ * │ date         │ DATE         │ Veld 2: Datum (verplicht)              │
+ * │ time         │ TIME         │ Veld 3: Tijd (verplicht)               │
+ * │ description  │ TEXT         │ Veld 4: Beschrijving (optioneel)       │
+ * │ reminder     │ VARCHAR(50)  │ Veld 5: Herinnering (dropdown)         │
+ * │ external_link│ VARCHAR(255) │ Veld 6: Externe link (optioneel)       │
+ * │ shared_with  │ TEXT         │ Veld 7: Gedeeld met (optioneel)        │
+ * │ deleted_at   │ TIMESTAMP    │ (niet bewerkt via formulier)           │
+ * └──────────────┴──────────────┴────────────────────────────────────────┘
+ *
+ * SQL-operatie: UPDATE Events SET title=?, date=?, time=?, description=?,
+ *               reminder=?, external_link=?, shared_with=?
+ *               WHERE event_id=? AND user_id=? AND deleted_at IS NULL
+ *
+ * ==========================================================================
+ * VERSCHIL TUSSEN add_event.php EN edit_event.php
+ * ==========================================================================
+ * ┌──────────────────────┬────────────────────┬────────────────────────┐
+ * │ Eigenschap           │ add_event.php      │ edit_event.php         │
+ * ├──────────────────────┼────────────────────┼────────────────────────┤
+ * │ CRUD-operatie        │ Create (INSERT)    │ Update (UPDATE)        │
+ * │ URL-parameter        │ Geen               │ ?id=5 (verplicht)      │
+ * │ Formulier voorgevuld │ Nee (leeg)         │ Ja (bestaande data)    │
+ * │ PHP-functie          │ addEvent()         │ editEvent()            │
+ * │ ID-validatie         │ Niet nodig         │ is_numeric() + bestaat │
+ * │ Evenement ophalen    │ Niet nodig         │ getEvents() + filter   │
+ * │ Knoptekst            │ "Opslaan"          │ "Bijwerken"            │
+ * │ SQL-query            │ INSERT INTO Events │ UPDATE Events SET ...  │
+ * └──────────────────────┴────────────────────┴────────────────────────┘
+ *
+ * ==========================================================================
+ * BEVEILIGING (Security)
+ * ==========================================================================
+ * 1. INLOG-CONTROLE: isLoggedIn() verifieert dat de gebruiker een
+ *    geldige sessie heeft. Zonder inlog → redirect naar login.php.
+ *    → OWASP A01: Broken Access Control voorkomen
+ *
+ * 2. ID-VALIDATIE: is_numeric($id) verifieert dat het URL-parameter
+ *    een geldig getal is. Voorkomt SQL-injectie en onverwachte invoer.
+ *    → OWASP A03: Injection voorkomen
+ *
+ * 3. EIGENAARSCHAP-CONTROLE: getEvents($userId) haalt alleen evenementen
+ *    op van de ingelogde gebruiker. Gebruiker A kan evenementen van
+ *    gebruiker B niet bewerken, zelfs niet door het ID te raden.
+ *    → OWASP A01: Broken Access Control voorkomen
+ *
+ * 4. SESSIE-TIMEOUT: checkSessionTimeout() beëindigt inactieve sessies
+ *    na 30 minuten. Voorkomt misbruik op onbeheerde computers.
+ *
+ * 5. XSS-BESCHERMING: safeEcho() escaped alle HTML-speciale tekens in
+ *    de vooraf ingevulde formuliervelden (value-attributen).
+ *    → OWASP A07: Cross-Site Scripting (XSS) voorkomen
+ *
+ * 6. PREPARED STATEMENTS: editEvent() gebruikt PDO prepared statements
+ *    met parameters (?). Gegevens worden NOOIT direct in SQL geplakt.
+ *    → OWASP A03: Injection voorkomen
+ *
+ * 7. DUBBELE VALIDATIE: Client-side (JavaScript validateEventForm) EN
+ *    server-side (PHP in editEvent). Client-side is voor gebruiksgemak,
+ *    server-side is de ECHTE beveiliging (kan niet worden omzeild).
+ *
+ * 8. EXIT NA REDIRECT: Na elke header("Location:") volgt exit; zodat
+ *    geen code meer wordt uitgevoerd na het doorsturen.
+ *
+ * ==========================================================================
+ * BESTANDSSTRUCTUUR
+ * ==========================================================================
+ * PHP-GEDEELTE (server-side logica):
+ *   - STAP 1: functions.php laden + sessie-timeout
+ *   - STAP 2: Inlog-controle (redirect als niet ingelogd)
+ *   - STAP 3: URL-parameter ophalen ($id via $_GET)
+ *   - STAP 4: ID-validatie (is_numeric)
+ *   - STAP 5: Evenement ophalen (getEvents + array_filter + reset)
+ *   - STAP 6: Controle of evenement gevonden is
+ *   - STAP 7: POST-verwerking (editEvent met 9 parameters)
+ *   - STAP 8: Succes → redirect + flash message | Fout → formulier tonen
+ *
+ * HTML-GEDEELTE (client-side weergave):
+ *   - DOCTYPE + html + head (meta, title, Bootstrap CSS, style.css)
+ *   - Body met donker thema + header navigatiebalk
+ *   - Flash message (getMessage) + foutmelding ($fout)
+ *   - Formulier met 7 velden (alle vooraf ingevuld):
+ *     Veld 1: Titel (text, required, maxlength=100)
+ *     Veld 2: Datum (date, required, min=vandaag)
+ *     Veld 3: Tijd (time, required)
+ *     Veld 4: Beschrijving (textarea, optioneel, maxlength=500)
+ *     Veld 5: Herinnering (select/dropdown met 3 opties)
+ *     Veld 6: Externe link (url, optioneel)
+ *     Veld 7: Gedeeld met (text, optioneel)
+ *   - Knoppen: Bijwerken (submit) + Annuleren (link naar index.php)
+ *   - Footer + Bootstrap JS + script.js
+ *
+ * ==========================================================================
+ * GEBRUIKTE BESTANDEN
+ * ==========================================================================
+ * - functions.php  : editEvent(), getEvents(), isLoggedIn(), getUserId(),
+ *                    setMessage(), getMessage(), safeEcho(), checkSessionTimeout()
+ * - header.php     : Navigatiebalk (wordt ge-include)
+ * - footer.php     : Voettekst (wordt ge-include)
+ * - style.css      : Eigen CSS-stijlen (donker gaming thema)
+ * - script.js      : JavaScript validatie (validateEventForm)
+ * - Bootstrap 5.3.3: CSS + JS framework via CDN
+ *
+ * WELKE PAGINA LINKT NAAR DIT BESTAND?
+ * - index.php      : "Bewerk" knop bij elk evenement
+ *
+ * ==========================================================================
+ * PHP CONCEPTEN GEBRUIKT IN DIT BESTAND
+ * ==========================================================================
+ * - require_once           : Bestand laden (eenmalig)
+ * - $_GET / $_POST         : Superglobale arrays (URL-params / formulierdata)
+ * - ?? (null coalescing)   : Standaardwaarde als variabele null is
+ * - is_numeric()           : Controleert of waarde een geldig getal is
+ * - array_filter()         : Filtert een array op basis van een callback
+ * - Anonieme functie       : function($e) use ($id) { ... } (closure)
+ * - use ($id)              : Maakt buitenvariabele beschikbaar in closure
+ * - reset()                : Pakt het eerste element uit een array
+ * - header("Location:")    : HTTP redirect naar andere pagina
+ * - exit                   : Script onmiddellijk stoppen
+ * - if/elseif              : Voorwaardelijke logica
+ * - === (strikte vergelijk): Vergelijkt waarde EN type
+ *
+ * HTML CONCEPTEN GEBRUIKT IN DIT BESTAND
+ * ==========================================================================
+ * - form method="POST"     : Formulier met POST-verzending
+ * - onsubmit="return ..."  : JavaScript validatie voor verzenden
+ * - input type="text/date/time/url" : Verschillende invoerveldtypes
+ * - textarea               : Meerdere regels tekst (value TUSSEN tags)
+ * - select/option          : Dropdown keuzelijst
+ * - selected               : Voorgeselecteerde optie in dropdown
+ * - value="..."            : Vooraf ingevulde waarden (edit-specifiek)
+ * - required / maxlength   : HTML5 formuliervalidatie-attributen
+ * - min (op date)          : Minimum datum (vandaag)
+ * - Bootstrap: card, form-control, form-select, btn, alert
  * ==========================================================================
  */
 
@@ -41,14 +218,14 @@ checkSessionTimeout();
    dan is !isLoggedIn() waar (true), en wordt de code in het if-blok uitgevoerd.
    Alleen ingelogde gebruikers mogen evenementen bewerken. */
 if (!isLoggedIn()) {
-    /* header("Location: login.php") stuurt een HTTP-header naar de browser
-       die zegt: "ga naar login.php". Dit is een doorverwijzing (redirect).
-       De browser laadt dan automatisch de inlogpagina. */
-    header("Location: login.php");
-    /* exit stopt het PHP-script onmiddellijk. Dit is belangrijk omdat de
-       code anders gewoon doorgaat na de header() aanroep. Zonder exit
-       zou de rest van de pagina nog steeds worden uitgevoerd. */
-    exit;
+     /* header("Location: login.php") stuurt een HTTP-header naar de browser
+        die zegt: "ga naar login.php". Dit is een doorverwijzing (redirect).
+        De browser laadt dan automatisch de inlogpagina. */
+     header("Location: login.php");
+     /* exit stopt het PHP-script onmiddellijk. Dit is belangrijk omdat de
+        code anders gewoon doorgaat na de header() aanroep. Zonder exit
+        zou de rest van de pagina nog steeds worden uitgevoerd. */
+     exit;
 }
 
 /* getUserId() haalt het unieke ID-nummer van de ingelogde gebruiker op
@@ -75,11 +252,11 @@ $id = $_GET['id'] ?? 0;
    Het uitroepteken (!) keert de waarde om: als het NIET numeriek is,
    wordt de gebruiker teruggestuurd naar de hoofdpagina. */
 if (!is_numeric($id)) {
-    /* Stuur de gebruiker terug naar de hoofdpagina als het ID ongeldig is.
-       Er wordt geen foutmelding getoond, de gebruiker wordt gewoon weggestuurd. */
-    header("Location: index.php");
-    /* Stop het script onmiddellijk na de doorverwijzing. */
-    exit;
+     /* Stuur de gebruiker terug naar de hoofdpagina als het ID ongeldig is.
+        Er wordt geen foutmelding getoond, de gebruiker wordt gewoon weggestuurd. */
+     header("Location: index.php");
+     /* Stop het script onmiddellijk na de doorverwijzing. */
+     exit;
 }
 
 /* Haal het evenement op:
@@ -110,7 +287,7 @@ $evenementen = getEvents($userId);
    Het resultaat is een gefilterde array die alleen het evenement bevat
    met het juiste event_id (of een lege array als het niet is gevonden). */
 $evenement = array_filter($evenementen, function ($e) use ($id) {
-    return $e['event_id'] == $id;
+     return $e['event_id'] == $id;
 });
 
 /* reset() verplaatst de interne aanwijzer van de array naar het eerste element
@@ -127,15 +304,15 @@ $evenement = reset($evenement);
    Het uitroepteken (!) keert de waarde om: als er GEEN evenement is gevonden,
    wordt het if-blok uitgevoerd. */
 if (!$evenement) {
-    /* setMessage() slaat een foutbericht op in de sessie.
-       'danger' is het type (rode Bootstrap-alert), en de tekst vertelt de
-       gebruiker dat het evenement niet is gevonden. Dit bericht wordt getoond
-       op de volgende pagina (index.php) nadat de doorverwijzing plaatsvindt. */
-    setMessage('danger', 'Evenement niet gevonden.');
-    /* Stuur de gebruiker door naar de hoofdpagina. */
-    header("Location: index.php");
-    /* Stop het script onmiddellijk. */
-    exit;
+     /* setMessage() slaat een foutbericht op in de sessie.
+        'danger' is het type (rode Bootstrap-alert), en de tekst vertelt de
+        gebruiker dat het evenement niet is gevonden. Dit bericht wordt getoond
+        op de volgende pagina (index.php) nadat de doorverwijzing plaatsvindt. */
+     setMessage('danger', 'Evenement niet gevonden.');
+     /* Stuur de gebruiker door naar de hoofdpagina. */
+     header("Location: index.php");
+     /* Stop het script onmiddellijk. */
+     exit;
 }
 
 /* $fout is een variabele die begint als een lege tekst (string).
@@ -152,78 +329,78 @@ $fout = '';
    We controleren of de methode gelijk is aan 'POST'. */
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    /* $_POST is een superglobale array in PHP die alle formuliergegevens bevat
-       die via de POST-methode zijn verzonden.
-       De ?? operator (null coalescing operator) geeft een standaardwaarde
-       als de sleutel niet bestaat in $_POST. */
+     /* $_POST is een superglobale array in PHP die alle formuliergegevens bevat
+        die via de POST-methode zijn verzonden.
+        De ?? operator (null coalescing operator) geeft een standaardwaarde
+        als de sleutel niet bestaat in $_POST. */
 
-    /* $titel: haalt de (mogelijk gewijzigde) evenementtitel op uit het formulier.
-       Het veld met name="title" stuurt de waarde naar $_POST['title']. */
-    $titel = $_POST['title'] ?? '';
+     /* $titel: haalt de (mogelijk gewijzigde) evenementtitel op uit het formulier.
+        Het veld met name="title" stuurt de waarde naar $_POST['title']. */
+     $titel = $_POST['title'] ?? '';
 
-    /* $datum: haalt de (mogelijk gewijzigde) datum op uit het formulier.
-       Het formaat is JJJJ-MM-DD (jaar-maand-dag). */
-    $datum = $_POST['date'] ?? '';
+     /* $datum: haalt de (mogelijk gewijzigde) datum op uit het formulier.
+        Het formaat is JJJJ-MM-DD (jaar-maand-dag). */
+     $datum = $_POST['date'] ?? '';
 
-    /* $tijd: haalt de (mogelijk gewijzigde) tijd op uit het formulier.
-       Het formaat is UU:MM (uur:minuut). */
-    $tijd = $_POST['time'] ?? '';
+     /* $tijd: haalt de (mogelijk gewijzigde) tijd op uit het formulier.
+        Het formaat is UU:MM (uur:minuut). */
+     $tijd = $_POST['time'] ?? '';
 
-    /* $beschrijving: haalt de (mogelijk gewijzigde) beschrijving op uit het formulier.
-       Dit veld is optioneel en mag leeg zijn. */
-    $beschrijving = $_POST['description'] ?? '';
+     /* $beschrijving: haalt de (mogelijk gewijzigde) beschrijving op uit het formulier.
+        Dit veld is optioneel en mag leeg zijn. */
+     $beschrijving = $_POST['description'] ?? '';
 
-    /* $herinnering: haalt de (mogelijk gewijzigde) herinneringsinstelling op.
-       Mogelijke waarden: 'none', '1_hour', '1_day'. Standaard is 'none'. */
-    $herinnering = $_POST['reminder'] ?? 'none';
+     /* $herinnering: haalt de (mogelijk gewijzigde) herinneringsinstelling op.
+        Mogelijke waarden: 'none', '1_hour', '1_day'. Standaard is 'none'. */
+     $herinnering = $_POST['reminder'] ?? 'none';
 
-    /* $externeLink: haalt de (mogelijk gewijzigde) externe URL op uit het formulier.
-       Als er niets is ingevuld, wordt het een lege tekst. */
-    $externeLink = $_POST['external_link'] ?? '';
+     /* $externeLink: haalt de (mogelijk gewijzigde) externe URL op uit het formulier.
+        Als er niets is ingevuld, wordt het een lege tekst. */
+     $externeLink = $_POST['external_link'] ?? '';
 
-    /* $gedeeldMetStr: haalt de (mogelijk gewijzigde) lijst van gedeelde
-       gebruikers op als komma-gescheiden tekst. */
-    $gedeeldMetStr = $_POST['shared_with_str'] ?? '';
+     /* $gedeeldMetStr: haalt de (mogelijk gewijzigde) lijst van gedeelde
+        gebruikers op als komma-gescheiden tekst. */
+     $gedeeldMetStr = $_POST['shared_with_str'] ?? '';
 
-    /* editEvent() is de hoofdfunctie die het bestaande evenement bijwerkt.
-       Het ontvangt 8 parameters (één meer dan addEvent, namelijk het event-ID):
-       - $userId: het ID van de ingelogde gebruiker (eigenaar van het evenement)
-       - $id: het unieke ID van het evenement dat wordt bewerkt (uit de URL)
-       - $titel: de (gewijzigde) titel van het evenement
-       - $datum: de (gewijzigde) datum waarop het evenement plaatsvindt
-       - $tijd: de (gewijzigde) tijd waarop het evenement begint
-       - $beschrijving: de (gewijzigde) beschrijving
-       - $herinnering: de (gewijzigde) herinneringsinstelling
-       - $externeLink: de (gewijzigde) externe URL
-       - $gedeeldMetStr: de (gewijzigde) lijst van gebruikers om mee te delen
-       De functie zoekt het evenement op basis van $id, past de wijzigingen toe,
-       en slaat het op. Het geeft een foutmelding terug als er iets mis is,
-       of een lege string als alles goed ging. */
-    $fout = editEvent($userId, $id, $titel, $datum, $tijd, $beschrijving, $herinnering, $externeLink, $gedeeldMetStr);
+     /* editEvent() is de hoofdfunctie die het bestaande evenement bijwerkt.
+        Het ontvangt 8 parameters (één meer dan addEvent, namelijk het event-ID):
+        - $userId: het ID van de ingelogde gebruiker (eigenaar van het evenement)
+        - $id: het unieke ID van het evenement dat wordt bewerkt (uit de URL)
+        - $titel: de (gewijzigde) titel van het evenement
+        - $datum: de (gewijzigde) datum waarop het evenement plaatsvindt
+        - $tijd: de (gewijzigde) tijd waarop het evenement begint
+        - $beschrijving: de (gewijzigde) beschrijving
+        - $herinnering: de (gewijzigde) herinneringsinstelling
+        - $externeLink: de (gewijzigde) externe URL
+        - $gedeeldMetStr: de (gewijzigde) lijst van gebruikers om mee te delen
+        De functie zoekt het evenement op basis van $id, past de wijzigingen toe,
+        en slaat het op. Het geeft een foutmelding terug als er iets mis is,
+        of een lege string als alles goed ging. */
+     $fout = editEvent($userId, $id, $titel, $datum, $tijd, $beschrijving, $herinnering, $externeLink, $gedeeldMetStr);
 
-    /* Controleer of $fout leeg is (geen fout).
-       Het uitroepteken (!) keert de waarde om: als $fout een lege string is,
-       is !$fout gelijk aan true, wat betekent dat er GEEN fout was.
-       In dat geval is het evenement succesvol bijgewerkt. */
-    if (!$fout) {
-        /* setMessage() slaat een succesbericht op in de sessie.
-           'success' is het type (groen Bootstrap-alert), en 'Evenement bijgewerkt!'
-           is de tekst die de gebruiker ziet op de volgende pagina. */
-        setMessage('success', 'Evenement bijgewerkt!');
+     /* Controleer of $fout leeg is (geen fout).
+        Het uitroepteken (!) keert de waarde om: als $fout een lege string is,
+        is !$fout gelijk aan true, wat betekent dat er GEEN fout was.
+        In dat geval is het evenement succesvol bijgewerkt. */
+     if (!$fout) {
+          /* setMessage() slaat een succesbericht op in de sessie.
+             'success' is het type (groen Bootstrap-alert), en 'Evenement bijgewerkt!'
+             is de tekst die de gebruiker ziet op de volgende pagina. */
+          setMessage('success', 'Evenement bijgewerkt!');
 
-        /* header("Location: index.php") stuurt de gebruiker door naar de
-           hoofdpagina (index.php). Daar ziet de gebruiker het succesbericht
-           en het zojuist bijgewerkte evenement met de nieuwe gegevens. */
-        header("Location: index.php");
+          /* header("Location: index.php") stuurt de gebruiker door naar de
+             hoofdpagina (index.php). Daar ziet de gebruiker het succesbericht
+             en het zojuist bijgewerkte evenement met de nieuwe gegevens. */
+          header("Location: index.php");
 
-        /* exit stopt het script zodat er niets meer wordt uitgevoerd na
-           de doorverwijzing. Dit voorkomt ongewenste uitvoer. */
-        exit;
-    }
-    /* Als $fout WEL een waarde heeft (er is een foutmelding), gaat het script
-       gewoon door en wordt de pagina opnieuw getoond met de foutmelding.
-       Het formulier bevat nog steeds de bestaande gegevens, zodat de
-       gebruiker de fout kan corrigeren en opnieuw kan indienen. */
+          /* exit stopt het script zodat er niets meer wordt uitgevoerd na
+             de doorverwijzing. Dit voorkomt ongewenste uitvoer. */
+          exit;
+     }
+     /* Als $fout WEL een waarde heeft (er is een foutmelding), gaat het script
+        gewoon door en wordt de pagina opnieuw getoond met de foutmelding.
+        Het formulier bevat nog steeds de bestaande gegevens, zodat de
+        gebruiker de fout kan corrigeren en opnieuw kan indienen. */
 }
 ?>
 <!-- Einde van het PHP-gedeelte. Hieronder begint de HTML-pagina.
@@ -243,32 +420,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
      voor de gebruiker, zoals de tekenset, viewport, titel en stylesheets. -->
 
 <head>
-    <!-- meta charset="UTF-8" stelt de tekencodering in op UTF-8.
+     <!-- meta charset="UTF-8" stelt de tekencodering in op UTF-8.
          UTF-8 ondersteunt bijna alle tekens en symbolen ter wereld,
          inclusief Nederlandse tekens zoals é, ë, ï, ü. -->
-    <meta charset="UTF-8">
+     <meta charset="UTF-8">
 
-    <!-- meta viewport zorgt ervoor dat de pagina goed wordt weergegeven
+     <!-- meta viewport zorgt ervoor dat de pagina goed wordt weergegeven
          op mobiele apparaten. width=device-width past de breedte aan op
          het scherm van het apparaat. initial-scale=1.0 zet het zoomniveau
          op 100% bij het eerste laden. -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- <title> is de tekst die in het browsertabblad verschijnt.
+     <!-- <title> is de tekst die in het browsertabblad verschijnt.
          "Evenement Bewerken - GamePlan Scheduler" laat de gebruiker weten
          welke pagina er open staat. -->
-    <title>Evenement Bewerken - GamePlan Scheduler</title>
+     <title>Evenement Bewerken - GamePlan Scheduler</title>
 
-    <!-- Dit laadt het Bootstrap 5.3.3 CSS-framework via een CDN (Content Delivery Network).
+     <!-- Dit laadt het Bootstrap 5.3.3 CSS-framework via een CDN (Content Delivery Network).
          Bootstrap biedt kant-en-klare CSS-klassen voor knoppen, formulieren,
          kaarten, rasters, kleuren en meer. Het CDN zorgt ervoor dat het snel
          wordt geladen zonder dat het lokaal hoeft te staan. -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Dit laadt het eigen stylesheet (style.css) met aangepaste stijlen
+     <!-- Dit laadt het eigen stylesheet (style.css) met aangepaste stijlen
          die specifiek zijn voor de GamePlan Scheduler applicatie.
          Dit bestand overschrijft of vult de Bootstrap-stijlen aan. -->
-    <link rel="stylesheet" href="style.css">
+     <link rel="stylesheet" href="style.css">
 </head>
 
 <!-- <body> bevat alle zichtbare inhoud van de pagina.
@@ -279,58 +456,58 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <body class="bg-dark text-light">
 
-    <!-- include 'header.php' laadt het header-bestand in.
+     <!-- include 'header.php' laadt het header-bestand in.
          Dit bevat de navigatiebalk (navbar) bovenaan de pagina met links
          naar andere pagina's. Het wordt op elke pagina hergebruikt. -->
-    <?php include 'header.php'; ?>
+     <?php include 'header.php'; ?>
 
-    <!-- <main> is het hoofdinhoudsgebied van de pagina.
+     <!-- <main> is het hoofdinhoudsgebied van de pagina.
          class="container mt-5 pt-5" zijn Bootstrap-klassen:
          - container: centreert de inhoud en geeft het een maximale breedte
          - mt-5: margin-top 5 (3rem/48px ruimte boven het element)
          - pt-5: padding-top 5 (3rem/48px opvulling boven in het element)
          Samen zorgen mt-5 en pt-5 ervoor dat de inhoud niet achter de
          vaste navigatiebalk (fixed navbar) verdwijnt. -->
-    <main class="container mt-5 pt-5">
+     <main class="container mt-5 pt-5">
 
-        <!-- getMessage() haalt een eerder opgeslagen sessiebericht op en toont het.
+          <!-- getMessage() haalt een eerder opgeslagen sessiebericht op en toont het.
              Bijvoorbeeld een succesbericht of foutmelding van een vorige actie.
              echo print het resultaat direct in de HTML. -->
-        <?php echo getMessage(); ?>
+          <?php echo getMessage(); ?>
 
-        <!-- Controleer of de variabele $fout een waarde bevat (niet leeg is).
+          <!-- Controleer of de variabele $fout een waarde bevat (niet leeg is).
              Als $fout gevuld is met een foutmelding, wordt het alert-blok getoond. -->
-        <?php if ($fout): ?>
-            <!-- class="alert alert-danger" zijn Bootstrap-klassen:
+          <?php if ($fout): ?>
+               <!-- class="alert alert-danger" zijn Bootstrap-klassen:
                  - alert: maakt een opvallend meldingsblok met padding en rand
                  - alert-danger: kleurt het blok rood om een fout aan te geven
                  safeEcho() toont de foutmelding op een veilige manier door
                  speciale HTML-tekens te escapen (bijv. < wordt &lt;).
                  Dit voorkomt XSS-aanvallen (Cross-Site Scripting). -->
-            <div class="alert alert-danger"><?php echo safeEcho($fout); ?></div>
-        <?php endif; ?>
-        <!-- endif sluit het if-blok af. Dit is de alternatieve PHP-syntaxis
+               <div class="alert alert-danger"><?php echo safeEcho($fout); ?></div>
+          <?php endif; ?>
+          <!-- endif sluit het if-blok af. Dit is de alternatieve PHP-syntaxis
              die beter leesbaar is wanneer PHP en HTML door elkaar staan. -->
 
-        <!-- <section> groepeert gerelateerde inhoud.
+          <!-- <section> groepeert gerelateerde inhoud.
              class="mb-5" is een Bootstrap-klasse:
              - mb-5: margin-bottom 5 (3rem/48px ruimte onder het element) -->
-        <section class="mb-5">
+          <section class="mb-5">
 
-            <!-- De koptekst van de pagina met een potlood-emoji en de tekst -->
-            <h2>✏️ Evenement Bewerken</h2>
+               <!-- De koptekst van de pagina met een potlood-emoji en de tekst -->
+               <h2>✏️ Evenement Bewerken</h2>
 
-            <!-- class="card" is een Bootstrap-klasse die een kaartcomponent maakt.
+               <!-- class="card" is een Bootstrap-klasse die een kaartcomponent maakt.
                  Een kaart is een container met een rand, schaduw en afgeronde hoeken.
                  Het wordt veel gebruikt om formulieren en content netjes te groeperen. -->
-            <div class="card">
+               <div class="card">
 
-                <!-- class="card-body" is de binnenste container van de kaart.
+                    <!-- class="card-body" is de binnenste container van de kaart.
                      Het voegt padding (opvulling) toe aan de inhoud van de kaart
                      zodat de tekst en velden niet tegen de rand aanzitten. -->
-                <div class="card-body">
+                    <div class="card-body">
 
-                    <!-- <form> maakt een HTML-formulier aan.
+                         <!-- <form> maakt een HTML-formulier aan.
                          method="POST" betekent dat de gegevens via HTTP POST worden
                          verzonden wanneer de gebruiker op "Bijwerken" klikt.
                          POST verbergt de gegevens in de body van het verzoek.
@@ -340,25 +517,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                          onsubmit="return validateEventForm();" roept een JavaScript-
                          functie aan voordat het formulier wordt verzonden. Als de functie
                          false teruggeeft, wordt het verzenden gestopt (client-side validatie). -->
-                    <form method="POST" onsubmit="return validateEventForm();">
+                         <form method="POST" onsubmit="return validateEventForm();">
 
-                        <!-- ============================================================ -->
-                        <!-- VELD 1: EVENEMENT TITEL (vooraf ingevuld)                    -->
-                        <!-- Het value-attribuut vult het veld met de bestaande titel      -->
-                        <!-- ============================================================ -->
+                              <!-- ============================================================ -->
+                              <!-- VELD 1: EVENEMENT TITEL (vooraf ingevuld)                    -->
+                              <!-- Het value-attribuut vult het veld met de bestaande titel      -->
+                              <!-- ============================================================ -->
 
-                        <!-- Evenement titel -->
-                        <!-- class="mb-3" is een Bootstrap-klasse:
+                              <!-- Evenement titel -->
+                              <!-- class="mb-3" is een Bootstrap-klasse:
                              - mb-3: margin-bottom 3 (1rem/16px ruimte onder dit blok)
                              Dit zorgt voor nette verticale ruimte tussen formuliervelden. -->
-                        <div class="mb-3">
+                              <div class="mb-3">
 
-                            <!-- <label> is een tekst-label dat bij het invoerveld hoort.
+                                   <!-- <label> is een tekst-label dat bij het invoerveld hoort.
                                  for="title" koppelt het label aan het veld met id="title".
                                  class="form-label" is een Bootstrap-klasse voor labels. -->
-                            <label for="title" class="form-label">📌 Titel *</label>
+                                   <label for="title" class="form-label">📌 Titel *</label>
 
-                            <!-- <input type="text"> maakt een tekst-invoerveld.
+                                   <!-- <input type="text"> maakt een tekst-invoerveld.
                                  - id="title": uniek ID voor het veld
                                  - name="title": de sleutel voor $_POST['title'] in PHP
                                  - class="form-control": Bootstrap styling met volle breedte
@@ -371,23 +548,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                    Bijv. als de titel 'Game "Night"' is, wordt het veilig weergegeven
                                    als 'Game &quot;Night&quot;' in de HTML, maar de gebruiker ziet
                                    gewoon 'Game "Night"' in het invoerveld. -->
-                            <input type="text" id="title" name="title" class="form-control" required maxlength="100"
-                                value="<?php echo safeEcho($evenement['title']); ?>">
-                        </div>
+                                   <input type="text" id="title" name="title" class="form-control" required
+                                        maxlength="100" value="<?php echo safeEcho($evenement['title']); ?>">
+                              </div>
 
-                        <!-- ============================================================ -->
-                        <!-- VELD 2: DATUM (vooraf ingevuld met bestaande datum)           -->
-                        <!-- Het min-attribuut voorkomt dat datums in het verleden gekozen -->
-                        <!-- worden, het value-attribuut toont de bestaande datum           -->
-                        <!-- ============================================================ -->
+                              <!-- ============================================================ -->
+                              <!-- VELD 2: DATUM (vooraf ingevuld met bestaande datum)           -->
+                              <!-- Het min-attribuut voorkomt dat datums in het verleden gekozen -->
+                              <!-- worden, het value-attribuut toont de bestaande datum           -->
+                              <!-- ============================================================ -->
 
-                        <!-- Datum -->
-                        <div class="mb-3">
+                              <!-- Datum -->
+                              <div class="mb-3">
 
-                            <!-- Label voor het datumveld met een kalender-emoji -->
-                            <label for="date" class="form-label">📆 Datum *</label>
+                                   <!-- Label voor het datumveld met een kalender-emoji -->
+                                   <label for="date" class="form-label">📆 Datum *</label>
 
-                            <!-- <input type="date"> maakt een datumkiezer in de browser.
+                                   <!-- <input type="date"> maakt een datumkiezer in de browser.
                                  - id="date": uniek ID voor het veld
                                  - name="date": de sleutel voor $_POST['date'] in PHP
                                  - class="form-control": Bootstrap styling
@@ -399,21 +576,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                    van het evenement. $evenement['date'] bevat bijv. "2025-12-25".
                                    Hierdoor ziet de gebruiker direct welke datum er nu staat
                                    en kan deze indien nodig wijzigen. -->
-                            <input type="date" id="date" name="date" class="form-control" required
-                                min="<?php echo date('Y-m-d'); ?>" value="<?php echo safeEcho($evenement['date']); ?>">
-                        </div>
+                                   <input type="date" id="date" name="date" class="form-control" required
+                                        min="<?php echo date('Y-m-d'); ?>"
+                                        value="<?php echo safeEcho($evenement['date']); ?>">
+                              </div>
 
-                        <!-- ============================================================ -->
-                        <!-- VELD 3: TIJD (vooraf ingevuld met bestaande tijd)             -->
-                        <!-- ============================================================ -->
+                              <!-- ============================================================ -->
+                              <!-- VELD 3: TIJD (vooraf ingevuld met bestaande tijd)             -->
+                              <!-- ============================================================ -->
 
-                        <!-- Tijd -->
-                        <div class="mb-3">
+                              <!-- Tijd -->
+                              <div class="mb-3">
 
-                            <!-- Label voor het tijdveld met een klok-emoji -->
-                            <label for="time" class="form-label">⏰ Tijd *</label>
+                                   <!-- Label voor het tijdveld met een klok-emoji -->
+                                   <label for="time" class="form-label">⏰ Tijd *</label>
 
-                            <!-- <input type="time"> maakt een tijdkiezer in de browser.
+                                   <!-- <input type="time"> maakt een tijdkiezer in de browser.
                                  - id="time": uniek ID voor het veld
                                  - name="time": de sleutel voor $_POST['time'] in PHP
                                  - class="form-control": Bootstrap styling
@@ -421,23 +599,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                  - value="...": vult het veld vooraf in met de bestaande tijd
                                    van het evenement. $evenement['time'] bevat bijv. "14:30".
                                    De gebruiker ziet direct de huidige tijd en kan deze wijzigen. -->
-                            <input type="time" id="time" name="time" class="form-control" required
-                                value="<?php echo safeEcho($evenement['time']); ?>">
-                        </div>
+                                   <input type="time" id="time" name="time" class="form-control" required
+                                        value="<?php echo safeEcho($evenement['time']); ?>">
+                              </div>
 
-                        <!-- ============================================================ -->
-                        <!-- VELD 4: BESCHRIJVING (vooraf ingevuld met bestaande tekst)   -->
-                        <!-- Bij textarea staat de vooraf ingevulde tekst TUSSEN de tags   -->
-                        <!-- (niet in een value-attribuut zoals bij input)                 -->
-                        <!-- ============================================================ -->
+                              <!-- ============================================================ -->
+                              <!-- VELD 4: BESCHRIJVING (vooraf ingevuld met bestaande tekst)   -->
+                              <!-- Bij textarea staat de vooraf ingevulde tekst TUSSEN de tags   -->
+                              <!-- (niet in een value-attribuut zoals bij input)                 -->
+                              <!-- ============================================================ -->
 
-                        <!-- Beschrijving -->
-                        <div class="mb-3">
+                              <!-- Beschrijving -->
+                              <div class="mb-3">
 
-                            <!-- Label voor het beschrijvingsveld met een potlood-emoji -->
-                            <label for="description" class="form-label">📝 Beschrijving</label>
+                                   <!-- Label voor het beschrijvingsveld met een potlood-emoji -->
+                                   <label for="description" class="form-label">📝 Beschrijving</label>
 
-                            <!-- <textarea> maakt een groter tekstvak voor meerdere regels tekst.
+                                   <!-- <textarea> maakt een groter tekstvak voor meerdere regels tekst.
                                  - id="description": uniek ID voor het veld
                                  - name="description": de sleutel voor $_POST['description'] in PHP
                                  - class="form-control": Bootstrap styling
@@ -449,22 +627,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                  <textarea>TEKST HIER</textarea>
                                  $evenement['description'] bevat de bestaande beschrijving.
                                  safeEcho() escaped speciale tekens voor veiligheid. -->
-                            <textarea id="description" name="description" class="form-control" rows="3"
-                                maxlength="500"><?php echo safeEcho($evenement['description']); ?></textarea>
-                        </div>
+                                   <textarea id="description" name="description" class="form-control" rows="3"
+                                        maxlength="500"><?php echo safeEcho($evenement['description']); ?></textarea>
+                              </div>
 
-                        <!-- ============================================================ -->
-                        <!-- VELD 5: HERINNERING (dropdown met voorgeselecteerde waarde)  -->
-                        <!-- Het 'selected' attribuut bepaalt welke optie actief is        -->
-                        <!-- ============================================================ -->
+                              <!-- ============================================================ -->
+                              <!-- VELD 5: HERINNERING (dropdown met voorgeselecteerde waarde)  -->
+                              <!-- Het 'selected' attribuut bepaalt welke optie actief is        -->
+                              <!-- ============================================================ -->
 
-                        <!-- Herinnering -->
-                        <div class="mb-3">
+                              <!-- Herinnering -->
+                              <div class="mb-3">
 
-                            <!-- Label voor de herinneringsdropdown met een bel-emoji -->
-                            <label for="reminder" class="form-label">🔔 Herinnering</label>
+                                   <!-- Label voor de herinneringsdropdown met een bel-emoji -->
+                                   <label for="reminder" class="form-label">🔔 Herinnering</label>
 
-                            <!-- <select> maakt een keuzelijst (dropdown-menu).
+                                   <!-- <select> maakt een keuzelijst (dropdown-menu).
                                  - id="reminder": uniek ID voor het veld
                                  - name="reminder": de sleutel voor $_POST['reminder'] in PHP
                                  - class="form-select": Bootstrap-klasse speciaal voor dropdown-
@@ -478,49 +656,49 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                  Het HTML-attribuut 'selected' vertelt de browser: "dit is de
                                  optie die standaard geselecteerd moet zijn in de dropdown".
                                  Slechts één optie kan tegelijk 'selected' zijn. -->
-                            <select id="reminder" name="reminder" class="form-select">
+                                   <select id="reminder" name="reminder" class="form-select">
 
-                                <!-- Optie "Geen" (value="none").
+                                        <!-- Optie "Geen" (value="none").
                                      De PHP-code controleert: als $evenement['reminder'] exact
                                      gelijk is aan 'none' (=== doet een stricte vergelijking op
                                      zowel waarde als type), dan wordt 'selected' geprint.
                                      Dit zorgt ervoor dat "Geen" voorgeselecteerd is als het
                                      evenement geen herinnering had. -->
-                                <option value="none" <?php if ($evenement['reminder'] === 'none')
-                                    echo 'selected'; ?>>
-                                    Geen</option>
+                                        <option value="none" <?php if ($evenement['reminder'] === 'none')
+                                             echo 'selected'; ?>>
+                                             Geen</option>
 
-                                <!-- Optie "1 uur ervoor" (value="1_hour").
+                                        <!-- Optie "1 uur ervoor" (value="1_hour").
                                      De PHP-code controleert: als $evenement['reminder'] exact
                                      gelijk is aan '1_hour', dan wordt 'selected' geprint.
                                      Dit zorgt ervoor dat "1 uur ervoor" voorgeselecteerd is
                                      als het evenement een herinnering van 1 uur had. -->
-                                <option value="1_hour" <?php if ($evenement['reminder'] === '1_hour')
-                                    echo 'selected'; ?>>
-                                    1 uur ervoor</option>
+                                        <option value="1_hour" <?php if ($evenement['reminder'] === '1_hour')
+                                             echo 'selected'; ?>>
+                                             1 uur ervoor</option>
 
-                                <!-- Optie "1 dag ervoor" (value="1_day").
+                                        <!-- Optie "1 dag ervoor" (value="1_day").
                                      De PHP-code controleert: als $evenement['reminder'] exact
                                      gelijk is aan '1_day', dan wordt 'selected' geprint.
                                      Dit zorgt ervoor dat "1 dag ervoor" voorgeselecteerd is
                                      als het evenement een herinnering van 1 dag had. -->
-                                <option value="1_day" <?php if ($evenement['reminder'] === '1_day')
-                                    echo 'selected'; ?>>
-                                    1 dag ervoor</option>
-                            </select>
-                        </div>
+                                        <option value="1_day" <?php if ($evenement['reminder'] === '1_day')
+                                             echo 'selected'; ?>>
+                                             1 dag ervoor</option>
+                                   </select>
+                              </div>
 
-                        <!-- ============================================================ -->
-                        <!-- VELD 6: EXTERNE LINK (vooraf ingevuld met bestaande URL)     -->
-                        <!-- ============================================================ -->
+                              <!-- ============================================================ -->
+                              <!-- VELD 6: EXTERNE LINK (vooraf ingevuld met bestaande URL)     -->
+                              <!-- ============================================================ -->
 
-                        <!-- Externe link -->
-                        <div class="mb-3">
+                              <!-- Externe link -->
+                              <div class="mb-3">
 
-                            <!-- Label voor het externe link veld met een ketting-emoji -->
-                            <label for="external_link" class="form-label">🔗 Externe Link</label>
+                                   <!-- Label voor het externe link veld met een ketting-emoji -->
+                                   <label for="external_link" class="form-label">🔗 Externe Link</label>
 
-                            <!-- <input type="url"> maakt een invoerveld speciaal voor URL's.
+                                   <!-- <input type="url"> maakt een invoerveld speciaal voor URL's.
                                  De browser valideert automatisch of het een geldig webadres is.
                                  - id="external_link": uniek ID voor het veld
                                  - name="external_link": de sleutel voor $_POST['external_link'] in PHP
@@ -528,21 +706,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                  - value="...": vult het veld vooraf in met de bestaande externe
                                    link. $evenement['external_link'] bevat bijv. "https://toernooi.nl".
                                    safeEcho() escaped speciale tekens voor veiligheid. -->
-                            <input type="url" id="external_link" name="external_link" class="form-control"
-                                value="<?php echo safeEcho($evenement['external_link']); ?>">
-                        </div>
+                                   <input type="url" id="external_link" name="external_link" class="form-control"
+                                        value="<?php echo safeEcho($evenement['external_link']); ?>">
+                              </div>
 
-                        <!-- ============================================================ -->
-                        <!-- VELD 7: GEDEELD MET (vooraf ingevuld met bestaande namen)    -->
-                        <!-- ============================================================ -->
+                              <!-- ============================================================ -->
+                              <!-- VELD 7: GEDEELD MET (vooraf ingevuld met bestaande namen)    -->
+                              <!-- ============================================================ -->
 
-                        <!-- Gedeeld met -->
-                        <div class="mb-3">
+                              <!-- Gedeeld met -->
+                              <div class="mb-3">
 
-                            <!-- Label voor het deelveld met een ogen-emoji (bekijken) -->
-                            <label for="shared_with_str" class="form-label">👀 Gedeeld Met</label>
+                                   <!-- Label voor het deelveld met een ogen-emoji (bekijken) -->
+                                   <label for="shared_with_str" class="form-label">👀 Gedeeld Met</label>
 
-                            <!-- <input type="text"> maakt een gewoon tekstveld.
+                                   <!-- <input type="text"> maakt een gewoon tekstveld.
                                  - id="shared_with_str": uniek ID voor het veld
                                  - name="shared_with_str": de sleutel voor $_POST['shared_with_str'] in PHP
                                  - class="form-control": Bootstrap styling
@@ -551,66 +729,66 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                    "gebruiker1, gebruiker2". safeEcho() escaped speciale tekens.
                                    De gebruiker ziet direct met wie het evenement nu wordt gedeeld
                                    en kan namen toevoegen of verwijderen. -->
-                            <input type="text" id="shared_with_str" name="shared_with_str" class="form-control"
-                                value="<?php echo safeEcho($evenement['shared_with']); ?>">
+                                   <input type="text" id="shared_with_str" name="shared_with_str" class="form-control"
+                                        value="<?php echo safeEcho($evenement['shared_with']); ?>">
 
-                            <!-- Hint-tekst die uitlegt waarvoor dit veld dient.
+                                   <!-- Hint-tekst die uitlegt waarvoor dit veld dient.
                                  class="text-secondary" maakt de tekst grijs (Bootstrap). -->
-                            <small class="text-secondary">Wie kan dit evenement zien</small>
-                        </div>
+                                   <small class="text-secondary">Wie kan dit evenement zien</small>
+                              </div>
 
-                        <!-- ============================================================ -->
-                        <!-- KNOPPEN: BIJWERKEN EN ANNULEREN                              -->
-                        <!-- ============================================================ -->
+                              <!-- ============================================================ -->
+                              <!-- KNOPPEN: BIJWERKEN EN ANNULEREN                              -->
+                              <!-- ============================================================ -->
 
-                        <!-- <button type="submit"> maakt een verzendknop voor het formulier.
+                              <!-- <button type="submit"> maakt een verzendknop voor het formulier.
                              Als de gebruiker hierop klikt, worden alle formuliergegevens
                              via POST naar dezelfde pagina verzonden.
                              - class="btn btn-primary" zijn Bootstrap-klassen:
                                - btn: basisstijl voor een knop (padding, rand, cursor)
                                - btn-primary: blauwe achtergrondkleur (primaire actie)
                              De diskette-emoji geeft visueel aan dat het een opslaan-actie is. -->
-                        <button type="submit" class="btn btn-primary">💾 Bijwerken</button>
+                              <button type="submit" class="btn btn-primary">💾 Bijwerken</button>
 
-                        <!-- <a> is een hyperlink die er uitziet als een knop dankzij Bootstrap-klassen.
+                              <!-- <a> is een hyperlink die er uitziet als een knop dankzij Bootstrap-klassen.
                              href="index.php" linkt terug naar de hoofdpagina zonder wijzigingen op te slaan.
                              - class="btn btn-secondary" zijn Bootstrap-klassen:
                                - btn: basisstijl voor een knop
                                - btn-secondary: grijze achtergrondkleur (secundaire/neutrale actie)
                              De pijl-emoji geeft visueel aan dat het een "terug" actie is. -->
-                        <a href="index.php" class="btn btn-secondary">↩️ Annuleren</a>
+                              <a href="index.php" class="btn btn-secondary">↩️ Annuleren</a>
 
-                        <!-- </form> sluit het formulier af. Alle invoervelden hierboven
+                              <!-- </form> sluit het formulier af. Alle invoervelden hierboven
                          worden verzameld en samen verstuurd wanneer de submit-knop
                          wordt ingedrukt. -->
-                    </form>
-                </div>
-                <!-- Einde van card-body: de binnenste container van de kaart -->
-            </div>
-            <!-- Einde van card: de kaartcontainer met rand en schaduw -->
-        </section>
-        <!-- Einde van de sectie: het hoofdformuliergebied -->
-    </main>
-    <!-- Einde van main: het hoofdinhoudsgebied van de pagina -->
+                         </form>
+                    </div>
+                    <!-- Einde van card-body: de binnenste container van de kaart -->
+               </div>
+               <!-- Einde van card: de kaartcontainer met rand en schaduw -->
+          </section>
+          <!-- Einde van de sectie: het hoofdformuliergebied -->
+     </main>
+     <!-- Einde van main: het hoofdinhoudsgebied van de pagina -->
 
-    <!-- include 'footer.php' laadt het footer-bestand in.
+     <!-- include 'footer.php' laadt het footer-bestand in.
          Dit bevat de voettekst onderaan de pagina, zoals copyright-informatie.
          Het wordt op elke pagina hergebruikt voor consistentie. -->
-    <?php include 'footer.php'; ?>
+     <?php include 'footer.php'; ?>
 
-    <!-- Dit laadt het Bootstrap JavaScript-bestand via een CDN.
+     <!-- Dit laadt het Bootstrap JavaScript-bestand via een CDN.
          bootstrap.bundle.min.js bevat zowel Bootstrap JS als Popper.js.
          Dit is nodig voor interactieve Bootstrap-componenten zoals
          dropdowns, modals, tooltips en de responsieve navigatiebalk.
          Het .min in de bestandsnaam betekent dat het bestand is verkleind
          (minified) voor snellere laadtijden. -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Dit laadt het eigen JavaScript-bestand (script.js) van de applicatie.
+     <!-- Dit laadt het eigen JavaScript-bestand (script.js) van de applicatie.
          Dit bevat aangepaste functies zoals validateEventForm() die wordt
          aangeroepen bij het verzenden van het formulier (onsubmit).
          Het staat onder het Bootstrap-script zodat Bootstrap eerst wordt geladen. -->
-    <script src="script.js"></script>
+     <script src="script.js"></script>
 </body>
 <!-- Einde van body: alle zichtbare inhoud van de pagina -->
 

@@ -3,30 +3,192 @@
  * ==========================================================================
  * ADD_SCHEDULE.PHP - SCHEMA TOEVOEGEN PAGINA
  * ==========================================================================
- * Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
+ * Bestandsnaam : add_schedule.php
+ * Auteur       : Harsha Kanaparthi
+ * Studentnummer: 2195344
+ * Opleiding    : MBO-4 Software Developer (Crebo 25998)
+ * Datum        : 30-09-2025
+ * Versie       : 1.0
+ * PHP-versie   : 8.1+
+ * Encoding     : UTF-8
  *
- * Deze pagina laat gebruikers gaming speelschema's toevoegen.
- * Gebruikers kunnen spel, datum, tijd en meespelende vrienden opgeven.
- * Bevat validatie voor BUG FIX #1001 (spaties) en #1004 (datums).
+ * ==========================================================================
+ * BESCHRIJVING
+ * ==========================================================================
+ * Deze pagina laat ingelogde gebruikers gaming speelschema's toevoegen.
+ * Een speelschema bevat informatie over wanneer en wat er gespeeld wordt:
+ * - Welk spel (bijv. Fortnite, Rocket League, Valorant)
+ * - Op welke datum en tijd
+ * - Wie er meespelen (meespelende vrienden)
+ * - Wie het schema mogen bekijken (gedeeld met)
  *
- * Gebruikersverhaal: "Deel speelschema's met vrienden in een kalender"
+ * Na het succesvol toevoegen wordt de gebruiker doorgestuurd naar het
+ * dashboard (index.php) waar het nieuwe schema zichtbaar is.
  *
- * HOE DEZE PAGINA WERKT:
- * 1. Eerst wordt gecontroleerd of de gebruiker is ingelogd (sessiebeveiliging).
- * 2. Als het formulier is verzonden (POST-verzoek), worden de velden gelezen.
- * 3. De functie addSchedule() valideert alle invoer en slaat het schema op.
- * 4. Bij succes: doorsturen naar index.php met een succesmelding.
- * 5. Bij fout: het formulier opnieuw tonen met de foutmelding.
+ * Gebruikersverhaal: "Als gamer wil ik speelschema's aanmaken met datum,
+ * tijd en meespelende vrienden, zodat iedereen weet wanneer we gaan spelen."
  *
- * BUG FIX #1001 - SPATIES IN INVOERVELDEN:
- *   Voorheen kon een gebruiker alleen spaties invoeren als speltitel.
- *   Nu wordt de invoer getrimd (trim()) en gecontroleerd of het niet leeg is.
- *   Dit voorkomt dat een schema wordt opgeslagen met een "lege" titel.
+ * ==========================================================================
+ * HOE DEZE PAGINA WERKT (VERZOEK-STROOM / REQUEST FLOW)
+ * ==========================================================================
+ * De pagina kan op twee manieren worden bezocht:
  *
- * BUG FIX #1004 - DATUMS IN HET VERLEDEN:
- *   Voorheen kon een gebruiker een datum in het verleden kiezen.
- *   Nu wordt er een min-attribuut op het datumveld gezet met de datum van vandaag.
- *   Daarnaast valideert de server ook of de datum niet in het verleden ligt.
+ * EERSTE BEZOEK (GET-verzoek):
+ * ┌─────────────────────────────────────────────────────────────────────┐
+ * │ 1. Gebruiker klikt op "Schema Toevoegen" link/knop                 │
+ * │ 2. Browser stuurt GET-verzoek naar add_schedule.php                │
+ * │ 3. PHP controleert sessie-timeout en inlogstatus                   │
+ * │ 4. Niet ingelogd? → Redirect naar login.php                       │
+ * │ 5. Wel ingelogd? → Toon het lege formulier                        │
+ * └─────────────────────────────────────────────────────────────────────┘
+ *
+ * FORMULIER VERZENDING (POST-verzoek):
+ * ┌─────────────────────────────────────────────────────────────────────┐
+ * │ 1. Gebruiker vult formulier in en klikt "Schema Toevoegen"         │
+ * │ 2. JavaScript validateScheduleForm() controleert velden            │
+ * │ 3. Browser stuurt POST-verzoek met formuliergegevens               │
+ * │ 4. PHP haalt 5 velden op via $_POST[]                              │
+ * │ 5. addSchedule() valideert en slaat op in de database              │
+ * │ 6a. SUCCES → setMessage() + redirect naar index.php               │
+ * │ 6b. FOUT → toon foutmelding + toon formulier opnieuw              │
+ * └─────────────────────────────────────────────────────────────────────┘
+ *
+ * ==========================================================================
+ * DATABASE KOPPELING (Schedules tabel)
+ * ==========================================================================
+ * De formuliervelden worden opgeslagen in de "Schedules" tabel:
+ *
+ * ┌──────────────────┬────────────────┬──────────────────────────────────┐
+ * │ Formulierveld    │ DB Kolom       │ Type / Beperking                 │
+ * ├──────────────────┼────────────────┼──────────────────────────────────┤
+ * │ game_title       │ game_title     │ VARCHAR(100), NOT NULL           │
+ * │ date             │ schedule_date  │ DATE, NOT NULL                   │
+ * │ time             │ schedule_time  │ TIME, NOT NULL                   │
+ * │ friends_str      │ friends        │ TEXT, NULL (optioneel)           │
+ * │ shared_with_str  │ shared_with    │ TEXT, NULL (optioneel)           │
+ * │ (sessie)         │ user_id        │ INT, FOREIGN KEY → Users(id)     │
+ * └──────────────────┴────────────────┴──────────────────────────────────┘
+ *
+ * RELATIE: Elk schema hoort bij één gebruiker (user_id → Users.id).
+ * Een gebruiker kan MEERDERE schema's hebben (1:N relatie / one-to-many).
+ *
+ * KOMMA-GESCHEIDEN VELDEN (friends_str en shared_with_str):
+ * De gebruiker voert namen in als komma-gescheiden tekst, bijv. "Jan, Piet".
+ * In addSchedule() wordt dit omgezet:
+ *   explode(',', $string)   → splitst op komma's → ["Jan", " Piet"]
+ *   array_map('trim', ...)  → verwijdert spaties → ["Jan", "Piet"]
+ *   array_filter(...)       → verwijdert lege waarden
+ *   implode(',', ...)       → voegt samen voor opslag → "Jan,Piet"
+ *
+ * ==========================================================================
+ * BEVEILIGING (Security)
+ * ==========================================================================
+ * 1. SESSIE-CONTROLE: isLoggedIn() voorkomt ongeautoriseerde toegang
+ *    (OWASP: Broken Access Control - A01:2021)
+ *
+ * 2. SESSIE-TIMEOUT: checkSessionTimeout() beëindigt inactieve sessies
+ *    om sessie-kaping te voorkomen (session hijacking)
+ *
+ * 3. SQL-INJECTIE PREVENTIE: addSchedule() gebruikt PDO prepared statements
+ *    met parametergebonden queries (?) (OWASP: Injection - A03:2021)
+ *
+ * 4. XSS PREVENTIE: safeEcho() escaped HTML-tekens via htmlspecialchars()
+ *    zodat kwaadaardige scripts niet worden uitgevoerd (OWASP: XSS - A07:2017)
+ *
+ * 5. CLIENT-SIDE VALIDATIE: validateScheduleForm() in script.js controleert
+ *    velden VOOR verzending (snelle feedback voor de gebruiker)
+ *
+ * 6. SERVER-SIDE VALIDATIE: addSchedule() in functions.php controleert velden
+ *    OPNIEUW op de server (client-side validatie kan worden omzeild)
+ *
+ * 7. DUBBELE VALIDATIE (defense in depth): Zowel client-side als server-side
+ *    validatie is aanwezig. Als een aanvaller JavaScript uitschakelt of
+ *    de browser-validatie omzeilt, vangt de server het alsnog op.
+ *
+ * ==========================================================================
+ * BUGFIXES IN DIT BESTAND
+ * ==========================================================================
+ * BUG #1001 - Lege spaties als speltitel geaccepteerd
+ *   Probleem : Een titel met alleen spaties ("   ") werd geaccepteerd
+ *   Oorzaak  : trim() werd niet gebruikt bij de validatie
+ *   Oplossing: trim() + controle op lege string na trimming
+ *   Locatie  : addSchedule() in functions.php + validateScheduleForm() in script.js
+ *   Impact   : Formulierveld "Speltitel" + klein-tekst waarschuwing
+ *
+ * BUG #1004 - Datums in het verleden werden geaccepteerd
+ *   Probleem : Gebruikers konden schema's met een datum in het verleden maken
+ *   Oorzaak  : Er was geen datumvalidatie (niet client-side, niet server-side)
+ *   Oplossing: min-attribuut op <input type="date"> + server-side datumcontrole
+ *   Locatie  : min="<?php echo date('Y-m-d'); ?>" in formulier + addSchedule()
+ *   Impact   : Datumveld grijs vóór vandaag + server-side tijdvergelijking
+ *
+ * ==========================================================================
+ * BESTANDSSTRUCTUUR
+ * ==========================================================================
+ * PHP-GEDEELTE (Server-side logica):
+ *   - functions.php inladen (require_once)
+ *   - Sessie-timeout controleren (checkSessionTimeout)
+ *   - Inlogstatus controleren + redirect naar login.php
+ *   - Gebruikers-ID ophalen (getUserId)
+ *   - Foutvariabele initialiseren ($fout = '')
+ *   - POST-verzoek verwerken: 5 velden ophalen, addSchedule(), redirect of fout
+ *
+ * HTML-GEDEELTE (Client-side weergave):
+ *   - DOCTYPE, html, head (meta, title, Bootstrap CSS, eigen CSS)
+ *   - Body met donker thema (bg-dark text-light)
+ *   - Header navigatiebalk (include header.php)
+ *   - Main container met sessie/foutmeldingen
+ *   - Formulier met 5 velden in een Bootstrap card
+ *   - Submit + Annuleer knoppen
+ *   - Footer (include footer.php)
+ *   - Bootstrap JS + eigen JS (script.js)
+ *
+ * ==========================================================================
+ * VERSCHIL MET ADD_EVENT.PHP
+ * ==========================================================================
+ * add_schedule.php en add_event.php lijken op elkaar, maar hebben
+ * VERSCHILLENDE doelen en velden:
+ *
+ * ┌────────────────────────┬─────────────────────┬─────────────────────┐
+ * │ Eigenschap             │ add_schedule.php     │ add_event.php       │
+ * ├────────────────────────┼─────────────────────┼─────────────────────┤
+ * │ Doel                   │ Speelafspraak maken  │ Evenement plannen   │
+ * │ Verplichte velden      │ 3 (spel, datum, tijd)│ 3 (titel, datum, t) │
+ * │ Optionele velden       │ 2 (vrienden, delen)  │ 4 (beschr, herin,  │
+ * │                        │                     │    link, delen)     │
+ * │ Totaal velden          │ 5                   │ 7                   │
+ * │ Heeft beschrijving     │ Nee                 │ Ja (textarea)       │
+ * │ Heeft herinnering      │ Nee                 │ Ja (dropdown)       │
+ * │ Heeft externe link     │ Nee                 │ Ja (URL-veld)       │
+ * │ Heeft meespelers       │ Ja (friends_str)    │ Nee                 │
+ * │ JS validatiefunctie    │ validateScheduleForm│ validateEventForm   │
+ * │ PHP opslagfunctie      │ addSchedule()       │ addEvent()          │
+ * │ Redirect na succes     │ index.php           │ index.php           │
+ * └────────────────────────┴─────────────────────┴─────────────────────┘
+ *
+ * ==========================================================================
+ * GEBRUIKTE BESTANDEN
+ * ==========================================================================
+ * - functions.php  : PHP helperfuncties (addSchedule, isLoggedIn, etc.)
+ * - header.php     : Navigatiebalk (wordt ge-include)
+ * - footer.php     : Voettekst (wordt ge-include)
+ * - style.css      : Eigen CSS-stijlen (donker gaming thema)
+ * - script.js      : JavaScript validatie (validateScheduleForm)
+ * - Bootstrap 5.3.3: CSS + JS framework via CDN
+ *
+ * ==========================================================================
+ * PHP CONCEPTEN GEBRUIKT IN DIT BESTAND
+ * ==========================================================================
+ * - require_once      : Bestand laden (slechts één keer, fatale fout als niet gevonden)
+ * - include           : Bestand laden (waarschuwing als niet gevonden)
+ * - $_SERVER           : Superglobale array met server/verzoek informatie
+ * - $_POST             : Superglobale array met POST-formuliergegevens
+ * - ?? (null coalesce) : Standaardwaarde als variabele null/niet-bestaand is
+ * - header()           : HTTP-header sturen voor redirect (302 redirect)
+ * - exit               : Script onmiddellijk stoppen
+ * - echo               : Output naar browser sturen
+ * - if/endif           : Alternatieve syntaxis voor PHP in HTML
+ * - date('Y-m-d')      : Huidige datum formatteren (voor min-attribuut)
  * ==========================================================================
  */
 
@@ -193,12 +355,45 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 <!-- ==========================================================================
      HTML-GEDEELTE: Hier begint de visuele pagina die de gebruiker ziet.
-     Het PHP-gedeelte hierboven heeft de logica afgehandeld; nu volgt de opmaak.
+     ==========================================================================
+     Het PHP-gedeelte hierboven heeft de server-side logica afgehandeld:
+     - Beveiliging (sessie-controle, inlog-check)
+     - Formulierverwerking (POST-gegevens ophalen, opslaan, redirect)
+
+     Nu volgt de HTML die de browser daadwerkelijk ontvangt en toont.
+     De browser ziet NOOIT de PHP-code - alleen het resultaat ervan.
+
+     PAGINA OPBOUW:
+     ┌─────────────────────────────────────────────────────────────────┐
+     │ <!DOCTYPE html>          → HTML5 documenttype declaratie       │
+     │ <html lang="nl">          → Root element, taal: Nederlands     │
+     │   <head>                  → Meta-informatie (onzichtbaar)      │
+     │     <meta charset>        → Tekencodering UTF-8                │
+     │     <meta viewport>       → Mobiele weergave (responsive)      │
+     │     <title>               → Browsertabblad titel               │
+     │     <link bootstrap>      → Bootstrap CSS framework            │
+     │     <link style.css>      → Eigen CSS stijlen                  │
+     │   </head>                                                     │
+     │   <body>                  → Zichtbare pagina-inhoud            │
+     │     include header.php    → Navigatiebalk (hergebruikt)        │
+     │     <main>                → Hoofdinhoud met formulier          │
+     │       getMessage()        → Sessiemelding (succes/fout)        │
+     │       $fout alert         → Formulierfoutmelding               │
+     │       <section>           → Formulier in Bootstrap card        │
+     │         <form> 5 velden   → Spel, datum, tijd, vrienden, delen │
+     │     include footer.php    → Voettekst (hergebruikt)            │
+     │     <script bootstrap>    → Bootstrap JavaScript               │
+     │     <script script.js>    → Eigen JavaScript validatie         │
+     │   </body>                                                     │
+     │ </html>                                                       │
+     └─────────────────────────────────────────────────────────────────┘
      ========================================================================== -->
 
 <!-- DOCTYPE html - Vertelt de browser dat dit een HTML5-document is.
      Zonder deze declaratie kan de browser in "quirks mode" gaan, wat
-     betekent dat de pagina er anders uit kan zien in verschillende browsers. -->
+     betekent dat de pagina er anders uit kan zien in verschillende browsers.
+     Quirks mode is een achterwaarts-compatibele modus die oude HTML (vóór HTML5)
+     probeert te renderen, wat tot onvoorspelbare lay-out kan leiden. -->
 <!DOCTYPE html>
 
 <!-- <html lang="nl"> - Het root-element van de HTML-pagina.
@@ -297,6 +492,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                      Alle formulierelementen zitten hierbinnen. -->
                 <div class="card-body">
 
+                    <!-- ==========================================================
+                         FORMULIER MET 5 INVOERVELDEN
+                         ==========================================================
+                         Dit formulier bevat 5 velden voor het aanmaken van een
+                         gaming speelschema. Het wordt tweemaal gevalideerd:
+
+                         VALIDATIE LAAG 1 - CLIENT-SIDE (JavaScript, in de browser):
+                         → validateScheduleForm() in script.js (Sectie 3)
+                         → Controleert: lege velden, spaties, datum in verleden,
+                           tijdformaat, speciale tekens in vriendenlijst
+                         → Kan worden omzeild door JavaScript uit te schakelen
+
+                         VALIDATIE LAAG 2 - SERVER-SIDE (PHP, op de server):
+                         → addSchedule() in functions.php
+                         → Controleert dezelfde regels OPNIEUW op de server
+                         → Kan NIET worden omzeild door de gebruiker
+
+                         VELDEN OVERZICHT:
+                         ┌────┬─────────────────┬──────────┬──────────┐
+                         │ Nr │ Veld            │ Verplicht│ Type     │
+                         ├────┼─────────────────┼──────────┼──────────┤
+                         │ 1  │ Speltitel       │ Ja *     │ text     │
+                         │ 2  │ Datum           │ Ja *     │ date     │
+                         │ 3  │ Tijd            │ Ja *     │ time     │
+                         │ 4  │ Vrienden        │ Nee      │ text     │
+                         │ 5  │ Gedeeld met     │ Nee      │ text     │
+                         └────┴─────────────────┴──────────┴──────────┘
+                         ========================================================== -->
+
                     <!-- form method="POST" - Het HTML-formulier.
                          method="POST": verstuurt gegevens via het HTTP POST-verzoek.
                              POST is veiliger dan GET omdat de gegevens niet in de URL
@@ -305,10 +529,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                              Voordat het formulier wordt verzonden, wordt de JavaScript
                              functie validateScheduleForm() aangeroepen (vanuit script.js).
                              Als deze functie 'false' retourneert, wordt het formulier
-                             NIET verzonden. Dit is client-side validatie (in de browser)
-                             als extra controle naast de server-side validatie in PHP.
+                             NIET verzonden (return is VERPLICHT: zonder return wordt
+                             de retourwaarde genegeerd en gaat het formulier altijd door).
+                             Dit is client-side validatie (in de browser) als EERSTE
+                             controlelaag vóór de server-side validatie in PHP.
                          Er is geen action-attribuut opgegeven, wat betekent dat het
-                         formulier naar DEZELFDE pagina (add_schedule.php) wordt verzonden. -->
+                         formulier naar DEZELFDE pagina (add_schedule.php) wordt verzonden.
+                         Dit heet een "self-submitting form" (zelf-verzendend formulier). -->
                     <form method="POST" onsubmit="return validateScheduleForm();">
 
                         <!-- ============================================================
@@ -474,65 +701,130 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <small class="text-secondary">Wie kan dit schema zien</small>
                         </div>
 
+                        <!-- ==========================================================
+                             KNOPPEN: TOEVOEGEN EN ANNULEREN
+                             ==========================================================
+                             Het formulier heeft twee knoppen:
+                             1. TOEVOEGEN (submit): Verzendt het formulier via POST
+                             2. ANNULEREN (link): Stuurt de gebruiker terug zonder opslaan
+
+                             UX DESIGN KEUZES:
+                             - De toevoegen-knop is BLAUW (btn-primary) → primaire actie
+                             - De annuleer-knop is GRIJS (btn-secondary) → neutrale actie
+                             - Beide zijn btn-lg (large) → makkelijker te klikken/tikken
+                             - De toevoegen-knop staat LINKS → primaire actie eerst
+                             - Emoji's geven visuele context (➕ = toevoegen, ↩️ = terug)
+                             ========================================================== -->
+
                         <!-- VERZENDKNOP: button type="submit" - Verstuurt het formulier.
                              type="submit" : klikt op deze knop verzendt het formulier naar de server.
+                             De browser voert eerst onsubmit="return validateScheduleForm()" uit.
+                             Als dat true retourneert → formulier wordt verzonden (POST-verzoek).
+                             Als dat false retourneert → formulier wordt NIET verzonden.
                              class="btn btn-primary btn-lg":
-                                 btn         : Bootstrap basisklasse voor knoppen.
-                                 btn-primary : blauwe/hoofdkleur knop (de belangrijkste actie).
+                                 btn         : Bootstrap basisklasse voor knoppen (padding, rand, cursor).
+                                 btn-primary : blauwe achtergrondkleur (de hoofdkleur/primaire actie).
                                  btn-lg      : grote knop (meer padding en groter lettertype).
-                             De tekst "Schema Toevoegen" met +-emoji maakt duidelijk wat de knop doet. -->
+                             De tekst "Schema Toevoegen" met ➕ emoji maakt duidelijk wat de knop doet. -->
                         <button type="submit" class="btn btn-primary btn-lg">➕ Schema Toevoegen</button>
 
                         <!-- ANNULEERLINK: a href="index.php" - Ga terug naar het dashboard.
-                             Dit is een <a> (link) die eruitziet als een knop dankzij de Bootstrap klassen.
+                             Dit is een <a> (hyperlink) die eruitziet als een knop dankzij Bootstrap klassen.
                              class="btn btn-secondary btn-lg":
                                  btn           : Bootstrap basisklasse voor knoppen.
-                                 btn-secondary : grijze knop (minder belangrijke/secundaire actie).
+                                 btn-secondary : grijze achtergrondkleur (secundaire/minder belangrijke actie).
                                  btn-lg        : grote knop.
                              href="index.php" : navigeert naar het dashboard zonder het formulier te verzenden.
-                             Door een link te gebruiken in plaats van een button met type="button",
-                             werkt de annuleerknop ook als JavaScript is uitgeschakeld. -->
+                             VERSCHIL MET <button>: Een <a> link werkt altijd, zelfs als JavaScript is
+                             uitgeschakeld. Een <button type="button"> heeft soms JavaScript nodig om
+                             te navigeren. Door een <a> te gebruiken, is de annuleerknop altijd betrouwbaar. -->
                         <a href="index.php" class="btn btn-secondary btn-lg">↩️ Annuleren</a>
 
-                        <!-- Einde van het formulier. -->
+                        <!-- Einde van het formulier. Alle velden hierboven worden verzameld
+                             en samen verstuurd wanneer de submit-knop wordt ingedrukt. -->
                     </form>
 
-                    <!-- Einde van card-body. -->
+                    <!-- Einde van card-body: de binnenste container van de kaart. -->
                 </div>
 
-                <!-- Einde van de card-container. -->
+                <!-- Einde van card: de kaartcontainer met rand en afgeronde hoeken. -->
             </div>
 
-            <!-- Einde van de sectie. -->
+            <!-- Einde van de sectie: het hoofdformuliergebied. -->
         </section>
 
-        <!-- Einde van het main-element. -->
+        <!-- Einde van het main-element: het hoofdinhoudsgebied van de pagina. -->
     </main>
+
+    <!-- ==========================================================================
+         PAGINA AFSLUITING: Footer, JavaScript bestanden
+         ==========================================================================
+         Onderaan de pagina worden drie onderdelen geladen:
+         1. footer.php   → Voettekst met copyright en links
+         2. bootstrap.js → Bootstrap interactieve componenten (dropdowns, modals)
+         3. script.js    → Eigen JavaScript validatiefuncties
+
+         WAAROM JAVASCRIPT ONDERAAN DE PAGINA?
+         JavaScript-bestanden worden onderaan de <body> geplaatst (niet in <head>)
+         omdat de browser de pagina van boven naar beneden leest en parseert.
+         Als JavaScript in de <head> staat, moet de browser WACHTEN tot het script
+         volledig is gedownload en uitgevoerd voordat de HTML wordt weergegeven.
+         Door scripts onderaan te plaatsen:
+         - Wordt de pagina EERST zichtbaar voor de gebruiker (snellere ervaring)
+         - Zijn alle HTML-elementen al geladen wanneer JavaScript ze probeert te vinden
+         - Dit verbetert de "perceived performance" (waargenomen laadsnelheid)
+         ========================================================================== -->
 
     <!-- include 'footer.php' - Voeg de voettekst (footer) van de pagina in.
          Dit bestand bevat copyright-informatie, links en andere footer-content.
          Net als header.php wordt het in een apart bestand bewaard zodat wijzigingen
-         automatisch op alle pagina's worden doorgevoerd. -->
+         automatisch op alle pagina's worden doorgevoerd (DRY-principe).
+
+         We gebruiken 'include' in plaats van 'require' voor de footer:
+         - include: geeft een WAARSCHUWING als het bestand niet bestaat,
+           maar het script gaat DOOR. De pagina werkt nog, maar zonder footer.
+         - require: geeft een FATALE FOUT en het script STOPT.
+         Voor niet-essentiële onderdelen zoals de footer is include voldoende. -->
     <?php include 'footer.php'; ?>
 
     <!-- Bootstrap 5.3.3 JavaScript Bundle - Laad de Bootstrap JavaScript-bibliotheek.
-         Deze is nodig voor interactieve Bootstrap-componenten zoals:
-         - Dropdown-menu's in de navigatiebalk
-         - Modal-vensters (pop-ups)
-         - Tooltips en popovers
+         Deze is nodig voor INTERACTIEVE Bootstrap-componenten:
+         - Dropdown-menu's (openen/sluiten met klikken)
+         - Modal-vensters (pop-upvensters)
+         - Tooltips en popovers (zwevende informatievensters)
          - De hamburger-menu knop op mobiele apparaten
-         "bundle" betekent dat Popper.js er al bij inbegrepen is (nodig voor dropdowns). -->
+         - Alert-dismissal (meldingen sluiten met kruisknop)
+
+         "bundle" betekent dat Popper.js er al bij INBEGREPEN is.
+         Popper.js is een bibliotheek voor het positioneren van elementen
+         (bijv. dropdown-menu's die onder een knop moeten verschijnen).
+
+         ".min.js" betekent dat het bestand is GEMINIFICEERD:
+         - Alle spaties, enters en commentaar zijn verwijderd
+         - Variabelenamen zijn ingekort (bijv. 'element' → 'e')
+         - Het bestand is ~70% kleiner dan de originele versie
+         - Dit zorgt voor snellere downloads en kortere laadtijden -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- script.js - Ons eigen JavaScript-bestand met projectspecifieke functionaliteit.
-         Bevat onder andere de validateScheduleForm() functie die wordt aangeroepen
-         bij het onsubmit-event van het formulier. Deze functie controleert de invoer
-         aan de client-side (in de browser) voordat het naar de server wordt verzonden. -->
+    <!-- script.js - Ons EIGEN JavaScript-bestand met projectspecifieke functionaliteit.
+         Dit bestand bevat onder andere:
+         - validateScheduleForm(): wordt aangeroepen bij onsubmit van dit formulier
+           → Controleert speltitel niet leeg/alleen-spaties (BUG FIX #1001)
+           → Controleert datum niet in het verleden (BUG FIX #1004)
+           → Controleert tijdformaat (UU:MM)
+           → Controleert vriendenlijst op speciale tekens
+         - initialiseerFuncties(): vloeiend scrollen, verwijder-bevestiging, auto-sluit meldingen
+         - toonMelding(): dynamische meldingen tonen op het scherm
+
+         Het wordt NA Bootstrap geladen, zodat Bootstrap-functies beschikbaar zijn
+         als ons script ze nodig heeft (bijv. voor het sluiten van alerts). -->
     <script src="script.js"></script>
 
-    <!-- Einde van het body-element. -->
+    <!-- Einde van het body-element: alle zichtbare inhoud van de pagina. -->
 </body>
 
-<!-- Einde van het HTML-document. -->
+<!-- Einde van het HTML-document.
+     Alles tussen <html> en </html> vormt het volledige document.
+     De browser kan nu de pagina renderen (weergeven) aan de gebruiker. -->
 
 </html>

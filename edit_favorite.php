@@ -3,15 +3,179 @@
  * ==========================================================================
  * EDIT_FAVORITE.PHP - FAVORIET SPEL BEWERKEN
  * ==========================================================================
- * Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
+ * Bestandsnaam : edit_favorite.php
+ * Auteur       : Harsha Kanaparthi
+ * Studentnummer: 2195344
+ * Opleiding    : MBO-4 Software Developer (Crebo 25998)
+ * Datum        : 30-09-2025
+ * Versie       : 1.0
+ * PHP-versie   : 8.1+
+ * Encoding     : UTF-8
  *
+ * ==========================================================================
+ * BESCHRIJVING
+ * ==========================================================================
  * Bewerk de titel, beschrijving en persoonlijke notitie van een favoriet spel.
+ * Dit is de BEWERKPAGINA voor favoriete spellen - de "Update" in CRUD
+ * (Create, Read, Update, Delete).
  *
  * Deze pagina ontvangt een spel-ID via de URL (bijv. edit_favorite.php?id=3).
  * Het zoekt het bijbehorende favoriete spel op in de database, toont een
  * vooringevuld formulier met de bestaande gegevens, en slaat wijzigingen op
  * na verzending. Na succesvol bijwerken wordt de gebruiker teruggestuurd
  * naar profile.php waar de lijst met favoriete spellen wordt getoond.
+ *
+ * Gebruikersverhaal: "Als ingelogde gebruiker wil ik mijn favoriete spellen
+ * kunnen bewerken, zodat ik de titel, beschrijving of notitie kan aanpassen."
+ *
+ * ==========================================================================
+ * HOE DEZE PAGINA WERKT (VERZOEK-STROOM / REQUEST FLOW)
+ * ==========================================================================
+ *
+ * ┌─────────────────────────────────────────────────────────────────────┐
+ * │ GET-VERZOEK (pagina laden - formulier tonen):                      │
+ * │                                                                     │
+ * │ 1. Gebruiker klikt op "Bewerk" bij een spel op profile.php         │
+ * │ 2. Browser gaat naar: edit_favorite.php?id=3                       │
+ * │ 3. PHP controleert: ingelogd? → ID geldig? → spel gevonden?       │
+ * │ 4. Formulier wordt getoond met bestaande gegevens vooraf ingevuld  │
+ * │                                                                     │
+ * │ POST-VERZOEK (formulier verzenden - wijzigingen opslaan):          │
+ * │                                                                     │
+ * │ 1. Gebruiker wijzigt gegevens en klikt op "Bijwerken"              │
+ * │ 2. Formulier wordt via POST verzonden naar edit_favorite.php?id=3  │
+ * │ 3. PHP leest $_POST en roept updateFavoriteGame() aan              │
+ * │ 4. updateFavoriteGame() valideert en voert UPDATE query uit        │
+ * │ 5. Bij succes → redirect naar profile.php met succesmelding        │
+ * │ 6. Bij fout → formulier opnieuw tonen met foutmelding              │
+ * └─────────────────────────────────────────────────────────────────────┘
+ *
+ * ==========================================================================
+ * DATABASE KOPPELING
+ * ==========================================================================
+ * Dit bestand werkt met de Games tabel en UserGames koppeltabel:
+ *
+ * ┌──────────────┬──────────────┬────────────────────────────────────────┐
+ * │ Kolom        │ Tabel        │ Formulierveld                          │
+ * ├──────────────┼──────────────┼────────────────────────────────────────┤
+ * │ game_id      │ Games (PK)   │ URL-parameter (?id=)                   │
+ * │ user_id      │ UserGames(FK)│ Automatisch via getUserId()            │
+ * │ titel        │ Games        │ Veld 1: Speltitel (verplicht)          │
+ * │ description  │ Games        │ Veld 2: Beschrijving (optioneel)       │
+ * │ note         │ UserGames    │ Veld 3: Persoonlijke notitie (optioneel)│
+ * └──────────────┴──────────────┴────────────────────────────────────────┘
+ *
+ * LET OP: Dit bestand werkt met TWEE tabellen tegelijk:
+ * - Games tabel:     titel en description worden hier opgeslagen
+ * - UserGames tabel: note (persoonlijke notitie) wordt hier opgeslagen
+ * Dit is een N:M (veel-op-veel) relatie via een koppeltabel.
+ *
+ * ==========================================================================
+ * VERSCHIL MET ANDERE EDIT-PAGINA'S
+ * ==========================================================================
+ * ┌──────────────────────┬───────────────┬───────────────┬───────────────┐
+ * │ Eigenschap           │ edit_favorite │ edit_event    │ edit_friend   │
+ * ├──────────────────────┼───────────────┼───────────────┼───────────────┤
+ * │ Bewerkt tabel        │ Games+UserGam │ Events        │ Friends       │
+ * │ Aantal velden        │ 3             │ 7             │ 3             │
+ * │ Heeft dropdown?      │ Nee           │ Ja (reminder) │ Ja (status)   │
+ * │ JS-validatie?        │ Nee           │ Ja            │ Nee           │
+ * │ Redirect naar        │ profile.php   │ index.php     │ add_friend.php│
+ * │ PHP-functie          │ updateFavGame │ editEvent     │ editFriend    │
+ * │ Meerdere tabellen?   │ Ja (2)        │ Nee (1)       │ Nee (1)       │
+ * └──────────────────────┴───────────────┴───────────────┴───────────────┘
+ *
+ * ==========================================================================
+ * BEVEILIGING (Security)
+ * ==========================================================================
+ * 1. INLOG-CONTROLE: isLoggedIn() verifieert geldige sessie.
+ *    Zonder inlog → redirect naar login.php.
+ *    → OWASP A01: Broken Access Control voorkomen
+ *
+ * 2. ID-VALIDATIE: is_numeric($id) verifieert dat het URL-parameter
+ *    een geldig getal is. Voorkomt SQL-injectie en onverwachte invoer.
+ *    → OWASP A03: Injection voorkomen
+ *
+ * 3. EIGENAARSCHAP-CONTROLE: getFavoriteGames($userId) haalt alleen
+ *    spellen op van de ingelogde gebruiker. Andere gebruikers' spellen
+ *    zijn onbereikbaar, zelfs als het ID geraden wordt.
+ *    → OWASP A01: Broken Access Control voorkomen
+ *
+ * 4. SESSIE-TIMEOUT: checkSessionTimeout() beëindigt inactieve sessies.
+ *
+ * 5. XSS-BESCHERMING: safeEcho() escaped alle HTML-speciale tekens in
+ *    de vooraf ingevulde formuliervelden.
+ *    → OWASP A07: Cross-Site Scripting (XSS) voorkomen
+ *
+ * 6. PREPARED STATEMENTS: updateFavoriteGame() gebruikt PDO prepared
+ *    statements. Gegevens worden NOOIT direct in SQL geplakt.
+ *    → OWASP A03: Injection voorkomen
+ *
+ * 7. EXIT NA REDIRECT: Na elke header("Location:") volgt exit;
+ *
+ * ==========================================================================
+ * BESTANDSSTRUCTUUR (26 stappen)
+ * ==========================================================================
+ * PHP-GEDEELTE (STAP 1-9):
+ *   STAP 1:  functions.php laden (require_once)
+ *   STAP 2:  Sessie-timeout controleren
+ *   STAP 3:  Inlog-controle → redirect als niet ingelogd
+ *   STAP 4:  User-ID + Spel-ID ophalen ($_GET)
+ *   STAP 5:  ID-validatie (is_numeric)
+ *   STAP 6:  Spel opzoeken (getFavoriteGames + array_filter + reset)
+ *   STAP 7:  Controle of spel gevonden is
+ *   STAP 8:  Foutvariabele initialiseren
+ *   STAP 9:  POST-verwerking (updateFavoriteGame met 5 parameters)
+ *
+ * HTML-GEDEELTE (STAP 10-26):
+ *   STAP 10-11: DOCTYPE + head (meta, title, CSS)
+ *   STAP 12-13: Body met donker thema + header navigatiebalk
+ *   STAP 14-16: Main container + flash message + foutmelding
+ *   STAP 17-19: Sectie + card + formulier (method="POST")
+ *   STAP 20:    Veld 1 - Speltitel (text, required, maxlength=100)
+ *   STAP 21:    Veld 2 - Beschrijving (textarea, maxlength=500)
+ *   STAP 22:    Veld 3 - Persoonlijke notitie (textarea)
+ *   STAP 23:    Knoppen: Bijwerken + Annuleren
+ *   STAP 24-26: Footer + Bootstrap JS + script.js
+ *
+ * ==========================================================================
+ * GEBRUIKTE BESTANDEN
+ * ==========================================================================
+ * - functions.php  : updateFavoriteGame(), getFavoriteGames(), isLoggedIn(),
+ *                    getUserId(), setMessage(), getMessage(), safeEcho(),
+ *                    checkSessionTimeout()
+ * - header.php     : Navigatiebalk (wordt ge-include)
+ * - footer.php     : Voettekst (wordt ge-include)
+ * - style.css      : Eigen CSS-stijlen (donker gaming thema)
+ * - script.js      : JavaScript functies
+ * - Bootstrap 5.3.3: CSS + JS framework via CDN
+ *
+ * WELKE PAGINA LINKT NAAR DIT BESTAND?
+ * - profile.php    : "Bewerk" knop bij elk favoriet spel
+ *
+ * ==========================================================================
+ * PHP CONCEPTEN GEBRUIKT IN DIT BESTAND
+ * ==========================================================================
+ * - require_once           : Bestand laden (eenmalig)
+ * - $_GET / $_POST         : Superglobale arrays (URL-params / formulierdata)
+ * - ?? (null coalescing)   : Standaardwaarde als variabele null is
+ * - is_numeric()           : Controleert of waarde een geldig getal is
+ * - array_filter()         : Filtert een array op basis van callback-functie
+ * - Anonieme functie       : function($g) use ($id) { ... } (closure)
+ * - use ($id)              : Maakt buitenvariabele beschikbaar in closure
+ * - reset()                : Pakt het eerste element uit een array
+ * - header("Location:")    : HTTP redirect naar andere pagina
+ * - exit                   : Script onmiddellijk stoppen
+ * - $_SERVER['REQUEST_METHOD'] : HTTP-methode detecteren (GET vs POST)
+ *
+ * HTML CONCEPTEN GEBRUIKT IN DIT BESTAND
+ * ==========================================================================
+ * - form method="POST"     : Formulier met POST-verzending
+ * - input type="text"      : Tekst-invoerveld (voor speltitel)
+ * - textarea               : Meerdere regels tekst (beschrijving + notitie)
+ * - value="..."            : Vooraf ingevulde waarden (edit-specifiek)
+ * - required / maxlength   : HTML5 formuliervalidatie-attributen
+ * - Bootstrap: card, form-control, btn, alert, container
  * ==========================================================================
  */
 
@@ -57,8 +221,8 @@ checkSessionTimeout();
  * (ook niet-ingelogde bezoekers) favoriete spellen kunnen bewerken.
  * ============================================================ */
 if (!isLoggedIn()) {
-    header("Location: login.php"); /* Stuur de browser door naar login.php met een HTTP-header */
-    exit; /* Stop onmiddellijk ALLE code hieronder - niets meer uitvoeren */
+     header("Location: login.php"); /* Stuur de browser door naar login.php met een HTTP-header */
+     exit; /* Stop onmiddellijk ALLE code hieronder - niets meer uitvoeren */
 }
 
 /* ============================================================
@@ -100,8 +264,8 @@ $id = $_GET['id'] ?? 0; /* Haal het spel-ID op uit de URL, of gebruik 0 als stan
  * omdat favoriete spellen worden beheerd vanuit de profielpagina.
  * ============================================================ */
 if (!is_numeric($id)) {
-    header("Location: profile.php"); /* Stuur terug naar de profielpagina als het ID ongeldig is */
-    exit; /* Stop alle verdere code op deze pagina */
+     header("Location: profile.php"); /* Stuur terug naar de profielpagina als het ID ongeldig is */
+     exit; /* Stop alle verdere code op deze pagina */
 }
 
 /* ============================================================
@@ -136,7 +300,7 @@ if (!is_numeric($id)) {
 // Haal het favoriete spel op
 $favorieten = getFavoriteGames($userId); /* Haal ALLE favoriete spellen van de gebruiker op */
 $spel = array_filter($favorieten, function ($g) use ($id) { /* Filter de lijst: zoek het spel met het juiste ID */
-    return $g['game_id'] == $id; /* Vergelijk het game_id van elk spel met het ID uit de URL */
+     return $g['game_id'] == $id; /* Vergelijk het game_id van elk spel met het ID uit de URL */
 });
 $spel = reset($spel); /* Haal het eerste (en enige) element uit de gefilterde array */
 
@@ -158,9 +322,9 @@ $spel = reset($spel); /* Haal het eerste (en enige) element uit de gefilterde ar
  *   3. exit; stopt alle verdere code
  * ============================================================ */
 if (!$spel) {
-    setMessage('danger', 'Spel niet gevonden.'); /* Sla een rode foutmelding op in de sessie */
-    header("Location: profile.php"); /* Stuur de browser terug naar de profielpagina */
-    exit; /* Stop alle verdere code op deze pagina */
+     setMessage('danger', 'Spel niet gevonden.'); /* Sla een rode foutmelding op in de sessie */
+     header("Location: profile.php"); /* Stuur de browser terug naar de profielpagina */
+     exit; /* Stop alle verdere code op deze pagina */
 }
 
 /* ============================================================
@@ -185,64 +349,64 @@ $fout = '';
 // Verwerk formulier verzending
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    /* ----------------------------------------------------------
-     * STAP 9a - FORMULIERGEGEVENS OPHALEN
-     * ----------------------------------------------------------
-     * $_POST is een speciale PHP-array die ALLE ingevulde formuliervelden bevat.
-     * We halen DRIE waarden op uit het formulier:
-     *   - 'title'       = de (mogelijk gewijzigde) titel van het spel
-     *   - 'description' = de (mogelijk gewijzigde) beschrijving van het spel
-     *   - 'note'        = de (mogelijk gewijzigde) persoonlijke notitie
-     * De '??' operator geeft een standaardwaarde (lege string '') als het veld ontbreekt.
-     *
-     * VERSCHIL MET EDIT_FRIEND.PHP: hier halen we titel/beschrijving/notitie op
-     * (in plaats van gebruikersnaam/notitie/status bij vrienden).
-     * ---------------------------------------------------------- */
-    $titel = $_POST['title'] ?? ''; /* Haal de (gewijzigde) speltitel op uit het formulier */
-    $beschrijving = $_POST['description'] ?? ''; /* Haal de (gewijzigde) beschrijving op */
-    $notitie = $_POST['note'] ?? ''; /* Haal de (gewijzigde) persoonlijke notitie op */
+     /* ----------------------------------------------------------
+      * STAP 9a - FORMULIERGEGEVENS OPHALEN
+      * ----------------------------------------------------------
+      * $_POST is een speciale PHP-array die ALLE ingevulde formuliervelden bevat.
+      * We halen DRIE waarden op uit het formulier:
+      *   - 'title'       = de (mogelijk gewijzigde) titel van het spel
+      *   - 'description' = de (mogelijk gewijzigde) beschrijving van het spel
+      *   - 'note'        = de (mogelijk gewijzigde) persoonlijke notitie
+      * De '??' operator geeft een standaardwaarde (lege string '') als het veld ontbreekt.
+      *
+      * VERSCHIL MET EDIT_FRIEND.PHP: hier halen we titel/beschrijving/notitie op
+      * (in plaats van gebruikersnaam/notitie/status bij vrienden).
+      * ---------------------------------------------------------- */
+     $titel = $_POST['title'] ?? ''; /* Haal de (gewijzigde) speltitel op uit het formulier */
+     $beschrijving = $_POST['description'] ?? ''; /* Haal de (gewijzigde) beschrijving op */
+     $notitie = $_POST['note'] ?? ''; /* Haal de (gewijzigde) persoonlijke notitie op */
 
-    /* ----------------------------------------------------------
-     * STAP 9b - FAVORIET SPEL BIJWERKEN IN DE DATABASE
-     * ----------------------------------------------------------
-     * updateFavoriteGame() werkt het bestaande favoriete spel bij in de database.
-     * De functie krijgt 5 parameters:
-     *   1. $userId       = het ID van de INGELOGDE gebruiker (beveiligingscheck).
-     *                      Dit zorgt ervoor dat een gebruiker alleen ZIJN EIGEN spellen kan bewerken.
-     *   2. $id           = het game_id van het spel dat bewerkt wordt (uit de URL).
-     *                      Dit vertelt de database WELK spel bijgewerkt moet worden.
-     *   3. $titel        = de nieuwe (of ongewijzigde) titel van het spel
-     *   4. $beschrijving = de nieuwe (of ongewijzigde) beschrijving van het spel
-     *   5. $notitie      = de nieuwe (of ongewijzigde) persoonlijke notitie
-     * De functie RETOURNEERT:
-     *   - Een LEGE string ('')     als het bijwerken GELUKT is (geen fout)
-     *   - Een FOUTMELDING (string) als er iets mis ging (bijv. "Titel is verplicht")
-     * Het resultaat wordt opgeslagen in $fout om later te tonen aan de gebruiker.
-     * ---------------------------------------------------------- */
-    $fout = updateFavoriteGame($userId, $id, $titel, $beschrijving, $notitie);
+     /* ----------------------------------------------------------
+      * STAP 9b - FAVORIET SPEL BIJWERKEN IN DE DATABASE
+      * ----------------------------------------------------------
+      * updateFavoriteGame() werkt het bestaande favoriete spel bij in de database.
+      * De functie krijgt 5 parameters:
+      *   1. $userId       = het ID van de INGELOGDE gebruiker (beveiligingscheck).
+      *                      Dit zorgt ervoor dat een gebruiker alleen ZIJN EIGEN spellen kan bewerken.
+      *   2. $id           = het game_id van het spel dat bewerkt wordt (uit de URL).
+      *                      Dit vertelt de database WELK spel bijgewerkt moet worden.
+      *   3. $titel        = de nieuwe (of ongewijzigde) titel van het spel
+      *   4. $beschrijving = de nieuwe (of ongewijzigde) beschrijving van het spel
+      *   5. $notitie      = de nieuwe (of ongewijzigde) persoonlijke notitie
+      * De functie RETOURNEERT:
+      *   - Een LEGE string ('')     als het bijwerken GELUKT is (geen fout)
+      *   - Een FOUTMELDING (string) als er iets mis ging (bijv. "Titel is verplicht")
+      * Het resultaat wordt opgeslagen in $fout om later te tonen aan de gebruiker.
+      * ---------------------------------------------------------- */
+     $fout = updateFavoriteGame($userId, $id, $titel, $beschrijving, $notitie);
 
-    /* ----------------------------------------------------------
-     * STAP 9c - CONTROLEER OF HET BIJWERKEN GELUKT IS EN REDIRECT NAAR PROFILE.PHP
-     * ----------------------------------------------------------
-     * Als $fout LEEG is (geen foutmelding), dan is het spel succesvol bijgewerkt.
-     * '!$fout' betekent: "als $fout NIET waar is" (een lege string is 'niet waar' in PHP).
-     * Bij succes:
-     *   1. setMessage('success', 'Spel bijgewerkt!') slaat een SUCCESMELDING op in de sessie.
-     *      De melding wordt als een groene alert getoond op de volgende pagina.
-     *   2. header("Location: profile.php") stuurt de browser door naar de PROFIELPAGINA.
-     *      DIT IS DE REDIRECT NAAR PROFILE.PHP: na het bewerken gaat de gebruiker
-     *      TERUG naar zijn/haar profiel waar de lijst met favoriete spellen staat.
-     *      Dit is ook het PRG-patroon (Post-Redirect-Get) om dubbele verzending te voorkomen.
-     *      BELANGRIJK VERSCHIL MET EDIT_FRIEND.PHP: daar redirecten we naar add_friend.php,
-     *      hier redirecten we naar profile.php, omdat favoriete spellen op het profiel staan.
-     *   3. exit; stopt alle code zodat de redirect correct wordt uitgevoerd.
-     * Als $fout NIET leeg is, wordt de pagina gewoon geladen en toont de foutmelding.
-     * ---------------------------------------------------------- */
-    if (!$fout) {
-        setMessage('success', 'Spel bijgewerkt!'); /* Sla een groene succesmelding op in de sessie */
-        header("Location: profile.php"); /* REDIRECT: stuur de browser terug naar de profielpagina */
-        exit; /* Stop alle verdere code om de redirect correct uit te voeren */
-    }
+     /* ----------------------------------------------------------
+      * STAP 9c - CONTROLEER OF HET BIJWERKEN GELUKT IS EN REDIRECT NAAR PROFILE.PHP
+      * ----------------------------------------------------------
+      * Als $fout LEEG is (geen foutmelding), dan is het spel succesvol bijgewerkt.
+      * '!$fout' betekent: "als $fout NIET waar is" (een lege string is 'niet waar' in PHP).
+      * Bij succes:
+      *   1. setMessage('success', 'Spel bijgewerkt!') slaat een SUCCESMELDING op in de sessie.
+      *      De melding wordt als een groene alert getoond op de volgende pagina.
+      *   2. header("Location: profile.php") stuurt de browser door naar de PROFIELPAGINA.
+      *      DIT IS DE REDIRECT NAAR PROFILE.PHP: na het bewerken gaat de gebruiker
+      *      TERUG naar zijn/haar profiel waar de lijst met favoriete spellen staat.
+      *      Dit is ook het PRG-patroon (Post-Redirect-Get) om dubbele verzending te voorkomen.
+      *      BELANGRIJK VERSCHIL MET EDIT_FRIEND.PHP: daar redirecten we naar add_friend.php,
+      *      hier redirecten we naar profile.php, omdat favoriete spellen op het profiel staan.
+      *   3. exit; stopt alle code zodat de redirect correct wordt uitgevoerd.
+      * Als $fout NIET leeg is, wordt de pagina gewoon geladen en toont de foutmelding.
+      * ---------------------------------------------------------- */
+     if (!$fout) {
+          setMessage('success', 'Spel bijgewerkt!'); /* Sla een groene succesmelding op in de sessie */
+          header("Location: profile.php"); /* REDIRECT: stuur de browser terug naar de profielpagina */
+          exit; /* Stop alle verdere code om de redirect correct uit te voeren */
+     }
 }
 ?>
 <!-- ============================================================
@@ -269,29 +433,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
      ============================================================ -->
 
 <head>
-    <!-- charset="UTF-8" zorgt ervoor dat ALLE tekens correct worden weergegeven.
+     <!-- charset="UTF-8" zorgt ervoor dat ALLE tekens correct worden weergegeven.
          UTF-8 ondersteunt Nederlandse tekens zoals e, i, o, u, en ook emoji's.
          Zonder dit zouden speciale tekens als vreemde symbolen verschijnen. -->
-    <meta charset="UTF-8">
+     <meta charset="UTF-8">
 
-    <!-- viewport meta tag maakt de pagina RESPONSIVE (past zich aan op alle schermformaten).
+     <!-- viewport meta tag maakt de pagina RESPONSIVE (past zich aan op alle schermformaten).
          'width=device-width' = de breedte van de pagina volgt de breedte van het apparaat.
          'initial-scale=1.0' = de pagina wordt niet ingezoomd of uitgezoomd bij het laden.
          Zonder deze tag zou de pagina op een telefoon piepklein worden weergegeven. -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- <title> bepaalt de tekst die verschijnt in het tabblad van de browser.
+     <!-- <title> bepaalt de tekst die verschijnt in het tabblad van de browser.
          De gebruiker ziet "Favoriet Bewerken - GamePlan Scheduler" bovenaan in zijn browsertab. -->
-    <title>Favoriet Bewerken - GamePlan Scheduler</title>
+     <title>Favoriet Bewerken - GamePlan Scheduler</title>
 
-    <!-- Laad Bootstrap 5.3.3 CSS via een CDN (Content Delivery Network).
+     <!-- Laad Bootstrap 5.3.3 CSS via een CDN (Content Delivery Network).
          Bootstrap biedt kant-en-klare stijlen voor knoppen, formulieren, kaarten, en lay-out.
          CDN betekent dat het bestand vanaf een EXTERNE server wordt geladen. -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Laad ons EIGEN CSS-bestand 'style.css' voor het donkere gaming-thema en aangepaste stijlen.
+     <!-- Laad ons EIGEN CSS-bestand 'style.css' voor het donkere gaming-thema en aangepaste stijlen.
          Omdat dit NA Bootstrap wordt geladen, kunnen onze stijlen Bootstrap-stijlen overschrijven. -->
-    <link rel="stylesheet" href="style.css">
+     <link rel="stylesheet" href="style.css">
 </head>
 
 <!-- ============================================================
@@ -308,7 +472,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <body class="bg-dark text-light">
 
-    <!-- ============================================================
+     <!-- ============================================================
          STAP 13 - HEADER (NAVIGATIEBALK) INVOEGEN
          ============================================================
          'include' laadt het bestand 'header.php' in op deze exacte plek.
@@ -317,9 +481,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
          Door de header in een apart bestand te zetten, wordt het hergebruikt op alle pagina's.
          Dit heet het DRY-principe: "Don't Repeat Yourself" (Herhaal Jezelf Niet).
          ============================================================ -->
-    <?php include 'header.php'; ?>
+     <?php include 'header.php'; ?>
 
-    <!-- ============================================================
+     <!-- ============================================================
          STAP 14 - HOOFDINHOUD (MAIN)
          ============================================================
          <main> is een semantisch HTML5-element dat de HOOFDINHOUD van de pagina markeert.
@@ -332,9 +496,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
          - 'pt-5'      = padding-top niveau 5 (3rem = 48px binnenruimte bovenaan).
                          Voegt extra ruimte toe zodat content niet tegen de bovenkant plakt.
          ============================================================ -->
-    <main class="container mt-5 pt-5">
+     <main class="container mt-5 pt-5">
 
-        <!-- ============================================================
+          <!-- ============================================================
              STAP 15 - SUCCESMELDING WEERGEVEN (INDIEN AANWEZIG)
              ============================================================
              getMessage() controleert of er een melding is opgeslagen in de sessie.
@@ -342,9 +506,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
              Als er GEEN melding is, verschijnt er niets.
              De melding wordt na het tonen automatisch gewist uit de sessie.
              ============================================================ -->
-        <?php echo getMessage(); ?>
+          <?php echo getMessage(); ?>
 
-        <!-- ============================================================
+          <!-- ============================================================
              STAP 16 - FOUTMELDING WEERGEVEN (INDIEN AANWEZIG)
              ============================================================
              Als $fout NIET leeg is (formulier verzonden maar er was een fout),
@@ -354,11 +518,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
              - 'alert-danger' = maakt de melding ROOD (voor foutmeldingen)
              safeEcho($fout) toont de foutmelding veilig (XSS-bescherming).
              ============================================================ -->
-        <?php if ($fout): ?>
-            <div class="alert alert-danger"><?php echo safeEcho($fout); ?></div>
-        <?php endif; ?>
+          <?php if ($fout): ?>
+               <div class="alert alert-danger"><?php echo safeEcho($fout); ?></div>
+          <?php endif; ?>
 
-        <!-- ============================================================
+          <!-- ============================================================
              STAP 17 - BEWERKFORMULIER SECTIE
              ============================================================
              <section> is een semantisch HTML5-element dat een logisch deel van de pagina markeert.
@@ -366,23 +530,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
              Bootstrap-klasse:
              - 'mb-5' = margin-bottom niveau 5 (3rem = 48px ruimte onder de sectie).
              ============================================================ -->
-        <section class="mb-5">
+          <section class="mb-5">
 
-            <!-- De koptekst van de sectie met een emoji voor visuele herkenning.
+               <!-- De koptekst van de sectie met een emoji voor visuele herkenning.
                  <h2> is een tweede-niveau koptekst. -->
-            <h2>✏️ Favoriet Spel Bewerken</h2>
+               <h2>✏️ Favoriet Spel Bewerken</h2>
 
-            <!-- ============================================================
+               <!-- ============================================================
                  STAP 18 - BOOTSTRAP CARD (KAART-COMPONENT)
                  ============================================================
                  Bootstrap-klassen:
                  - 'card'      = creert een kaart met een achtergrond, rand, en afgeronde hoeken.
                  - 'card-body' = voegt padding (binnenruimte) toe rondom de inhoud van de kaart.
                  ============================================================ -->
-            <div class="card">
-                <div class="card-body">
+               <div class="card">
+                    <div class="card-body">
 
-                    <!-- ============================================================
+                         <!-- ============================================================
                          STAP 19 - HET BEWERKFORMULIER
                          ============================================================
                          <form method="POST"> maakt een HTML-formulier aan.
@@ -390,9 +554,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                          Zonder 'action' attribuut wordt het formulier verstuurd naar DEZELFDE pagina.
                          Het spel-ID zit al in de URL (?id=...) en wordt door PHP bovenaan opgepakt.
                          ============================================================ -->
-                    <form method="POST">
+                         <form method="POST">
 
-                        <!-- ============================================================
+                              <!-- ============================================================
                              STAP 20 - VOORINGEVULD INVOERVELD: SPELTITEL
                              ============================================================
                              Dit invoerveld is VOORINGEVULD met de huidige titel van het spel.
@@ -423,13 +587,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                              (opgehaald in STAP 6 met array_filter).
                              safeEcho() zorgt voor VEILIGE weergave (XSS-bescherming).
                              ============================================================ -->
-                        <div class="mb-3">
-                            <label for="title" class="form-label">🎮 Speltitel *</label>
-                            <input type="text" id="title" name="title" class="form-control" required maxlength="100"
-                                value="<?php echo safeEcho($spel['titel']); ?>">
-                        </div>
+                              <div class="mb-3">
+                                   <label for="title" class="form-label">🎮 Speltitel *</label>
+                                   <input type="text" id="title" name="title" class="form-control" required
+                                        maxlength="100" value="<?php echo safeEcho($spel['titel']); ?>">
+                              </div>
 
-                        <!-- ============================================================
+                              <!-- ============================================================
                              STAP 21 - VOORINGEVULD TEKSTVAK: BESCHRIJVING
                              ============================================================
                              Dit tekstvak is VOORINGEVULD met de bestaande beschrijving van het spel.
@@ -456,13 +620,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                              <?php echo safeEcho($spel['description']); ?> plaatst de huidige beschrijving
                              uit de database als de standaardwaarde van het tekstvak.
                              ============================================================ -->
-                        <div class="mb-3">
-                            <label for="description" class="form-label">📝 Beschrijving</label>
-                            <textarea id="description" name="description" class="form-control" rows="2"
-                                maxlength="500"><?php echo safeEcho($spel['description']); ?></textarea>
-                        </div>
+                              <div class="mb-3">
+                                   <label for="description" class="form-label">📝 Beschrijving</label>
+                                   <textarea id="description" name="description" class="form-control" rows="2"
+                                        maxlength="500"><?php echo safeEcho($spel['description']); ?></textarea>
+                              </div>
 
-                        <!-- ============================================================
+                              <!-- ============================================================
                              STAP 22 - VOORINGEVULD TEKSTVAK: PERSOONLIJKE NOTITIE
                              ============================================================
                              Dit tekstvak is VOORINGEVULD met de bestaande persoonlijke notitie.
@@ -489,13 +653,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                              <?php echo safeEcho($spel['note']); ?> plaatst de huidige notitie
                              uit de database als de standaardwaarde van het tekstvak.
                              ============================================================ -->
-                        <div class="mb-3">
-                            <label for="note" class="form-label">📌 Notitie</label>
-                            <textarea id="note" name="note" class="form-control"
-                                rows="2"><?php echo safeEcho($spel['note']); ?></textarea>
-                        </div>
+                              <div class="mb-3">
+                                   <label for="note" class="form-label">📌 Notitie</label>
+                                   <textarea id="note" name="note" class="form-control"
+                                        rows="2"><?php echo safeEcho($spel['note']); ?></textarea>
+                              </div>
 
-                        <!-- ============================================================
+                              <!-- ============================================================
                              STAP 23 - ACTIEKNOPPEN: BIJWERKEN EN ANNULEREN
                              ============================================================
                              Twee knoppen naast elkaar:
@@ -520,24 +684,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                              - 'btn-secondary' = maakt de knop GRIJS (secundaire actie, minder opvallend dan blauw).
                                                   Grijs geeft aan dat dit NIET de hoofdactie is.
                              ============================================================ -->
-                        <button type="submit" class="btn btn-primary">💾 Bijwerken</button>
-                        <a href="profile.php" class="btn btn-secondary">↩️ Annuleren</a>
-                    </form>
-                </div>
-            </div>
-        </section>
-    </main>
+                              <button type="submit" class="btn btn-primary">💾 Bijwerken</button>
+                              <a href="profile.php" class="btn btn-secondary">↩️ Annuleren</a>
+                         </form>
+                    </div>
+               </div>
+          </section>
+     </main>
 
-    <!-- ============================================================
+     <!-- ============================================================
          STAP 24 - FOOTER (VOETTEKST) INVOEGEN
          ============================================================
          'include' laadt het bestand 'footer.php' in.
          footer.php bevat de voettekst onderaan de pagina met copyright-informatie.
          Wordt hergebruikt op alle pagina's via het DRY-principe.
          ============================================================ -->
-    <?php include 'footer.php'; ?>
+     <?php include 'footer.php'; ?>
 
-    <!-- ============================================================
+     <!-- ============================================================
          STAP 25 - BOOTSTRAP JAVASCRIPT LADEN
          ============================================================
          Bootstrap JavaScript is nodig voor interactieve componenten zoals
@@ -546,15 +710,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
          '.min.js' = geminificeerd (kleiner bestand, sneller laden).
          Staat ONDERAAN de pagina zodat de HTML eerst wordt geladen.
          ============================================================ -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- ============================================================
+     <!-- ============================================================
          STAP 26 - EIGEN JAVASCRIPT LADEN
          ============================================================
          'script.js' is ons eigen JavaScript-bestand met aangepaste functionaliteit.
          Wordt NA Bootstrap geladen zodat we Bootstrap-functies kunnen gebruiken.
          ============================================================ -->
-    <script src="script.js"></script>
+     <script src="script.js"></script>
 </body>
 
 <!-- Sluit het HTML-document af. Alles tussen <html> en </html> is het volledige document. -->

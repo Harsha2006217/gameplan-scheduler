@@ -3,28 +3,98 @@
  * ==========================================================================
  * INDEX.PHP - DASHBOARD / KALENDER OVERZICHT (HOMEPAGINA)
  * ==========================================================================
- * Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
+ * Bestandsnaam : index.php
+ * Auteur       : Harsha Kanaparthi
+ * Studentnummer: 2195344
+ * Opleiding    : MBO-4 Software Developer (Crebo 25998)
+ * Datum        : 30-09-2025
+ * Versie       : 1.0
+ * PHP-versie   : 8.1+
+ * Encoding     : UTF-8
  *
- * WAT IS DIT BESTAND?
- * -------------------
+ * ==========================================================================
+ * BESCHRIJVING
+ * ==========================================================================
  * Dit is de HOOFDPAGINA (dashboard) van de GamePlan Scheduler.
  * Na het inloggen komt de gebruiker op deze pagina terecht.
- * Het is als een "startscherm" waarop je ALLES kunt zien:
+ * Hier zie je een totaaloverzicht van je gaming leven:
+ *   - Vriendenlijst met online status
+ *   - Favoriete spellen
+ *   - Speelschema's (planning)
+ *   - Evenementen (toernooien, streams)
+ *   - Kalenderweergave (alles gecombineerd)
+ *   - Herinneringen (pop-ups bij aankomende activiteiten)
  *
- * SECTIES OP DEZE PAGINA:
- * 1. Vriendenlijst    = al je gaming vrienden met hun online status
- * 2. Favoriete spellen = spellen die je als favoriet hebt gemarkeerd
- * 3. Speelschema's    = wanneer je gaat gamen (met sorteer opties)
- * 4. Evenementen      = toernooien en streams (met sorteer opties)
- * 5. Kalender         = overzicht van alles in kaartjes
- * 6. Herinneringen    = pop-ups als er iets binnenkort begint
+ * ==========================================================================
+ * STRUCTUUR EN SECTIES
+ * ==========================================================================
+ * ┌──────────────────────┬──────────────────────────────────────────────┐
+ * │ Sectie               │ Functiegebied                                │
+ * ├──────────────────────┼──────────────────────────────────────────────┤
+ * │ 1. Vriendenlijst     │ gaming vrienden, status, acties              │
+ * │ 2. Favoriete spellen │ spellen, notities, acties                    │
+ * │ 3. Speelschema's     │ planning, sorteren, acties                   │
+ * │ 4. Evenementen       │ toernooien, streams, sorteren, acties        │
+ * │ 5. Kalender          │ gecombineerde weergave, kaartjes             │
+ * │ 6. Herinneringen     │ pop-ups, notificaties                        │
+ * └──────────────────────┴──────────────────────────────────────────────┘
  *
- * HOE WERKT DEZE PAGINA?
- * 1. PHP controleert of de gebruiker ingelogd is
- * 2. Als niet ingelogd: doorsturen naar login.php
- * 3. Als wel ingelogd: alle data ophalen uit de database
- * 4. De data wordt getoond in tabellen en kaartjes (HTML)
- * 5. JavaScript toont herinnering pop-ups als dat nodig is
+ * ==========================================================================
+ * REQUEST FLOW (GEBRUIK)
+ * ==========================================================================
+ * ┌─────────────────────────────────────────────────────────────────────┐
+ * │ 1. Pagina laadt: require_once 'functions.php'                      │
+ * │ 2. Sessie timeout en inlogcontrole                                 │
+ * │ 3. Data ophalen: vrienden, favorieten, schema's, evenementen       │
+ * │ 4. Data tonen in tabellen en kaartjes                              │
+ * │ 5. Herinneringen tonen via JavaScript pop-ups                      │
+ * └─────────────────────────────────────────────────────────────────────┘
+ *
+ * ==========================================================================
+ * BEVEILIGING (Security)
+ * ==========================================================================
+ * 1. INLOG-CONTROLE: isLoggedIn() + redirect naar login.php
+ *    → OWASP A01: Broken Access Control voorkomen
+ * 2. SESSIE-TIMEOUT: checkSessionTimeout() beëindigt inactieve sessies
+ * 3. SQL-INJECTIE: ALLE data queries via prepared statements
+ *    → OWASP A03: Injection voorkomen
+ * 4. XSS-BESCHERMING: safeEcho() in ALLE uitvoer
+ *    → OWASP A07: Cross-Site Scripting voorkomen
+ * 5. SORTEREN: sorteeropties via whitelist in getSchedules/getEvents
+ * 6. LOGOUT: logout() vernietigt sessie en redirect
+ *
+ * ==========================================================================
+ * VERGELIJKING MET ANDERE PAGINA'S
+ * ==========================================================================
+ * ┌──────────────────────┬───────────────┬───────────────┬───────────────┐
+ * │ Eigenschap           │ index.php     │ profile.php   │ add_event.php │
+ * ├──────────────────────┼───────────────┼───────────────┼───────────────┤
+ * │ Doel                 │ dashboard     │ favorieten    │ evenement toevoegen │
+ * │ Aantal secties       │ 6             │ 2             │ 1             │
+ * │ Data ophalen         │ alles         │ favorieten    │ geen           │
+ * │ Acties               │ bewerken, verwijderen │ bewerken, verwijderen │ toevoegen │
+ * │ Kalenderweergave     │ ja            │ nee           │ nee            │
+ * │ Herinneringen        │ ja            │ nee           │ nee            │
+ * │ Sessie check         │ ja            │ ja            │ ja             │
+ * │ Security checks      │ ja            │ ja            │ ja             │
+ * └──────────────────────┴───────────────┴───────────────┴───────────────┘
+ *
+ * ==========================================================================
+ * GEBRUIKTE CONCEPTEN
+ * ==========================================================================
+ * PHP:
+ *   - Functies, parameters, return values
+ *   - Prepared statements (PDO)
+ *   - Sessie beheer (session_start, session_destroy)
+ *   - Validatie, soft/hard delete
+ *   - array_filter, foreach, empty()
+ *   - Exception handling
+ *   - Whitelisting
+ * HTML:
+ *   - Tabellen, kaartjes, badges, alerts
+ *   - Bootstrap: container, table, badge, btn, alert, mb-5, mt-5, pt-5
+ *   - Formuliervalidatie via required, maxlength
+ *   - Kalenderweergave via gecombineerde arrays
  * ==========================================================================
  */
 
@@ -88,6 +158,7 @@ if (isset($_GET['logout'])) {
 <html lang="nl">
 
 <!-- HEAD SECTIE: onzichtbare informatie over de pagina -->
+
 <head>
     <!-- charset="UTF-8" = tekencodering zodat alle tekens correct worden weergegeven -->
     <meta charset="UTF-8">
@@ -115,6 +186,7 @@ if (isset($_GET['logout'])) {
 <!-- BODY: het zichtbare deel van de pagina -->
 <!-- bg-dark = donkere achtergrondkleur (Bootstrap klasse) -->
 <!-- text-light = lichte tekstkleur (Bootstrap klasse) -->
+
 <body class="bg-dark text-light">
 
     <!-- HEADER invoegen: de navigatiebalk bovenaan de pagina -->
@@ -175,7 +247,9 @@ if (isset($_GET['logout'])) {
                             <!-- colspan="4" = deze cel neemt 4 kolommen in beslag -->
                             <!-- text-center = tekst gecentreerd -->
                             <!-- text-secondary = grijze tekstkleur -->
-                            <tr><td colspan="4" class="text-center text-secondary">Nog geen vrienden. Voeg er een toe!</td></tr>
+                            <tr>
+                                <td colspan="4" class="text-center text-secondary">Nog geen vrienden. Voeg er een toe!</td>
+                            </tr>
 
                         <?php else: ?>
                             <!-- foreach LOOP: herhaal de code voor ELKE vriend in de lijst -->
@@ -194,7 +268,8 @@ if (isset($_GET['logout'])) {
                                         <!-- Als status 'Online' is: groene badge (bg-success) -->
                                         <!-- Anders: grijze badge (bg-secondary) -->
                                         <!-- De ? : is een ternaire operator (kort als/anders) -->
-                                        <span class="badge <?php echo $vriend['status'] === 'Online' ? 'bg-success' : 'bg-secondary'; ?>">
+                                        <span
+                                            class="badge <?php echo $vriend['status'] === 'Online' ? 'bg-success' : 'bg-secondary'; ?>">
                                             <?php echo safeEcho($vriend['status']); ?>
                                         </span>
                                     </td>
@@ -207,14 +282,18 @@ if (isset($_GET['logout'])) {
                                         <!-- BEWERK KNOP: gaat naar edit_friend.php met het vriend ID -->
                                         <!-- ?id= stuurt het friend_id mee in de URL -->
                                         <!-- btn-sm = kleine knop, btn-warning = gele kleur -->
-                                        <a href="edit_friend.php?id=<?php echo $vriend['friend_id']; ?>" class="btn btn-sm btn-warning">✏️ Bewerken</a>
+                                        <a href="edit_friend.php?id=<?php echo $vriend['friend_id']; ?>"
+                                            class="btn btn-sm btn-warning">✏️ Bewerken</a>
 
                                         <!-- VERWIJDER KNOP: gaat naar delete.php met type en ID -->
                                         <!-- type=friend vertelt delete.php dat het een vriend is -->
                                         <!-- onclick="return confirm(...)" toont een bevestigingsvenster -->
                                         <!-- De gebruiker moet "OK" klikken om echt te verwijderen -->
                                         <!-- btn-danger = rode kleur (gevaar/verwijderen) -->
-                                        <a href="delete.php?type=friend&id=<?php echo $vriend['friend_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Weet je zeker dat je deze vriend wilt verwijderen?');">🗑️ Verwijderen</a>
+                                        <a href="delete.php?type=friend&id=<?php echo $vriend['friend_id']; ?>"
+                                            class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Weet je zeker dat je deze vriend wilt verwijderen?');">🗑️
+                                            Verwijderen</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -252,7 +331,10 @@ if (isset($_GET['logout'])) {
                     <tbody>
                         <!-- Als er geen favoriete spellen zijn, toon een lege melding -->
                         <?php if (empty($favorieten)): ?>
-                            <tr><td colspan="4" class="text-center text-secondary">Nog geen favorieten. Voeg er een toe!</td></tr>
+                            <tr>
+                                <td colspan="4" class="text-center text-secondary">Nog geen favorieten. Voeg er een toe!
+                                </td>
+                            </tr>
                         <?php else: ?>
                             <!-- Loop door elk favoriet spel -->
                             <?php foreach ($favorieten as $spel): ?>
@@ -265,9 +347,12 @@ if (isset($_GET['logout'])) {
                                     <td><?php echo safeEcho($spel['note']); ?></td>
                                     <td>
                                         <!-- Bewerk knop: ga naar edit_favorite.php met het spel ID -->
-                                        <a href="edit_favorite.php?id=<?php echo $spel['game_id']; ?>" class="btn btn-sm btn-warning">✏️ Bewerken</a>
+                                        <a href="edit_favorite.php?id=<?php echo $spel['game_id']; ?>"
+                                            class="btn btn-sm btn-warning">✏️ Bewerken</a>
                                         <!-- Verwijder knop: ga naar delete.php met type=favorite -->
-                                        <a href="delete.php?type=favorite&id=<?php echo $spel['game_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Uit favorieten verwijderen?');">🗑️ Verwijderen</a>
+                                        <a href="delete.php?type=favorite&id=<?php echo $spel['game_id']; ?>"
+                                            class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Uit favorieten verwijderen?');">🗑️ Verwijderen</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -313,7 +398,9 @@ if (isset($_GET['logout'])) {
                         <!-- Als er geen schema's zijn, toon een lege melding -->
                         <?php if (empty($schemas)): ?>
                             <!-- colspan="6" omdat deze tabel 6 kolommen heeft -->
-                            <tr><td colspan="6" class="text-center text-secondary">Nog geen schema's.</td></tr>
+                            <tr>
+                                <td colspan="6" class="text-center text-secondary">Nog geen schema's.</td>
+                            </tr>
                         <?php else: ?>
                             <!-- Loop door elk speelschema -->
                             <?php foreach ($schemas as $schema): ?>
@@ -330,9 +417,12 @@ if (isset($_GET['logout'])) {
                                     <td><?php echo safeEcho($schema['shared_with']); ?></td>
                                     <td>
                                         <!-- Bewerk knop: ga naar edit_schedule.php met het schema ID -->
-                                        <a href="edit_schedule.php?id=<?php echo $schema['schedule_id']; ?>" class="btn btn-sm btn-warning">✏️</a>
+                                        <a href="edit_schedule.php?id=<?php echo $schema['schedule_id']; ?>"
+                                            class="btn btn-sm btn-warning">✏️</a>
                                         <!-- Verwijder knop met bevestiging -->
-                                        <a href="delete.php?type=schedule&id=<?php echo $schema['schedule_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Weet je zeker dat je dit wilt verwijderen?');">🗑️</a>
+                                        <a href="delete.php?type=schedule&id=<?php echo $schema['schedule_id']; ?>"
+                                            class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Weet je zeker dat je dit wilt verwijderen?');">🗑️</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -374,7 +464,9 @@ if (isset($_GET['logout'])) {
                         <!-- Als er geen evenementen zijn, toon een lege melding -->
                         <?php if (empty($evenementen)): ?>
                             <!-- colspan="7" omdat deze tabel 7 kolommen heeft -->
-                            <tr><td colspan="7" class="text-center text-secondary">Nog geen evenementen.</td></tr>
+                            <tr>
+                                <td colspan="7" class="text-center text-secondary">Nog geen evenementen.</td>
+                            </tr>
                         <?php else: ?>
                             <!-- Loop door elk evenement -->
                             <?php foreach ($evenementen as $evenement): ?>
@@ -398,14 +490,18 @@ if (isset($_GET['logout'])) {
                                         <?php if (!empty($evenement['external_link'])): ?>
                                             <!-- target="_blank" = opent de link in een NIEUW tabblad -->
                                             <!-- btn-outline-info = knop met lichtblauwe rand (geen vulling) -->
-                                            <a href="<?php echo safeEcho($evenement['external_link']); ?>" target="_blank" class="btn btn-sm btn-outline-info">🔗 Openen</a>
+                                            <a href="<?php echo safeEcho($evenement['external_link']); ?>" target="_blank"
+                                                class="btn btn-sm btn-outline-info">🔗 Openen</a>
                                         <?php endif; ?>
                                     </td>
                                     <td>
                                         <!-- Bewerk knop: ga naar edit_event.php met het evenement ID -->
-                                        <a href="edit_event.php?id=<?php echo $evenement['event_id']; ?>" class="btn btn-sm btn-warning">✏️</a>
+                                        <a href="edit_event.php?id=<?php echo $evenement['event_id']; ?>"
+                                            class="btn btn-sm btn-warning">✏️</a>
                                         <!-- Verwijder knop met bevestiging -->
-                                        <a href="delete.php?type=event&id=<?php echo $evenement['event_id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Weet je zeker dat je dit wilt verwijderen?');">🗑️</a>
+                                        <a href="delete.php?type=event&id=<?php echo $evenement['event_id']; ?>"
+                                            class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Weet je zeker dat je dit wilt verwijderen?');">🗑️</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -465,20 +561,23 @@ if (isset($_GET['logout'])) {
                                     <!-- Toon beschrijving ALLEEN als die er is (niet leeg) -->
                                     <!-- Afgekort tot 100 tekens met substr() -->
                                     <?php if (!empty($onderdeel['description'])): ?>
-                                        <p class="text-secondary small"><?php echo safeEcho(substr($onderdeel['description'], 0, 100)); ?></p>
+                                        <p class="text-secondary small">
+                                            <?php echo safeEcho(substr($onderdeel['description'], 0, 100)); ?></p>
                                     <?php endif; ?>
 
                                     <!-- Toon herinnering badge ALLEEN als er een herinnering is ingesteld -->
                                     <!-- en als de herinnering niet 'none' (geen) is -->
                                     <?php if (!empty($onderdeel['reminder']) && $onderdeel['reminder'] !== 'none'): ?>
                                         <!-- bg-warning = gele badge, text-dark = donkere tekst op gele achtergrond -->
-                                        <span class="badge bg-warning text-dark">🔔 <?php echo safeEcho($onderdeel['reminder']); ?></span>
+                                        <span class="badge bg-warning text-dark">🔔
+                                            <?php echo safeEcho($onderdeel['reminder']); ?></span>
                                     <?php endif; ?>
 
                                     <!-- Toon externe link knop ALLEEN als er een link is ingevuld -->
                                     <?php if (!empty($onderdeel['external_link'])): ?>
                                         <!-- mt-2 = kleine bovenruimte zodat de knop niet tegen de tekst aan zit -->
-                                        <a href="<?php echo safeEcho($onderdeel['external_link']); ?>" target="_blank" class="btn btn-sm btn-outline-info mt-2">🔗 Link</a>
+                                        <a href="<?php echo safeEcho($onderdeel['external_link']); ?>" target="_blank"
+                                            class="btn btn-sm btn-outline-info mt-2">🔗 Link</a>
                                     <?php endif; ?>
 
                                 </div>
@@ -528,4 +627,5 @@ if (isset($_GET['logout'])) {
         });
     </script>
 </body>
+
 </html>

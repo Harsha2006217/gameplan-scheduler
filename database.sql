@@ -1,10 +1,19 @@
 /* ==========================================================================
    DATABASE.SQL - VOLLEDIGE DATABASE STRUCTUUR VOOR GAMEPLAN SCHEDULER
    ==========================================================================
-   Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
+   Bestandsnaam : database.sql
+   Auteur       : Harsha Kanaparthi
+   Studentnummer: 2195344
+   Opleiding    : MBO-4 Software Developer (Crebo 25998)
+   Datum        : 30-09-2025
+   Versie       : 1.0
+   Database     : MySQL 8.0+ (InnoDB engine)
+   Encoding     : UTF-8 (utf8mb4 met unicode_ci collatie)
+   Tool         : phpMyAdmin via XAMPP Control Panel
 
+   ==========================================================================
    WAT IS DIT BESTAND?
-   -------------------
+   ==========================================================================
    Dit is een SQL-bestand (Structured Query Language = Gestructureerde Vraagtaal).
    SQL is de taal waarmee je met een database praat.
    Een database is als een grote digitale kast met laden (tabellen),
@@ -14,22 +23,186 @@
    Je voert dit bestand uit in phpMyAdmin (een programma om databases te beheren).
    Na het uitvoeren heb je alle tabellen nodig om de applicatie te laten werken.
 
-   WELKE TABELLEN WORDEN AANGEMAAKT?
-   ---------------------------------
-   1. Users       = Alle gebruikers die een account hebben
-   2. Games       = Alle spellen die je als favoriet kunt kiezen
-   3. UserGames   = Koppeling tussen gebruikers en hun favoriete spellen
-   4. Friends     = Gaming vrienden van elke gebruiker
-   5. Schedules   = Speelschema's (wanneer je gaat gamen)
-   6. Events      = Gaming evenementen (toernooien, streams, etc.)
+   ==========================================================================
+   WELKE TABELLEN WORDEN AANGEMAAKT? (6 tabellen)
+   ==========================================================================
+   ┌─────┬─────────────┬─────────────────────────────────────────────────────┐
+   │ Nr  │ Tabelnaam   │ Beschrijving                                        │
+   ├─────┼─────────────┼─────────────────────────────────────────────────────┤
+   │ 1   │ Users       │ Alle gebruikers met account (inlog, wachtwoord)     │
+   │ 2   │ Games       │ Alle spellen die als favoriet gekozen kunnen worden │
+   │ 3   │ UserGames   │ Koppeltabel: welke gebruiker welk spel favoriet heeft│
+   │ 4   │ Friends     │ Gaming vrienden van elke gebruiker                  │
+   │ 5   │ Schedules   │ Speelschema's (wanneer je gaat gamen)               │
+   │ 6   │ Events      │ Gaming evenementen (toernooien, streams, etc.)      │
+   └─────┴─────────────┴─────────────────────────────────────────────────────┘
 
+   ==========================================================================
+   ENTITY-RELATIONSHIP DIAGRAM (ER-diagram)
+   ==========================================================================
+   Een ER-diagram toont de RELATIES (verbindingen) tussen tabellen.
+   Dit is een belangrijk concept bij database-ontwerp.
+
+   ---< = een-op-veel relatie (1 gebruiker heeft VEEL vrienden)
+   >--- = veel-op-een relatie
+   ---<  >--- = veel-op-veel relatie (via koppeltabel)
+
+   ┌──────────┐         ┌──────────────┐         ┌──────────┐
+   │  Users   │────<────│  UserGames   │────>────│  Games   │
+   │          │         │ (koppeltabel)│         │          │
+   │ user_id  │         │ user_id (FK) │         │ game_id  │
+   │ username │         │ game_id (FK) │         │ titel    │
+   │ email    │         │ note         │         │ descript.│
+   │ password │         └──────────────┘         │ deleted  │
+   │ last_act │                                  └──────────┘
+   │ deleted  │                                       │
+   └──────────┘                                       │
+        │                                             │
+        ├────<────┌──────────────┐                    │
+        │         │   Friends    │                    │
+        │         │ friend_id    │                    │
+        │         │ user_id (FK) │                    │
+        │         │ friend_user  │                    │
+        │         │ note, status │                    │
+        │         └──────────────┘                    │
+        │                                             │
+        ├────<────┌──────────────┐────>───────────────┘
+        │         │  Schedules   │
+        │         │ schedule_id  │
+        │         │ user_id (FK) │
+        │         │ game_id (FK) │
+        │         │ date, time   │
+        │         │ friends      │
+        │         │ shared_with  │
+        │         └──────────────┘
+        │
+        └────<────┌──────────────┐
+                  │   Events     │
+                  │ event_id     │
+                  │ user_id (FK) │
+                  │ title, date  │
+                  │ time, desc   │
+                  │ reminder     │
+                  │ ext_link     │
+                  │ shared_with  │
+                  └──────────────┘
+
+   ==========================================================================
+   RELATIE-TYPES (Cardinaliteit)
+   ==========================================================================
+   ┌────────────────────────┬───────────────┬──────────────────────────────┐
+   │ Relatie                │ Type          │ Uitleg                       │
+   ├────────────────────────┼───────────────┼──────────────────────────────┤
+   │ Users ↔ Games          │ N:M (veel)    │ Via koppeltabel UserGames    │
+   │ Users → Friends        │ 1:N (veel)    │ 1 user heeft veel vrienden   │
+   │ Users → Schedules      │ 1:N (veel)    │ 1 user heeft veel schema's   │
+   │ Users → Events         │ 1:N (veel)    │ 1 user heeft veel events     │
+   │ Games → Schedules      │ 1:N (veel)    │ 1 game in veel schema's      │
+   └────────────────────────┴───────────────┴──────────────────────────────┘
+
+   ==========================================================================
+   DATABASE STATISTIEKEN
+   ==========================================================================
+   - Aantal tabellen       : 6
+   - Aantal kolommen totaal: 32
+   - Aantal foreign keys   : 6 (allemaal met ON DELETE CASCADE)
+   - Aantal indexen        : 3 (email, schedule+date, event+date)
+   - Voorbeelddata         : 3 spellen (Fortnite, Minecraft, LoL)
+   - Soft delete tabellen  : 5 van 6 (UserGames heeft geen soft delete)
+
+   ==========================================================================
+   BEVEILIGING IN DE DATABASE
+   ==========================================================================
+   1. WACHTWOORD HASHING: password_hash kolom slaat NOOIT het echte
+      wachtwoord op. Alleen de bcrypt hash ($2y$10$...) wordt opgeslagen.
+      Zelfs als de database gehackt wordt, zijn wachtwoorden onleesbaar.
+      → OWASP A02: Cryptographic Failures voorkomen
+
+   2. SOFT DELETE patroon: deleted_at kolom in 5 tabellen voorkomt
+      permanent dataverlies. Data wordt gemarkeerd als verwijderd,
+      niet echt gewist. Zo kan data hersteld worden bij fouten.
+
+   3. FOREIGN KEY CASCADE: ON DELETE CASCADE zorgt ervoor dat
+      gerelateerde data automatisch wordt opgeruimd wanneer een
+      parent-record wordt verwijderd. Geen "wees-data" (orphan records).
+
+   4. NOT NULL CONSTRAINTS: Verplichte velden hebben NOT NULL,
+      waardoor onvolledige data niet in de database kan komen.
+
+   5. UNIQUE CONSTRAINT: email in Users is UNIQUE, waardoor
+      twee accounts met hetzelfde e-mailadres onmogelijk zijn.
+
+   6. UTF8MB4 ENCODING: Voorkomt tekencodering-aanvallen en
+      ondersteunt alle internationale tekens en emoji's.
+
+   ==========================================================================
+   SQL CONCEPTEN GEBRUIKT IN DIT BESTAND
+   ==========================================================================
+   ┌─────────────────────────┬────────────────────────────────────────────┐
+   │ SQL Concept             │ Uitleg                                     │
+   ├─────────────────────────┼────────────────────────────────────────────┤
+   │ CREATE DATABASE         │ Een nieuwe database aanmaken               │
+   │ CREATE TABLE            │ Een nieuwe tabel aanmaken                  │
+   │ CREATE INDEX            │ Een index aanmaken voor sneller zoeken     │
+   │ INSERT INTO ... VALUES  │ Nieuwe rijen (data) toevoegen aan tabel    │
+   │ IF NOT EXISTS           │ Alleen aanmaken als het nog niet bestaat   │
+   │ USE                     │ Een database selecteren om mee te werken   │
+   │ PRIMARY KEY             │ Unieke identificatie van elke rij          │
+   │ FOREIGN KEY             │ Verwijzing naar een andere tabel           │
+   │ AUTO_INCREMENT          │ Automatisch ophogend nummer (1, 2, 3...)   │
+   │ NOT NULL                │ Veld mag niet leeg zijn (verplicht)        │
+   │ UNIQUE                  │ Waarde mag maar 1x voorkomen in de tabel   │
+   │ DEFAULT                 │ Standaardwaarde als er niets wordt opgeven │
+   │ ON DELETE CASCADE       │ Verwijder gerelateerde data automatisch    │
+   │ TIMESTAMP               │ Datum + tijd waarde                        │
+   │ ON UPDATE CURRENT_STAMP │ Automatisch bijwerken bij wijziging        │
+   │ CHARACTER SET / COLLATE │ Tekencodering en sorteervolgorde instellen │
+   │ ENGINE=InnoDB           │ Database-engine met transactie-ondersteuning│
+   └─────────────────────────┴────────────────────────────────────────────┘
+
+   ==========================================================================
+   DATA TYPES GEBRUIKT IN DIT BESTAND
+   ==========================================================================
+   ┌─────────────────┬──────────┬─────────────────────────────────────────┐
+   │ Data Type       │ Voorbeeld│ Uitleg                                  │
+   ├─────────────────┼──────────┼─────────────────────────────────────────┤
+   │ INT             │ 42       │ Geheel getal (geen decimalen)           │
+   │ VARCHAR(n)      │ "Harsha" │ Tekst van maximaal n tekens             │
+   │ TEXT            │ (lang)   │ Grote tekst tot 65.535 tekens           │
+   │ DATE            │ 2025-10-15│ Alleen datum (jaar-maand-dag)          │
+   │ TIME            │ 20:00:00 │ Alleen tijd (uur:minuut:seconde)        │
+   │ TIMESTAMP       │ (datum+tijd)│ Datum EN tijd samen                  │
+   └─────────────────┴──────────┴─────────────────────────────────────────┘
+
+   ==========================================================================
+   BESTANDSSTRUCTUUR (9 stappen)
+   ==========================================================================
+   Het bestand is opgebouwd in 9 logische stappen:
+
+   STAP 1: Database aanmaken        → CREATE DATABASE gameplan_db
+   STAP 2: Users tabel               → Gebruikers met inlog + soft delete
+   STAP 3: Games tabel               → Beschikbare spellen
+   STAP 4: UserGames koppeltabel     → N:M relatie users-games (favorieten)
+   STAP 5: Friends tabel             → Gaming vrienden per gebruiker
+   STAP 6: Schedules tabel           → Speelschema's met datum/tijd
+   STAP 7: Events tabel              → Evenementen met herinnering/link
+   STAP 8: Indexen aanmaken          → 3 indexen voor snellere queries
+   STAP 9: Voorbeelddata invoegen    → 3 populaire spellen
+
+   ==========================================================================
    HOE GEBRUIK JE DIT BESTAND?
-   ---------------------------
-   1. Open XAMPP en start Apache en MySQL
+   ==========================================================================
+   1. Open XAMPP Control Panel en start Apache en MySQL
    2. Ga naar http://localhost/phpmyadmin in je browser
-   3. Klik op "Importeren" bovenaan
-   4. Selecteer dit bestand (database.sql)
-   5. Klik op "Start" om alles aan te maken
+   3. Klik op "Importeren" in het bovenste menu
+   4. Klik op "Bestand kiezen" en selecteer dit database.sql bestand
+   5. Klik op "Start" onderaan de pagina
+   6. Wacht tot je de melding "Import is succesvol uitgevoerd" ziet
+   7. Ga nu naar http://localhost/gameplan-scheduler/ om de app te gebruiken
+
+   LET OP: Als de database al bestaat, worden de tabellen NIET overschreven
+   (dankzij IF NOT EXISTS). De INSERT voor spellen kan dan wel een fout geven
+   als dezelfde spellen al bestaan. Dit is normaal en geen probleem.
    ========================================================================== */
 
 
@@ -449,7 +622,7 @@ DEFAULT CHARSET=utf8mb4;
 
    FOREIGN KEY:
    - user_id verwijst naar Users (CASCADE: als gebruiker weg, evenement ook weg)
-   -------------------------------------------------------------------------- //
+   -------------------------------------------------------------------------- */
 CREATE TABLE
 IF NOT EXISTS Events
 (

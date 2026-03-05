@@ -344,21 +344,6 @@ Ik gebruik **6 tabellen** om alles netjes op te slaan.
 
 ---
 
-# ❓ 7. Veelgestelde Vragen Examinator (Cheat Sheet)
-
-| Vraag Examinator               | Jouw Antwoord                                                   |
-| ------------------------------ | --------------------------------------------------------------- |
-| Waarom dit project?            | Gamers plannen lastig samen. Deze app lost dat op.              |
-| Hoeveel tijd kostte het?       | 49 uur werken verdeeld over 4 weken.                            |
-| Wat was de grootste uitdaging? | De datum-validatie bug (#1004).                                 |
-| Is het veilig?                 | Ja, 10 beveiligingsmaatregelen zoals versleutelde wachtwoorden. |
-| Wat heb je geleerd?            | Eerder hulp vragen en beter presenteren met demo.               |
-| Waarom PHP?                    | Geleerd op school, stabiel en werkt goed met MySQL.             |
-| Werkt het op mobiel?           | Ja, getest op Samsung S21.                                      |
-| Wat zou je verbeteren?         | E-mail notificaties toevoegen.                                  |
-
----
-
 # 🚀 8. Installatie (Hoe start je het?)
 
 1. Installeer **XAMPP**

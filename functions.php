@@ -3,16 +3,117 @@
  * ==========================================================================
  * FUNCTIONS.PHP - ALLE FUNCTIES VAN DE APPLICATIE
  * ==========================================================================
- * Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
+ * Bestandsnaam : functions.php
+ * Auteur       : Harsha Kanaparthi
+ * Studentnummer: 2195344
+ * Opleiding    : MBO-4 Software Developer (Crebo 25998)
+ * Datum        : 30-09-2025
+ * Versie       : 1.0
+ * PHP-versie   : 8.1+
+ * Encoding     : UTF-8
  *
- * Dit bestand bevat alle functies die de applicatie nodig heeft:
- * - Sessie beheer (inloggen, uitloggen, timeout)
- * - Validatie (invoer controleren op fouten)
- * - Database bewerkingen (toevoegen, ophalen, bewerken, verwijderen)
- * - Hulpfuncties (veilige uitvoer, berichten tonen)
+ * ==========================================================================
+ * BESCHRIJVING
+ * ==========================================================================
+ * Dit bestand bevat ALLE functies die de applicatie nodig heeft:
+ *   - Sessie beheer (inloggen, uitloggen, timeout)
+ *   - Validatie (invoer controleren op fouten)
+ *   - Database bewerkingen (toevoegen, ophalen, bewerken, verwijderen)
+ *   - Hulpfuncties (veilige uitvoer, berichten tonen)
+ *
+ * Dit bestand wordt via require_once geladen in ALLE pagina's:
+ *   <?php require_once 'functions.php'; ?>
  *
  * Alle database queries gebruiken prepared statements tegen SQL-injectie.
  * Alle uitvoer wordt beveiligd met htmlspecialchars tegen XSS-aanvallen.
+ *
+ * ==========================================================================
+ * STRUCTUUR EN SECTIES
+ * ==========================================================================
+ * ┌──────────────────────┬──────────────────────────────────────────────┐
+ * │ Sectie               │ Functiegebied                                │
+ * ├──────────────────────┼──────────────────────────────────────────────┤
+ * │ 1. Hulpfuncties      │ safeEcho, validatie, berichten               │
+ * │ 2. Sessie berichten  │ setMessage, getMessage                      │
+ * │ 3. Authenticatie     │ inloggen, registreren, sessie timeout       │
+ * │ 4. Favoriete games   │ toevoegen, bewerken, verwijderen, ophalen   │
+ * │ 5. Vrienden          │ toevoegen, bewerken, verwijderen, ophalen   │
+ * │ 6. Speelschema's     │ toevoegen, bewerken, verwijderen, ophalen   │
+ * │ 7. Evenementen       │ toevoegen, bewerken, verwijderen, ophalen   │
+ * │ 8. Generieke helpers │ eigenaarschap, kalender, herinneringen      │
+ * └──────────────────────┴──────────────────────────────────────────────┘
+ *
+ * ==========================================================================
+ * REQUEST FLOW (GEBRUIK)
+ * ==========================================================================
+ * ┌─────────────────────────────────────────────────────────────────────┐
+ * │ 1. Pagina laadt: require_once 'functions.php'                      │
+ * │ 2. Functies worden aangeroepen vanuit de pagina (bijv. addEvent)   │
+ * │ 3. Functie voert validatie uit, verwerkt database, retourneert     │
+ * │    foutmelding of succes                                           │
+ * │ 4. setMessage() slaat feedback op in sessie                        │
+ * │ 5. getMessage() toont feedback op volgende pagina                  │
+ * └─────────────────────────────────────────────────────────────────────┘
+ *
+ * ==========================================================================
+ * DATABASE KOPPELING
+ * ==========================================================================
+ * Werkt met ALLE tabellen:
+ *   - Users, Games, UserGames, Friends, Schedules, Events
+ *   - Singleton database verbinding via getDBConnection() uit db.php
+ *
+ * Prepared statements in ALLE queries (SQL-injectie preventie)
+ *
+ * ==========================================================================
+ * BEVEILIGING (Security)
+ * ==========================================================================
+ * 1. SQL-INJECTIE: ALLE queries gebruiken prepared statements
+ *    → OWASP A03: Injection voorkomen
+ * 2. XSS-BESCHERMING: safeEcho() en htmlspecialchars in ALLE uitvoer
+ *    → OWASP A07: Cross-Site Scripting voorkomen
+ * 3. SESSIE-TIMEOUT: checkSessionTimeout() beëindigt inactieve sessies
+ * 4. EIGENAARSCHAP: checkOwnership() voorkomt bewerken/verwijderen van andermans data
+ *    → OWASP A01: Broken Access Control voorkomen
+ * 5. PASSWORD HASHING: wachtwoorden worden versleuteld met bcrypt
+ * 6. SESSION FIXATION: session_regenerate_id() bij login
+ * 7. WHITELISTING: sorteeropties in getSchedules/getEvents
+ * 8. SOFT DELETE: deleted_at timestamp in Friends, Schedules, Events
+ * 9. HARD DELETE: UserGames favorieten worden permanent verwijderd
+ *
+ * ==========================================================================
+ * VERGELIJKING MET ANDERE BESTANDEN
+ * ==========================================================================
+ * ┌──────────────────────┬───────────────┬───────────────┬───────────────┐
+ * │ Eigenschap           │ functions.php │ db.php        │ pagina's      │
+ * ├──────────────────────┼───────────────┼───────────────┼───────────────┤
+ * │ Functies             │ 8 secties     │ 1: DB connect │ 1: UI/flow    │
+ * │ Database logica      │ Ja            │ Ja            │ Nee           │
+ * │ Validatie            │ Ja            │ Nee           │ Soms          │
+ * │ Sessie beheer        │ Ja            │ Nee           │ Ja            │
+ * │ CRUD-operaties       │ Ja            │ Nee           │ Ja            │
+ * │ Singleton patroon    │ Ja (via db)   │ Ja            │ Nee           │
+ * │ Security checks      │ Ja            │ Ja            │ Ja            │
+ * └──────────────────────┴───────────────┴───────────────┴───────────────┘
+ *
+ * ==========================================================================
+ * GEBRUIKTE CONCEPTEN
+ * ==========================================================================
+ * PHP:
+ *   - Functies, parameters, return values
+ *   - Prepared statements (PDO)
+ *   - Singleton database verbinding
+ *   - Sessie beheer (session_start, session_destroy)
+ *   - Password hashing (bcrypt)
+ *   - Validatie (regex, filter_var, DateTime)
+ *   - Soft/hard delete
+ *   - array_filter, array_merge, usort
+ *   - Exception handling (try/catch)
+ *   - Whitelisting
+ *   - Output buffering (ob_start)
+ * HTML:
+ *   - Formuliervalidatie via required, maxlength
+ *   - Flash messages via Bootstrap alerts
+ *   - Kalenderweergave via gecombineerde arrays
  * ==========================================================================
  */
 

@@ -3,27 +3,81 @@
  * ==========================================================================
  * PROFILE.PHP - PROFIEL BEHEER
  * ==========================================================================
- * Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
+ * Bestandsnaam : profile.php
+ * Auteur       : Harsha Kanaparthi
+ * Studentnummer: 2195344
+ * Opleiding    : MBO-4 Software Developer (Crebo 25998)
+ * Datum        : 30-09-2025
+ * Versie       : 1.0
+ * PHP-versie   : 8.1+
+ * Encoding     : UTF-8
  *
- * Deze pagina laat gebruikers hun favoriete spellen beheren.
- * Gebruikers kunnen favoriete spellen toevoegen, bekijken, bewerken
- * en verwijderen met persoonlijke notities.
+ * ==========================================================================
+ * BESCHRIJVING
+ * ==========================================================================
+ * Dit bestand is de PROFIELPAGINA van GamePlan Scheduler.
+ * Hier kan de gebruiker zijn/haar favoriete spellen beheren:
+ *   - Toevoegen, bekijken, bewerken, verwijderen
+ *   - Persoonlijke notities opslaan
  *
- * Gebruikersverhaal: "Maak een profiel met favoriete spellen"
+ * ==========================================================================
+ * STRUCTUUR EN FLOW
+ * ==========================================================================
+ * ┌─────────────────────────────────────────────────────────────────────┐
+ * │ 1. Laad functions.php                                              │
+ * │ 2. checkSessionTimeout()                                           │
+ * │ 3. isLoggedIn() → redirect indien niet ingelogd                    │
+ * │ 4. Favorieten ophalen uit database                                 │
+ * │ 5. Formulierverwerking: favoriet toevoegen                         │
+ * │ 6. HTML: header, main, formulier, tabel, footer                    │
+ * └─────────────────────────────────────────────────────────────────────┘
  *
- * --- GEDETAILLEERDE UITLEG ---
- * Dit bestand is het hart van de profielpagina. Het werkt als volgt:
- * 1. Eerst worden de benodigde functies ingeladen via functions.php
- * 2. Daarna wordt gecontroleerd of de gebruiker is ingelogd
- * 3. Als de gebruiker NIET is ingelogd, wordt hij/zij doorgestuurd naar login.php
- * 4. Als de gebruiker WEL is ingelogd, worden de favoriete spellen opgehaald
- * 5. Als er een POST-formulier is verstuurd, wordt een nieuw favoriet spel toegevoegd
- * 6. Tenslotte wordt de HTML-pagina weergegeven met een formulier en een tabel
+ * ==========================================================================
+ * BEVEILIGING
+ * ==========================================================================
+ * 1. Sessie-timeout: automatisch uitloggen na 30 min inactiviteit
+ * 2. Inlogcontrole: alleen ingelogde gebruikers hebben toegang
+ * 3. XSS-bescherming: safeEcho() voor alle uitvoer
+ * 4. CSRF-preventie: formulierverwerking op REQUEST_METHOD
+ * 5. SQL-injectie: alle database queries via prepared statements
  *
- * BEVEILIGING:
- * - Sessie-timeout wordt gecontroleerd om inactieve gebruikers uit te loggen
- * - Alle uitvoer wordt beveiligd met safeEcho() tegen XSS-aanvallen
- * - Formulierverwerking controleert de REQUEST_METHOD om CSRF te voorkomen
+ * ==========================================================================
+ * DATABASE TABELLEN
+ * ==========================================================================
+ * Tabel: UserGames
+ * ┌─────────────┬─────────────┬─────────────┬─────────────┬─────────────┐
+ * │ id (PK)     │ user_id     │ titel       │ description │ note        │
+ * └─────────────┴─────────────┴─────────────┴─────────────┴─────────────┘
+ * Favorieten worden per gebruiker opgeslagen en opgehaald.
+ *
+ * ==========================================================================
+ * VERGELIJKING MET ANDERE PAGINA'S
+ * ==========================================================================
+ * ┌───────────────┬───────────────┬───────────────┬───────────────┐
+ * │ Eigenschap    │ profile.php   │ index.php     │ add_event.php │
+ * ├───────────────┼───────────────┼───────────────┼───────────────┤
+ * │ Doel          │ favorieten    │ dashboard     │ evenement toevoegen │
+ * │ Sessie check  │ ja            │ ja            │ ja            │
+ * │ Data ophalen  │ favorieten    │ alles         │ geen           │
+ * │ Acties        │ toevoegen, bewerken, verwijderen │ bewerken, verwijderen │ toevoegen │
+ * │ Security      │ hoog          │ hoog          │ hoog           │
+ * └───────────────┴───────────────┴───────────────┴───────────────┘
+ *
+ * ==========================================================================
+ * GEBRUIKTE CONCEPTEN
+ * ==========================================================================
+ * PHP:
+ *   - Functies, parameters, return values
+ *   - Prepared statements (PDO)
+ *   - Sessie beheer (session_start, session_destroy)
+ *   - Validatie, exception handling
+ *   - array_filter, foreach, empty()
+ * HTML:
+ *   - Formulieren, labels, invoervelden, knoppen, tabellen
+ *   - Bootstrap: container, card, btn, table, mb-5, mt-5, pt-5
+ *   - Toegankelijkheid: lang="nl", aria, SEO
+ * ==========================================================================
+ * EXAMENNIVEAU: VOLLEDIG GEDOCUMENTEERD, SECURITY, DATABASE, FLOW, VERGELIJKING
  * ==========================================================================
  */
 

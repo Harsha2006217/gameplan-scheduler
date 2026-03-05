@@ -31,19 +31,17 @@
     --danger: #dc3545;               /* Gevaar rood */
     --warning: #ffc107;              /* Waarschuwing geel */
 
-    /* Glassmorphism effect waarden
-       Glassmorphism = modern ontwerp effect dat eruitziet als matglas
-       Het element lijkt doorzichtig met een vervagde achtergrond erachter */
-    --glass-bg: rgba(255, 255, 255, 0.05);   /* Witte achtergrond met 5% dekking (bijna doorzichtig) */
-    --glass-border: rgba(255, 255, 255, 0.1); /* Witte rand met 10% dekking (subtiele rand) */
-    --glass-blur: 10px;                       /* 10px vervaging van de achtergrond (matglas effect) */
+    /* Glassmorphism effect waarden */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-blur: 10px;
 
     /* Afmetingen en tussenruimte */
-    --header-height: 80px;            /* Hoogte van de bovenste navigatiebalk */
-    --footer-height: 50px;            /* Hoogte van de onderste balk */
-    --button-min-height: 40px;        /* Minimaal 40px voor mobiel (makkelijk aan te tikken) */
-    --border-radius: 12px;            /* Standaard afronding van hoeken */
-    --border-radius-lg: 20px;         /* Grotere afronding voor speciale elementen (bijv. auth-container) */
+    --header-height: 80px;
+    --footer-height: 50px;
+    --button-min-height: 40px;        /* Minimaal 40px voor mobiel */
+    --border-radius: 12px;
+    --border-radius-lg: 20px;
 }
 
 
@@ -51,31 +49,27 @@
    SECTIE 2: BASIS STIJLEN
    ========================================================================== */
 
-/* Reset en basis body styling
-   De * selector selecteert ALLE HTML elementen op de pagina */
+/* Reset en basis body styling */
 * {
-    box-sizing: border-box;       /* Breedte en hoogte INCLUSIEF padding en border berekenen */
-    margin: 0;                    /* Verwijder standaard buitenruimte van alle elementen */
-    padding: 0;                   /* Verwijder standaard binnenruimte van alle elementen */
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-/* Body = het hele zichtbare gedeelte van de webpagina */
 body {
-    /* Achtergrondkleurverloop: diagonaal (135 graden) van donker naar iets lichter en terug */
     background: linear-gradient(135deg, var(--bg-dark) 0%, #0d1421 50%, var(--bg-dark) 100%);
-    background-attachment: fixed;   /* Achtergrond blijft stil staan wanneer je scrollt */
-    color: var(--text-primary);     /* Standaard tekstkleur voor de hele pagina = wit */
-    /* Lettertype: probeert Segoe UI eerst, dan Roboto, dan Arial als reserve */
+    background-attachment: fixed;
+    color: var(--text-primary);
     font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
-    min-height: 100vh;              /* Pagina is minstens 100% van het scherm hoog (vh = viewport hoogte) */
-    padding-top: calc(var(--header-height) + 20px);    /* Ruimte boven voor de vaste header (80px + 20px) */
-    padding-bottom: calc(var(--footer-height) + 30px);  /* Ruimte onder voor de vaste footer (50px + 30px) */
-    line-height: 1.6;              /* Regelafstand: 1.6x de lettergrootte voor betere leesbaarheid */
+    min-height: 100vh;
+    padding-top: calc(var(--header-height) + 20px);    /* Ruimte voor vaste header */
+    padding-bottom: calc(var(--footer-height) + 30px);  /* Ruimte voor vaste footer */
+    line-height: 1.6;
 }
 
-/* html = het allereerste element, bevat alles */
+/* Vloeiend scrollen voor pagina navigatie */
 html {
-    scroll-behavior: smooth;       /* Soepel scrollen in plaats van meteen springen naar een sectie */
+    scroll-behavior: smooth;
 }
 
 
@@ -83,92 +77,75 @@ html {
    SECTIE 3: HEADER STIJLEN
    ========================================================================== */
 
-/* De header (bovenste balk) van de hele website */
 header {
-    /* Kleurverloop van links (blauw) naar rechts (paars) - 90 graden = horizontaal */
     background: linear-gradient(90deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
-    height: var(--header-height);   /* Hoogte van de header = 80px (uit de CSS variabelen) */
-    position: fixed;                /* Vast op het scherm: blijft bovenaan staan bij scrollen */
-    top: 0;                         /* Plak aan de bovenkant van het scherm */
-    left: 0;                        /* Begin links van het scherm */
-    right: 0;                       /* Eindig rechts van het scherm (vult hele breedte) */
-    z-index: 1000;                  /* Z-index: hoe hoger, hoe meer "voor" andere elementen */
-    /* Schaduw onder de header: 4px omlaag, 20px vervaging, zwart met 30% dekking */
+    height: var(--header-height);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    display: flex;                  /* Flexbox layout: maakt het makkelijk om items te positioneren */
-    align-items: center;            /* Centreer de inhoud verticaal in de header */
+    display: flex;
+    align-items: center;
 }
 
-/* De container BINNEN de header (bevat logo + navigatie) */
 header .container {
-    display: flex;                  /* Flexbox layout voor horizontale verdeling */
-    justify-content: space-between; /* Logo links, navigatie rechts (ruimte ertussen) */
-    align-items: center;            /* Verticaal centreren van logo en menu */
-    width: 100%;                    /* Vul de volledige breedte van de header */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
 }
 
-/* De titel/logo tekst in de header */
 header h1 {
-    font-size: 1.5rem;              /* Lettergrootte: 1.5x de standaard rem eenheid */
-    font-weight: 700;               /* Vetgedrukt (700 = bold) */
-    color: white;                   /* Witte tekstkleur */
-    /* Gloeiend neon-effect rond de tekst: cyaan kleur met 50% dekking */
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
     text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-    margin: 0;                      /* Geen extra ruimte rondom de titel */
+    margin: 0;
 }
 
-/* Hover-effect: als je met de muis over de titel beweegt */
 header h1:hover {
-    /* Groter gloei-effect bij hover (20px in plaats van 10px) */
     text-shadow: 0 0 20px var(--accent-cyan);
-    transition: text-shadow 0.3s ease; /* Vloeiende overgang in 0.3 seconden */
+    transition: text-shadow 0.3s ease;
 }
 
-/* Navigatie links in de menubalk
-   .navbar-nav = de navigatie lijst
-   .nav-link = individuele menu links */
+/* Navigatie links */
 .navbar-nav .nav-link {
-    color: white !important;          /* Witte tekst, !important overschrijft Bootstrap standaard */
-    font-weight: 500;                 /* Half-vet lettertype (normaal=400, vet=700) */
-    padding: 10px 15px;               /* Binnenruimte: 10px boven/onder, 15px links/rechts */
-    border-radius: 8px;               /* Afgeronde hoeken van 8 pixels */
-    transition: all 0.3s ease;        /* Vloeiende overgang voor alle veranderingen (0.3 sec) */
-    min-height: var(--button-min-height); /* Minimale hoogte 40px voor mobiele bruikbaarheid */
-    display: flex;                    /* Flexbox om tekst mooi te centreren */
-    align-items: center;              /* Tekst verticaal centreren in de link */
+    color: white !important;
+    font-weight: 500;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    min-height: var(--button-min-height);
+    display: flex;
+    align-items: center;
 }
 
-/* Hover-effect op navigatie links: lichte achtergrond + omhoog bewegen */
 .navbar-nav .nav-link:hover {
-    background: rgba(255, 255, 255, 0.15); /* Wit met 15% dekking als hover-achtergrond */
-    transform: translateY(-2px);           /* Beweeg 2 pixels omhoog voor een zwevend effect */
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
 }
 
-/* Evenement toevoegen knop in de navigatie - groene gradient stijl */
+/* Evenement toevoegen knop - speciale styling */
 .navbar-nav .btn-success {
-    /* Diagonaal kleurverloop (45 graden): groen naar teal/turquoise */
     background: linear-gradient(45deg, var(--success), #20c997);
-    border: none;                     /* Geen rand om de knop */
-    /* Groene schaduw onder de knop voor diepte-effect */
+    border: none;
     box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
 }
 
-/* Hover op de groene knop: omhoog + iets groter + meer schaduw */
 .navbar-nav .btn-success:hover {
-    /* translateY(-2px) = 2px omhoog, scale(1.02) = 2% groter */
     transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5); /* Grotere schaduw bij hover */
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5);
 }
 
-/* Hamburger menu knop voor mobiele weergave (3 horizontale streepjes) */
+/* Hamburger menu voor mobiel */
 .navbar-toggler {
-    border: 2px solid rgba(255, 255, 255, 0.5); /* Halfdoorzichtige witte rand */
-    padding: 8px 12px;               /* Binnenruimte voor de hamburger knop */
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    padding: 8px 12px;
 }
 
-/* Het hamburger icoon zelf: 3 witte horizontale lijnen als SVG afbeelding */
 .navbar-toggler-icon {
-    /* SVG data-URL: tekent 3 horizontale lijnen (op y=7, y=15, y=23) met witte strepen */
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
@@ -177,35 +154,30 @@ header h1:hover {
    SECTIE 4: FOOTER STIJLEN
    ========================================================================== */
 
-/* De footer (onderste balk) van de hele website */
 footer {
-    /* Horizontaal kleurverloop van donkergrijs (#12121a) naar iets lichter (#1a1a25) */
     background: linear-gradient(90deg, var(--bg-secondary) 0%, #1a1a25 100%);
-    height: var(--footer-height);   /* Hoogte = 50px (uit CSS variabelen) */
-    position: fixed;                /* Vast op het scherm: blijft onderaan bij scrollen */
-    bottom: 0;                      /* Plak aan de onderkant van het scherm */
-    left: 0;                        /* Begin links van het scherm */
-    right: 0;                       /* Eindig rechts (vult hele breedte) */
-    z-index: 1000;                  /* Zorg dat footer boven andere elementen zweeft */
-    display: flex;                  /* Flexbox layout voor centreren van inhoud */
-    align-items: center;            /* Inhoud verticaal centreren in de footer */
-    justify-content: center;        /* Inhoud horizontaal centreren in de footer */
-    /* Dunne lijn bovenop de footer met 10% witte dekking */
+    height: var(--footer-height);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-top: 1px solid var(--glass-border);
-    font-size: 0.9rem;              /* Iets kleinere tekst dan standaard */
+    font-size: 0.9rem;
 }
 
-/* Links (a-tags) in de footer */
 footer a {
-    color: var(--accent-cyan);      /* Cyaan/turquoise kleur voor links */
-    text-decoration: none;          /* Geen onderstreping standaard */
-    transition: color 0.3s ease;    /* Kleur verandert vloeiend in 0.3 sec bij hover */
+    color: var(--accent-cyan);
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
 
-/* Hover-effect op footer links */
 footer a:hover {
-    color: white;                   /* Wordt wit bij hover */
-    text-decoration: underline;     /* Onderstreping verschijnt bij hover */
+    color: white;
+    text-decoration: underline;
 }
 
 
@@ -213,43 +185,39 @@ footer a:hover {
    SECTIE 5: HOOFD CONTAINER STIJLEN
    ========================================================================== */
 
-/* Hoofd container: het belangrijkste inhoudsgebied van elke pagina */
 main.container {
-    max-width: 1200px;              /* Maximale breedte: 1200 pixels (niet breder op grote schermen) */
-    width: 90%;                     /* Gebruik 90% van het beschikbare scherm */
-    margin: 0 auto;                 /* Centreer horizontaal: 0 boven/onder, auto links/rechts */
-    padding: 20px;                  /* 20px binnenruimte aan alle kanten */
+    max-width: 1200px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-/* Sectie koppen (h2) in het hoofdgedeelte */
+/* Sectie koppen */
 main h2 {
-    color: var(--text-primary);     /* Witte tekstkleur */
-    font-weight: 600;               /* Semi-vet lettertype */
-    margin-bottom: 20px;            /* 20px ruimte onder de kop */
-    padding-bottom: 10px;           /* 10px binnenruimte onder de tekst */
-    border-bottom: 2px solid var(--accent-blue); /* Blauwe lijn onder de kop */
-    display: flex;                  /* Flexbox: icoon en tekst naast elkaar */
-    align-items: center;            /* Verticaal centreren van icoon en tekst */
-    gap: 10px;                      /* 10px ruimte tussen icoon en tekst */
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--accent-blue);
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-/* Gamepad emoji (🎮) voor elke h2 kop als decoratie
-   ::before = voeg inhoud toe VOOR het element */
 main h2::before {
-    content: '🎮';                  /* Het gamepad emoji als decoratie */
-    font-size: 1.2em;               /* Iets groter dan de tekst (1.2x) */
+    content: '🎮';
+    font-size: 1.2em;
 }
 
-/* Pagina titels (h1) in het hoofdgedeelte */
+/* Pagina titels */
 main h1 {
-    text-align: center;             /* Centreer de tekst horizontaal */
-    font-size: 2.5rem;              /* Grote lettergrootte voor pagina titels */
-    margin-bottom: 30px;            /* 30px ruimte onder de titel */
-    /* Kleurverloop als TEKST kleur (blauw naar cyaan) */
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
     background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
-    -webkit-background-clip: text;  /* Knip de achtergrond op de tekstvorm (Safari/Chrome) */
-    -webkit-text-fill-color: transparent; /* Maak tekstvulling doorzichtig zodat gradient zichtbaar is */
-    background-clip: text;          /* Standaard versie van background-clip voor alle browsers */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 
@@ -259,82 +227,66 @@ main h1 {
    Glassmorfisme effect voor een moderne uitstraling.
    ========================================================================== */
 
-/* Kaart component: gebruikt glassmorphism (doorzichtig glas-effect)
-   .card = Bootstrap kaart element, hier aangepast met glaseffect */
 .card {
-    background: var(--glass-bg);    /* Halfdoorzichtige witte achtergrond (5% dekking) */
-    /* -webkit- prefix: voor oudere Safari/Chrome browsers */
-    -webkit-backdrop-filter: blur(var(--glass-blur)); /* Vervaag de achtergrond achter de kaart (10px) */
-    backdrop-filter: blur(var(--glass-blur));          /* Standaard glasvervaging voor alle browsers */
-    border: 1px solid var(--glass-border);            /* Dunne halfdoorzichtige witte rand */
-    border-radius: var(--border-radius);              /* Afgeronde hoeken (12px) */
-    /* Diepe schaduw: 8px omlaag, 32px vervaging, zwart 30% dekking */
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    /* Animatie: veranderingen in transform en schaduw duren 0.3 seconden */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    overflow: hidden;               /* Verberg inhoud die buiten de kaart valt */
+    overflow: hidden;
 }
 
-/* Hover-effect op kaarten: zweeft omhoog met blauwe gloed */
 .card:hover {
-    transform: translateY(-5px);    /* Beweeg 5 pixels omhoog (zwevend effect) */
-    /* Grotere schaduw met blauwe tint bij hover */
+    transform: translateY(-5px);
     box-shadow: 0 12px 40px rgba(13, 110, 253, 0.2);
 }
 
-/* De inhoud (body) van een kaart */
 .card-body {
-    padding: 20px;                  /* 20px binnenruimte aan alle kanten */
+    padding: 20px;
 }
 
-/* De titel van een kaart */
 .card-title {
-    color: var(--accent-cyan);      /* Cyaan/turquoise kleur voor kaarttitels */
-    font-weight: 600;               /* Semi-vet lettertype */
-    margin-bottom: 15px;            /* 15px ruimte onder de titel */
+    color: var(--accent-cyan);
+    font-weight: 600;
+    margin-bottom: 15px;
 }
 
-/* Tabel styling met donker gaming thema
-   .table-dark = Bootstrap klasse voor donkere tabellen */
+/* Tabel styling met donker thema */
 .table-dark {
-    background: var(--bg-card);     /* Donkergrijze achtergrond (#1a1a25) */
-    border-radius: var(--border-radius); /* Afgeronde hoeken (12px) */
-    overflow: hidden;               /* Voorkom dat inhoud buiten de ronde hoeken valt */
-    border: 1px solid var(--glass-border); /* Dunne halfdoorzichtige rand */
+    background: var(--bg-card);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    border: 1px solid var(--glass-border);
 }
 
-/* Tabel kop (thead) met kleurverloop */
 .table-dark thead {
-    /* Horizontaal kleurverloop: blauw naar paars in de tabelkop */
     background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
 }
 
-/* Individuele kop-cellen (th) in de tabel */
 .table-dark thead th {
-    color: white;                   /* Witte tekst in de kop */
-    font-weight: 600;               /* Semi-vet lettertype */
-    padding: 15px;                  /* 15px binnenruimte */
-    border: none;                   /* Geen randen tussen kop-cellen */
-    text-transform: uppercase;      /* HOOFDLETTERS voor alle koptekst */
-    font-size: 0.85rem;             /* Iets kleinere tekst */
-    letter-spacing: 0.5px;          /* Extra ruimte tussen letters voor leesbaarheid */
+    color: white;
+    font-weight: 600;
+    padding: 15px;
+    border: none;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
 }
 
-/* Tabel rijen in de body: hover animatie */
 .table-dark tbody tr {
-    transition: background 0.2s ease; /* Achtergrond verandert vloeiend bij hover */
+    transition: background 0.2s ease;
 }
 
-/* Hover op een tabel rij: lichtblauwe achtergrond */
 .table-dark tbody tr:hover {
-    background: rgba(13, 110, 253, 0.1); /* Blauw met 10% dekking als highlight */
+    background: rgba(13, 110, 253, 0.1);
 }
 
-/* Individuele data-cellen (td) in de tabel */
 .table-dark td {
-    padding: 12px 15px;             /* 12px boven/onder, 15px links/rechts */
-    border-bottom: 1px solid var(--glass-border); /* Dunne scheidingslijn onder elke cel */
-    vertical-align: middle;         /* Inhoud verticaal centreren in de cel */
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--glass-border);
+    vertical-align: middle;
 }
 
 
@@ -342,51 +294,41 @@ main h1 {
    SECTIE 7: FORMULIER STIJLEN
    ========================================================================== */
 
-/* Formulier invoervelden en dropdown menu's
-   .form-control = tekstvelden, e-mailvelden, wachtwoordvelden
-   .form-select = dropdown/selectie menu's */
 .form-control,
 .form-select {
-    background: var(--bg-card);     /* Donkere achtergrond (#1a1a25) */
-    border: 1px solid var(--glass-border); /* Dunne halfdoorzichtige rand */
-    border-radius: 10px;            /* Afgeronde hoeken (10px) */
-    color: var(--text-primary);     /* Witte tekstkleur voor ingevoerde tekst */
-    padding: 12px 15px;             /* Binnenruimte: 12px boven/onder, 15px links/rechts */
-    min-height: var(--button-min-height); /* Minimaal 40px hoog voor mobiele bruikbaarheid */
-    transition: all 0.3s ease;      /* Vloeiende overgang bij focus/hover (0.3 sec) */
+    background: var(--bg-card);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    color: var(--text-primary);
+    padding: 12px 15px;
+    min-height: var(--button-min-height);
+    transition: all 0.3s ease;
 }
 
-/* Focus-stijl: wanneer de gebruiker klikt op een invoerveld
-   :focus = het veld is geselecteerd/actief */
 .form-control:focus,
 .form-select:focus {
-    background: var(--bg-secondary); /* Iets lichtere achtergrond bij focus */
-    border-color: var(--accent-blue); /* Blauwe rand rond het actieve veld */
-    /* Blauwe gloed rondom het veld (3px breed, 25% dekking) */
+    background: var(--bg-secondary);
+    border-color: var(--accent-blue);
     box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
-    color: var(--text-primary);     /* Witte tekst behouden */
-    outline: none;                  /* Verwijder de standaard browser focus-rand */
+    color: var(--text-primary);
+    outline: none;
 }
 
-/* Placeholder tekst: de grijze hint-tekst in lege velden
-   ::placeholder = de tekst die verschijnt voordat de gebruiker typt */
 .form-control::placeholder {
-    color: var(--text-secondary);   /* Grijze kleur (#b0b0b0) voor placeholder tekst */
+    color: var(--text-secondary);
 }
 
-/* Labels boven invoervelden (bijv. "E-mailadres:", "Wachtwoord:") */
 .form-label {
-    color: var(--text-primary);     /* Witte tekstkleur */
-    font-weight: 500;               /* Half-vet lettertype */
-    margin-bottom: 8px;             /* 8px ruimte tussen label en invoerveld */
-    display: block;                 /* Label neemt de volledige breedte in */
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: block;
 }
 
-/* Tekstvak (textarea) styling voor langere tekst invoer
-   textarea = meerdere regels tekst (bijv. beschrijving) */
+/* Tekstvak styling */
 textarea.form-control {
-    min-height: 100px;              /* Minimaal 100px hoog */
-    resize: vertical;               /* Alleen verticaal vergroten/verkleinen toegestaan */
+    min-height: 100px;
+    resize: vertical;
 }
 
 
@@ -396,84 +338,63 @@ textarea.form-control {
    Minimaal 40px hoogte voor mobiele bruikbaarheid volgens ontwerp.
    ========================================================================== */
 
-/* Basis knop stijl: geldt voor ALLE knoppen op de website
-   .btn = Bootstrap knop klasse */
 .btn {
-    min-height: var(--button-min-height); /* Minimaal 40px hoog (ontwerp eis voor mobiel) */
-    padding: 10px 20px;             /* Binnenruimte: 10px boven/onder, 20px links/rechts */
-    border-radius: var(--border-radius); /* Afgeronde hoeken (12px) */
-    font-weight: 600;               /* Semi-vet lettertype voor duidelijkheid */
-    transition: all 0.3s ease;      /* Alle veranderingen animeren in 0.3 seconden */
-    display: inline-flex;           /* Flexbox: icoon en tekst naast elkaar op 1 regel */
-    align-items: center;            /* Inhoud verticaal centreren in de knop */
-    justify-content: center;        /* Inhoud horizontaal centreren in de knop */
-    gap: 8px;                       /* 8px ruimte tussen icoon en tekst */
-    border: none;                   /* Geen rand om de knop */
-    cursor: pointer;                /* Muisaanwijzer wordt een handje bij hover */
+    min-height: var(--button-min-height);
+    padding: 10px 20px;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    cursor: pointer;
 }
 
-/* Primaire knop (blauw/paars): de hoofdactie knop
-   Gebruikt voor: opslaan, toevoegen, bevestigen */
 .btn-primary {
-    /* Diagonaal kleurverloop (45 graden): blauw naar paars */
     background: linear-gradient(45deg, var(--accent-blue), var(--accent-purple));
-    color: white;                   /* Witte tekst op de knop */
-    /* Blauwe schaduw onder de knop voor diepte-effect */
+    color: white;
     box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4);
 }
 
-/* Hover op primaire knop: omhoog + meer schaduw + donkerder kleuren */
 .btn-primary:hover {
-    transform: translateY(-2px);    /* Beweeg 2px omhoog (zwevend effect) */
-    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.5); /* Grotere, sterkere schaduw */
-    /* Donkerder kleurverloop bij hover voor visuele feedback */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(13, 110, 253, 0.5);
     background: linear-gradient(45deg, #0b5ed7, #7c3aed);
 }
 
-/* Waarschuwingsknop (geel/oranje): voor bewerkingen
-   Gebruikt voor: bewerken, wijzigen */
 .btn-warning {
-    /* Diagonaal kleurverloop: geel naar oranje */
     background: linear-gradient(45deg, var(--warning), #ff9500);
-    color: #000;                    /* Zwarte tekst (goed leesbaar op gele achtergrond) */
+    color: #000;
 }
 
-/* Gevarenknop (rood): voor verwijderacties
-   Gebruikt voor: verwijderen, annuleren */
 .btn-danger {
-    /* Diagonaal kleurverloop: rood naar rozerood */
     background: linear-gradient(45deg, var(--danger), #ff4757);
-    color: white;                   /* Witte tekst op rode achtergrond */
+    color: white;
 }
 
-/* Lichte knop: voor secundaire/minder belangrijke acties
-   Gebruikt voor: terug, annuleren */
 .btn-light {
-    background: rgba(255, 255, 255, 0.1); /* Halfdoorzichtig wit (10% dekking) */
-    color: white;                   /* Witte tekst */
-    border: 1px solid var(--glass-border); /* Dunne halfdoorzichtige rand */
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid var(--glass-border);
 }
 
-/* Hover op lichte knop: iets meer zichtbaar */
 .btn-light:hover {
-    background: rgba(255, 255, 255, 0.2); /* Meer zichtbaar wit (20% dekking) bij hover */
-    color: white;                   /* Witte tekst behouden */
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
 }
 
-/* Kleine knop variant: voor acties in tabellen
-   .btn-sm = Bootstrap "small" knop klasse */
 .btn-sm {
-    min-height: 32px;               /* Minimaal 32px hoog (kleiner dan standaard 40px) */
-    padding: 5px 12px;              /* Minder binnenruimte: 5px boven/onder, 12px links/rechts */
-    font-size: 0.85rem;             /* Iets kleinere tekst */
+    min-height: 32px;
+    padding: 5px 12px;
+    font-size: 0.85rem;
 }
 
-/* Grote knop variant: voor prominente acties
-   .btn-lg = Bootstrap "large" knop klasse */
 .btn-lg {
-    min-height: 50px;               /* Minimaal 50px hoog (groter dan standaard 40px) */
-    padding: 15px 30px;             /* Meer binnenruimte: 15px boven/onder, 30px links/rechts */
-    font-size: 1.1rem;              /* Iets grotere tekst */
+    min-height: 50px;
+    padding: 15px 30px;
+    font-size: 1.1rem;
 }
 
 
@@ -481,49 +402,36 @@ textarea.form-control {
    SECTIE 9: MELDING STIJLEN (ALERTS)
    ========================================================================== */
 
-/* Basis melding stijl: geldt voor alle soorten meldingen
-   .alert = Bootstrap melding klasse (succes, fout, waarschuwing) */
 .alert {
-    border-radius: var(--border-radius); /* Afgeronde hoeken (12px) */
-    border: none;                   /* Geen standaard rand */
-    padding: 15px 20px;             /* Binnenruimte: 15px boven/onder, 20px links/rechts */
-    margin-bottom: 20px;            /* 20px ruimte onder de melding */
-    display: flex;                  /* Flexbox: icoon en tekst naast elkaar */
-    align-items: center;            /* Verticaal centreren van inhoud */
-    gap: 10px;                      /* 10px ruimte tussen icoon en tekst */
+    border-radius: var(--border-radius);
+    border: none;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-/* Succesmelding (groen): verschijnt na een geslaagde actie
-   Voorbeeld: "Evenement succesvol toegevoegd!" */
 .alert-success {
-    /* Diagonaal groen kleurverloop met lage dekking (20%) voor subtiel effect */
     background: linear-gradient(45deg, rgba(40, 167, 69, 0.2), rgba(32, 201, 151, 0.2));
-    border-left: 4px solid var(--success); /* Dikke groene lijn aan de linkerkant */
-    color: #a3e8b3;                 /* Lichtgroene tekstkleur */
+    border-left: 4px solid var(--success);
+    color: #a3e8b3;
 }
 
-/* Foutmelding (rood): verschijnt bij fouten
-   Voorbeeld: "Ongeldig e-mailadres!" */
 .alert-danger {
-    /* Diagonaal rood kleurverloop met lage dekking (20%) */
     background: linear-gradient(45deg, rgba(220, 53, 69, 0.2), rgba(255, 71, 87, 0.2));
-    border-left: 4px solid var(--danger); /* Dikke rode lijn aan de linkerkant */
-    color: #f5a9b0;                 /* Lichtrode tekstkleur */
+    border-left: 4px solid var(--danger);
+    color: #f5a9b0;
 }
 
-/* Waarschuwingsmelding (geel): verschijnt voor waarschuwingen
-   Voorbeeld: "Let op: je sessie verloopt binnenkort" */
 .alert-warning {
-    /* Diagonaal geel kleurverloop met lage dekking (20%) */
     background: linear-gradient(45deg, rgba(255, 193, 7, 0.2), rgba(255, 149, 0, 0.2));
-    border-left: 4px solid var(--warning); /* Dikke gele lijn aan de linkerkant */
-    color: #ffd97a;                 /* Lichtgele tekstkleur */
+    border-left: 4px solid var(--warning);
+    color: #ffd97a;
 }
 
-/* Sluitknop (X) in wegklikbare meldingen
-   filter: invert(1) = draait de kleuren om (zwart wordt wit) */
 .alert-dismissible .btn-close {
-    filter: invert(1);              /* Maak het X-icoon wit (standaard is het zwart) */
+    filter: invert(1);
 }
 
 
@@ -531,23 +439,18 @@ textarea.form-control {
    SECTIE 10: KALENDER KAARTEN
    ========================================================================== */
 
-/* Kalender kaart: speciale kaart voor schema's en evenementen op het dashboard
-   Verschilt van .card door de gekleurde linkerlijn en horizontaal schuif-effect */
 .calendar-card {
-    /* Diagonaal kleurverloop van donkergrijs naar iets lichter */
     background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
-    border-radius: var(--border-radius); /* Afgeronde hoeken (12px) */
-    padding: 20px;                  /* 20px binnenruimte aan alle kanten */
-    margin-bottom: 15px;            /* 15px ruimte onder elke kalenderkaart */
-    /* Cyaan/turquoise lijn aan de linkerkant (4px dik) als visueel accent */
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 15px;
     border-left: 4px solid var(--accent-cyan);
-    transition: all 0.3s ease;      /* Animeer alle veranderingen in 0.3 seconden */
+    transition: all 0.3s ease;
 }
 
-/* Hover op kalenderkaart: lijn wordt paars + kaart schuift naar rechts */
 .calendar-card:hover {
-    border-left-color: var(--accent-purple); /* Linkerlijn verandert van cyaan naar paars */
-    transform: translateX(5px);     /* Schuif 5 pixels naar rechts bij hover */
+    border-left-color: var(--accent-purple);
+    transform: translateX(5px);
 }
 
 
@@ -555,312 +458,223 @@ textarea.form-control {
    SECTIE 11: INLOG/REGISTRATIE PAGINA STIJLEN
    ========================================================================== */
 
-/* Inlog/Registratie container: de kaart die het formulier omgeeft
-   op login.php en register.php pagina's */
 .auth-container {
-    max-width: 450px;               /* Maximaal 450px breed (smal formulier) */
-    margin: 0 auto;                 /* Centreer horizontaal op de pagina */
-    padding: 40px;                  /* 40px binnenruimte voor een ruim gevoel */
-    background: var(--glass-bg);    /* Glassmorphism achtergrond (halfdoorzichtig) */
-    /* Vervagen van de achtergrond achter de container (glaseffect) */
-    -webkit-backdrop-filter: blur(var(--glass-blur)); /* Safari/Chrome versie */
-    backdrop-filter: blur(var(--glass-blur));          /* Standaard versie */
-    border-radius: var(--border-radius-lg); /* Extra grote afgeronde hoeken (20px) */
-    border: 1px solid var(--glass-border); /* Dunne halfdoorzichtige rand */
-    /* Diepe schaduw voor een zwevend effect (60px vervaging, 50% zwart dekking) */
+    max-width: 450px;
+    margin: 0 auto;
+    padding: 40px;
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--glass-border);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
-/* Titel in de inlog/registratie container */
 .auth-container h1 {
-    text-align: center;             /* Centreer de titel horizontaal */
-    margin-bottom: 30px;            /* 30px ruimte onder de titel voor het formulier */
+    text-align: center;
+    margin-bottom: 30px;
 }
 
 
 /* ==========================================================================
-   SECTIE 12: RESPONSIEF ONTWERP (MEDIA QUERIES)
+   SECTIE 12: RESPONSIEF ONTWERP
    ==========================================================================
-   Media queries passen de stijlen aan op basis van de schermbreedte.
-   @media (max-width: ...px) = "als het scherm kleiner is dan ... pixels"
-
-   We hebben 3 breekpunten:
-   1. Tablet:      max 992px  (iPad, kleine laptops)
-   2. Mobiel:      max 768px  (smartphones in landscape/portrait)
-   3. Klein mobiel: max 480px (kleine smartphones)
-
-   Hoe werkt het?
-   - Op een groot scherm (>992px) worden deze regels NIET toegepast
-   - Op een kleiner scherm worden ze WEL toegepast en overschrijven de standaard stijlen
-   - Dit heet "mobile-responsive design"
+   Past de layout aan voor tablets en mobiele telefoons.
    ========================================================================== */
 
-/* BREEKPUNT 1: Tablet weergave (scherm is maximaal 992 pixels breed)
-   Voorbeeld: iPad (1024px), kleine laptops */
+/* Tablet weergave (max 992px) */
 @media (max-width: 992px) {
-    /* Maak de inhoud iets breder (95%) en minder padding op tablets */
     main.container {
-        width: 95%;                 /* 95% in plaats van 90% van het scherm */
-        padding: 15px;              /* 15px in plaats van 20px binnenruimte */
+        width: 95%;
+        padding: 15px;
     }
 
-    /* Maak tabellen horizontaal scrollbaar als ze te breed zijn */
     .table-responsive {
-        overflow-x: auto;           /* Toon horizontale scrollbalk als nodig */
+        overflow-x: auto;
     }
 }
 
-/* BREEKPUNT 2: Mobiel weergave (scherm is maximaal 768 pixels breed)
-   Voorbeeld: iPhone, Samsung Galaxy, etc. */
+/* Mobiel weergave (max 768px) */
 @media (max-width: 768px) {
-    /* Verlaag de header hoogte van 80px naar 70px op mobiel */
     :root {
-        --header-height: 70px;      /* Kleinere header op mobiele schermen */
+        --header-height: 70px;
     }
 
-    /* Minder ruimte boven de body door kleinere header */
     body {
-        padding-top: calc(var(--header-height) + 10px); /* 70px + 10px = 80px */
+        padding-top: calc(var(--header-height) + 10px);
     }
 
-    /* Kleinere titel in de header op mobiel */
     header h1 {
-        font-size: 1.2rem;          /* Kleiner dan 1.5rem op desktop */
+        font-size: 1.2rem;
     }
 
-    /* Kleinere pagina titels op mobiel */
     main h1 {
-        font-size: 1.8rem;          /* Kleiner dan 2.5rem op desktop */
+        font-size: 1.8rem;
     }
 
-    /* Kleinere sectie koppen op mobiel */
     main h2 {
-        font-size: 1.3rem;          /* Aangepast voor mobiel scherm */
+        font-size: 1.3rem;
     }
 
-    /* Meer ruimte onder kaarten op mobiel */
     .card {
-        margin-bottom: 15px;        /* 15px ruimte onder elke kaart */
+        margin-bottom: 15px;
     }
 
-    /* Kleinere tekst en padding in tabel cellen op mobiel */
     .table-dark th,
     .table-dark td {
-        padding: 10px;              /* 10px in plaats van 12-15px */
-        font-size: 0.85rem;         /* Iets kleinere tekst in tabellen */
+        padding: 10px;
+        font-size: 0.85rem;
     }
 
-    /* Knoppen vullen de volledige breedte op mobiel (makkelijker aan te tikken) */
     .btn {
-        width: 100%;                /* Volledige breedte van het scherm */
-        margin-bottom: 8px;         /* 8px ruimte tussen knoppen */
+        width: 100%;
+        margin-bottom: 8px;
     }
 
-    /* Kleine knoppen (in tabellen) behouden hun originele breedte */
     .btn-sm {
-        width: auto;                /* Niet 100% breed, maar automatische breedte */
+        width: auto;
     }
 
-    /* Navigatiemenu wordt een verticale lijst op mobiel
-       (achter het hamburger menu icoon) */
+    /* Stapel navigatie op mobiel */
     .navbar-collapse {
-        background: var(--bg-secondary); /* Donkere achtergrond voor het dropdown menu */
-        padding: 15px;              /* 15px binnenruimte */
-        border-radius: var(--border-radius); /* Afgeronde hoeken (12px) */
-        margin-top: 10px;           /* 10px ruimte boven het menu */
+        background: var(--bg-secondary);
+        padding: 15px;
+        border-radius: var(--border-radius);
+        margin-top: 10px;
     }
 
-    /* Menu items onder elkaar in plaats van naast elkaar */
     .navbar-nav {
-        flex-direction: column;     /* Stapel items verticaal (kolom richting) */
+        flex-direction: column;
     }
 
-    /* Ruimte tussen de menu items */
     .navbar-nav .nav-link {
-        margin: 5px 0;              /* 5px boven/onder elke link */
+        margin: 5px 0;
     }
 }
 
-/* BREEKPUNT 3: Klein mobiel (scherm is maximaal 480 pixels breed)
-   Voorbeeld: iPhone SE, Galaxy S Mini, etc. */
+/* Klein mobiel (max 480px) */
 @media (max-width: 480px) {
-    /* Container neemt 100% breedte en minimale padding */
     main.container {
-        width: 100%;                /* Gebruik het volledige scherm */
-        padding: 10px;              /* Minimale 10px binnenruimte */
+        width: 100%;
+        padding: 10px;
     }
 
-    /* Inlog/registratie formulier wordt compacter */
     .auth-container {
-        padding: 25px 20px;         /* Minder padding: 25px boven/onder, 20px links/rechts */
-        margin: 10px;               /* 10px marge rondom */
+        padding: 25px 20px;
+        margin: 10px;
     }
 
-    /* Kleinere footer op heel kleine schermen */
     footer {
-        font-size: 0.75rem;         /* Nog kleinere tekst in de footer */
-        padding: 10px;              /* 10px binnenruimte */
+        font-size: 0.75rem;
+        padding: 10px;
     }
 }
 
 
 /* ==========================================================================
    SECTIE 13: ANIMATIES
-   ==========================================================================
-   @keyframes = definieer een CSS animatie stap voor stap
-   Een animatie beschrijft hoe een element verandert van begin (from) tot eind (to).
-   Je kunt ook percentages gebruiken (0%, 50%, 100%) voor meer tussenstappen.
    ========================================================================== */
 
-/* Fade-in animatie: element verschijnt geleidelijk bij het laden van de pagina
-   'fadeIn' = de NAAM van de animatie (kan je zelf kiezen)
-   from = startpositie, to = eindpositie */
+/* Fade-in animatie bij het laden van de pagina */
 @keyframes fadeIn {
-    /* Startpositie: onzichtbaar en 20 pixels lager */
     from {
-        opacity: 0;                 /* opacity 0 = volledig onzichtbaar/doorzichtig */
-        transform: translateY(20px); /* Begin 20 pixels ONDER de uiteindelijke positie */
+        opacity: 0;
+        transform: translateY(20px);
     }
 
-    /* Eindpositie: volledig zichtbaar op de juiste plek */
     to {
-        opacity: 1;                 /* opacity 1 = volledig zichtbaar */
-        transform: translateY(0);   /* Terug op de normale positie (0 pixels verschuiving) */
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
-/* Pas de fadeIn animatie toe op het hoofdgedeelte (main) van elke pagina
-   0.5s = de animatie duurt 0.5 seconden
-   ease-out = begint snel en vertraagt aan het einde */
 main {
-    animation: fadeIn 0.5s ease-out; /* Speel de fadeIn animatie 1x af in 0.5 sec */
+    animation: fadeIn 0.5s ease-out;
 }
 
-/* Puls animatie: een herhalende gloed rond een element
-   Geeft een "kloppend" lichteffect met cyaan kleur
-   Wordt gebruikt wanneer een primaire knop focus heeft */
+/* Puls animatie voor belangrijke elementen */
 @keyframes pulse {
-    /* Start (0%) en eind (100%): geen gloed zichtbaar */
+
     0%,
     100% {
-        /* box-shadow: x y vervaging grootte kleur */
-        box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4); /* Cyaan gloed, 0 grootte */
+        box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4);
     }
 
-    /* Halverwege (50%): maximale gloed */
     50% {
-        /* 20px vervaging, 10px grootte, doorzichtig (verdwijnt) */
-        box-shadow: 0 0 20px 10px rgba(0, 212, 255, 0); /* Gloed op maximale grootte */
+        box-shadow: 0 0 20px 10px rgba(0, 212, 255, 0);
     }
 }
 
-/* Wanneer een primaire knop gefocust is (bijv. na Tab-toets navigatie)
-   :focus = het element is geselecteerd via toetsenbord of klik */
 .btn-primary:focus {
-    /* Speel de puls animatie oneindig af, elke cyclus duurt 1.5 seconden */
-    animation: pulse 1.5s infinite; /* infinite = blijft herhalen zolang focus actief is */
+    animation: pulse 1.5s infinite;
 }
 
 
 /* ==========================================================================
-   SECTIE 14: HULP KLASSEN (UTILITY CLASSES)
-   ==========================================================================
-   Hulpklassen zijn kleine, herbruikbare CSS klassen die je op elk element
-   kunt toepassen voor één specifiek doel (bijv. kleur, marge, padding).
-   Ze besparen tijd omdat je niet steeds nieuwe stijlen hoeft te schrijven.
+   SECTIE 14: HULP KLASSEN
    ========================================================================== */
 
-/* Cyaan tekstkleur - voor opvallende tekst elementen */
 .text-cyan {
-    color: var(--accent-cyan);      /* Tekst krijgt de turquoise/cyaan kleur (#00d4ff) */
+    color: var(--accent-cyan);
 }
 
-/* Paarse tekstkleur - voor decoratieve tekst elementen */
 .text-purple {
-    color: var(--accent-purple);    /* Tekst krijgt de paarse kleur (#9d4edd) */
+    color: var(--accent-purple);
 }
 
-/* Glassmorphism achtergrond - herbruikbaar glaseffect
-   Kan op elk element worden toegepast voor een doorzichtig-glas uiterlijk */
 .bg-glass {
-    background: var(--glass-bg);    /* Halfdoorzichtige witte achtergrond */
-    -webkit-backdrop-filter: blur(var(--glass-blur)); /* Achtergrondvervaging (Safari) */
-    backdrop-filter: blur(var(--glass-blur));          /* Achtergrondvervaging (standaard) */
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
 }
 
-/* Marge-onder 4 eenheden: voegt 1.5rem (24px) ruimte onder een element toe */
 .mb-4 {
-    margin-bottom: 1.5rem;          /* mb = margin-bottom, 4 = Bootstrap schaal */
+    margin-bottom: 1.5rem;
 }
 
-/* Marge-boven 4 eenheden: voegt 1.5rem (24px) ruimte boven een element toe */
 .mt-4 {
-    margin-top: 1.5rem;             /* mt = margin-top, 4 = Bootstrap schaal */
+    margin-top: 1.5rem;
 }
 
-/* Padding-boven 5 eenheden: voegt 3rem (48px) binnenruimte boven een element toe */
 .pt-5 {
-    padding-top: 3rem;              /* pt = padding-top, 5 = Bootstrap schaal */
+    padding-top: 3rem;
 }
 
-/* ==========================================================================
-   SCROLLBALK STYLING
-   ==========================================================================
-   Past het uiterlijk van de browser scrollbalk aan (alleen in Chrome/Safari/Edge).
-   ::-webkit-scrollbar selectors werken NIET in Firefox.
-   ========================================================================== */
-
-/* De scrollbalk zelf: breedte instellen */
+/* Scrollbalk styling */
 ::-webkit-scrollbar {
-    width: 8px;                     /* Scrollbalk is 8 pixels breed */
+    width: 8px;
 }
 
-/* De achtergrond/rail van de scrollbalk */
 ::-webkit-scrollbar-track {
-    background: var(--bg-dark);     /* Donkere achtergrond voor de scrollbalk rail */
+    background: var(--bg-dark);
 }
 
-/* Het schuifblokje (thumb) van de scrollbalk */
 ::-webkit-scrollbar-thumb {
-    background: var(--accent-blue); /* Blauw schuifblokje */
-    border-radius: 4px;             /* Afgeronde hoeken op het schuifblokje */
+    background: var(--accent-blue);
+    border-radius: 4px;
 }
 
-/* Hover op het schuifblokje: wordt cyaan van kleur */
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--accent-cyan); /* Verandert naar cyaan bij hover */
+    background: var(--accent-cyan);
 }
 
 
 /* ==========================================================================
    SECTIE 15: BOOTSTRAP OVERSCHRIJVINGEN
    ==========================================================================
-   PROBLEEM: Bootstrap gebruikt !important op sommige klassen zoals .bg-dark
-   en .bg-secondary. Hierdoor worden onze custom kleuren overschreven.
-
-   OPLOSSING: We gebruiken OOK !important om onze eigen stijlen te forceren.
-   !important = "deze stijl heeft de hoogste prioriteit, negeer alles anders"
-
-   Dit is nodig omdat Bootstrap standaard een platte kleur geeft,
-   maar wij willen een kleurverloop (gradient) als achtergrond.
+   Bootstrap .bg-dark gebruikt !important op background-color.
+   Dit overschrijft de custom gradient op body. Onderstaande regels fixen dit.
    ========================================================================== */
 
-/* Fix 1: body.bg-dark override
-   Bootstrap maakt body.bg-dark een plat zwart (#212529).
-   Wij willen ons eigen diagonale kleurverloop behouden. */
+/* Fix 1: body.bg-dark override - herstel custom gradient achtergrond */
 body.bg-dark {
-    /* Herstel het diagonale kleurverloop van sectie 2 met !important */
     background: linear-gradient(135deg, #0a0a0f 0%, #0d1421 50%, #0a0a0f 100%) !important;
-    background-attachment: fixed !important; /* Achtergrond blijft stil bij scrollen */
+    background-attachment: fixed !important;
 }
 
-/* Fix 2: footer.bg-secondary override
-   Bootstrap maakt footer.bg-secondary een plat grijs (#6c757d).
-   Wij willen ons eigen horizontale kleurverloop voor de footer. */
+/* Fix 2: footer.bg-secondary override - herstel custom footer achtergrond */
 footer.bg-secondary {
-    /* Herstel het horizontale kleurverloop van sectie 4 met !important */
     background: linear-gradient(90deg, #12121a 0%, #1a1a25 100%) !important;
-    /* Herstel de dunne lijn bovenop de footer */
     border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
@@ -868,161 +682,140 @@ footer.bg-secondary {
 /* ==========================================================================
    SECTIE 16: INHOUD PAGINA STIJLEN (Privacy & Contact)
    ==========================================================================
-   Speciale styling voor de privacy.php en contact.php pagina's.
-
-   PROBLEEM: Deze pagina's gebruiken Bootstrap kaarten (.card) met .card-body.
-   Door de glassmorphism stijlen in Sectie 6 en de background-clip in Sectie 5
-   kan tekst ONZICHTBAAR worden (doorzichtige tekst op doorzichtige achtergrond).
-
-   OPLOSSING: Elk element in deze kaarten krijgt een EXPLICIETE kleur met
-   !important zodat de tekst ALTIJD zichtbaar is, ongeacht Bootstrap klassen.
-
-   -webkit-text-fill-color: nodig voor Safari/Chrome om background-clip te overschrijven.
-   Als je alleen 'color' gebruikt, kan -webkit-text-fill-color: transparent dit negeren.
+   Volledige styling voor privacy.php en contact.php.
+   Elk element is expliciet gestyled met !important zodat Bootstrap
+   klassen de tekst NOOIT onzichtbaar kunnen maken.
    ========================================================================== */
 
-/* Kaart container op inhoudspagina's: solide donkerblauwe achtergrond
-   (niet glassmorphism, want dan is tekst moeilijk leesbaar) */
+/* Kaart container - solide donkerblauwe achtergrond */
 main.container .card {
-    background: #16213e !important; /* Solide donkerblauw in plaats van doorzichtig glas */
-    border: 1px solid rgba(0, 212, 255, 0.25) !important; /* Cyaan rand met 25% dekking */
-    border-radius: 12px !important; /* Afgeronde hoeken */
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important; /* Diepe schaduw (60% zwart) */
-    overflow: visible !important;   /* Sta toe dat inhoud buiten de kaart kan vallen */
+    background: #16213e !important;
+    border: 1px solid rgba(0, 212, 255, 0.25) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6) !important;
+    overflow: visible !important;
 }
 
-/* Extra binnenruimte in de kaart body voor ademruimte
-   35px is meer dan de standaard 20px uit Sectie 6 */
+/* Extra opvulling in de kaart voor ademruimte */
 main.container .card .card-body {
-    padding: 35px !important;       /* Ruimere binnenruimte voor langere tekst */
+    padding: 35px !important;
 }
 
-/* H1 pagina titel in kaarten: FIX voor onzichtbare tekst
-   Het probleem: Sectie 5 gebruikt background-clip: text op h1,
-   waardoor tekst doorzichtig wordt. Hier resetten we dat. */
+/* H1 pagina titel - fix voor onzichtbare tekst door background-clip */
 main.container .card .card-body h1 {
-    color: #ffffff !important;      /* Witte tekstkleur forceren */
-    -webkit-text-fill-color: #ffffff !important; /* Safari/Chrome: ook wit vullen */
-    background: none !important;    /* Verwijder het kleurverloop van Sectie 5 */
-    -webkit-background-clip: unset !important; /* Reset background-clip (Safari) */
-    background-clip: unset !important;          /* Reset background-clip (standaard) */
-    font-size: 2rem !important;     /* 2rem lettergrootte voor de paginatitel */
-    font-weight: 700 !important;    /* Vetgedrukt */
-    margin-bottom: 25px !important; /* 25px ruimte onder de titel */
-    text-align: left !important;    /* Links uitlijnen (niet gecentreerd zoals standaard h1) */
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    font-size: 2rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 25px !important;
+    text-align: left !important;
 }
 
-/* H3 sectie koppen in kaarten: cyaan kleur voor duidelijke scheiding
-   Gebruikt voor koppen als "1. Welke gegevens bewaren wij?" in privacy.php */
+/* H3 sectie koppen - cyaan kleur voor zichtbaarheid */
 main.container .card .card-body h3 {
-    color: #00d4ff !important;      /* Cyaan/turquoise kleur voor koppen */
-    -webkit-text-fill-color: #00d4ff !important; /* Safari/Chrome: cyaan vulling */
-    font-weight: 600 !important;    /* Semi-vet lettertype */
-    font-size: 1.3rem !important;   /* Iets kleiner dan h2 */
-    margin-bottom: 12px !important; /* 12px ruimte onder de kop */
-    margin-top: 20px !important;    /* 20px ruimte boven de kop (tussen secties) */
+    color: #00d4ff !important;
+    -webkit-text-fill-color: #00d4ff !important;
+    font-weight: 600 !important;
+    font-size: 1.3rem !important;
+    margin-bottom: 12px !important;
+    margin-top: 20px !important;
 }
 
-/* Paragrafen (<p>) in kaarten: witte tekst voor leesbaarheid */
+/* Paragrafen - witte tekst op donkerblauwe achtergrond */
 main.container .card .card-body p {
-    color: #ffffff !important;      /* Witte tekstkleur */
-    -webkit-text-fill-color: #ffffff !important; /* Safari/Chrome: wit vullen */
-    font-size: 1rem !important;     /* Standaard lettergrootte */
-    line-height: 1.8 !important;    /* Ruime regelafstand voor leesbaarheid */
-    margin-bottom: 12px !important; /* 12px ruimte onder elke paragraaf */
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    font-size: 1rem !important;
+    line-height: 1.8 !important;
+    margin-bottom: 12px !important;
 }
 
-/* Lijst items (<li>) in kaarten: witte tekst, zelfde stijl als paragrafen */
+/* Lijst items - witte tekst met goede regelafstand */
 main.container .card .card-body li {
-    color: #ffffff !important;      /* Witte tekstkleur */
-    -webkit-text-fill-color: #ffffff !important; /* Safari/Chrome: wit vullen */
-    font-size: 1rem !important;     /* Standaard lettergrootte */
-    line-height: 1.8 !important;    /* Ruime regelafstand */
-    margin-bottom: 8px !important;  /* 8px ruimte tussen lijst items */
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    font-size: 1rem !important;
+    line-height: 1.8 !important;
+    margin-bottom: 8px !important;
 }
 
-/* Ongeordende lijsten (<ul>) in kaarten: inspringing en opsommingstekens */
+/* Ongeordende lijsten - inspringing en opsommingstekens */
 main.container .card .card-body ul {
-    padding-left: 25px !important;  /* 25px inspringing voor de opsommingstekens */
-    margin-bottom: 18px !important; /* 18px ruimte onder de hele lijst */
-    list-style-type: disc !important; /* Ronde opsommingstekens (•) */
-    color: #ffffff !important;      /* Witte kleur voor de tekens */
+    padding-left: 25px !important;
+    margin-bottom: 18px !important;
+    list-style-type: disc !important;
+    color: #ffffff !important;
 }
 
-/* Vetgedrukte tekst (<strong>) in kaarten: cyaan voor extra nadruk */
+/* Vetgedrukte tekst - cyaan voor nadruk */
 main.container .card .card-body strong {
-    color: #00d4ff !important;      /* Cyaan kleur voor belangrijke woorden */
-    -webkit-text-fill-color: #00d4ff !important; /* Safari/Chrome: cyaan vulling */
-    font-weight: 700 !important;    /* Extra vet (700 = bold) */
+    color: #00d4ff !important;
+    -webkit-text-fill-color: #00d4ff !important;
+    font-weight: 700 !important;
 }
 
-/* Links (<a>) in kaarten: cyaan met onderstreping */
+/* Links in kaarten - cyaan met onderstreping */
 main.container .card .card-body a {
-    color: #00d4ff !important;      /* Cyaan kleur voor links */
-    -webkit-text-fill-color: #00d4ff !important; /* Safari/Chrome: cyaan vulling */
-    text-decoration: underline !important; /* Onderstreping zodat links herkenbaar zijn */
+    color: #00d4ff !important;
+    -webkit-text-fill-color: #00d4ff !important;
+    text-decoration: underline !important;
 }
 
-/* Hover op links in kaarten: wordt wit */
 main.container .card .card-body a:hover {
-    color: #ffffff !important;      /* Wit bij hover */
-    -webkit-text-fill-color: #ffffff !important; /* Safari/Chrome: wit vulling bij hover */
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
 }
 
-/* UITZONDERING: btn-primary link in kaarten behoudt de knop-stijl
-   Een link met class="btn btn-primary" moet er als een KNOP uitzien, niet als een link */
+/* Uitzondering: btn-primary link behoudt knop-stijl */
 main.container .card .card-body a.btn-primary {
-    color: #ffffff !important;      /* Witte tekst op de knop */
-    -webkit-text-fill-color: #ffffff !important; /* Safari/Chrome: wit vullen */
-    text-decoration: none !important; /* GEEN onderstreping (het is een knop, geen link) */
-    /* Blauw-naar-paars kleurverloop, zelfde als .btn-primary in Sectie 8 */
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    text-decoration: none !important;
     background: linear-gradient(45deg, #0d6efd, #9d4edd) !important;
-    padding: 10px 20px !important;  /* Binnenruimte voor de knop */
-    border-radius: 12px !important; /* Afgeronde hoeken */
-    display: inline-flex !important; /* Flexbox layout voor centrering */
-    margin-top: 15px !important;    /* 15px ruimte boven de knop */
+    padding: 10px 20px !important;
+    border-radius: 12px !important;
+    display: inline-flex !important;
+    margin-top: 15px !important;
 }
 
-/* Hover op btn-primary link: donkerder kleuren + zwevend effect */
 main.container .card .card-body a.btn-primary:hover {
-    /* Donkerder kleurverloop bij hover */
     background: linear-gradient(45deg, #0b5ed7, #7c3aed) !important;
-    transform: translateY(-2px);    /* 2px omhoog (zwevend effect) */
-    /* Blauwe schaduw onder de knop bij hover */
+    transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(13, 110, 253, 0.5);
 }
 
-/* H5 klasse styling in kaarten: voor sub-koppen (bijv. developer naam) */
+/* H5 klasse styling */
 main.container .card .card-body .h5 {
-    color: #00d4ff !important;      /* Cyaan kleur voor h5 tekst */
-    -webkit-text-fill-color: #00d4ff !important; /* Safari/Chrome: cyaan vulling */
-    font-size: 1.25rem !important;  /* 1.25rem lettergrootte */
+    color: #00d4ff !important;
+    -webkit-text-fill-color: #00d4ff !important;
+    font-size: 1.25rem !important;
 }
 
-/* Kleine tekst (<small>) in kaarten: voor bijschriften en metadata */
+/* Kleine tekst */
 main.container .card .card-body small {
-    color: #b0b0b0 !important;      /* Grijze kleur voor minder belangrijke tekst */
-    -webkit-text-fill-color: #b0b0b0 !important; /* Safari/Chrome: grijs vullen */
-    font-size: 0.9rem !important;   /* Iets kleiner dan standaard tekst */
+    color: #b0b0b0 !important;
+    -webkit-text-fill-color: #b0b0b0 !important;
+    font-size: 0.9rem !important;
 }
 
-/* Secundaire tekst (.text-secondary) in kaarten:
-   Bootstrap klasse voor minder opvallende tekst */
+/* Secundaire tekst */
 main.container .card .card-body .text-secondary {
-    color: #b0b0b0 !important;      /* Grijze kleur voor secundaire tekst */
-    -webkit-text-fill-color: #b0b0b0 !important; /* Safari/Chrome: grijs vullen */
+    color: #b0b0b0 !important;
+    -webkit-text-fill-color: #b0b0b0 !important;
 }
 
-/* Kleine tekst BINNEN secundaire tekst */
 main.container .card .card-body .text-secondary small {
-    color: #b0b0b0 !important;      /* Zelfde grijze kleur als de ouder */
-    -webkit-text-fill-color: #b0b0b0 !important; /* Safari/Chrome: grijs vullen */
+    color: #b0b0b0 !important;
+    -webkit-text-fill-color: #b0b0b0 !important;
 }
 
-/* Span elementen in kaarten: standaard witte tekst */
+/* Span elementen */
 main.container .card .card-body span {
-    color: #ffffff !important;      /* Witte tekst voor alle span elementen */
-    -webkit-text-fill-color: #ffffff !important; /* Safari/Chrome: wit vullen */
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
 }
 
 

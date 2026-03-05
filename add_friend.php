@@ -3,13 +3,167 @@
  * ==========================================================================
  * ADD_FRIEND.PHP - VRIEND TOEVOEGEN PAGINA
  * ==========================================================================
- * Auteur: Harsha Kanaparthi | Studentnummer: 2195344 | Datum: 30-09-2025
+ * Bestandsnaam : add_friend.php
+ * Auteur       : Harsha Kanaparthi
+ * Studentnummer: 2195344
+ * Opleiding    : MBO-4 Software Developer (Crebo 25998)
+ * Datum        : 30-09-2025
+ * Versie       : 1.0
+ * PHP-versie   : 8.1+
+ * Encoding     : UTF-8
  *
- * Deze pagina laat gebruikers gaming vrienden toevoegen op gebruikersnaam.
- * Vrienden kunnen een status hebben (Online/Offline) en persoonlijke notities.
- * Toont ook de huidige vriendenlijst met bewerk/verwijder opties.
+ * ==========================================================================
+ * BESCHRIJVING
+ * ==========================================================================
+ * Deze pagina laat ingelogde gebruikers gaming vrienden toevoegen aan hun
+ * persoonlijke vriendenlijst. Elke vriend heeft:
+ * - Een gebruikersnaam (verplicht, max 50 tekens)
+ * - Een status (Online, Offline, Playing, Away)
+ * - Een persoonlijke notitie (optioneel, bijv. "Goed in Fortnite")
  *
- * Gebruikersverhaal: "Voeg vrienden toe voor contact"
+ * Naast het toevoegformulier toont de pagina ook een OVERZICHTSTABEL
+ * met alle bestaande vrienden, inclusief bewerk- en verwijderknoppen.
+ *
+ * Gebruikersverhaal: "Als gamer wil ik vrienden toevoegen met hun
+ * gebruikersnaam en status, zodat ik kan zien wie er online is."
+ *
+ * ==========================================================================
+ * HOE DEZE PAGINA WERKT (VERZOEK-STROOM / REQUEST FLOW)
+ * ==========================================================================
+ * De pagina kan op twee manieren worden bezocht:
+ *
+ * EERSTE BEZOEK (GET-verzoek):
+ * ┌─────────────────────────────────────────────────────────────────────┐
+ * │ 1. Gebruiker klikt op "Vrienden" in de navigatiebalk               │
+ * │ 2. Browser stuurt GET-verzoek naar add_friend.php                  │
+ * │ 3. PHP controleert sessie-timeout en inlogstatus                   │
+ * │ 4. Niet ingelogd? → Redirect naar login.php                       │
+ * │ 5. Wel ingelogd? → Haal vriendenlijst op + toon formulier         │
+ * └─────────────────────────────────────────────────────────────────────┘
+ *
+ * FORMULIER VERZENDING (POST-verzoek):
+ * ┌─────────────────────────────────────────────────────────────────────┐
+ * │ 1. Gebruiker vult formulier in en klikt "Vriend Toevoegen"         │
+ * │ 2. Browser stuurt POST-verzoek met formuliergegevens               │
+ * │ 3. PHP haalt 3 velden op via $_POST[]                              │
+ * │ 4. addFriend() valideert en slaat op in de database                │
+ * │ 5a. SUCCES → setMessage() + redirect naar add_friend.php (PRG)    │
+ * │ 5b. FOUT → toon foutmelding + toon formulier opnieuw              │
+ * └─────────────────────────────────────────────────────────────────────┘
+ *
+ * PRG-PATROON (Post-Redirect-Get):
+ * Na een succesvolle POST wordt de gebruiker doorgestuurd (redirect)
+ * naar dezelfde pagina met een GET-verzoek. Dit voorkomt dat het
+ * formulier opnieuw wordt verzonden als de gebruiker op "Vernieuwen" drukt.
+ *
+ * ==========================================================================
+ * DATABASE KOPPELING (Friends tabel)
+ * ==========================================================================
+ * De formuliervelden worden opgeslagen in de "Friends" tabel:
+ *
+ * ┌──────────────────┬──────────────┬──────────────────────────────────┐
+ * │ Formulierveld    │ DB Kolom     │ Type / Beperking                 │
+ * ├──────────────────┼──────────────┼──────────────────────────────────┤
+ * │ friend_username  │ username     │ VARCHAR(50), NOT NULL            │
+ * │ note             │ note         │ TEXT, NULL (optioneel)           │
+ * │ status           │ status       │ VARCHAR(20), DEFAULT 'Offline'   │
+ * │ (sessie)         │ user_id      │ INT, FOREIGN KEY → Users(id)     │
+ * └──────────────────┴──────────────┴──────────────────────────────────┘
+ *
+ * RELATIE: Elke vriend hoort bij één gebruiker (user_id → Users.id).
+ * Een gebruiker kan MEERDERE vrienden hebben (1:N relatie / one-to-many).
+ *
+ * ==========================================================================
+ * BEVEILIGING (Security)
+ * ==========================================================================
+ * 1. SESSIE-CONTROLE: isLoggedIn() voorkomt ongeautoriseerde toegang
+ *    (OWASP: Broken Access Control - A01:2021)
+ *
+ * 2. SESSIE-TIMEOUT: checkSessionTimeout() beëindigt inactieve sessies
+ *    om sessie-kaping te voorkomen (session hijacking)
+ *
+ * 3. SQL-INJECTIE PREVENTIE: addFriend() en getFriends() gebruiken PDO
+ *    prepared statements met parametergebonden queries (OWASP: Injection - A03:2021)
+ *
+ * 4. XSS PREVENTIE: safeEcho() escaped HTML-tekens via htmlspecialchars()
+ *    (OWASP: Cross-Site Scripting - A07:2017)
+ *
+ * 5. PRG-PATROON: Post-Redirect-Get voorkomt dubbele formulierverzendingen
+ *
+ * ==========================================================================
+ * BESTANDSSTRUCTUUR (35 stappen)
+ * ==========================================================================
+ * De pagina is opgedeeld in 35 genummerde stappen (STAP 1 t/m 35):
+ *
+ * PHP-GEDEELTE (Server-side, STAP 1-7):
+ *   STAP 1  : functions.php inladen (require_once)
+ *   STAP 2  : Sessie-timeout controleren
+ *   STAP 3  : Inlogstatus controleren + redirect
+ *   STAP 4  : Gebruikers-ID ophalen uit sessie
+ *   STAP 5  : Vriendenlijst ophalen uit database
+ *   STAP 6  : Foutvariabele initialiseren
+ *   STAP 7  : POST-verzoek verwerken (7a/7b/7c)
+ *
+ * HTML-GEDEELTE (Client-side, STAP 8-35):
+ *   STAP 8-9  : DOCTYPE, html, head (meta, title, CSS)
+ *   STAP 10-11: Body, header (navigatiebalk)
+ *   STAP 12-14: Main container, sessie/foutmeldingen
+ *   STAP 15-21: Vriend toevoegen formulier (3 velden + knop)
+ *   STAP 22-31: Vriendenlijst tabel (koptekst, data, badges)
+ *   STAP 32   : Actieknoppen (bewerken/verwijderen)
+ *   STAP 33-35: Footer, Bootstrap JS, eigen JS
+ *
+ * ==========================================================================
+ * VERSCHIL MET ANDERE PAGINA'S
+ * ==========================================================================
+ * add_friend.php is UNIEK omdat het TWEE functies combineert:
+ * 1. Een FORMULIER om een nieuwe vriend toe te voegen (CREATE)
+ * 2. Een TABEL met alle bestaande vrienden (READ)
+ *
+ * Andere pagina's (add_event.php, add_schedule.php) tonen alleen het
+ * formulier en sturen door naar index.php voor het overzicht.
+ * add_friend.php toont ALLES op één pagina: formulier + overzicht.
+ *
+ * ==========================================================================
+ * GEBRUIKTE BESTANDEN
+ * ==========================================================================
+ * - functions.php  : PHP helperfuncties (addFriend, getFriends, isLoggedIn, etc.)
+ * - header.php     : Navigatiebalk (wordt ge-include)
+ * - footer.php     : Voettekst (wordt ge-include)
+ * - style.css      : Eigen CSS-stijlen (donker gaming thema)
+ * - script.js      : JavaScript functies (formuliervalidatie, initialisatie)
+ * - Bootstrap 5.3.3: CSS + JS framework via CDN
+ *
+ * ==========================================================================
+ * PHP CONCEPTEN GEBRUIKT IN DIT BESTAND
+ * ==========================================================================
+ * - require_once      : Bestand laden (slechts één keer, fatale fout als niet gevonden)
+ * - include           : Bestand laden (waarschuwing als niet gevonden, script gaat door)
+ * - $_SERVER           : Superglobale array met server/verzoek informatie
+ * - $_POST             : Superglobale array met POST-formuliergegevens
+ * - ?? (null coalesce) : Standaardwaarde als variabele null/niet-bestaand is
+ * - header()           : HTTP-header sturen voor redirect
+ * - exit               : Script onmiddellijk stoppen
+ * - echo               : Output naar browser sturen
+ * - if/endif/else      : Alternatieve syntaxis voor PHP in HTML
+ * - foreach/endforeach : Loop door een array (voor de vriendenlijst)
+ * - empty()            : Controleer of een array leeg is (0 elementen)
+ *
+ * ==========================================================================
+ * HTML/BOOTSTRAP CONCEPTEN GEBRUIKT IN DIT BESTAND
+ * ==========================================================================
+ * - Formulier: <form>, <input>, <textarea>, <select>, <option>, <button>
+ * - Tabel: <table>, <thead>, <tbody>, <tr>, <th>, <td>
+ * - Semantische elementen: <main>, <section>, <body>, <head>
+ * - Bootstrap layout: container, mt-5, pt-5, mb-3, mb-5
+ * - Bootstrap formulier: form-control, form-select, form-label
+ * - Bootstrap tabel: table, table-dark, table-bordered, table-hover
+ * - Bootstrap kaart: card, card-body
+ * - Bootstrap knoppen: btn, btn-primary, btn-warning, btn-danger, btn-sm
+ * - Bootstrap badges: badge, bg-success, bg-primary, bg-secondary
+ * - Bootstrap meldingen: alert, alert-danger
+ * - Ternary operator in PHP: conditie ? waar : onwaar (voor badge-kleuren)
+ * - confirm() in JavaScript: bevestigingsvenster voor verwijderactie
  * ==========================================================================
  */
 
@@ -55,8 +209,8 @@ checkSessionTimeout();
  * (ook niet-ingelogde bezoekers) vrienden kunnen toevoegen aan willekeurige accounts.
  * ============================================================ */
 if (!isLoggedIn()) {
-    header("Location: login.php"); /* Stuur de browser door naar login.php met een HTTP-header */
-    exit; /* Stop onmiddellijk ALLE code hieronder - niets meer uitvoeren */
+     header("Location: login.php"); /* Stuur de browser door naar login.php met een HTTP-header */
+     exit; /* Stop onmiddellijk ALLE code hieronder - niets meer uitvoeren */
 }
 
 /* ============================================================
@@ -104,61 +258,61 @@ $fout = '';
 // Verwerk formulier verzending
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    /* ----------------------------------------------------------
-     * STAP 7a - FORMULIERGEGEVENS OPHALEN
-     * ----------------------------------------------------------
-     * $_POST is een speciale PHP-array die ALLE ingevulde formuliervelden bevat.
-     * We halen drie waarden op:
-     *   - 'friend_username' = de gaming naam die de gebruiker heeft ingetypt
-     *   - 'note'            = de optionele notitie die de gebruiker heeft ingetypt
-     *   - 'status'          = de gekozen status uit het dropdown-menu
-     * De '??' operator is de "null coalescing operator":
-     *   - Als het veld BESTAAT in $_POST, gebruik dan die waarde
-     *   - Als het veld NIET BESTAAT (of null is), gebruik dan de standaardwaarde
-     *     (lege string '' voor gebruikersnaam/notitie, 'Offline' voor status)
-     * Dit voorkomt PHP-waarschuwingen als een veld ontbreekt.
-     * ---------------------------------------------------------- */
-    $vriendGebruikersnaam = $_POST['friend_username'] ?? ''; /* Haal de ingevulde gebruikersnaam op, of '' als die ontbreekt */
-    $notitie = $_POST['note'] ?? ''; /* Haal de ingevulde notitie op, of '' als die ontbreekt */
-    $status = $_POST['status'] ?? 'Offline'; /* Haal de gekozen status op, of 'Offline' als standaard */
+     /* ----------------------------------------------------------
+      * STAP 7a - FORMULIERGEGEVENS OPHALEN
+      * ----------------------------------------------------------
+      * $_POST is een speciale PHP-array die ALLE ingevulde formuliervelden bevat.
+      * We halen drie waarden op:
+      *   - 'friend_username' = de gaming naam die de gebruiker heeft ingetypt
+      *   - 'note'            = de optionele notitie die de gebruiker heeft ingetypt
+      *   - 'status'          = de gekozen status uit het dropdown-menu
+      * De '??' operator is de "null coalescing operator":
+      *   - Als het veld BESTAAT in $_POST, gebruik dan die waarde
+      *   - Als het veld NIET BESTAAT (of null is), gebruik dan de standaardwaarde
+      *     (lege string '' voor gebruikersnaam/notitie, 'Offline' voor status)
+      * Dit voorkomt PHP-waarschuwingen als een veld ontbreekt.
+      * ---------------------------------------------------------- */
+     $vriendGebruikersnaam = $_POST['friend_username'] ?? ''; /* Haal de ingevulde gebruikersnaam op, of '' als die ontbreekt */
+     $notitie = $_POST['note'] ?? ''; /* Haal de ingevulde notitie op, of '' als die ontbreekt */
+     $status = $_POST['status'] ?? 'Offline'; /* Haal de gekozen status op, of 'Offline' als standaard */
 
-    /* ----------------------------------------------------------
-     * STAP 7b - VRIEND TOEVOEGEN AAN DE DATABASE
-     * ----------------------------------------------------------
-     * addFriend() probeert de nieuwe vriend op te slaan in de database.
-     * De functie krijgt 4 parameters:
-     *   1. $userId                = het ID van de INGELOGDE gebruiker (eigenaar van de vriendenlijst)
-     *   2. $vriendGebruikersnaam  = de gaming naam van de vriend om toe te voegen
-     *   3. $notitie               = een optionele notitie over de vriend
-     *   4. $status                = de status van de vriend (Online/Offline/Playing/Away)
-     * De functie RETOURNEERT:
-     *   - Een LEGE string ('')     als het toevoegen GELUKT is (geen fout)
-     *   - Een FOUTMELDING (string) als er iets mis ging (bijv. "Gebruikersnaam is verplicht")
-     * Het resultaat wordt opgeslagen in $fout om later te tonen aan de gebruiker.
-     * ---------------------------------------------------------- */
-    $fout = addFriend($userId, $vriendGebruikersnaam, $notitie, $status);
+     /* ----------------------------------------------------------
+      * STAP 7b - VRIEND TOEVOEGEN AAN DE DATABASE
+      * ----------------------------------------------------------
+      * addFriend() probeert de nieuwe vriend op te slaan in de database.
+      * De functie krijgt 4 parameters:
+      *   1. $userId                = het ID van de INGELOGDE gebruiker (eigenaar van de vriendenlijst)
+      *   2. $vriendGebruikersnaam  = de gaming naam van de vriend om toe te voegen
+      *   3. $notitie               = een optionele notitie over de vriend
+      *   4. $status                = de status van de vriend (Online/Offline/Playing/Away)
+      * De functie RETOURNEERT:
+      *   - Een LEGE string ('')     als het toevoegen GELUKT is (geen fout)
+      *   - Een FOUTMELDING (string) als er iets mis ging (bijv. "Gebruikersnaam is verplicht")
+      * Het resultaat wordt opgeslagen in $fout om later te tonen aan de gebruiker.
+      * ---------------------------------------------------------- */
+     $fout = addFriend($userId, $vriendGebruikersnaam, $notitie, $status);
 
-    /* ----------------------------------------------------------
-     * STAP 7c - CONTROLEER OF HET TOEVOEGEN GELUKT IS
-     * ----------------------------------------------------------
-     * Als $fout LEEG is (geen foutmelding), dan is de vriend succesvol toegevoegd.
-     * '!$fout' betekent: "als $fout NIET waar is" (een lege string is 'niet waar' in PHP).
-     * Bij succes:
-     *   1. setMessage('success', 'Vriend toegevoegd!') slaat een SUCCESMELDING op in de sessie.
-     *      De melding blijft bewaard tot de volgende paginalading (via een sessie-variabele).
-     *   2. header("Location: add_friend.php") stuurt de browser opnieuw naar DEZE pagina (redirect).
-     *      Dit is het "PRG-patroon" (Post-Redirect-Get): na een POST-verzoek sturen we door
-     *      met GET, zodat de gebruiker niet per ongeluk het formulier opnieuw verstuurt
-     *      als hij/zij op de "Vernieuwen"-knop drukt in de browser.
-     *   3. exit; stopt alle code zodat de redirect schoon wordt uitgevoerd.
-     * Als $fout NIET leeg is (er is een foutmelding), gaan we NIET doorsturen.
-     * Dan wordt de pagina gewoon geladen en toont de foutmelding bovenaan het formulier.
-     * ---------------------------------------------------------- */
-    if (!$fout) {
-        setMessage('success', 'Vriend toegevoegd!'); /* Sla een groene succesmelding op in de sessie */
-        header("Location: add_friend.php"); /* Stuur de browser door naar dezelfde pagina (PRG-patroon) */
-        exit; /* Stop alle verdere code om de redirect correct uit te voeren */
-    }
+     /* ----------------------------------------------------------
+      * STAP 7c - CONTROLEER OF HET TOEVOEGEN GELUKT IS
+      * ----------------------------------------------------------
+      * Als $fout LEEG is (geen foutmelding), dan is de vriend succesvol toegevoegd.
+      * '!$fout' betekent: "als $fout NIET waar is" (een lege string is 'niet waar' in PHP).
+      * Bij succes:
+      *   1. setMessage('success', 'Vriend toegevoegd!') slaat een SUCCESMELDING op in de sessie.
+      *      De melding blijft bewaard tot de volgende paginalading (via een sessie-variabele).
+      *   2. header("Location: add_friend.php") stuurt de browser opnieuw naar DEZE pagina (redirect).
+      *      Dit is het "PRG-patroon" (Post-Redirect-Get): na een POST-verzoek sturen we door
+      *      met GET, zodat de gebruiker niet per ongeluk het formulier opnieuw verstuurt
+      *      als hij/zij op de "Vernieuwen"-knop drukt in de browser.
+      *   3. exit; stopt alle code zodat de redirect schoon wordt uitgevoerd.
+      * Als $fout NIET leeg is (er is een foutmelding), gaan we NIET doorsturen.
+      * Dan wordt de pagina gewoon geladen en toont de foutmelding bovenaan het formulier.
+      * ---------------------------------------------------------- */
+     if (!$fout) {
+          setMessage('success', 'Vriend toegevoegd!'); /* Sla een groene succesmelding op in de sessie */
+          header("Location: add_friend.php"); /* Stuur de browser door naar dezelfde pagina (PRG-patroon) */
+          exit; /* Stop alle verdere code om de redirect correct uit te voeren */
+     }
 }
 ?>
 <!-- ============================================================
@@ -186,23 +340,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
      ============================================================ -->
 
 <head>
-    <!-- charset="UTF-8" zorgt ervoor dat ALLE tekens correct worden weergegeven.
+     <!-- charset="UTF-8" zorgt ervoor dat ALLE tekens correct worden weergegeven.
          UTF-8 ondersteunt Nederlandse tekens zoals e, i, o, u, en ook emoji's.
          Zonder dit zouden speciale tekens als vreemde symbolen verschijnen. -->
-    <meta charset="UTF-8">
+     <meta charset="UTF-8">
 
-    <!-- viewport meta tag maakt de pagina RESPONSIVE (past zich aan op alle schermformaten).
+     <!-- viewport meta tag maakt de pagina RESPONSIVE (past zich aan op alle schermformaten).
          'width=device-width' = de breedte van de pagina volgt de breedte van het apparaat.
          'initial-scale=1.0' = de pagina wordt niet ingezoomd of uitgezoomd bij het laden.
          Zonder deze tag zou de pagina op een telefoon piepklein worden weergegeven. -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- <title> bepaalt de tekst die verschijnt in het tabblad van de browser.
+     <!-- <title> bepaalt de tekst die verschijnt in het tabblad van de browser.
          De gebruiker ziet "Vrienden - GamePlan Scheduler" bovenaan in zijn browsertab.
          Dit is ook de tekst die zoekmachines tonen in zoekresultaten. -->
-    <title>Vrienden - GamePlan Scheduler</title>
+     <title>Vrienden - GamePlan Scheduler</title>
 
-    <!-- Laad Bootstrap 5.3.3 CSS via een CDN (Content Delivery Network).
+     <!-- Laad Bootstrap 5.3.3 CSS via een CDN (Content Delivery Network).
          Bootstrap is een CSS-framework dat kant-en-klare stijlen biedt voor:
          - Knoppen (btn, btn-primary, btn-danger, etc.)
          - Formulieren (form-control, form-select, form-label, etc.)
@@ -213,13 +367,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
          - Badges (badge, bg-success, bg-primary, bg-secondary)
          CDN betekent dat het bestand vanaf een EXTERNE server wordt geladen,
          niet vanaf onze eigen server. Dit is sneller omdat CDN-servers wereldwijd staan. -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Laad ons EIGEN CSS-bestand 'style.css' voor aangepaste stijlen.
+     <!-- Laad ons EIGEN CSS-bestand 'style.css' voor aangepaste stijlen.
          Dit bestand bevat stijlen die BOVENOP Bootstrap komen,
          zoals het donkere gaming-thema, aangepaste kleuren, en speciale effecten.
          Omdat dit NA Bootstrap wordt geladen, kunnen onze stijlen Bootstrap-stijlen overschrijven. -->
-    <link rel="stylesheet" href="style.css">
+     <link rel="stylesheet" href="style.css">
 </head>
 
 <!-- ============================================================
@@ -236,7 +390,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <body class="bg-dark text-light">
 
-    <!-- ============================================================
+     <!-- ============================================================
          STAP 11 - HEADER (NAVIGATIEBALK) INVOEGEN
          ============================================================
          'include' laadt het bestand 'header.php' in op deze exacte plek.
@@ -246,9 +400,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
          Alle pagina's die 'include header.php' gebruiken, krijgen dezelfde navigatiebalk.
          Dit heet het DRY-principe: "Don't Repeat Yourself" (Herhaal Jezelf Niet).
          ============================================================ -->
-    <?php include 'header.php'; ?>
+     <?php include 'header.php'; ?>
 
-    <!-- ============================================================
+     <!-- ============================================================
          STAP 12 - HOOFDINHOUD (MAIN)
          ============================================================
          <main> is een semantisch HTML5-element dat de HOOFDINHOUD van de pagina markeert.
@@ -264,9 +418,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                          Dit voegt EXTRA ruimte toe binnenin het element, zodat de content
                          niet tegen de bovenkant van de container plakt.
          ============================================================ -->
-    <main class="container mt-5 pt-5">
+     <main class="container mt-5 pt-5">
 
-        <!-- ============================================================
+          <!-- ============================================================
              STAP 13 - SUCCESMELDING WEERGEVEN (INDIEN AANWEZIG)
              ============================================================
              getMessage() controleert of er een melding is opgeslagen in de sessie
@@ -276,9 +430,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
              De melding wordt na het tonen automatisch gewist uit de sessie,
              zodat deze niet opnieuw verschijnt bij het verversen van de pagina.
              ============================================================ -->
-        <?php echo getMessage(); ?>
+          <?php echo getMessage(); ?>
 
-        <!-- ============================================================
+          <!-- ============================================================
              STAP 14 - FOUTMELDING WEERGEVEN (INDIEN AANWEZIG)
              ============================================================
              Als $fout NIET leeg is (het formulier is verzonden maar er was een fout),
@@ -289,11 +443,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
              omgezet zodat kwaadaardige code niet kan worden uitgevoerd (XSS-bescherming).
              Bijvoorbeeld: '<script>' wordt omgezet naar '&lt;script&gt;'
              ============================================================ -->
-        <?php if ($fout): ?>
-            <div class="alert alert-danger"><?php echo safeEcho($fout); ?></div>
-        <?php endif; ?>
+          <?php if ($fout): ?>
+               <div class="alert alert-danger"><?php echo safeEcho($fout); ?></div>
+          <?php endif; ?>
 
-        <!-- ============================================================
+          <!-- ============================================================
              STAP 15 - VRIEND TOEVOEGEN FORMULIER (SECTIE)
              ============================================================
              <section> is een semantisch HTML5-element dat een LOGISCH DEEL van de pagina markeert.
@@ -303,14 +457,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
              - 'mb-5' = margin-bottom niveau 5 (3rem = 48px ruimte ONDER dit element).
                          Dit creert visuele ruimte tussen het formulier en de vriendenlijst eronder.
              ============================================================ -->
-        <!-- VRIEND TOEVOEGEN FORMULIER -->
-        <section class="mb-5">
+          <!-- VRIEND TOEVOEGEN FORMULIER -->
+          <section class="mb-5">
 
-            <!-- De koptekst van de sectie met een emoji voor visuele herkenning.
+               <!-- De koptekst van de sectie met een emoji voor visuele herkenning.
                  <h2> is een tweede-niveau koptekst (kleiner dan <h1> maar nog steeds opvallend). -->
-            <h2>👥 Vriend Toevoegen</h2>
+               <h2>👥 Vriend Toevoegen</h2>
 
-            <!-- ============================================================
+               <!-- ============================================================
                  STAP 16 - BOOTSTRAP CARD (KAART-COMPONENT)
                  ============================================================
                  Een 'card' is een Bootstrap-component dat content groepeert in een
@@ -322,10 +476,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                  - 'card-body' = voegt padding (binnenruimte) toe rondom de inhoud van de kaart.
                                   Standaard is dit 1rem (16px) aan alle kanten.
                  ============================================================ -->
-            <div class="card">
-                <div class="card-body">
+               <div class="card">
+                    <div class="card-body">
 
-                    <!-- ============================================================
+                         <!-- ============================================================
                          STAP 17 - HET FORMULIER
                          ============================================================
                          <form method="POST"> maakt een HTML-formulier aan.
@@ -336,9 +490,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                          met $_SERVER['REQUEST_METHOD'] gelijk aan 'POST', waardoor het PHP-blok
                          bovenaan (STAP 7) het formulier verwerkt.
                          ============================================================ -->
-                    <form method="POST">
+                         <form method="POST">
 
-                        <!-- ============================================================
+                              <!-- ============================================================
                              STAP 18 - INVOERVELD: GEBRUIKERSNAAM VAN DE VRIEND
                              ============================================================
                              Dit is het EERSTE formulierveld waar de gebruiker de gaming naam
@@ -367,13 +521,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                              - 'placeholder="..."'      = grijze voorbeeldtekst die verdwijnt zodra de gebruiker typt.
                                                           Het geeft een hint over wat er ingevuld moet worden.
                              ============================================================ -->
-                        <div class="mb-3">
-                            <label for="friend_username" class="form-label">🎮 Gebruikersnaam Vriend *</label>
-                            <input type="text" id="friend_username" name="friend_username" class="form-control" required
-                                maxlength="50" placeholder="Gaming naam van je vriend">
-                        </div>
+                              <div class="mb-3">
+                                   <label for="friend_username" class="form-label">🎮 Gebruikersnaam Vriend *</label>
+                                   <input type="text" id="friend_username" name="friend_username" class="form-control"
+                                        required maxlength="50" placeholder="Gaming naam van je vriend">
+                              </div>
 
-                        <!-- ============================================================
+                              <!-- ============================================================
                              STAP 19 - TEKSTVAK: NOTITIE OVER DE VRIEND
                              ============================================================
                              Dit is een OPTIONEEL tekstvak waar de gebruiker een persoonlijke
@@ -398,13 +552,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                              OPMERKING: Dit veld heeft GEEN 'required' attribuut, dus het is OPTIONEEL.
                              De gebruiker mag het leeg laten.
                              ============================================================ -->
-                        <div class="mb-3">
-                            <label for="note" class="form-label">📝 Notitie (optioneel)</label>
-                            <textarea id="note" name="note" class="form-control" rows="2"
-                                placeholder="bijv. 'Goed in Fortnite'"></textarea>
-                        </div>
+                              <div class="mb-3">
+                                   <label for="note" class="form-label">📝 Notitie (optioneel)</label>
+                                   <textarea id="note" name="note" class="form-control" rows="2"
+                                        placeholder="bijv. 'Goed in Fortnite'"></textarea>
+                              </div>
 
-                        <!-- ============================================================
+                              <!-- ============================================================
                              STAP 20 - DROPDOWN-MENU: STATUS VAN DE VRIEND
                              ============================================================
                              Dit is een DROPDOWN-MENU (keuzelijst) waarmee de gebruiker de
@@ -436,17 +590,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                              3. "Playing"  - De vriend is aan het spelen (tekst: "Aan het spelen")
                              4. "Away"     - De vriend is afwezig (tekst: "Afwezig")
                              ============================================================ -->
-                        <div class="mb-3">
-                            <label for="status" class="form-label">🔘 Status</label>
-                            <select id="status" name="status" class="form-select">
-                                <option value="Offline">Offline</option>
-                                <option value="Online">Online</option>
-                                <option value="Playing">Aan het spelen</option>
-                                <option value="Away">Afwezig</option>
-                            </select>
-                        </div>
+                              <div class="mb-3">
+                                   <label for="status" class="form-label">🔘 Status</label>
+                                   <select id="status" name="status" class="form-select">
+                                        <option value="Offline">Offline</option>
+                                        <option value="Online">Online</option>
+                                        <option value="Playing">Aan het spelen</option>
+                                        <option value="Away">Afwezig</option>
+                                   </select>
+                              </div>
 
-                        <!-- ============================================================
+                              <!-- ============================================================
                              STAP 21 - VERZENDKNOP
                              ============================================================
                              <button type="submit"> maakt een knop die het formulier VERSTUURT.
@@ -460,13 +614,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                              De emoji ➕ en tekst "Vriend Toevoegen" maken duidelijk wat de knop doet.
                              ============================================================ -->
-                        <button type="submit" class="btn btn-primary">➕ Vriend Toevoegen</button>
-                    </form>
-                </div>
-            </div>
-        </section>
+                              <button type="submit" class="btn btn-primary">➕ Vriend Toevoegen</button>
+                         </form>
+                    </div>
+               </div>
+          </section>
 
-        <!-- ============================================================
+          <!-- ============================================================
              STAP 22 - VRIENDENLIJST SECTIE
              ============================================================
              Dit tweede deel van de pagina toont een TABEL met alle
@@ -475,13 +629,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
              Bootstrap-klasse:
              - 'mb-5' = margin-bottom niveau 5 (3rem = 48px ruimte onder de sectie)
              ============================================================ -->
-        <!-- VRIENDENLIJST -->
-        <section class="mb-5">
+          <!-- VRIENDENLIJST -->
+          <section class="mb-5">
 
-            <!-- Koptekst voor de vriendenlijst met een emoji voor visuele herkenning. -->
-            <h2>📋 Jouw Vrienden</h2>
+               <!-- Koptekst voor de vriendenlijst met een emoji voor visuele herkenning. -->
+               <h2>📋 Jouw Vrienden</h2>
 
-            <!-- ============================================================
+               <!-- ============================================================
                  STAP 23 - RESPONSIVE TABEL-WRAPPER
                  ============================================================
                  'table-responsive' is een Bootstrap-klasse die de tabel SCROLLBAAR maakt
@@ -489,9 +643,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                  verschijnt er een horizontale scrollbalk in plaats van dat de hele pagina
                  breder wordt. Dit voorkomt dat de gebruiker de hele pagina moet scrollen.
                  ============================================================ -->
-            <div class="table-responsive">
+               <div class="table-responsive">
 
-                <!-- ============================================================
+                    <!-- ============================================================
                      STAP 24 - DE VRIENDENLIJST TABEL
                      ============================================================
                      <table> maakt een HTML-tabel met rijen en kolommen.
@@ -506,9 +660,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                           wordt die rij LICHTER gemarkeerd (hover-effect).
                                           Dit maakt het makkelijker om gegevens in een rij te volgen.
                      ============================================================ -->
-                <table class="table table-dark table-bordered table-hover">
+                    <table class="table table-dark table-bordered table-hover">
 
-                    <!-- ============================================================
+                         <!-- ============================================================
                          STAP 25 - TABEL KOPTEKST (THEAD)
                          ============================================================
                          <thead> bevat de KOPTEKST-RIJ van de tabel.
@@ -521,24 +675,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                          3. "Notitie"        = de persoonlijke notitie over de vriend
                          4. "Acties"         = knoppen om de vriend te bewerken of verwijderen
                          ============================================================ -->
-                    <thead>
-                        <tr>
-                            <th>Gebruikersnaam</th>
-                            <th>Status</th>
-                            <th>Notitie</th>
-                            <th>Acties</th>
-                        </tr>
-                    </thead>
+                         <thead>
+                              <tr>
+                                   <th>Gebruikersnaam</th>
+                                   <th>Status</th>
+                                   <th>Notitie</th>
+                                   <th>Acties</th>
+                              </tr>
+                         </thead>
 
-                    <!-- ============================================================
+                         <!-- ============================================================
                          STAP 26 - TABEL LICHAAM (TBODY)
                          ============================================================
                          <tbody> bevat de GEGEVENSRIJEN van de tabel.
                          Hier worden de daadwerkelijke vrienden getoond.
                          ============================================================ -->
-                    <tbody>
+                         <tbody>
 
-                        <!-- ============================================================
+                              <!-- ============================================================
                              STAP 27 - CONTROLEER OF ER VRIENDEN ZIJN
                              ============================================================
                              empty($vrienden) controleert of de vriendenlijst LEEG is.
@@ -553,12 +707,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                              - 'text-secondary' = maakt de tekst GRIJS (minder opvallend),
                                                   dit geeft aan dat het een informatief bericht is, geen echte data.
                              ============================================================ -->
-                        <?php if (empty($vrienden)): ?>
-                            <tr>
-                                <td colspan="4" class="text-center text-secondary">Nog geen vrienden!</td>
-                            </tr>
+                              <?php if (empty($vrienden)): ?>
+                                   <tr>
+                                        <td colspan="4" class="text-center text-secondary">Nog geen vrienden!</td>
+                                   </tr>
 
-                            <!-- ============================================================
+                                   <!-- ============================================================
                              STAP 28 - FOREACH LOOP: ELKE VRIEND WEERGEVEN
                              ============================================================
                              Als er WEL vrienden zijn, gebruiken we een 'foreach' loop.
@@ -569,10 +723,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                              Bij elke doorloop van de loop wordt een nieuwe <tr> (tabelrij) gemaakt.
                              Als er 5 vrienden zijn, maakt de loop 5 rijen.
                              ============================================================ -->
-                        <?php else: ?>
-                            <?php foreach ($vrienden as $vriend): ?>
-                                <tr>
-                                    <!-- ============================================================
+                              <?php else: ?>
+                                   <?php foreach ($vrienden as $vriend): ?>
+                                        <tr>
+                                             <!-- ============================================================
                                          STAP 29 - KOLOM 1: GEBRUIKERSNAAM
                                          ============================================================
                                          Toont de gaming gebruikersnaam van de vriend.
@@ -581,9 +735,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                          (bijv. "<script>hack</script>"), wordt dit ONSCHADELIJK gemaakt.
                                          Dit heet XSS-bescherming (Cross-Site Scripting preventie).
                                          ============================================================ -->
-                                    <td><?php echo safeEcho($vriend['username']); ?></td>
+                                             <td><?php echo safeEcho($vriend['username']); ?></td>
 
-                                    <!-- ============================================================
+                                             <!-- ============================================================
                                          STAP 30 - KOLOM 2: STATUS MET GEKLEURDE BADGE
                                          ============================================================
                                          De status wordt getoond als een BADGE (gekleurd label).
@@ -612,23 +766,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                                          safeEcho() toont de statustekst veilig in de badge.
                                          ============================================================ -->
-                                    <td>
-                                        <span
-                                            class="badge <?php echo $vriend['status'] === 'Online' ? 'bg-success' : ($vriend['status'] === 'Playing' ? 'bg-primary' : 'bg-secondary'); ?>">
-                                            <?php echo safeEcho($vriend['status']); ?>
-                                        </span>
-                                    </td>
+                                             <td>
+                                                  <span
+                                                       class="badge <?php echo $vriend['status'] === 'Online' ? 'bg-success' : ($vriend['status'] === 'Playing' ? 'bg-primary' : 'bg-secondary'); ?>">
+                                                       <?php echo safeEcho($vriend['status']); ?>
+                                                  </span>
+                                             </td>
 
-                                    <!-- ============================================================
+                                             <!-- ============================================================
                                          STAP 31 - KOLOM 3: NOTITIE
                                          ============================================================
                                          Toont de persoonlijke notitie over de vriend.
                                          Als er geen notitie is, wordt een lege cel getoond.
                                          safeEcho() beschermt opnieuw tegen XSS-aanvallen.
                                          ============================================================ -->
-                                    <td><?php echo safeEcho($vriend['note']); ?></td>
+                                             <td><?php echo safeEcho($vriend['note']); ?></td>
 
-                                    <!-- ============================================================
+                                             <!-- ============================================================
                                          STAP 32 - KOLOM 4: ACTIEKNOPPEN (BEWERKEN EN VERWIJDEREN)
                                          ============================================================
                                          Twee knoppen voor acties op deze vriend:
@@ -663,37 +817,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                          - Als de gebruiker "Annuleren" kiest: confirm() geeft 'false' terug -> niets gebeurt
                                          Dit voorkomt ONBEDOELD verwijderen door een misclick.
                                          ============================================================ -->
-                                    <td>
-                                        <a href="edit_friend.php?id=<?php echo $vriend['friend_id']; ?>"
-                                            class="btn btn-sm btn-warning">✏️ Bewerken</a>
-                                        <a href="delete.php?type=friend&id=<?php echo $vriend['friend_id']; ?>"
-                                            class="btn btn-sm btn-danger" onclick="return confirm('Vriend verwijderen?');">🗑️
-                                            Verwijderen</a>
-                                    </td>
-                                </tr>
+                                             <td>
+                                                  <a href="edit_friend.php?id=<?php echo $vriend['friend_id']; ?>"
+                                                       class="btn btn-sm btn-warning">✏️ Bewerken</a>
+                                                  <a href="delete.php?type=friend&id=<?php echo $vriend['friend_id']; ?>"
+                                                       class="btn btn-sm btn-danger"
+                                                       onclick="return confirm('Vriend verwijderen?');">🗑️
+                                                       Verwijderen</a>
+                                             </td>
+                                        </tr>
 
-                                <!-- endforeach sluit de foreach-loop af.
+                                        <!-- endforeach sluit de foreach-loop af.
                                  Alle code tussen 'foreach' en 'endforeach' wordt herhaald voor ELKE vriend. -->
-                            <?php endforeach; ?>
+                                   <?php endforeach; ?>
 
-                            <!-- endif sluit de if/else controle af (of de vriendenlijst leeg is of niet). -->
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-    </main>
+                                   <!-- endif sluit de if/else controle af (of de vriendenlijst leeg is of niet). -->
+                              <?php endif; ?>
+                         </tbody>
+                    </table>
+               </div>
+          </section>
+     </main>
 
-    <!-- ============================================================
+     <!-- ============================================================
          STAP 33 - FOOTER (VOETTEKST) INVOEGEN
          ============================================================
          'include' laadt het bestand 'footer.php' in.
          footer.php bevat de VOETTEKST onderaan de pagina, met bijv. copyright-informatie.
          Net als de header wordt de footer op ALLE pagina's hergebruikt (DRY-principe).
          ============================================================ -->
-    <?php include 'footer.php'; ?>
+     <?php include 'footer.php'; ?>
 
-    <!-- ============================================================
+     <!-- ============================================================
          STAP 34 - BOOTSTRAP JAVASCRIPT LADEN
          ============================================================
          Bootstrap heeft naast CSS ook JavaScript nodig voor INTERACTIEVE componenten:
@@ -707,16 +862,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
          Dit script staat ONDERAAN de pagina (voor </body>) zodat de HTML eerst wordt geladen
          en de pagina sneller zichtbaar is voor de gebruiker.
          ============================================================ -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- ============================================================
+     <!-- ============================================================
          STAP 35 - EIGEN JAVASCRIPT LADEN
          ============================================================
          'script.js' is ons EIGEN JavaScript-bestand met aangepaste functionaliteit.
          Dit kan bijvoorbeeld bevatten: formuliervalidatie, animaties, of interactieve functies.
          Het wordt NA Bootstrap geladen, zodat we Bootstrap-functies kunnen gebruiken.
          ============================================================ -->
-    <script src="script.js"></script>
+     <script src="script.js"></script>
 </body>
 
 <!-- Sluit het HTML-document af. Alles tussen <html> en </html> is het volledige document. -->

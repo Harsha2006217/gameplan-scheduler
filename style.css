@@ -229,8 +229,8 @@ main h1 {
 
 .card {
     background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
     -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
     border: 1px solid var(--glass-border);
     border-radius: var(--border-radius);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -463,6 +463,7 @@ textarea.form-control {
     margin: 0 auto;
     padding: 40px;
     background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     backdrop-filter: blur(var(--glass-blur));
     border-radius: var(--border-radius-lg);
     border: 1px solid var(--glass-border);
@@ -623,6 +624,7 @@ main {
 
 .bg-glass {
     background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     backdrop-filter: blur(var(--glass-blur));
 }
 
@@ -704,8 +706,8 @@ main.container .card .card-body h1 {
     color: #ffffff !important;
     -webkit-text-fill-color: #ffffff !important;
     background: none !important;
-    background-clip: unset !important;
     -webkit-background-clip: unset !important;
+    background-clip: unset !important;
     font-size: 2rem !important;
     font-weight: 700 !important;
     margin-bottom: 25px !important;

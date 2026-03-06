@@ -10,7 +10,7 @@
 
 ---
 
-# 📋 1. Wat is dit project? (In 1 minuut uitgelegd)
+# 📋 1. Wat is dit project?
 
 **GamePlan Scheduler** is een website waarmee jonge gamers hun spelactiviteiten kunnen plannen.
 

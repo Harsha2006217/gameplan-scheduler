@@ -356,3 +356,207 @@ Ik gebruik **6 tabellen** om alles netjes op te slaan.
 ---
 
 # Einde documentatie
+
+#
+
+# ---
+
+#
+
+# 📝 Uitgebreide K1/K2 Werkproces Details
+
+#
+
+# ## K1 Planning (W1)
+
+# - Ik maakte een planning voor de GamePlan Scheduler app voor gamers.
+
+# - De app laat gamers profielen maken, vrienden toevoegen, schema’s delen en evenementen plannen in een kalender.
+
+# - Ik gebruikte PHP, MySQL, HTML, CSS en JavaScript.
+
+# - Het doel is SMART: specifiek, meetbaar, acceptabel, realistisch en klaar op 30 september 2025.
+
+# - Er zijn zes user stories: profiel maken, vrienden toevoegen, schema’s delen, evenementen toevoegen, herinneringen instellen en bewerken/verwijderen.
+
+# - Aanvullende eisen: responsive design, veilige database, simpele knoppen en basis inloggen met sessies.
+
+# - Takenlijst met MOSCOW: must-have taken zoals database en inloggen, should-have zoals vrienden.
+
+# - Totaal 49 uur werk van 2 september tot 30 september 2025.
+
+# - Ik hield voortgang per week en overlegde drie keer met begeleider Marius Restua.
+
+# - Betrokkenen zijn ikzelf, Marius en jonge gamers als testers.
+
+#
+
+# ## K1 Ontwerp (W2)
+
+# - Ik ontwierp de GamePlan Scheduler met donkere kleuren zwart en blauw voor gamers.
+
+# - Header heeft logo, menu en profiel icoon, midden heeft inhoud en footer copyright.
+
+# - Navigatie is simpel: home, profiel, vrienden, schema’s, evenementen en uitloggen.
+
+# - Hoofdmenu knoppen zijn blauw met hover-effect en werken op mobiel.
+
+# - Voor user story 1: profielformulier met games en bevestigingsscherm.
+
+# - Voor user story 2: vrienden zoeken en lijst tonen.
+
+# - Voor user story 3: schema toevoegen met kalenderweergave.
+
+# - Voor user story 4: evenementenformulier met titel en datum.
+
+# - Voor user story 5: herinneringen dropdown en pop-up.
+
+# - Voor user story 6: bewerken en verwijderen met bevestiging.
+
+# - Privacy: alleen eigen data via sessies, security met prepared statements.
+
+# - Usability: grote knoppen, ronde hoeken en mobiel vriendelijk.
+
+# - Ik maakte wireframes en flowcharts voor alle schermen.
+
+#
+
+# ## K1 Realiseren (W3)
+
+# - Ik bouwde de app in 49 uur met PHP PDO, MySQL en Bootstrap.
+
+# - Database heeft tabellen, Users, Games, Friends, Schedules, Events en koppelingen.
+
+# - Inloggen met hashed wachtwoorden en sessies van 30 minuten.
+
+# - Profiel opslaan met favoriete games via User Games tabel.
+
+# - Vrienden toevoegen met zoekfunctie en geen zelf-toevoegen.
+
+# - Schema’s delen met checkboxes voor vrienden en kalender grid.
+
+# - Evenementen CRUD met beschrijving en sharing via Event User Map.
+
+# - Herinneringen met JavaScript pop-up op tijd.
+
+# - Bewerken en verwijderen met bevestigings- en rechten check.
+
+# - GitHub versiebeheer met dagelijkse commits en branches.
+
+# - Project Log toont elke taak, uren en opgeloste bugs zoals fk constraints.
+
+# - Realisatie Verslag beschrijft code structuur, security en 95% functionaliteit.
+
+#
+
+# ## K1 Testen (W4)
+
+# - Ik testte de app 6 uur op laptop en telefoon van 23 tot 25 september 2025.
+
+# - 30 tests: 5 per user story met normaal, leeg, edge cases zoals spaties of verleden datum.
+
+# - User story 1: profiel maken slaagt, maar spaties in games gaf bug #1001.
+
+# - User story 2: vrienden toevoegen werkt, geen dubbele of zelf-toevoegen.
+
+# - User story 3: schema’s in kalender met toekomstige datum check.
+
+# - User story 4: evenementen opslaan, maar ongeldige datum gaf DB error #1004.
+
+# - User story 5 en 6: herinneringen en bewerken, werken met pop-up en confirm.
+
+# - Ik noteerde verwacht, werkelijk resultaat en aanpassingen.
+
+# - Overleg met Marius Restua op 24 september voor extra edge cases.
+
+#
+
+# K1 Verbeteren (W5)
+
+# - Ik maakte 6 verbetervoorstellen uit testrapport, oplevering en reflectie.
+
+# - #1001: trim check tegen alleen spaties in games.
+
+# - #1004: extra tests voor ongeldige datums en lange tekst.
+
+# - #1002: e-mail en push notificaties naast pop-up.
+
+# - #1003: grotere knoppen en hamburgermenu op mobiel.
+
+# - #1005: 5 screenshots toevoegen aan testrapport.
+
+# - #1006: sorteer knoppen op datum en game in lijsten.
+
+# - Elk voorstel heeft issue, bron, aanpassing en beargumentering.
+
+# - Overleg met Marius op 2 oktober voor realistische planning.
+
+# - Voorstellen voor versie 1.1, kosten 1-4 uur per stuk.
+
+# - De app wordt gebruiksvriendelijker en sterker.
+
+#
+
+# ## K2 Overleggen
+
+# - Ik overlegde drie keer met Marius Restua tijdens planning, realisatie en testen.
+
+# - Op 7 september over backend inloggen.
+
+# - Op 14 september over vriendenlijst en geen zelf-toevoegen.
+
+# - Op 27 september over mobiel design.
+
+# - Op 24 september check van tests en edge cases.
+
+# - Op 2 oktober check van verbetervoorstellen.
+
+# - Ik vroeg specifiek om hulp bij bugs en liet code zien.
+
+# - Marius gaf tips zoals URL fix en console checken.
+
+# - Ik paste meteen aan en vroeg wat ik nu kon doen.
+
+#
+
+# ## K2 Presenteren (met Marius en Billy)
+
+# - Ik presenteerde portfolio website met React en Laravel op 10 maart 2025.
+
+# - Intro: hallo ik ben Harsha, vandaag mijn portfolio.
+
+# - Ik legde stap voor stap homepage, projecten en blog uit.
+
+# - Voorbeelden: router-systeem en API voor blogs.
+
+# - Vragen gesteld: snappen jullie de API? Hebben jullie vragen?
+
+# - Feedback Marius: meer eindresultaat laten zien, niet alleen plan.
+
+# - Feedback Billy: meer demo en AI uitleg.
+
+# - Ik zei: bedankt, ik ga dat doen en tijdlijn toevoegen.
+
+#
+
+# ## K2 Reflectie (W3)
+
+# - Ik gebruikte STARR voor portfolio website project in februari 2025.
+
+# - Situatie: API koppelen aan React blogpagina vastgelopen.
+
+# - Taak: blogberichten uit database tonen voor overleg 29 januari.
+
+# - Actie: Postman testen, zelf zoeken, toen hulp vragen aan Marius.
+
+# - Resultaat: URL fix, blog werkt op 31 januari.
+
+# - Reflectie: zelfstandig goed, maar eerder hulp vragen beter.
+
+# - Feedback Marius: sneller vragen en console beter lezen.
+
+# - Reactie: ik paste toe en stel nu wekelijks overleg voor.
+
+# - Proactief: ik liet probleem meteen zien in overleg.
+
+# - Geleerd: foutmeldingen goed lezen en binnen 1 dag hulp vragen.
